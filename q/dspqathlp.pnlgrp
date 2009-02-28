@@ -1,0 +1,542 @@
+.*
+.* help info
+.*
+
+:pnlgrp.
+
+.* about
+:help name='help/about'.
+About DSPQD
+:p.
+:h1.Overview
+:p.
+DSPQD is a member of Junlei Li's i5/OS toolkit.
+:p.
+The Display Queue Description (DSPQD) command shows one or more types
+of information of a queue object. The queue object could be a
+data queue object of object type *DTAQ or a user queue object of
+type *USRQ. When a DDM data queue object is specified, only
+the DDM data queue specific information is displayed.
+:p.
+:h1.Examples
+:p.
+:xh2.Display a user queue's description
+:p.
+To display a user queue object, you can specify one of the following commands:
+:sl.
+:li.DSPQD A_USER_Q *USRQ
+:li.DSPQD A_LIB/A_USER_Q *USRQ
+:li.DSPQD *LIBL/A_USER_Q *USRQ
+:li.DSPQD *CURLIB/A_USER_Q *USRQ
+:esl.
+:p.
+:xh2.Display a data queue's description
+:p.
+To display a data queue object, you can specify one of the following commands:
+:sl.
+:li.DSPQD A_DATA_Q *DTAQ
+:li.DSPQD A_LIB/A_DATA_Q *DTAQ
+:li.DSPQD *LIBL/A_DATA_Q *DTAQ
+:li.DSPQD *CURLIB/A_DATA_Q *DTAQ
+:esl.
+:p.
+:h1.Author
+:p.
+This software is written by Junlei Li, an AS/400 fan from China.
+:p.
+Please report bugs to :hp2.junleili-cn@users.sourceforge.net:ehp2.
+:ehelp.
+
+.* main menu bar
+:help name='help/mbar'.
+:p.
+:xh2.Main Menu Bar
+:p.
+There're 2 menu items in `Function' menu.
+:ul.
+:li.`About', show help info
+:li.`Exit', leave the display panel
+:eul.
+:ehelp.
+
+:help name='help/pdfldc/about'.
+:p.
+Show help info
+:ehelp.
+
+:help name='help/pdfldc/exit'.
+:p.
+Leave the display panel
+:ehelp.
+
+.* common data items
+:help name='common/object'.
+:p.
+:xh2.Object
+:p.
+The name of the currently displayed queue object.
+:p.
+The name of the library containing the currently displayed queue object.
+:ehelp.
+
+:help name='common/objasp'.
+:p.
+:xh2.Object ASP number
+:p.
+The number of the auxiliary storage pool (ASP) where storage is allocated for the
+ object.  Possible values ranges are:
+:ul.
+:li.1, System ASP
+:li.2-32, Basic user ASP
+:li.33-255, Primary or secondary ASP
+:eul.
+:ehelp.
+
+:help name='common/extattr'.
+:p.
+:xh2.Attribute
+:p.
+The extended attribute of the queue object.  Possible values are:
+:ul.
+:li.Data queue, empty
+:li.DDM data queue, DDMDTAQUE
+:li.User queue, provided by user who created the queue object
+:eul.
+:ehelp.
+
+:help name='common/owner'.
+:p.
+:xh2.Owner
+:p.
+The name of the queue object owner's user profile.
+:ehelp.
+
+:help name='common/objdmn'.
+:p.
+:xh2.Object Domain
+:p.
+The domain that contains the queue object.
+:ehelp.
+
+.* datq
+:help name='dtaq/msglen'.
+:p.
+:xh2.Message length
+:p.
+The maximum length allowed for messages.
+:ehelp.
+
+:help name='dtaq/keylen'.
+:p.
+:xh2.Key length
+:p.
+The length, in bytes, of the message reference key of a keyed
+queue object. Values range from 1 to 256.
+:ehelp.
+
+:help name='dtaq/sq'.
+:p.
+:xh2.Sequence
+:p.
+The sequence in which messages can be removed from the queue.
+Possible values are:
+:ul.
+:li.FIFO, first-in first-out
+:li.Keyed, dequeue by key
+:li.LIFO, last-in first-out
+:eul.
+:ehelp.
+
+:help name='dtaq/incsndid'.
+:p.
+:xh2.Include sender ID
+:p.
+If the queue was created to include the sender ID with sent messages.
+:ehelp.
+
+:help name='dtaq/force'.
+:p.
+:xh2.Force to auxiliary storage
+:p.
+Whether or not the data queue is forced to auxiliary
+storage when entries are sent or received for the
+specified data queue.
+:ehelp.
+
+:help name='dtaq/text'.
+:p.
+:xh2.Text description
+:p.
+The text description of the queue object.
+:ehelp.
+
+:help name='dtaq/autorcl'.
+:p.
+:xh2.Automatic Reclaim
+:p.
+Whether or not the data queue has the amount of storage
+allocated for the queue reclaimed when the queue is empty.
+:p.
+:ehelp.
+
+:help name='dtaq/msgnum'.
+:p.
+:xh2.Current number of messages
+:p.
+The number of messages currently on the queue object.
+:ehelp.
+
+:help name='dtaq/entalc'.
+:p.
+:xh2.Number of messages allocated
+:p.
+The number of entries that will fit into the data queue
+before it is extended. When the queue is extended,
+additional storage is allocated for the queue.
+The data queue can be extended until it reaches the
+value for the :hp2.maximum number of entries allowed:ehp2..
+:ehelp.
+
+:help name='dtaq/maxmsg'.
+:p.
+:xh2.Maximum number of entries allowed
+:p.
+The maximum number of messages that will fit into the
+data queue when it is full.
+:ehelp.
+
+:help name='dtaq/initmsg'.
+:p.
+:xh2.Initial number of messages
+:p.
+The number of messages that will fit into the storage
+allocated for the data queue when it is created or
+when it is automatically reclaimed.
+:p.
+
+:ehelp.
+
+.* ddmq
+:help name='ddmq/appcdev'.
+:p.
+:xh2.APPC device description
+:p.
+The name of the APPC device description on the source system
+that is used with this DDM data queue. The special value *LOC
+can be returned. This is the name that was specified on the
+DEV parameter of the CRTDTAQ command.
+:p.
+:ehelp.
+
+:help name='ddmq/mode'.
+:p.
+:xh2.Mode
+:p.
+The mode name used with the remote location name to
+communicate with the target system. The special value
+*NETATR can be returned. This is the name that was
+specified on the MODE parameter of the CRTDTAQ command.
+:ehelp.
+
+:help name='ddmq/rmtloc'.
+:p.
+:xh2.Remote location name
+:p.
+The name of the remote location that is used with this object.
+This is the name that was specified on the RMTLOCNAME
+parameter of the CRTDTAQ command.
+:ehelp.
+
+:help name='ddmq/locloc'.
+:p.
+:xh2.Local location name
+:p.
+The name of the local location. The special values *LOC and
+*NETATR can be returned. This is the name that was
+specified on the LCLLOCNAME parameter of the CRTDTAQ command.
+:ehelp.
+
+:help name='ddmq/rmtnet'.
+:p.
+:xh2.Remote network identifier
+:p.
+The remote network identifier in which the remote location
+used to communcate with the target system. The special values
+*LOC, *NETATR, and *NONE can be returned. This is the name
+that was specified on the RMTNETID parameter of the CRTDTAQ
+command.
+:ehelp.
+
+:help name='ddmq/rmtnam'.
+:p.
+:xh2.Remote data queue name
+:p.
+The name of the remote data queue on the target system.
+This is the data queue name that was specified on the
+RMTDTAQ parameter of the CRTDTAQ command.
+:ehelp.
+
+:help name='ddmq/rmtlib'.
+:p.
+:xh2.Remote data queue library name
+:p.
+The name of the library for the remote data queue on
+the target system. The special values *LIBL and *CURLIB
+can be returned. This is the data queue name that was
+specified on the RMTDTAQ parameter of the CRTDTAQ command.
+:ehelp.
+
+.* usrq
+:help name='usrq/exstattr'.
+:p.
+:xh2.Existence attributes
+:p.
+The existence attribute specifies whether the queue is
+to be created as temporary or permanent. A temporary queue,
+if not explicitly destroyed by the user, is implicitly
+destroyed by the machine when machine processing is terminated.
+:ehelp.
+
+:help name='usrq/spcattr'.
+:p.
+:xh2.Space attribute
+:p.
+If a space is associated with the queue, the space may be
+fixed or variable in size, as specified by the
+:hp2.space attribute:ehp2.. The current allocation is as specified in
+the :hp2.size of space field:ehp2.. The machine allocates a space
+of at least the size specified at queue creation; the
+actual size allocated depends on an algorithm defined
+by a specific implementation.
+:ehelp.
+
+:help name='usrq/initctx'.
+:p.
+:xh2.Initial context
+:p.
+The queue object's addressability in or not in a context.
+:ehelp.
+
+:help name='usrq/accgrpmbr'.
+:p.
+:xh2.Access group
+:p.
+Is the queue object a member of an access group.
+:ehelp.
+
+:help name='usrq/initspc'.
+:p.
+:xh2.Initialize space
+:p.
+The :hp2.initialize space:ehp2. creation option controls
+whether or not the space is to be initialized. When
+initialize is specified, each byte of the space is
+initialized to the value specified by the
+:hp2.initial value of space:ehp2. field. Additionally,
+when the space is extended in size, this byte value
+is also used to initialize the new allocation.
+When do not initialize is specified, the initial value
+of space field is ignored and the initial value of
+the bytes of the space are unpredictable.
+:ehelp.
+
+:help name='usrq/spcsize'.
+:p.
+:xh2.Size of space
+:p.
+Current allocated size of the space assosiated with the queue object.
+:ehelp.
+
+:help name='usrq/spcinitv'.
+:p.
+:xh2.Initial value of space
+:p.
+Initial value used to initialize the queue object's assosiated space.
+:ehelp.
+
+:help name='usrq/spcalgn'.
+:p.
+:xh2.Space alignment
+:p.
+0 = The space associated with the object is allocated to
+allow proper alignment of pointers at 16-byte alignments
+within the space.
+:p.
+1 = The space associated with the object is allocated to
+allow proper alignment of pointers at 16-byte alignments
+within the space as well as to allow proper alignment of
+input/output buffers at 512-byte alignments within the space.
+:ehelp.
+
+:help name='usrq/mchalgn'.
+:p.
+:xh2.Machine chooses space alignment
+:p.
+:ul.
+:li.The space alignment indicated by the space alignment
+field is in effect.
+:li.The machine chose the space alignment most beneficial
+to performance, which may have reduced maximum space
+capacity. The alignment chosen is a multiple of 512.
+:eul.
+:ehelp.
+
+:help name='usrq/mspslt'.
+:p.
+:xh2.Main storage pool selection
+:p.
+:ul.
+:li.Process default main storage pool is used for object.
+:li.Machine default main storage pool is used for object.
+:eul.
+:ehelp.
+
+:help name='usrq/stgtfr'.
+:p.
+:xh2.Block transfer
+:p.
+Block transfer action on implicit access state modification
+:ul.
+:li.0, Transfer the minimum storage transfer size for this object.
+:li.1, Transfer the machine default storage transfer size
+for this object.
+:eul.
+:ehelp.
+
+:help name='usrq/ctxnam'.
+:p.
+:xh2.Context name
+:p.
+The name of the library containing the queue object or
+empty if the queue object is not addressed to a context.
+:ehelp.
+
+:help name='usrq/accgrp'.
+:p.
+:xh2.Access group
+:p.
+Access group name.
+:ehelp.
+
+:help name='usrq/msgcnt'.
+:p.
+:xh2.Message content
+:p.
+Message content of the queue object. A queue object can
+contain only scalar data or both scalar data and pointer data.
+:ehelp.
+
+:help name='usrq/qtype'.
+:p.
+:xh2.Queue type
+:p.
+:hp2.Queue type:ehp2. describes the sequence in which messages
+are dequeued from a queue object. There're 3 possible queue types:
+:ul.
+:li.FIFO, first in, first out
+:li.Keyed, dequeued by key
+:li.LIFO, last in, first out
+:eul.
+:ehelp.
+
+:help name='usrq/qovrflw'.
+:p.
+:xh2.Queue overflow action
+:p.
+The :hp2.queue overflow:ehp2. action field describes the
+machine action when the number of messages resident on
+the queue (enqueued and not yet dequeued) exceeds the
+current maximum capacity of the queue. This value is
+initially established by the value specified in the
+:hp2.maximum number of messages:ehp2. field. The queue full
+(hex 2602) exception is signalled when the number of
+resident messages exceeds this field unless the
+extend queue option is specified. When the extend
+queue option is specified for the :hp2.queue overflow action:ehp2.
+field, the value of the current :hp2.maximum number of messages:ehp2.
+field is increased by the amount specified by the
+:hp2.extension value:ehp2. field each time the number
+of enqueued messages exceeds the value of the
+:hp2.current maximum number of messages:ehp2. field.
+:ehelp.
+
+:help name='usrq/chsmaxext'.
+:p.
+:xh2.Choose maximum number of extends
+:p.
+Whether the maximum number of extends is choosed by machine or user
+who created the queue object.
+:ehelp.
+
+:help name='usrq/rclstg'.
+:p.
+:xh2.Reclaim storage
+:p.
+Whether storage reclaim will be attempted when the number of
+currently enqueued messages on the queue reaches zero.
+:ehelp.
+
+:help name='usrq/curmaxmsg'.
+:p.
+:xh2.Current maximum number of messages
+:p.
+Current maximum number of messages.
+:ehelp.
+
+:help name='usrq/curmsg'.
+:p.
+:xh2.Current number of messages enqueued
+:p.
+Current number of messages enqueued.
+:ehelp.
+
+:help name='usrq/extval'.
+:p.
+:xh2.Extension value
+:p.
+Number of messages to extend the :hp2.current maximum number of messages:ehp2.
+each time the number of enqueued message exceeds the
+:hp2.current maximum number of messages:ehp2..
+:ehelp.
+
+:help name='usrq/keylen'.
+:p.
+:xh2.Key length
+:p.
+Key length of a keyed queue object. The key can contain pointers,
+but the pointers are considered to be scalar data when
+they are placed on the queue by an :hp2.Enqueue:ehp2. instruction.
+:ehelp.
+
+:help name='usrq/maxmsglen'.
+:p.
+:xh2.Maximum size of message to be enqueued
+:p.
+Maximum size of message to be enqueued
+:ehelp.
+
+:help name='usrq/maxext'.
+:p.
+:xh2.Maximum number of extends
+:p.
+Maximum number of extends
+:ehelp.
+
+:help name='usrq/curext'.
+:p.
+:xh2.Current number of extends
+:p.
+Current number of extends
+:ehelp.
+
+:help name='usrq/initmsg'.
+:p.
+:xh2.Initial number of messages
+:p.
+Initial number of messages when the queue object is created
+or each time queue storage is reclaimed.
+:ehelp.
+
+:epnlgrp.
+
+.* eof

@@ -1,0 +1,131 @@
+.*
+.* @file dtaqattr.pnl
+.*
+
+:panel  name=dtaqattr
+        title=vtitle
+        help='dummy'
+        keyl=klistmain
+        mbar=mbmain
+        enter='return 100'
+        .
+
+.* common data items
+:data    depth=5
+         scroll=no
+         layout=2
+         botsep=space
+         compact
+         .
+:datacol width=22.
+:datacol width='*'.
+
+:datagrp grpsep=qindent
+         compact
+         .
+:datai var=vqname
+       help='common/object'
+       usage=out
+       .Queue
+:datai   var=vqlib
+         help='common/object'
+         usage=out
+         .Library
+:edatagrp.
+
+:datagrp grpsep=none
+         compact
+         .
+:datai   var=vobjasp
+         help='common/objasp'
+         usage=out
+         .Object ASP number
+:edatagrp.
+
+:datagrp grpsep=none
+         compact
+         .
+:datai var=vextattr
+       help='common/extattr'
+       usage=out
+       .Attribute
+:datai var=vowner
+       help='common/owner'
+       usage=out
+       .Owner
+:datai var=vdomain
+       help='common/objdmn'
+       usage=out
+       .Object Domain
+:edatagrp.
+:edata.
+
+.* q specific data items
+:data    depth='*'
+         scroll=yes
+         layout=1
+         botsep=space
+         compact
+         .
+
+:datacol width=30.
+:datacol width=20.
+:datacol width='*'.
+
+:datagrp grpsep=indent
+         compact
+         .Object creation options
+
+:datai   var=vdmsglen
+         help='dtaq/msglen'
+         usage=out
+         .Message length
+:datai   var=vdkeylen
+         help='dtaq/keylen'
+         usage=out
+         .Key length
+:datai   var=vdsq
+         help='dtaq/sq'
+         usage=out
+         .Sequence
+:datai   var=vdincsndid
+         help='dtaq/incsndid'
+         usage=out
+         .Include sender ID
+:datai   var=vdforce
+         help='dtaq/force'
+         usage=out
+         .Force to auxiliary storage
+:datai   var=vdtext
+         help='dtaq/text'
+         usage=out
+         .Text description
+:datai   var=vdautorcl
+         help='dtaq/autorcl'
+         usage=out
+         .Automatic Reclaim
+:datai   var=vdmsgnum
+         help='dtaq/msgnum'
+         usage=out
+         .Current number of messages
+:datai   var=vdentalc
+         help='dtaq/entalc'
+         usage=out
+         .Number of messages allocated
+:datai   var=vdmaxmsg
+         help='dtaq/maxmsg'
+         usage=out
+         .Maximum number of entries allowed
+:datai   var=vdinitmsg
+         help='dtaq/initmsg'
+         usage=out
+         .Initial number of messages
+
+:edatagrp.
+
+:edata.
+
+:epanel.
+
+.* eof - dtaqattr.pnl
+

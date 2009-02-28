@@ -1,0 +1,349 @@
+.*
+.* @file dspqat.pnlgrp
+.*
+.*
+
+:pnlgrp.
+
+:copyr.(C)Copyright 2009,2010 Junlei Li &colon.p
+
+.* my help info
+:import name='*'
+        pnlgrp='*libl/dspqathlp'
+        .
+
+.*
+.* classes
+.*
+.*
+.* charater types
+.*
+:class name=o32
+       basetype='igc 32'
+       .
+:eclass.
+:class name=a1
+       basetype='char 1'
+       .
+:eclass.
+:class name=a4
+       basetype='char 4'
+       .
+:eclass.
+:class name=a5
+       basetype='char 5'
+       .
+:eclass.
+:class name=a8
+       basetype='char 8'
+       .
+:eclass.
+:class name=a10
+       basetype='char 10'
+       .
+:eclass.
+:class name=a20
+       basetype='char 20'
+       .
+:eclass.
+:class name=a30
+       basetype='char 30'
+       .
+:eclass.
+:class name=a35
+       basetype='char 35'
+       .
+:eclass.
+:class name=a50
+       basetype='char 50'
+       .
+:eclass.
+
+.*
+.* integer types
+.*
+:class  name=bin2
+        basetype='bin 15'
+        .
+:eclass.
+:class  name=bin4
+        basetype='bin 31'
+        .
+:eclass.
+
+.*
+.* decimal types
+.*
+
+.*
+.* variables
+.*
+:var name=vtitle
+     class=o32
+     .
+
+.* rcommon
+:var name=vqname
+     class=a10
+     .
+:var name=vqlib
+     class=a10
+     .
+:var name=vobjasp
+     class=bin2
+     .
+:var name=vextattr
+     class=a10
+     .
+:var name=vowner
+     class=a10
+     .
+:var name=vdomain
+     class=a10
+     .
+
+:var name=vexstattr
+     class=a10
+     .
+:var name=vspcattr
+     class=a20
+     .
+:var name=vinitctx
+     class=a30
+     .
+:var name=vaccgrpmbr
+     class=a30
+     .
+:var name=vinitspc
+     class=a4
+     .
+
+:var name=vspcsize
+     class=bin4
+     .
+:var name=vspcinitv
+     class=a5
+     .
+:var name=vspcalgn
+     class=a1
+     .
+:var name=vmchalgn
+     class=a4
+     .
+:var name=vmspslt
+     class=a20
+     .
+:var name=vstgtfr
+     class=a1
+     .
+
+:var name=vctxnam
+     class=a30
+     .
+:var name=vaccgrp
+     class=a30
+     .
+
+.* q attrs
+:var name=vmsgcnt
+     class=a35
+     .
+:var name=vqtype
+     class=a5
+     .
+:var name=vqovrflw
+     class=a20
+     .
+:var name=vchsmaxext
+     class=a10
+     .
+:var name=vrclstg
+     class=a1
+     .
+
+.* other usrq vars
+:var name=vcurmaxmsg
+     class=bin4
+     .
+:var name=vcurmsg
+     class=bin4
+     .
+:var name=vextval
+     class=bin4
+     .
+:var name=vkeylen
+     class=bin4
+     .
+:var name=vmaxmsglen
+     class=bin4
+     .
+:var name=vmaxext
+     class=bin4
+     .
+:var name=vcurext
+     class=bin4
+     .
+:var name=vinitmsg
+     class=bin4
+     .
+
+.* for ddmq
+:var name=vrappcdev
+     class=a10
+     .
+:var name=vrmode
+     class=a8
+     .
+:var name=vrrmtloc
+     class=a8
+     .
+:var name=vrlocloc
+     class=a8
+     .
+:var name=vrrmtnet
+     class=a8
+     .
+:var name=vrrmtnam
+     class=a10
+     .
+:var name=vrrmtlib
+     class=a10
+     .
+
+.* for dtaq
+:var name=vdmsglen
+     class=bin4
+     .
+:var name=vdkeylen
+     class=bin4
+     .
+:var name=vdsq
+     class=a5
+     .
+:var name=vdincsndid
+     class=a4
+     .
+:var name=vdforce
+     class=a4
+     .
+:var name=vdtext
+     class=a50
+     .
+:var name=vdtype
+     class=a1
+     .
+:var name=vdautorcl
+     class=a4
+     .
+:var name=vdrsvd
+     class=a1
+     .
+:var name=vdmsgnum
+     class=bin4
+     .
+:var name=vdentalc
+     class=bin4
+     .
+:var name=vdqname
+     class=a10
+     .
+:var name=vdqlib
+     class=a10
+     .
+:var name=vdmaxmsg
+     class=bin4
+     .
+:var name=vdinitmsg
+     class=bin4
+     .
+
+.*
+.* varrcds
+.*
+:varrcd name=rtitle
+        vars='vtitle'
+        .
+:varrcd name=rcommon
+        vars='vqname vqlib vobjasp vextattr vowner vdomain'
+        .
+:varrcd name=rusrq
+        vars='vexstattr vspcattr vinitctx vaccgrpmbr vinitspc'
+        vars='vspcsize vspcinitv'
+        vars='vspcalgn vmchalgn vmspslt vstgtfr'
+        vars='vctxnam vaccgrp'
+        vars='vmsgcnt vqtype vqovrflw vchsmaxext vrclstg'
+        vars='vcurmaxmsg vcurmsg vextval vkeylen vmaxmsglen vmaxext vcurext vinitmsg'
+        .
+:varrcd name=rddmq
+        vars='vrappcdev vrmode vrrmtloc vrlocloc vrrmtnet vrrmtnam vrrmtlib'
+        .
+:varrcd name=rdtaq
+        vars='vdmsglen vdkeylen vdsq vdincsndid vdforce vdtext vdtype'
+        vars='vdautorcl vdrsvd vdmsgnum vdentalc vdqname vdqlib vdmaxmsg vdinitmsg'
+        .
+
+.*
+.* menu bars
+.*
+:mbar   name=mbmain
+.*        help='help/mbar'
+        .
+:mbarc  help='help/mbar'
+        .Function
+:pdfld.
+:pdfldc option=2
+        help='help/pdfldc/about'
+        actfor=panel
+        action='dsphelp help/about *libl/dspqathlp'
+        .About ...
+:pdaccel.F1
+:pdfldc option=90
+        help='help/pdfldc/exit'
+        actfor=panel
+        action='exit noset'
+        .Exit ...
+:pdaccel.F3
+:epdfld.
+:embarc.
+
+:embar.
+
+.*
+.* key lists
+.*
+:keyl   name=klistmain.
+:keyi   key=f1
+        help='help/help'
+        action=help
+        varupd=no
+        .
+:keyi   key=f3
+        help='help/help'
+        action='exit noset'
+        varupd=yes
+        .F3=exit
+:keyi   key=f12
+        help='help/help'
+        action='cancel set'
+        varupd=yes
+        .F12=Cancel
+:keyi   key=enter
+        help='help/help'
+        action=enter
+        .
+:keyi   key=pageup
+        help='help/help'
+        action=pageup
+        .
+:keyi   key=pagedown
+        help='help/help'
+        action=pagedown
+        .
+:ekeyl.
+
+.im usrqattr
+.im ddmqattr
+.im dtaqattr
+
+:epnlgrp.
+.* eof - dspqat.pnlgrp
