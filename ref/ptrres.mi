@@ -1,0 +1,22 @@
+/**
+ * @file ptrres.mi
+ *
+ * header for pointer/name resolution instructions,
+ * rslvsp, ... etc.
+ */
+
+/**
+ * for RSLVSP
+ */
+dcl dd rslv-option-short char(34) auto;
+  /* object type, subtype */
+  dcl dd rslv-option-obj-type char(2)
+    def(rslv-option-short) pos(1);
+  dcl dd rslv-option-obj-name char(30)
+    def(rslv-option-short) pos(3);
+  dcl dd rslv-option-required-auth char(2)
+    def(rslv-option-short) pos(33) init(x'0000');
+
+/* eof - ptrres.mi */
+
+

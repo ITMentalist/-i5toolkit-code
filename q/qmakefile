@@ -3,7 +3,7 @@
 	ln -fs /qsys.lib/$(OUTPUTDIR).lib/$@.pgm $@
 
 MIC=mic
-MIFLAGS=-v -fls2008/feb -q'*list' -q'*replace' -q'*xref' -I.
+MIFLAGS=-v -fls2008/feb -q'*list' -q'*replace' -q'*xref' -I. -I../ref
 
 MAKE=gmake
 RM=del
