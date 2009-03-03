@@ -2,7 +2,7 @@
 
 MAKER=LSBIN/RGMAKE
 HOST=i810
-RP=/home/ljl/chqs/qtool
+RP=/home/ljl/chqs/i5tool/q
 HOSTCMD=rexec $(HOST)
 BINLIB=LSBIN
 

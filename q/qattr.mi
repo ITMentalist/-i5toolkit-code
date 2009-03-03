@@ -479,17 +479,15 @@ entry report-error int;
 
   brk 'RTPERR';
 
-  setsppfp .rtvmsgd-ec, .qusec;
-  calli rtvmsgd, argl-rtvmsgd, .rtvmsgd;
-
-  setsppfp .sendmsg-msg,.rtvmsgd-error-msg;
-  setsppfp .sendmsg-msglen, .rtvmsgd-error-msglen;
+  cpybla sndpm-msgid, ec-exid;
+  cpyblap sndpm-msgf, "QCPFMSG   QSYS", " ";
+  setspp .sendmsg-msg, ec-exdata;
+  setspp .sendmsg-msglen, ec-bytes-out;
   calli send-msg, argl-sendmsg, .send-msg;
 
   b .report-error;
 
 %include sendmsg.mi;
-%include rtvmsgd.mi;
 
 pend;
 
