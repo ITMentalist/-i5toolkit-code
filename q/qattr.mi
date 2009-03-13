@@ -33,16 +33,6 @@ dcl ptr null-ptr auto;
 /* UIM vars */
 dcl dd pnlgrp-title char(32) auto init("Display Queue Description");
 dcl con pnlgrp-title-len bin(4) init(32);
-dcl dd common-q-attrs char(52) auto;
-dcl spcptr .common-q-attrs auto init(common-q-attrs);
-dcl spc * bas(.common-q-attrs);
-  dcl dd common-q-attr-vqname char(10) dir;
-  dcl dd common-q-attr-vqlib char(10) dir;
-  dcl dd common-q-attr-vqobjasp bin(2) dir;
-  dcl dd common-q-attr-vextattr char(10) dir;
-  dcl dd common-q-attr-vowner char(10) dir;
-  dcl dd common-q-attr-vdomain char(10) dir;
-dcl con common-q-attrs-len bin(4) init(52);
 
 dcl ol plist-main(
   .q-object,
@@ -91,6 +81,7 @@ entry *(plist-main) ext;
   /* set common q info */
   cpybla common-q-attr-vqname, qus-objd0200-obj-name;
   cpybla common-q-attr-vqlib, qus-objd0200-rtn-lib;
+  cpybla common-q-attr-vqobjtype, q-type;
   cpynv  common-q-attr-vqobjasp, qus-objd0200-asp-num;
   cpybla common-q-attr-vextattr, qus-objd0200-ext-obj-attr;
   cpybla common-q-attr-vowner, qus-objd0200-obj-owner;

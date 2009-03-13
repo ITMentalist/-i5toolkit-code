@@ -45,6 +45,15 @@
 :datagrp grpsep=none
          compact
          .
+:datai   var=vqobjtype
+         help='common/objtype'
+         usage=out
+         .Type
+:edatagrp.
+
+:datagrp grpsep=none
+         compact
+         .
 :datai var=vextattr
        help='common/extattr'
        usage=out

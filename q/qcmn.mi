@@ -11,6 +11,10 @@
  *  - dtaq-attr-t      structure of data queue attributes
  *  - ddmq-attr-t      structure of DDM data queue attributes
  *  - usrq-attr-t      structure of user q attributes
+ *
+ * progtotypes declared here:
+ *  - QMHQRDQD
+ *
  */
 
 dcl con _USRQ char(10) init("*USRQ");
@@ -28,14 +32,32 @@ dcl dd qmhqrdqd-receiver-len bin(4) auto;
 dcl spcptr .qmhqrdqd-receiver-len auto init(qmhqrdqd-receiver-len);
 dcl dd qmhqrdqd-format char(8) auto init("RDQD0100");
 dcl spcptr .qmhqrdqd-format auto init(qmhqrdqd-format);
-dcl spcptr .qmhqrdqd-q-lib auto;
+dcl dd qmhqrdqd-q-lib char(20) auto;
+dcl spcptr .qmhqrdqd-q-lib auto init(qmhqrdqd-q-lib);
 dcl ol argl-qmhqrdqd(
   .qmhqrdqd-receiver,
   .qmhqrdqd-receiver-len,
   .qmhqrdqd-format,
   .qmhqrdqd-q-lib
 ) arg;
+/* septs(0:7000), 0C89 */
 dcl sysptr .qmhqrdqd auto init("QMHQRDQD", type(pgm));
+
+/**
+ * common q attributes structure, corresponding to
+ * UIM VARRCD RCOMMON
+ */
+dcl dd common-q-attrs char(62) auto;
+dcl spcptr .common-q-attrs auto init(common-q-attrs);
+dcl spc * bas(.common-q-attrs);
+  dcl dd common-q-attr-vqname char(10) dir;
+  dcl dd common-q-attr-vqlib char(10) dir;
+  dcl dd common-q-attr-vqobjtype char(10) dir;
+  dcl dd common-q-attr-vqobjasp bin(2) dir;
+  dcl dd common-q-attr-vextattr char(10) dir;
+  dcl dd common-q-attr-vowner char(10) dir;
+  dcl dd common-q-attr-vdomain char(10) dir;
+dcl con common-q-attrs-len bin(4) init(62);
 
 /* data queue attributes */
 dcl con RDQD0100-LEN bin(4) init(108);
@@ -45,12 +67,12 @@ dcl spc dtaq-attr-t bas(.dtaq-attr);
   dcl dd dtaq-attr-bytes-out bin(4) dir;
   dcl dd dtaq-attr-msg-len bin(4) dir;
   dcl dd dtaq-attr-key-len bin(4) dir;
-  dcl dd dtaq-attr-sequence char(1) dir;
+  dcl dd dtaq-attr-sequence char(1) dir; /* fifo, lilo, keyed */
   dcl dd dtaq-attr-inclue-sender-id char(1) dir;
   dcl dd dtaq-attr-force-indicator char(1) dir;
     /* whether or not q is forced to auxiliary storage ... */
   dcl dd dtaq-attr-text char(50) dir;
-  dcl dd dtaq-attr-type char(1) dir; /* fifo, lilo, keyed */
+  dcl dd dtaq-attr-type char(1) dir; /* 0: *std; 1: *ddm */
   dcl dd dtaq-attr-auto-reclaim char(1) dir;
   dcl dd * char(1) dir;
   dcl dd dtaq-attr-msg-num bin(4) dir;
@@ -187,5 +209,11 @@ dcl spc * bas(.rusrq);
   dcl dd rusrq-cur-extends bin(4) dir;
   /* Initial number of messages */
   dcl dd rusrq-init-msgs bin(4) dir;
+
+/**
+ * q message entry structure
+ *
+ * 
+ */
 
 /* eof - qcmn.mi */

@@ -1,0 +1,340 @@
+.*
+.* @file dsppm.pnlgrp
+.*
+.* for command DSPQMSG
+.*
+
+:pnlgrp.
+
+:copyr.(C)Copyright 2009,2010 Junlei Li &colon.p
+
+.* import help info
+:import name='*'
+        pnlgrp='*libl/dspqathlp'
+        .
+
+.* class
+:class name=o32
+       basetype='igc 32'
+       .
+:eclass.
+:class name=a1
+       basetype='char 1'
+       .
+:eclass.
+:class name=a4
+       basetype='char 4'
+       .
+:eclass.
+:class name=a5
+       basetype='char 5'
+       .
+:eclass.
+:class name=a8
+       basetype='char 8'
+       .
+:eclass.
+:class name=a10
+       basetype='char 10'
+       .
+:eclass.
+:class name=a20
+       basetype='char 20'
+       .
+:eclass.
+:class name=a26
+       basetype='char 26'
+       .
+:eclass.
+:class name=a30
+       basetype='char 30'
+       .
+:eclass.
+:class name=a35
+       basetype='char 35'
+       .
+:eclass.
+:class name=a50
+       basetype='char 50'
+       .
+:eclass.
+:class name=a52
+       basetype='char 52'
+       .
+:eclass.
+
+:class  name=clsopt
+        basetype='action'
+        width=2.
+:eclass.
+:class  name=znd6
+        basetype='zoned 6 0'
+        width=2.
+:eclass.
+
+.*
+.* integer types
+.*
+:class  name=bin2
+        basetype='bin 15'
+        .
+:eclass.
+:class  name=bin4
+        basetype='bin 31'
+        .
+:eclass.
+
+.* variables
+.* rcommon
+:var name=vqname
+     class=a10
+     .
+:var name=vqlib
+     class=a10
+     .
+:var name=vqobjtype
+     class=a10
+     .
+:var name=vobjasp
+     class=bin2
+     .
+:var name=vextattr
+     class=a10
+     .
+:var name=vowner
+     class=a10
+     .
+:var name=vdomain
+     class=a10
+     .
+:var name=vexstattr
+     class=a10
+     .
+
+.* vars in message list
+:var name=vmsgopt
+     class=clsopt
+     .
+:var name=vmsgnum
+     class=bin4
+     .
+:var name=vmsgenqt
+     class=a26
+     .
+:var name=vmsgkey
+     class=a35
+     .
+
+.* vars in detail list
+:var name=vdtloff
+     class=znd6
+     .
+:var name=vdtldata
+     class=a52
+     .
+.* for hex display
+:var name=vdtloffh
+     class=znd6
+     .
+:var name=vdtldatah
+     class=a52
+     .
+.* for view selection
+:var name=vdtlview
+     class=bin2
+     .
+
+.* varrcds
+.* rcommon
+:varrcd name=rcommon
+        vars='vqname vqlib vqobjtype vobjasp vextattr vowner vdomain'
+        .
+
+.* todo, 新增的vars
+
+.* LISTDEFs
+
+.* message list
+:listdef name=lstmsg
+         vars='vmsgopt vmsgnum vmsgenqt vmsgkey'
+         .
+
+.* detail list
+:listdef name=lstdetail
+         vars='vdtloff vdtldata vdtloffh vdtldatah'
+         .
+
+.* conditions
+:cond name=cndview0
+      expr='vdtlview = 0'
+      .
+:cond name=cndview1
+      expr='vdtlview = 1'
+      .
+
+.* key lists
+:keyl   name=klistmain.
+:keyi   key=f1
+        help='help/help'
+        action=help
+        varupd=no
+        .
+:keyi   key=f3
+        help='help/help'
+        action='exit noset'
+        varupd=yes
+        .F3=Exit
+:keyi   key=f11
+        cond=cndview0
+        help='help/help'
+        action='chgview'
+        varupd=yes
+        .F11=Display hexadecimal format
+:keyi   key=f11
+        cond=cndview1
+        help='help/help'
+        action='chgview'
+        varupd=yes
+        .F11=Display character format
+:keyi   key=f12
+        help='help/help'
+        action='cancel set'
+        varupd=yes
+        .F12=Cancel
+:keyi   key=enter
+        help='help/help'
+        action=enter
+        .
+:keyi   key=pageup
+        help='help/help'
+        action=pageup
+        .
+:keyi   key=pagedown
+        help='help/help'
+        action=pagedown
+        .
+:ekeyl.
+
+.* panel dspqm
+:panel  name=dspqm
+        help='dummy'
+        keyl=klistmain
+        enter='return 100'
+        .Display Queue Messages
+
+.* common data items
+:data    depth=5
+         scroll=no
+         layout=2
+         botsep=space
+         compact
+         .
+:datacol width=22.
+:datacol width='*'.
+
+:datagrp grpsep=qindent
+         compact
+         .
+:datai var=vqname
+       help='common/object'
+       usage=out
+       .Queue
+:datai   var=vqlib
+         help='common/object'
+         usage=out
+         .Library
+:edatagrp.
+
+:datagrp grpsep=none
+         compact
+         .
+:datai   var=vobjasp
+         help='common/objasp'
+         usage=out
+         .Object ASP number
+:edatagrp.
+
+:datagrp grpsep=none
+         compact
+         .
+:datai   var=vqobjtype
+         help='common/objtype'
+         usage=out
+         .Type
+:edatagrp.
+
+:datagrp grpsep=none
+         compact
+         .
+:datai var=vextattr
+       help='common/extattr'
+       usage=out
+       .Attribute
+:datai var=vowner
+       help='common/owner'
+       usage=out
+       .Owner
+:datai var=vdomain
+       help='common/objdmn'
+       usage=out
+       .Object Domain
+:edatagrp.
+:edata.
+
+.* list
+:list listdef=lstdetail
+      depth='*'
+      scroll=yes
+      maxhead=2
+      select=none
+      actor=none
+      view=vdtlview
+      .Message text
+
+:listcol var=vdtloff
+         usage=out
+         help='help'
+         maxwidth=7
+         .Column
+:listgrp col=grpdata
+         help='help'
+         .Character data
+:listcol var=vdtldata
+         usage=out
+.*         help='help'
+         maxwidth=52
+         .' *...+....1....+....2....+....3....+....4....+....5'
+:elistgrp.
+
+.* for hex display
+:listcol var=vdtloffh
+         usage=out
+         help='help'
+         maxwidth=7
+         .Column
+:listgrp col=grpdatahex
+         help='help'
+         .Hexadecimal data
+:listcol var=vdtldatah
+         usage=out
+         maxwidth=52
+         .' * . . . + . . . . 1 . . . . + . . . . 2 . . . . +'
+:elistgrp.
+
+:listview layout=1
+.*          cols='vdtloff vdtldata'
+          cols='vdtloff grpdata'
+          .
+
+:listview layout=1
+.*          cols='vdtloffh vdtldatah'
+          cols='vdtloffh grpdatahex'
+          .
+
+:elist.
+
+:epanel.
+
+:epnlgrp.
+
+.* eof - dsppm.pnlgrp

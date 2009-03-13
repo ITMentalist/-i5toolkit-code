@@ -1,0 +1,199 @@
+/**
+ * @file qmsg.mi
+ *
+ * display q message
+ */
+
+%include qusec.mi;
+%include uim.mi;
+%include ptrres.mi;
+
+%include qcmn.mi;
+
+/* misc vars */
+dcl dd found bin(4) auto;
+dcl dd error-msg char(512) auto;
+dcl dd varch10 char(10) bas(*);
+dcl spcptr .error-msg auto init(error-msg);
+dcl dd len bin(4) auto;
+dcl dd valid-q-types(2) char(10) auto init(
+  *(1)"*USRQ",
+  "*DTAQ"
+);
+
+dcl spcptr .q-object parm;
+dcl dd q-object-lib char(20) bas(.q-object);
+dcl dd q-name char(10) bas(.q-object) pos(1);
+dcl dd q-lib char(10) bas(.q-object) pos(11);
+dcl spcptr .q-type   parm;
+dcl dd q-type char(10) bas(.q-type);
+
+dcl ol plist-main(
+  .q-object,
+  .q-type
+) parm ext;
+
+/**
+ * if we issue QMHRDQM() on a DDM data queue,
+ * we will receive CPF9511(Function not supported
+ * for DDM data queue &1), so we will prevent the
+ * user from ...
+ */
+entry i-always-main(plist-main) ext;
+
+  /* accept and validate command parameters */
+  search found, valid-q-types, q-type, 1;
+  cmpnv(b) found, 0 / neq(=+8); /* invalid q type */
+  cpyblap error-msg, "Invalid queue type ", " ";
+  setsppd .error-msg, error-msg, 19;
+  cpybla .error-msg->varch10, q-type;
+
+  setspp .sendmsg-msg, error-msg;
+  setspp .sendmsg-msglen, len;
+  calli send-msg, argl-sendmsg, .send-msg;
+  b farewell;
+:
+  calli get-object-attr, argl-get-object-attr, .get-object-attr;
+  cmpnv(b) ec-bytes-out, 0 / eq(=+3);
+  /* report error message */
+  calli report-error, *, .report-error;
+  b farewell;
+:
+  /* retrieve q messages */
+  cmpnv(b) found, 1 / neq(=+2); /* usrq */
+  calli read-usrq, *, .read-usrq;
+:
+  cmpnv(b) found, 2 / neq(=+2); /* dtaq */
+  calli read-dtaq, *, .read-dtaq;
+:
+  /* open display application */
+  cpyblap pnlgrp, "DSPQM     *LIBL", " ";
+  callx .quiopnda, argl-opnda, *;
+  cmpnv(b) uim-ec-bytes-out, 0 / eq(=+4);
+  setspp .qusec, uim-ec;
+  calli report-error, *, .report-error;
+  b farewell;
+:
+  /* update common q attr uim variables */
+  cpybla common-q-attr-vqname, qus-objd0200-obj-name;
+  cpybla common-q-attr-vqlib, qus-objd0200-rtn-lib;
+  cpybla common-q-attr-vqobjtype, q-type;
+  cpynv  common-q-attr-vqobjasp, qus-objd0200-asp-num;
+  cpybla common-q-attr-vextattr, qus-objd0200-ext-obj-attr;
+  cpybla common-q-attr-vowner, qus-objd0200-obj-owner;
+  cmpbla(b) qus-objd0200-obj-domain, '*U' / neq(=+2);
+  cpyblap common-q-attr-vdomain, "User", " ";
+:
+  cmpbla(b) qus-objd0200-obj-domain, '*S' / neq(=+2);
+  cpyblap common-q-attr-vdomain, "System", " ";
+:
+  setspp .var-buffer, common-q-attrs;
+  cpynv var-buflen, common-q-attrs-len;
+  cpyblap rcd-name, "RCOMMON", " ";
+  callx .quiputv, argl-putv, *;
+
+  /* fill list ... */ /* @here, today */
+
+  /* display panel: dspqm */
+  cpyblap panel-name, "DSPQM", " ";
+  callx .quidspp, argl-dspp, *;
+  cmpnv(b) uim-ec-bytes-out, 0 / eq(=+3);
+  setspp .qusec, uim-ec;
+  calli report-error, *, .report-error;
+:
+
+farewell:
+  /* close display application */
+  callx .quicloa, argl-cloa, *;
+
+  brk 'RTN';
+  rtx *;
+/* end of i-always-main */
+
+/**
+ * @function read-usrq
+ *
+ * retrieve messages from a usrq
+ */
+dcl insptr .read-usrq;
+entry read-usrq int;
+
+  b .read-usrq;
+
+/**
+ * @function read-dtaq
+ *
+ * retrieve messages from a dtaq
+ */
+dcl insptr .read-dtaq;
+entry read-dtaq int;
+
+  b .read-dtaq;
+
+/* more routines */
+
+/**
+ * @fn get-object-attr
+ *
+ * retreive extended object attriute, using OBJD0200 format
+ *
+ * @param object-attr, char(10)
+ */
+dcl dd object-attr char(10) auto;
+dcl spcptr .object-attr auto init(object-attr);
+dcl ol argl-get-object-attr(
+  .object-attr
+) arg;
+
+dcl spcptr .p-object-attr parm;
+dcl dd p-object-attr char(10) bas(.p-object-attr);
+dcl ol pl-get-object-attr(
+  .p-object-attr
+) parm int;
+
+%include qusrobjd.mi;
+dcl dd objd0200 char(180) auto;
+
+dcl insptr .get-object-attr;
+entry get-object-attr(pl-get-object-attr) int;
+
+  setspp .qus-objd0200, objd0200;
+  cpynv qus-objd0200-bytes-in, _QUS-OBJD0200-LEN;
+  setsppfp .qusrobjd-receiver, .qus-objd0200;
+  cpynv qusrobjd-buflen, _QUS-OBJD0200-LEN;
+  cpybla qusrobjd-format-name, "OBJD0200";
+  cpybla qusrobjd-object-lib, q-object-lib;
+  cpybla qusrobjd-object-type, q-type;
+  cpynv ec-bytes-in, _USECLEN;
+  setsppfp .qusrobjd-ec, .qusec;
+  callx .qusrobjd, argl-qusrobjd, *;
+
+  /* set object attr param */
+  cpybla p-object-attr, qus-objd0200-ext-obj-attr;
+
+  b .get-object-attr;
+
+/**
+ * report error
+ *
+ * @param[in]  qusec
+ * @post       send message to interactive user
+ */
+dcl insptr .report-error;
+entry report-error int;
+
+  brk 'RTPERR';
+
+  cpybla sndpm-msgid, ec-exid;
+  cpyblap sndpm-msgf, "QCPFMSG   QSYS", " ";
+  setspp .sendmsg-msg, ec-exdata;
+  setspp .sendmsg-msglen, ec-bytes-out;
+  calli send-msg, argl-sendmsg, .send-msg;
+
+  b .report-error;
+
+%include sendmsg.mi;
+
+pend;
+
+/* eof - qmsg.mi */

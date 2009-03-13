@@ -92,6 +92,13 @@ The number of the auxiliary storage pool (ASP) where storage is allocated for th
 :eul.
 :ehelp.
 
+:help name='common/objtype'.
+:p.
+:xh2.Object Type
+:p.
+External object type such as *DTAQ, *USRQ.
+:ehelp.
+
 :help name='common/extattr'.
 :p.
 :xh2.Attribute

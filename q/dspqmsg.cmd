@@ -1,7 +1,7 @@
-/** @file dspqd.cmd */
-/*  crtcmd cmd(*curlib/dspqd) pgm(*libl/qattr) srcfile(...) srcmbr(...) */
+/** @file dspqmsg.cmd */
+/*  crtcmd cmd(*curlib/dspqmsg) pgm(*libl/qmsg) srcfile(...) srcmbr(...) */
 
-             CMD        PROMPT('Display Queue Description')
+             CMD        PROMPT('Display Queue Messages')
 
 /* program name */
              PARM       KWD(Q) TYPE(Q_NAME) MIN(1) KEYPARM(*YES) +

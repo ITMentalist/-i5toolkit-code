@@ -89,6 +89,9 @@
 :var name=vqlib
      class=a10
      .
+:var name=vqobjtype
+     class=a10
+     .
 :var name=vobjasp
      class=bin2
      .
@@ -264,7 +267,7 @@
         vars='vtitle'
         .
 :varrcd name=rcommon
-        vars='vqname vqlib vobjasp vextattr vowner vdomain'
+        vars='vqname vqlib vqobjtype vobjasp vextattr vowner vdomain'
         .
 :varrcd name=rusrq
         vars='vexstattr vspcattr vinitctx vaccgrpmbr vinitspc'
@@ -321,7 +324,7 @@
         help='help/help'
         action='exit noset'
         varupd=yes
-        .F3=exit
+        .F3=Exit
 :keyi   key=f12
         help='help/help'
         action='cancel set'
