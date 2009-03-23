@@ -47,7 +47,7 @@ dcl sysptr .qmhqrdqd auto init("QMHQRDQD", type(pgm));
  * common q attributes structure, corresponding to
  * UIM VARRCD RCOMMON
  */
-dcl dd common-q-attrs char(62) auto;
+dcl dd common-q-attrs char(70) auto;
 dcl spcptr .common-q-attrs auto init(common-q-attrs);
 dcl spc * bas(.common-q-attrs);
   dcl dd common-q-attr-vqname char(10) dir;
@@ -57,7 +57,11 @@ dcl spc * bas(.common-q-attrs);
   dcl dd common-q-attr-vextattr char(10) dir;
   dcl dd common-q-attr-vowner char(10) dir;
   dcl dd common-q-attr-vdomain char(10) dir;
+  /* the following fields are for qmsg.mi */
+  dcl dd common-q-attr-vqkeylen bin(4) dir;
+  dcl dd common-q-attr-vqtxtlen bin(4) dir;
 dcl con common-q-attrs-len bin(4) init(62);
+dcl con common-q-attrs-len-long bin(4) init(70);
 
 /* data queue attributes */
 dcl con RDQD0100-LEN bin(4) init(108);

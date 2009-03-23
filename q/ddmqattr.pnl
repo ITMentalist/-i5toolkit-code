@@ -4,7 +4,7 @@
 
 :panel  name=ddmqattr
         title=vtitle
-        help='help/help'
+        help='help/about'
         keyl=klistmain
         mbar=mbmain
         enter='return 100'

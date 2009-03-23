@@ -30,6 +30,10 @@
        basetype='char 5'
        .
 :eclass.
+:class name=a6
+       basetype='char 6'
+       .
+:eclass.
 :class name=a8
        basetype='char 8'
        .
@@ -42,6 +46,10 @@
        basetype='char 20'
        .
 :eclass.
+:class name=clspgm
+       basetype='char 20'
+       .
+:eclass.
 :class name=a26
        basetype='char 26'
        .
@@ -50,8 +58,8 @@
        basetype='char 30'
        .
 :eclass.
-:class name=a35
-       basetype='char 35'
+:class name=a32
+       basetype='char 32'
        .
 :eclass.
 :class name=a50
@@ -69,7 +77,11 @@
 :eclass.
 :class  name=znd6
         basetype='zoned 6 0'
-        width=2.
+        .
+:eclass.
+:class  name=znd8
+        basetype='zoned 8 0'
+        .
 :eclass.
 
 .*
@@ -110,31 +122,37 @@
 :var name=vexstattr
      class=a10
      .
+:var name=vqkeylen
+     class=bin4
+     .
+:var name=vqtxtlen
+     class=bin4
+     .
 
 .* vars in message list
 :var name=vmsgopt
      class=clsopt
      .
 :var name=vmsgnum
-     class=bin4
+     class=znd8
      .
 :var name=vmsgenqt
      class=a26
      .
 :var name=vmsgkey
-     class=a35
+     class=a32
      .
 
 .* vars in detail list
 :var name=vdtloff
-     class=znd6
+     class=a6
      .
 :var name=vdtldata
      class=a52
      .
 .* for hex display
 :var name=vdtloffh
-     class=znd6
+     class=a6
      .
 :var name=vdtldatah
      class=a52
@@ -144,13 +162,55 @@
      class=bin2
      .
 
+.* for varrcd rpgm
+:var name=vpgmqmdtl
+     class=clspgm
+     .
+:var name=vpgmexit
+     class=clspgm
+     .
+
+.* for rqmdtl
+:var name=vqmsgnum
+     class=znd8
+     .
+
+.* control variables in panel qmdtl
+:var name=vctlkeytxt
+     class=a1
+     .
+
 .* varrcds
 .* rcommon
 :varrcd name=rcommon
         vars='vqname vqlib vqobjtype vobjasp vextattr vowner vdomain'
+        vars='vqkeylen vqtxtlen'
         .
 
-.* todo, 新增的vars
+.* for list lstmsg
+:varrcd name=rlsgmsg
+        vars='vmsgopt vmsgnum vmsgenqt vmsgkey'
+        .
+
+.* exit program names
+:varrcd name=rpgm
+        vars='vpgmqmdtl vpgmexit'
+        .
+
+.* 
+:varrcd name=rqmdtl
+        vars='vqmsgnum'
+        .
+
+.* rcd for list lstdetail
+:varrcd name=rlstdetail
+        vars='vdtloff vdtldata vdtloffh vdtldatah'
+        .
+
+.* 用于在 panel qmdtl 中进行控制
+:varrcd name=rqmdtlctl
+        vars='vctlkeytxt vdtlview'
+        .
 
 .* LISTDEFs
 
@@ -165,65 +225,118 @@
          .
 
 .* conditions
+.* show character data
 :cond name=cndview0
       expr='vdtlview = 0'
       .
+.* show hexadecimal data
 :cond name=cndview1
       expr='vdtlview = 1'
       .
+.* show message key data
+:cond name=cndkeydata
+      expr='vctlkeytxt = "T"'
+      .
+.* show message text data
+:cond name=cndtxtdata
+      expr='vctlkeytxt = "K"'
+      .
 
 .* key lists
-:keyl   name=klistmain.
+:keyl   name=klistmain
+        help='help/klqmmain'
+        .
 :keyi   key=f1
-        help='help/help'
+        help='help/klqmmain'
         action=help
         varupd=no
         .
 :keyi   key=f3
-        help='help/help'
+        help='help/klqmmain'
         action='exit noset'
         varupd=yes
         .F3=Exit
-:keyi   key=f11
-        cond=cndview0
-        help='help/help'
-        action='chgview'
-        varupd=yes
-        .F11=Display hexadecimal format
-:keyi   key=f11
-        cond=cndview1
-        help='help/help'
-        action='chgview'
-        varupd=yes
-        .F11=Display character format
 :keyi   key=f12
-        help='help/help'
+        help='help/klqmmain'
         action='cancel set'
         varupd=yes
         .F12=Cancel
 :keyi   key=enter
-        help='help/help'
+        help='help/klqmmain'
         action=enter
         .
 :keyi   key=pageup
-        help='help/help'
+        help='help/klqmmain'
         action=pageup
         .
 :keyi   key=pagedown
-        help='help/help'
+        help='help/klqmmain'
+        action=pagedown
+        .
+:ekeyl.
+
+.* key list for panel qmdtl
+:keyl   name=klistqmdtl
+        help='help/klqmm'
+        .
+:keyi   key=f1
+        help='help/klqmm'
+        action=help
+        varupd=no
+        .
+:keyi   key=f10
+        help='help/klqmm'
+        cond=cndkeydata
+        action='return 110'
+        varupd=yes
+        .F10=Display key data
+:keyi   key=f10
+        help='help/klqmm'
+        cond=cndtxtdata
+        action='return 110'
+        varupd=yes
+        .F10=Display text data
+:keyi   key=f11
+        help='help/klqmm'
+        cond=cndview0
+        action='chgview'
+        varupd=yes
+        .F11=Display hexadecimal format
+:keyi   key=f11
+        help='help/klqmm'
+        cond=cndview1
+        action='chgview'
+        exit='call '
+        varupd=yes
+        .F11=Display character format
+:keyi   key=f12
+        help='help/klqmm'
+        action='cancel set'
+        varupd=yes
+        .F12=Cancel
+:keyi   key=enter
+        help='help/klqmm'
+        action=enter
+        .
+:keyi   key=pageup
+        help='help/klqmm'
+        action=pageup
+        .
+:keyi   key=pagedown
+        help='help/klqmm'
         action=pagedown
         .
 :ekeyl.
 
 .* panel dspqm
 :panel  name=dspqm
-        help='dummy'
+        help='help/aboutqm'
         keyl=klistmain
         enter='return 100'
         .Display Queue Messages
 
 .* common data items
-:data    depth=5
+:data    depth=7
          scroll=no
          layout=2
          botsep=space
@@ -279,9 +392,173 @@
        usage=out
        .Object Domain
 :edatagrp.
+
+.* key length
+:datagrp grpsep=none
+         compact
+         .
+:datai var=vqkeylen
+       help='common/qkeylen'
+       usage=out
+       .Key length
+:edatagrp.
+
+.* text length
+:datagrp grpsep=none
+         compact
+         .
+:datai var=vqtxtlen
+       help='common/qtxtlen'
+       usage=out
+       .Text length
+:edatagrp.
+
 :edata.
 
 .* list
+:list listdef=lstmsg
+      depth='*'
+      scroll=yes
+      maxhead=2
+      select=none
+      actor=uim
+      .
+
+:topinst.
+Type options, press Enter.
+
+:listact  option=5
+          actfor=liste
+          help='help/qmopts'
+          enter='call vpgmqmdtl'
+          .5=Display message detail
+
+:listcol var=vmsgopt
+         usage=inout
+         help='help/qmopts'
+         maxwidth=3
+         .Opt
+:listcol var=vmsgnum
+         usage=out
+         help='help/qmnum'
+         maxwidth=9
+         .Number
+:listcol var=vmsgenqt
+         usage=out
+         help='help/qmtime'
+         maxwidth=26
+         .Time enqueued
+:listcol var=vmsgkey
+         usage=out
+         help='help/qmkey'
+         maxwidth=32
+         .Message Key
+
+:listview layout=1
+          cols='vmsgopt vmsgnum vmsgenqt vmsgkey'
+          .
+
+:elist.
+
+:epanel.
+
+:panel name=qmdtl
+       help='help/aboutqm'
+       keyl=klistqmdtl
+       enter='return 100'
+       usrexit='call vpgmexit'
+       .Queue Message
+
+.* common data items 再加个序号
+.* common data items
+:data    depth=7
+         scroll=no
+         layout=2
+         botsep=space
+         compact
+         .
+:datacol width=22.
+:datacol width='*'.
+
+:datagrp grpsep=qindent
+         compact
+         .
+:datai var=vqname
+       help='common/object'
+       usage=out
+       .Queue
+:datai   var=vqlib
+         help='common/object'
+         usage=out
+         .Library
+:edatagrp.
+
+:datagrp grpsep=none
+         compact
+         .
+:datai   var=vobjasp
+         help='common/objasp'
+         usage=out
+         .Object ASP number
+:edatagrp.
+
+:datagrp grpsep=none
+         compact
+         .
+:datai   var=vqobjtype
+         help='common/objtype'
+         usage=out
+         .Type
+:edatagrp.
+
+:datagrp grpsep=none
+         compact
+         .
+:datai var=vextattr
+       help='common/extattr'
+       usage=out
+       .Attribute
+:datai var=vowner
+       help='common/owner'
+       usage=out
+       .Owner
+:datai var=vdomain
+       help='common/objdmn'
+       usage=out
+       .Object Domain
+:edatagrp.
+
+.* key length
+:datagrp grpsep=none
+         compact
+         .
+:datai var=vqkeylen
+       help='common/qkeylen'
+       usage=out
+       .Key length
+:edatagrp.
+
+.* text length
+:datagrp grpsep=none
+         compact
+         .
+:datai var=vqtxtlen
+       help='common/qtxtlen'
+       usage=out
+       .Key length
+:edatagrp.
+
+:datagrp grpsep=none
+         compact
+         .
+:datai var=vqmsgnum
+       help='common/qmsgnum'
+       usage=out
+       .Number
+:edatagrp.
+
+:edata.
+
 :list listdef=lstdetail
       depth='*'
       scroll=yes
@@ -289,19 +566,18 @@
       select=none
       actor=none
       view=vdtlview
-      .Message text
+      .
 
 :listcol var=vdtloff
          usage=out
-         help='help'
+         help='help/qmclmn'
          maxwidth=7
          .Column
 :listgrp col=grpdata
-         help='help'
+         help='help/qmdata'
          .Character data
 :listcol var=vdtldata
          usage=out
-.*         help='help'
          maxwidth=52
          .' *...+....1....+....2....+....3....+....4....+....5'
 :elistgrp.
@@ -309,11 +585,11 @@
 .* for hex display
 :listcol var=vdtloffh
          usage=out
-         help='help'
+         help='help/qmclmn'
          maxwidth=7
          .Column
 :listgrp col=grpdatahex
-         help='help'
+         help='help/qmdata'
          .Hexadecimal data
 :listcol var=vdtldatah
          usage=out

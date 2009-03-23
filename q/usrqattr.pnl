@@ -5,7 +5,7 @@
 :panel  name=usrqattr
         title=vtitle
 .* 真想不明白UIM按啥规则拼PANEL的HELP信息
-        help='dummy'
+        help='help/about'
         keyl=klistmain
         mbar=mbmain
         enter='return 100'

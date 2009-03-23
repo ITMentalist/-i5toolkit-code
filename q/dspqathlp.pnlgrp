@@ -10,7 +10,7 @@ About DSPQD
 :p.
 :h1.Overview
 :p.
-DSPQD is a member of Junlei Li's i5/OS toolkit.
+DSPQD command is a member of Junlei Li's i5/OS toolkit.
 :p.
 The Display Queue Description (DSPQD) command shows one or more types
 of information of a queue object. The queue object could be a
@@ -123,6 +123,20 @@ The name of the queue object owner's user profile.
 :xh2.Object Domain
 :p.
 The domain that contains the queue object.
+:ehelp.
+
+:help name='common/qkeylen'.
+:p.
+:xh2.Key length
+:p.
+Key length in bytes of keyed queue object.
+:ehelp.
+
+:help name='common/qtxtlen'.
+:p.
+:xh2.Text length
+:p.
+Length of message text in bytes.
 :ehelp.
 
 .* datq
@@ -543,6 +557,149 @@ Current number of extends
 Initial number of messages when the queue object is created
 or each time queue storage is reclaimed.
 :ehelp.
+
+.* the following is for PNLGRP DSPQM
+.* about
+:help name='help/aboutqm'.
+About DSPQMSG
+:p.
+:h1.Overview
+:p.
+DSPQMSG command is a member of Junlei Li's i5/OS toolkit.
+:p.
+The Display Queue Message (DSPQMSG) command displays messages in one or more types
+queue objects. The queue object could be a
+data queue object of object type *DTAQ or a user queue object of
+type *USRQ. When a DDM data queue object is specified, no message
+is displayed.
+:p.
+:h1.Examples
+:p.
+:xh2.Display messages in a user queue object
+:p.
+To display a user queue object, you can specify one of the following commands:
+:sl.
+:li.DSPQMSG A_USER_Q *USRQ
+:li.DSPQMSG A_LIB/A_USER_Q *USRQ
+:li.DSPQMSG *LIBL/A_USER_Q *USRQ
+:li.DSPQMSG *CURLIB/A_USER_Q *USRQ
+:esl.
+:p.
+:xh2.Display messages in a data queue object
+:p.
+To display a data queue object, you can specify one of the following commands:
+:sl.
+:li.DSPQMSG A_DATA_Q *DTAQ
+:li.DSPQMSG A_LIB/A_DATA_Q *DTAQ
+:li.DSPQMSG *LIBL/A_DATA_Q *DTAQ
+:li.DSPQMSG *CURLIB/A_DATA_Q *DTAQ
+:esl.
+:p.
+To retrieve detail descriptions about a queue object, please use :hp2.DSPQD (Display Queue
+Description):ehp2. command, which is another member of Junlei Li's i5/OS toolkit.
+:h1.Author
+:p.
+This software is written by Junlei Li, an AS/400 fan from China.
+:p.
+Please report bugs to :hp2.junleili-cn@users.sourceforge.net:ehp2.
+:ehelp.
+
+.* for DSPQM.KLISTMAIN
+:help name='help/klqmmain'.Function keys - help
+:p.
+:xh2.F1=Help
+:p.
+Press F1 to see information about this display.
+:p.
+:xh2.F3=Exit
+:p.
+Exit the current display.
+:p.
+:xh2.F12=Cancel
+:p.
+Exit the current display.
+:ehelp.
+
+.* list options for list LSTMSG
+:help name='help/qmopts'.Options - help
+:p.
+Use this column to perform different operations on individual
+queue message.  Type the option number next to a message
+and press enter.
+:xh2.5=Display
+:p.
+Type 5 to display one message.
+:ehelp.
+
+:help name='help/qmnum'.
+:p.
+:xh2.Number
+:p.
+Message number. For a FIFO queue object, messages enqueued early
+have smaller message number. For a LIFO queue object messages enqueued
+early have larget message number. For a keyed queue object, messages
+are sorted by keys.
+:ehelp.
+
+:help name='help/qmtime'.
+:p.
+:xh2.Time enqueued
+:p.
+Timestamp when a specified queue message is enqueued.
+:ehelp.
+
+:help name='help/qmkey'.
+:p.
+:xh2.Message key
+:p.
+Key data for a keyed queue object.
+:ehelp.
+
+.* for panel QMDTL
+:help name='help/qmclmn'.
+:p.
+:xh2.Column
+:p.
+The position in the queue message data that is being displayed
+as the first character in that row.
+:ehelp.
+
+:help name='help/qmdata'.
+:p.
+:xh2.Message data
+:p.
+Message data. Key data or message text data in character format
+or hexadecimal format. Use function key F11 to exchange between
+character format and hexadecimal format. Use function key F10
+to exchange between key data and message text data.
+:ehelp.
+
+.* for keyl klistqmdtl
+:help name='help/klqmm'.Function keys - help
+:p.
+:xh2.F1=Help
+:p.
+Press F1 to see information about this display.
+:p.
+:xh2.F3=Exit
+:p.
+Exit the current display.
+:p.
+:xh2.F12=Cancel
+:p.
+Exit the current display.
+:p.
+:xh2.F10=Display text/key data
+:p.
+Use function key F10 to exchange between key data view and message
+text data view.
+:p.
+:xh2.F11=Display character/hexadecimal format
+:p.
+Use function key F11 to exchange between
+character format and hexadecimal format.
+:ehelp.
+
 
 :epnlgrp.
 

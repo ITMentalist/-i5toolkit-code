@@ -1,0 +1,42 @@
+/**
+ * @file enqk64.mi
+ *
+ * enqueue keyed user q whose key length is 64
+ */
+
+%include qusec.mi;
+%include ptrres.mi;
+
+dcl spcptr .q-name parm;
+dcl spcptr .key parm;
+dcl spcptr .message-len parm;
+dcl spcptr .message parm;
+dcl ol pl-main(
+  .q-name,
+  .key,
+  .message-len,
+  .message
+) parm ext;
+
+dcl dd q-name char(10) bas(.q-name);
+dcl dd key char(64) bas(.key);
+dcl dd message-len bin(4) bas(.message-len);
+dcl sysptr q auto;
+
+dcl dd message-prefix char(68) auto;
+  dcl dd prefix-msglen bin(4) def(message-prefix) pos(1);
+  dcl dd prefix-msgkey char(64) def(message-prefix) pos(5);
+
+entry *(pl-main) ext;
+
+  cpybla rslv-option-obj-type, x"0A02";
+  cpyblap rslv-option-obj-name, q-name, " ";
+  rslvsp q, rslv-option-short, *, x'0000';
+
+  cpynv prefix-msglen, message-len;
+  cpybla prefix-msgkey, key;
+  enq q, message-prefix, .message;
+
+  rtx *;
+
+pend;

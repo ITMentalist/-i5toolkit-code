@@ -31,9 +31,9 @@ dcl dd positioning-option char(4) auto init("HNDL");
 dcl spcptr .positioning-option auto init(positioning-option);
 dcl dd copy-option char(1) auto init("Y");
 dcl spcptr .copy-option auto init(copy-option);
-dcl dd selection-criteria char(1) auto;
+dcl dd selection-criteria char(20) auto;
 dcl spcptr .selection-criteria auto init(selection-criteria);
-dcl dd selection-handle char(1) auto;
+dcl dd selection-handle char(4) auto;
 dcl spcptr .selection-handle auto init(selection-handle);
 dcl dd extend-option char(1) auto init("Y");
 dcl spcptr .extend-option auto init(extend-option);
@@ -186,17 +186,21 @@ dcl spc * bas(.qui-mic);
   dcl dd mic-menu-option bin(4) dir;
 /* dcl ol parml-qui-mic(.qui-mic) parm ext; */
 
-/* Qui_ALC_t */
+/**
+ * @ref Qui_ALC_t
+ *
+ * see EUIALCL.h
+ */
 dcl spcptr .qui-alc parm;
 dcl spc * bas(.qui-alc);
   dcl dd alc-struct-level bin(4) dir;  /* 2 */
   dcl dd * char(8) dir;
   dcl dd alc-call-type bin(4) dir;     /* 3 */
   dcl dd alc-apph char(8) dir;
-  dcl dd alc-panel-name char(10) dir;  /* 'MAINPANEL ' */
-  dcl dd alc-list-name char(10) dir;   /* 'LSTMAIN   ' */
-  dcl dd alc-list-entry char(4) dir;   /* x'000000E1'  */
-  dcl dd alc-list-option bin(4) dir;   /* h'00000005'  */
+  dcl dd alc-panel-name char(10) dir;  /* e.g. 'MAINPANEL ' */
+  dcl dd alc-list-name char(10) dir;   /* e.g. 'LSTMAIN   ' */
+  dcl dd alc-list-entry char(4) dir;   /* e.g. x'000000E1'  */
+  dcl dd alc-list-option bin(4) dir;   /* e.g. h'00000005'  */
   dcl dd alc-func-qualifier bin(4) dir;
   dcl dd alc-pd-field-name char(10) dir;
 /* dcl ol parml-qui-alc(.qui-alc) parm ext; */
