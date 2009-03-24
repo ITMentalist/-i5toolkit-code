@@ -316,30 +316,30 @@
 .*
 :keyl   name=klistmain.
 :keyi   key=f1
-        help='help/help'
+        help='help/key/f1'
         action=help
         varupd=no
         .
 :keyi   key=f3
-        help='help/help'
+        help='help/key/f3'
         action='exit noset'
         varupd=yes
         .F3=Exit
 :keyi   key=f12
-        help='help/help'
+        help='help/key/f12'
         action='cancel set'
         varupd=yes
         .F12=Cancel
 :keyi   key=enter
-        help='help/help'
+        help='help/key/enter'
         action=enter
         .
 :keyi   key=pageup
-        help='help/help'
+        help='help/key/pageup'
         action=pageup
         .
 :keyi   key=pagedown
-        help='help/help'
+        help='help/key/pagedown'
         action=pagedown
         .
 :ekeyl.

@@ -4,7 +4,7 @@ MAKER=LSBIN/RGMAKE
 HOST=i810
 RP=/home/ljl/chqs/i5tool/q
 HOSTCMD=rexec $(HOST)
-BINLIB=LSBIN
+BINLIB=I5TOOLKIT
 
 all: upload compile
 	echo "end of compilation :o:"

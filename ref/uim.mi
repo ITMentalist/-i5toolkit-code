@@ -190,9 +190,13 @@ dcl spc * bas(.qui-mic);
  * @ref Qui_ALC_t
  *
  * see EUIALCL.h
+ *
+ * for programs use this structure as input parameter,
+ * parameter list can be declared like this:
+ *   dcl ol parml-qui-alc(.qui-alc) parm ext;
  */
 dcl spcptr .qui-alc parm;
-dcl spc * bas(.qui-alc);
+dcl spc qui-alc-t bas(.qui-alc);
   dcl dd alc-struct-level bin(4) dir;  /* 2 */
   dcl dd * char(8) dir;
   dcl dd alc-call-type bin(4) dir;     /* 3 */
@@ -203,4 +207,5 @@ dcl spc * bas(.qui-alc);
   dcl dd alc-list-option bin(4) dir;   /* e.g. h'00000005'  */
   dcl dd alc-func-qualifier bin(4) dir;
   dcl dd alc-pd-field-name char(10) dir;
-/* dcl ol parml-qui-alc(.qui-alc) parm ext; */
+
+/* eof - uim.mi */

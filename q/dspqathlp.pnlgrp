@@ -674,32 +674,64 @@ character format and hexadecimal format. Use function key F10
 to exchange between key data and message text data.
 :ehelp.
 
-.* for keyl klistqmdtl
-:help name='help/klqmm'.Function keys - help
+.* here, for key items
+:help name='help/key/f1'.Function keys - help
 :p.
 :xh2.F1=Help
 :p.
 Press F1 to see information about this display.
+:ehelp.
+
+:help name='help/key/f3'.Function keys - help
 :p.
 :xh2.F3=Exit
 :p.
 Exit the current display.
+:ehelp.
+
+:help name='help/key/f12'.Function keys - help
 :p.
 :xh2.F12=Cancel
 :p.
 Exit the current display.
+:ehelp.
+
+:help name='help/key/enter'.Function keys - help
+:p.
+:xh2.Enter
+:p.
+Confirm menu bar selection, or list entry options, or exit the current display.
+:ehelp.
+
+:help name='help/key/pageup'.Function keys - help
+:p.
+:xh2.Pageup
+:p.
+Show previous page.
+:ehelp.
+
+:help name='help/key/pagedown'.Function keys - help
+:p.
+:xh2.Pagedown
+:p.
+Show next page.
+:ehelp.
+
+:help name='help/key/f10'.Function keys - help
 :p.
 :xh2.F10=Display text/key data
 :p.
 Use function key F10 to exchange between key data view and message
 text data view.
+:ehelp.
+
+:help name='help/key/f11'.Function keys - help
 :p.
 :xh2.F11=Display character/hexadecimal format
 :p.
 Use function key F11 to exchange between
 character format and hexadecimal format.
 :ehelp.
-
 
 :epnlgrp.
 

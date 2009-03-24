@@ -201,7 +201,6 @@ dcl spcptr .ptr auto;
 dcl dd ch2 char(2) bas(*) pos(3);
 dcl sysptr forge auto;
 dcl dd rusrq char(384) auto;
-dcl dd q-attr-type char(1) auto;
 
 dcl dd matptr-template char(77) auto bdry(16);
 dcl spcptr .matptr-template auto init(matptr-template);
@@ -305,22 +304,19 @@ entry set-uimv-usrq-attr int;
   cpyblap rusrq-msg-content, "Contains scalar data only", " "; /* zero */
 :
 
-  tstbts(b) matqat-q-attr, 1 / zer(=+3);
-  cpybla q-attr-type, x'02';
-  b =+2;
-:
-  cpybla q-attr-type, x'00'; /* zero */
-:
-  tstbts(b) matqat-q-attr, 2 / zer(=+2);
-  setbts q-attr-type, 7; /* non-zero */
-:
-  cmpbla(b) q-attr-type, x'00' / neq(=+2);
+dcl dd str-q-type char(2) auto init("00") ;
+        dcl dd str-q-type-1 char(1) def(str-q-type) pos(1) ; 
+        dcl dd str-q-type-2 char(1) def(str-q-type) pos(2) ; 
+  tstbts(i) matqat-q-attr, 1 / nzer(str-q-type-1);
+  tstbts(i) matqat-q-attr, 2 / nzer(str-q-type-2);
+
+  cmpbla(b) str-q-type, "00" / neq(=+2);
   cpyblap rusrq-q-type, "Keyed", " ";
 :
-  cmpbla(b) q-attr-type, x'01' / neq(=+2);
+  cmpbla(b) str-q-type, "01" / neq(=+2);
   cpyblap rusrq-q-type, "LIFO", " ";
 :
-  cmpbla(b) q-attr-type, x'10' / neq(=+2);
+  cmpbla(b) str-q-type, "10" / neq(=+2);
   cpyblap rusrq-q-type, "FIFO", " ";
 :
   tstbts(b) matqat-q-attr, 3 / zer(=+3);

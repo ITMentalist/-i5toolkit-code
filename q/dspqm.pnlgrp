@@ -244,86 +244,84 @@
 
 .* key lists
 :keyl   name=klistmain
-        help='help/klqmmain'
         .
 :keyi   key=f1
-        help='help/klqmmain'
+        help='help/key/f1'
         action=help
         varupd=no
         .
 :keyi   key=f3
-        help='help/klqmmain'
+        help='help/key/f3'
         action='exit noset'
         varupd=yes
         .F3=Exit
 :keyi   key=f12
-        help='help/klqmmain'
+        help='help/key/f12'
         action='cancel set'
         varupd=yes
         .F12=Cancel
 :keyi   key=enter
-        help='help/klqmmain'
+        help='help/key/enter'
         action=enter
         .
 :keyi   key=pageup
-        help='help/klqmmain'
+        help='help/key/pageup'
         action=pageup
         .
 :keyi   key=pagedown
-        help='help/klqmmain'
+        help='help/pagedown'
         action=pagedown
         .
 :ekeyl.
 
 .* key list for panel qmdtl
 :keyl   name=klistqmdtl
-        help='help/klqmm'
         .
 :keyi   key=f1
-        help='help/klqmm'
+        help='help/key/f1'
         action=help
         varupd=no
         .
 :keyi   key=f10
-        help='help/klqmm'
+        help='help/key/f10'
         cond=cndkeydata
         action='return 110'
         varupd=yes
         .F10=Display key data
 :keyi   key=f10
-        help='help/klqmm'
+        help='help/key/f10'
         cond=cndtxtdata
         action='return 110'
         varupd=yes
         .F10=Display text data
 :keyi   key=f11
-        help='help/klqmm'
+        help='help/key/f11'
         cond=cndview0
         action='chgview'
         varupd=yes
         .F11=Display hexadecimal format
 :keyi   key=f11
-        help='help/klqmm'
+        help='help/key/f11'
         cond=cndview1
         action='chgview'
         exit='call '
         varupd=yes
         .F11=Display character format
 :keyi   key=f12
-        help='help/klqmm'
+        help='help/key/f12'
         action='cancel set'
         varupd=yes
         .F12=Cancel
 :keyi   key=enter
-        help='help/klqmm'
+        help='help/key/enter'
         action=enter
         .
 :keyi   key=pageup
-        help='help/klqmm'
+        help='help/key/pageup'
         action=pageup
         .
 :keyi   key=pagedown
-        help='help/klqmm'
+        help='help/key/pagedown'
         action=pagedown
         .
 :ekeyl.
@@ -552,7 +550,7 @@ Type options, press Enter.
          compact
          .
 :datai var=vqmsgnum
-       help='common/qmsgnum'
+       help='common/qmnum'
        usage=out
        .Number
 :edatagrp.
