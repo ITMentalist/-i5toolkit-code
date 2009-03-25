@@ -689,6 +689,13 @@ Press F1 to see information about this display.
 Exit the current display.
 :ehelp.
 
+:help name='help/key/f5'.Function keys - help
+:p.
+:xh2.F5=Refresh
+:p.
+Refresh message list.
+:ehelp.
+
 :help name='help/key/f12'.Function keys - help
 :p.
 :xh2.F12=Cancel

@@ -255,6 +255,11 @@
         action='exit noset'
         varupd=yes
         .F3=Exit
+:keyi   key=f5
+        help='help/key/f5'
+        action='return 105'
+        varupd=yes
+        .F5=Refresh
 :keyi   key=f12
         help='help/key/f12'
         action='cancel set'

@@ -12,7 +12,6 @@
 
 /* debug */
 dcl dd chdbg char(512) bas(*);
-dcl dd buffer char(512) auto;
 
 /* external entry point */
 dcl spcptr .q-object parm;
@@ -76,13 +75,6 @@ resolve-q:
   rslvsp q, rslv-option-short, *, x'0000';
 end-resolve:
 
-  /* retrieve q messages */
-  cmpnv(b) found, 1 / neq(=+2); /* usrq */
-  calli read-usrq, *, .read-usrq;
-:
-  cmpnv(b) found, 2 / neq(=+2); /* dtaq */
-  calli read-dtaq, *, .read-dtaq;
-:
   /* open display application */
   cpyblap pnlgrp, "DSPQM     *LIBL", " ";
   callx .quiopnda, argl-opnda, *;
@@ -96,7 +88,14 @@ end-resolve:
   cpynv var-buflen, exit-pgms-len;
   cpyblap rcd-name, "RPGM", " ";
   callx .quiputv, argl-putv, *;
-
+retrieve-q-messages:    
+  /* retrieve q messages */
+  cmpnv(b) found, 1 / neq(=+2); /* usrq */
+  calli read-usrq, *, .read-usrq;
+:
+  cmpnv(b) found, 2 / neq(=+2); /* dtaq */
+  calli read-dtaq, *, .read-dtaq;
+:
   /* update common q attr uim variables */
   cpybla common-q-attr-vqname, qus-objd0200-obj-name;
   cpybla common-q-attr-vqlib, qus-objd0200-rtn-lib;
@@ -129,10 +128,9 @@ end-resolve:
   /* display panel: dspqm */
   cpyblap panel-name, "DSPQM", " ";
   callx .quidspp, argl-dspp, *;
-  cmpnv(b) uim-ec-bytes-out, 0 / eq(=+3);
-  setspp .qusec, uim-ec;
-  calli report-error, *, .report-error;
-:
+
+  cmpnv(b) pnl-func, uim-return-f5 / neq(=+2) ;
+  b retrieve-q-messages         ; 
 
 farewell:
   /* close display application */
@@ -155,6 +153,14 @@ dcl spcptr .uim-liste-lstmsg-key auto;
 
 dcl insptr .fill-list auto;
 entry fill-list int;
+
+  /* clear list LSTMSG */
+  setspp .var-buffer, uim-liste-lstmsg;
+  cpynv  var-buflen, uim-liste-lstmsg-len;
+  cpyblap rcd-name, "RLSGMSG", " ";
+  cpyblap list-name, "LSTMSG", " ";
+  callx .quiaddle, argl-addle, *;
+  callx .quidltl, argl-dltl, * ;
 
   cpynv index, 0;
   addspp .q-message, .q-messages, q-messages-t-len;
@@ -287,6 +293,9 @@ entry read-usrq int;
   matqmsg .matqmsg-tmpl, q, matqmsg-selection;
 
   /* create space object q-msg-space */
+  cmpptre(b) q-msg-space, nil / eq(=+2) ;
+  dess q-msg-space              ; 
+:
   /* cal q-msg-space-size:
          q-messages-t-len +
            (q-message-t-len + qmsg-key-len + qmsg-text-len) *
@@ -376,9 +385,6 @@ loop-read-usrq:
   b loop-read-usrq;
 end-loop-read-usrq:
 
-  /* debug */
-  brk 'DBG';
-
   b .read-usrq;
 
 /**
@@ -440,12 +446,14 @@ dcl insptr .mat-keyed-q-msg auto;
 entry mat-keyed-q-msg int;
 
   /* call qmhrdqm the first time */
-  setspp .a-qmhrdqm-receiver, rdqm0200;
+  setspp .rdqm0200, rdqm0200     ; 
+  setsppfp .a-qmhrdqm-receiver, .rdqm0200;
   cpynv a-qmhrdqm-receiver-len, min-rdqm0200-len;
   cpyblap a-qmhrdqm-q-name, q-name, " ";
   cpybra a-qmhrdqm-q-name, q-lib;
   setsppfp .a-qmhrdqm-selection, .rdqs0200;
   setsppfp .a-qmhrdqm-ec, .qusec;
+  cpynv ec-bytes-in, _USECLEN   ; 
   callx septs(h'130D'), argl-qmhrdqm, *;
   brk '1ST';
 
@@ -454,12 +462,12 @@ entry mat-keyed-q-msg int;
   b .mat-keyed-q-msg;
 :
   /* second time */
-  cpynv a-qmhrdqm-receiver-len, rdqm-bytes-available;
+  cpynv a-qmhrdqm-receiver-len, rdqm-bytes-available ;
   cpynv rdqs0200-msgtxt-bytes-to-get, rdqm-textlen-available;
   cpynv rdqs0200-msgkey-bytes-to-get, rdqm-keylen-available;
   cpynv rdqs0200-key-len, rdqm-keylen-available;
   cpybrep rdqs0200-key, x"00";
-  modasa .rdqm0200, rdqm-bytes-available;
+  modasa .rdqm0200, rdqm-bytes-available ; 
   setsppfp .a-qmhrdqm-receiver, .rdqm0200;
   callx septs(h'130D'), argl-qmhrdqm, *;
   brk '2ND';
@@ -476,6 +484,9 @@ entry mat-keyed-q-msg int;
   addn(s) q-msg-space-size, q-messages-t-len;
 
   /* create space object q-msg-space */
+  cmpptre(b) q-msg-space, nil / eq(=+2) ;
+  dess q-msg-space              ; 
+:
   setspp .crts-space, q-msg-space;
   setspp .crts-space-name, q-msg-space-name;
   setspp .crts-space-size, q-msg-space-size;
@@ -484,8 +495,8 @@ entry mat-keyed-q-msg int;
   setsppfp .qmdtl-q-messages, .q-messages;  /* for QMDTL */
 
   /* save q-messages-t */
-  cpynv qmsg-key-len, rdqm-keylen-returned;
-  cpynv qmsg-text-len, rdqm-textlen-requested;
+  cpynv qmsg-key-len, rdqm-keylen-available;
+  cpynv qmsg-text-len, rdqm-textlen-available;
   cpynv qmsg-messages, rdqm-msgs-returned;
 
   /* cal q-message-entry-length */
@@ -567,7 +578,8 @@ entry mat-nonkeyed-q-msg int;
   cpybla a-qmhrdqm-format, "RDQM0100";
   cpybla a-qmhrdqm-selection-format, "RDQS0100";
   cpynv a-qmhrdqm-selection-len, 8; /* length of RDQS0100 */
-  setspp .a-qmhrdqm-receiver, rdqm0200;
+  setspp .rdqm0200, rdqm0200     ; 
+  setsppfp .a-qmhrdqm-receiver, .rdqm0200;
   cpynv a-qmhrdqm-receiver-len, min-rdqm0200-len;
   cpyblap a-qmhrdqm-q-name, q-name, " ";
   cpybra a-qmhrdqm-q-name, q-lib;
@@ -599,6 +611,9 @@ entry mat-nonkeyed-q-msg int;
   addn(s) q-msg-space-size, q-messages-t-len;
 
   /* create space object q-msg-space */
+  cmpptre(b) q-msg-space, nil / eq(=+2) ;
+  dess q-msg-space              ; 
+:
   setspp .crts-space, q-msg-space;
   setspp .crts-space-name, q-msg-space-name;
   setspp .crts-space-size, q-msg-space-size;
@@ -607,8 +622,8 @@ entry mat-nonkeyed-q-msg int;
   setsppfp .qmdtl-q-messages, .q-messages; /* for QMDTL */
 
   /* save q-messages-t */
-  cpynv qmsg-key-len, rdqm-keylen-returned;
-  cpynv qmsg-text-len, rdqm-textlen-requested;
+  cpynv qmsg-key-len, rdqm-keylen-available;
+  cpynv qmsg-text-len, rdqm-textlen-available;
   cpynv qmsg-messages, rdqm-msgs-returned;
 
   /* cal q-message-entry-length */
@@ -862,6 +877,8 @@ dcl dd valid-q-types(2) char(10) auto init(
   *(1)"*USRQ",
   "*DTAQ"
 );
+dcl con uim-return-f5 bin(4) init(105) ; /* F5 */
+dcl ptr nil auto                ; 
 
 /* for varrcd RPGM */
 dcl dd exit-pgms(2) char(20) init(
@@ -916,6 +933,8 @@ dcl spc * bas(.rdqm0200);
   dcl dd rdqm-first-entry-offset bin(4) dir;
   dcl dd rdqm-libname-returned char(10) dir;
 dcl con min-rdqm0200-len bin(4) init(54);
+
+dcl dd dtaq-receiver-length bin(4) auto ; 
 
 /* selection template: RDQS0100 */
 dcl dd rdqs0100 char(8) auto;
