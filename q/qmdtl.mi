@@ -79,7 +79,7 @@ entry general-panel-exit int    ;
 
         /* i handle only F11 */
         cmpnv(b) gen-function-key, 11 / neq(.general-panel-exit) ;
-brk 'GENEXT'                    ; 
+
         calli determine-target-message, *, .determine-target-message ; 
 
         /* get RQMDTLCTL.VDTLVIEW */
@@ -92,7 +92,7 @@ brk 'GENEXT'                    ;
            rqmdtlctl-vdtlview by CHGVIEW command */
         subn rqmdtlctl-vdtlview, 1, rqmdtlctl-vdtlview; 
 
-        /* reloac-list */
+        /* reload-list */
         calli reload-list, *, .reload-list ; 
 
         b .general-panel-exit   ; 

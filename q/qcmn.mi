@@ -214,10 +214,4 @@ dcl spc * bas(.rusrq);
   /* Initial number of messages */
   dcl dd rusrq-init-msgs bin(4) dir;
 
-/**
- * q message entry structure
- *
- * 
- */
-
 /* eof - qcmn.mi */

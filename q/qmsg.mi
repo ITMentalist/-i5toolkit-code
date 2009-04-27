@@ -56,21 +56,24 @@ entry i-always-main(plist-main) ext;
   b farewell;
 :
   /* resolve q */
+dcl dd q-obj-type char(2) auto  ; 
   cmpnv(b) found, 1 / neq(=+3);
-  cpybla rslv-option-obj-type, x"0A02"; /* usrq */
+  cpybla q-obj-type, x"0A02"; /* usrq */
   b =+2;
 :
-  cpybla rslv-option-obj-type, x"0A01";
+  cpybla q-obj-type, x"0A01";
 :
   cmpbla(b) q-lib, "*CURLIB" / eq(resolve-q);
   cmpbla(b) q-lib, "*LIBL" / eq(resolve-q);
   cpybla rslv-option-obj-type, x"0401";
   cpyblap rslv-option-obj-name, q-lib, " ";
   rslvsp ctx, rslv-option-short, *, x'0000';
+  cpybla rslv-option-obj-type, q-obj-type ; 
   cpyblap rslv-option-obj-name, q-name, " ";
   rslvsp q, rslv-option-short, ctx, x'0000';
   b end-resolve;
 resolve-q:
+  cpybla rslv-option-obj-type, q-obj-type ; 
   cpyblap rslv-option-obj-name, q-name, " ";
   rslvsp q, rslv-option-short, *, x'0000';
 end-resolve:

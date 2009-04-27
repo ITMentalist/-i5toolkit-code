@@ -6,8 +6,11 @@ RP=/home/ljl/chqs/i5tool/q
 HOSTCMD=rexec $(HOST)
 BINLIB=I5TOOLKIT
 
-all: upload compile
+all: check-source upload compile
 	echo "end of compilation :o:"
+
+check-source:
+	bash check-tab.sh *.mi
 
 upload:
 	ls *mi qmakefile | env WN_REMOTE_PATH=$(RP) WN_HOST=$(HOST) wn

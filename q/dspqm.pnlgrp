@@ -309,7 +309,6 @@
         help='help/key/f11'
         cond=cndview1
         action='chgview'
-        exit='call '
         varupd=yes
         .F11=Display character format
 :keyi   key=f12
