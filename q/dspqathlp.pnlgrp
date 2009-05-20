@@ -139,6 +139,13 @@ Key length in bytes of keyed queue object.
 Length of message text in bytes.
 :ehelp.
 
+:help name='common/qmsgs'.
+:p.
+:xh2.Number of messages
+:p.
+Number of messages currently on queue.
+:ehelp.
+
 .* datq
 :help name='dtaq/msglen'.
 :p.

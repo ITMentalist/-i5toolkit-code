@@ -113,7 +113,9 @@ retrieve-q-messages:
   cpyblap common-q-attr-vdomain, "System", " ";
 :
   cpynv common-q-attr-vqkeylen, qmsg-key-len ;
-  cpynv common-q-attr-vqtxtlen, qmsg-text-len ; 
+  cpynv common-q-attr-vqtxtlen, qmsg-text-len ;
+  cpynv common-q-attr-vqmsgs, qmsg-messages ; 
+
   setspp .var-buffer, common-q-attrs;
   cpynv var-buflen, common-q-attrs-len-long;
   cpyblap rcd-name, "RCOMMON", " ";

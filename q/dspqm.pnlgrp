@@ -128,6 +128,9 @@
 :var name=vqtxtlen
      class=bin4
      .
+:var name=vqmsgs
+     class=bin4
+     .
 
 .* vars in message list
 :var name=vmsgopt
@@ -184,7 +187,7 @@
 .* rcommon
 :varrcd name=rcommon
         vars='vqname vqlib vqobjtype vobjasp vextattr vowner vdomain'
-        vars='vqkeylen vqtxtlen'
+        vars='vqkeylen vqtxtlen vqmsgs'
         .
 
 .* for list lstmsg
@@ -338,7 +341,7 @@
         .Display Queue Messages
 
 .* common data items
-:data    depth=7
+:data    depth=8
          scroll=no
          layout=2
          botsep=space
@@ -415,6 +418,16 @@
        .Text length
 :edatagrp.
 
+.* number of messages currently on Q
+:datagrp grpsep=none
+         compact
+         .
+:datai var=vqmsgs
+       help='common/qmsgs'
+       usage=out
+       .Messages
+:edatagrp.
+
 :edata.
 
 .* list
@@ -473,7 +486,7 @@ Type options, press Enter.
 
 .* common data items 再加个序号
 .* common data items
-:data    depth=7
+:data    depth=8
          scroll=no
          layout=2
          botsep=space
@@ -547,9 +560,20 @@ Type options, press Enter.
 :datai var=vqtxtlen
        help='common/qtxtlen'
        usage=out
-       .Key length
+       .Text length
 :edatagrp.
 
+.* number of messages currently on Q
+:datagrp grpsep=none
+         compact
+         .
+:datai var=vqmsgs
+       help='common/qmsgs'
+       usage=out
+       .Messages
+:edatagrp.
+
+.* message number
 :datagrp grpsep=none
          compact
          .
