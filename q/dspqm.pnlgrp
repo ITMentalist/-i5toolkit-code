@@ -335,7 +335,7 @@
 
 .* panel dspqm
 :panel  name=dspqm
-        help='help/aboutqm'
+        help='help/abtqm'
         keyl=klistmain
         enter='return 100'
         .Display Queue Messages
@@ -478,7 +478,7 @@ Type options, press Enter.
 :epanel.
 
 :panel name=qmdtl
-       help='help/aboutqm'
+       help='help/abtqm'
        keyl=klistqmdtl
        enter='return 100'
        usrexit='call vpgmexit'

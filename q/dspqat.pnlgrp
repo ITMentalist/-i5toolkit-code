@@ -297,7 +297,7 @@
 :pdfldc option=2
         help='help/pdfldc/about'
         actfor=panel
-        action='dsphelp help/about *libl/dspqathlp'
+        action='dsphelp help/abt *libl/dspqathlp'
         .About ...
 :pdaccel.F1
 :pdfldc option=90

@@ -4,8 +4,25 @@
 
 :pnlgrp.
 
+.* for CL command DSPQD
+:help name='help/abt/q'.Queue Object
+:xh3.Queue Object
+:p.
+Name of the queue object to display.
+:ehelp.
+
+:help name='help/abt/qtype'.Queue Object Type
+:xh3.Queue Object Type
+:p.
+Type of the queue object to display. Valid queue types are:
+:sl.
+:li.*USRQ, an user queue object
+:li.*DTAQ, a data queue object
+:esl.
+:ehelp.
+
 .* about
-:help name='help/about'.
+:help name='help/abt'.
 About DSPQD
 :p.
 :h1.Overview
@@ -565,9 +582,26 @@ Initial number of messages when the queue object is created
 or each time queue storage is reclaimed.
 :ehelp.
 
+.* for CL command DSPQMSG
+:help name='help/abtqm/q'.Queue Object
+:xh3.Queue Object
+:p.
+Name of the queue object to display.
+:ehelp.
+
+:help name='help/abtqm/qtype'.Queue Object Type
+:xh3.Queue Object Type
+:p.
+Type of the queue object to display. Valid queue types are:
+:sl.
+:li.*USRQ, an user queue object
+:li.*DTAQ, a data queue object
+:esl.
+:ehelp.
+
 .* the following is for PNLGRP DSPQM
 .* about
-:help name='help/aboutqm'.
+:help name='help/abtqm'.
 About DSPQMSG
 :p.
 :h1.Overview
