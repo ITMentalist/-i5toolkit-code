@@ -44,17 +44,49 @@ dcl spc prefix-t bas(prefix-ptr);
         dcl dd deq-timeout char(8) dir ;
         dcl dd rtn-msg-size bin(4) dir ;
         dcl dd mod-acc-sts-opt char(1) dir ; 
-brk "DEQ-START"                       ;
-        /* 00100010 */
-        cpybla mod-acc-sts-opt, x"0202" ; 
+
+        /* 1100,1010, GE */
+        cpybla mod-acc-sts-opt, x"0C0A" ; 
+        /* clear search key */
+        calli clear-search-key, *, .clear-search-key ; 
 deq-loop:       
+brk "DEQ"                       ; 
         deq(b) prefix-ptr->prefix,
                 text-ptr,
                 q / eq(deq-loop), neq(end-deq-loop) ; 
-brk "DEQ"                       ; 
 end-deq-loop:   
 brk "END"                       ; 
         rtx *                   ; 
+        
+/**
+ * clear search key
+ *
+ * @pre prefix-ptr
+ * @pre matqat-key-len
+ *
+ * @post search key portion of prefix
+ */
+dcl insptr .clear-search-key auto ; 
+entry clear-search-key int      ;
+
+dcl dd index bin(4) auto        ;
+dcl spcptr search-key-ptr auto  ;
+dcl dd ch1 char(1) bas(*)       ; 
+
+        setsppfp search-key-ptr, prefix-ptr ;
+        addspp search-key-ptr, search-key-ptr, 21 ;
+
+        cpynv index, 0          ;
+clear-key-loop:
+        addn(s) index, 1        ;
+        cmpnv(b) index, matqat-key-len / hi(end-clear-key-loop) ;
+
+        cpybla search-key-ptr->ch1, x"00" ; 
+        addspp search-key-ptr, search-key-ptr, 1 ;
+        b clear-key-loop        ; 
+end-clear-key-loop:     
+
+        b .clear-search-key     ; 
         
 /* template for MATQAT */        
 dcl dd matqat-template-buf char(128) auto bdry(16);
