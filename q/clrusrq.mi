@@ -46,7 +46,7 @@ dcl spc prefix-t bas(prefix-ptr);
         dcl dd mod-acc-sts-opt char(1) dir ; 
 
         /* 1100,1010, GE */
-        cpybla mod-acc-sts-opt, x"0C0A" ; 
+        cpybla mod-acc-sts-opt, x"CA" ; 
         /* clear search key */
         calli clear-search-key, *, .clear-search-key ; 
 deq-loop:       
@@ -57,7 +57,7 @@ brk "DEQ"                       ;
 end-deq-loop:   
 brk "END"                       ; 
         rtx *                   ; 
-        
+
 /**
  * clear search key
  *
