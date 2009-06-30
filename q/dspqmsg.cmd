@@ -1,9 +1,8 @@
 /** @file dspqmsg.cmd */
-/*  crtcmd cmd(*curlib/dspqmsg) pgm(*libl/qmsg) srcfile(...) srcmbr(...) */
 
-             CMD        PROMPT('Display Queue Messages')
+             CMD        PROMPT('Display Queue Messages (DSPQMSG)')
 
-/* program name */
+/* queue name */
              PARM       KWD(Q) TYPE(Q_NAME) MIN(1) KEYPARM(*YES) +
                           PROMPT('Queue object')
              PARM       KWD(QTYPE) TYPE(*NAME) LEN(10) RSTD(*YES) +

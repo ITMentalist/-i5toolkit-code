@@ -4,6 +4,34 @@
 
 :pnlgrp.
 
+.* for CL command CLRUSRQ
+:help name='hlp/clq'.
+:p.
+CLRUSRQ command is a member of i5/OS Programmer's Toolkit.
+CLRUSRQ clears the messages on a user queue object which is
+specified in the Q parameter.
+:p.
+Refer to :hp2.http://i5toolkit.sourceforge.net:ehp2. for details of
+the open source project, i5/OS Programmer's Toolkit.
+To download i5/OS Programmer's Toolkit, please visit
+:hp2.http://sourceforge.net/projects/i5toolkit:ehp2..
+:p.
+:xh3.Bugs
+:p.
+Please report bugs to :hp2.junleili-cn@users.sourceforge.net:ehp2.
+:p.
+:xh3.Author
+:p.
+Junlei Li
+:p.
+:ehelp.
+
+:help name='hlp/clq/q'.Queue Object
+:xh3.Queue Object
+:p.
+Name of the queue object to display.
+:ehelp.
+
 .* for CL command DSPQD
 :help name='help/abt/q'.Queue Object
 :xh3.Queue Object
@@ -27,13 +55,26 @@ About DSPQD
 :p.
 :h1.Overview
 :p.
-DSPQD command is a member of Junlei Li's i5/OS toolkit.
+DSPQD command is a member of i5/OS Programmer's Toolkit.
 :p.
 The Display Queue Description (DSPQD) command shows one or more types
 of information of a queue object. The queue object could be a
 data queue object of object type *DTAQ or a user queue object of
 type *USRQ. When a DDM data queue object is specified, only
 the DDM data queue specific information is displayed.
+:p.
+Refer to :hp2.http://i5toolkit.sourceforge.net:ehp2. for details of
+the open source project, i5/OS Programmer's Toolkit.
+To download i5/OS Programmer's Toolkit, please visit
+:hp2.http://sourceforge.net/projects/i5toolkit:ehp2..
+:p.
+:xh3.Bugs
+:p.
+Please report bugs to :hp2.junleili-cn@users.sourceforge.net:ehp2.
+:p.
+:xh3.Author
+:p.
+Junlei Li
 :p.
 :h1.Examples
 :p.
@@ -606,13 +647,26 @@ About DSPQMSG
 :p.
 :h1.Overview
 :p.
-DSPQMSG command is a member of Junlei Li's i5/OS toolkit.
+DSPQMSG command is a member of i5/OS Programmer's Toolkit.
 :p.
 The Display Queue Message (DSPQMSG) command displays messages in one or more types
 queue objects. The queue object could be a
 data queue object of object type *DTAQ or a user queue object of
 type *USRQ. When a DDM data queue object is specified, no message
 is displayed.
+:p.
+Refer to :hp2.http://i5toolkit.sourceforge.net:ehp2. for details of
+the open source project, i5/OS Programmer's Toolkit.
+To download i5/OS Programmer's Toolkit, please visit
+:hp2.http://sourceforge.net/projects/i5toolkit:ehp2..
+:p.
+:xh3.Bugs
+:p.
+Please report bugs to :hp2.junleili-cn@users.sourceforge.net:ehp2.
+:p.
+:xh3.Author
+:p.
+Junlei Li
 :p.
 :h1.Examples
 :p.
@@ -637,7 +691,7 @@ To display a data queue object, you can specify one of the following commands:
 :esl.
 :p.
 To retrieve detail descriptions about a queue object, please use :hp2.DSPQD (Display Queue
-Description):ehp2. command, which is another member of Junlei Li's i5/OS toolkit.
+Description):ehp2. command, which is another member of i5/OS Programmer's Toolkit.
 :h1.Author
 :p.
 This software is written by Junlei Li, an AS/400 fan from China.

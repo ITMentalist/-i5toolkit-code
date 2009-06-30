@@ -1,24 +1,40 @@
 /**
  * @file clrusrq.mi
  *
- * usage demo: call clrusrq parm('Q_NAME')
+ * usage demo: call clrusrq parm('Q_NAME     Q_LIB')
  * @remark make sure that the target USRQ is in your library list
  */
 
-dcl spcptr .q-name parm         ; 
+dcl spcptr .q-object parm         ; 
 dcl ol pl-main(
-        .q-name
+        .q-object
 ) parm ext                        ; 
 entry i-main(pl-main) ext       ; 
 
-dcl dd q-name char(10) bas(.q-name) ; 
+dcl dd q-name char(10) bas(.q-object) ; 
+dcl dd q-lib  char(10) bas(.q-object) pos(11) ; 
 dcl sysptr q auto                ; 
 
 brk "0"                                ; 
         /* resolve usrq */
-        cpybla rslv-option-obj-type, x"0A02" ;
+dcl sysptr ctx auto             ; 
+dcl dd q-obj-type char(2) auto init(x"0A02") ; 
         cpyblap rslv-option-obj-name, q-name, " " ; 
-        rslvsp q, rslv-option-short, *, x"0000" ; 
+        cmpbla(b) q-lib, "*CURLIB" / eq(resolve-q);
+        cmpbla(b) q-lib, "*LIBL" / eq(resolve-q);
+        cpybla rslv-option-obj-type, x"0401";
+        cpyblap rslv-option-obj-name, q-lib, " ";
+        rslvsp ctx, rslv-option-short, *, x'0000';
+        cpybla rslv-option-obj-type, q-obj-type ; 
+        cpyblap rslv-option-obj-name, q-name, " ";
+        rslvsp q, rslv-option-short, ctx, x'0000';
+        b end-resolve;
+resolve-q:
+        cpybla rslv-option-obj-type, q-obj-type ; 
+        cpyblap rslv-option-obj-name, q-name, " ";
+        rslvsp q, rslv-option-short, *, x'0000';
+end-resolve:
+
 brk "MATQAT"                    ; 
         /* get q attributes */
         cpynv matqat-bytes-in, MATQAT-TEMPLATE-LEN ; 
