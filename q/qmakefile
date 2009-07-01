@@ -7,7 +7,8 @@ MIFLAGS=-v -fls2008/feb -q'*list' -q'*replace' -q'*xref' -I. -I../ref
 
 MAKE=gmake
 RM=del
-TARGETS=qattr qmsg enqk32 enqk5 dspusrqmsg dspdtaqmsg enqk64 qmdtl clrusrq
+TARGETS=qattr qmsg enqk32 enqk5 dspusrqmsg dspdtaqmsg enqk64 qmdtl clrusrq \
+	enqusrq
 
 all: $(TARGETS)
 	@echo "that's all."

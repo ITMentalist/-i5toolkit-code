@@ -1,21 +1,36 @@
 /**
- * @file clrusrq.mi
+ * @file enqusrq.mi
  *
- * usage demo: call clrusrq parm('Q_NAME     Q_LIB')
- * @remark make sure that the target USRQ is in your library list
+ * Commnd processing program of CL command enqusrq
  */
+        
+dcl spcptr .q-object parm       ; 
+dcl spcptr .key-data parm       ; 
+dcl spcptr .msg-text parm       ;
+dcl spcptr .msg-text-len parm   ; 
 
-dcl spcptr .q-object parm         ; 
-dcl ol pl-main(
-        .q-object
-) parm ext                        ; 
-entry i-main(pl-main) ext       ; 
+dcl ol pl-main (
+        .q-object,
+        .key-data,
+        .msg-text,
+        .msg-text-len
+) parm ext;
+
+entry i-main(pl-main) ext       ;
 
 dcl dd q-name char(10) bas(.q-object) ; 
-dcl dd q-lib  char(10) bas(.q-object) pos(11) ; 
-dcl sysptr q auto                ; 
+dcl dd q-lib char(10) bas(.q-object) pos(11);
 
-brk "0"                                ; 
+dcl dd input-key-length bin(2) bas(.key-data) ;
+dcl dd input-key char(1) bas(.key-data) pos(5);
+
+dcl dd input-msg-length bin(2) bas(.msg-text) ;
+dcl dd input-msg char(1) bas(.msg-text) pos(5);
+
+dcl dd msg-text-len pkd(5, 0) bas(.msg-text-len) ; 
+dcl sysptr q auto                ;
+
+brk "INIT"                      ; 
         /* resolve usrq */
 dcl sysptr ctx auto             ; 
 dcl dd q-obj-type char(2) auto init(x"0A02") ; 
@@ -36,63 +51,19 @@ resolve-q:
 end-resolve:
 
 brk "MATQAT"                    ; 
-        /* get q attributes */
         cpynv matqat-bytes-in, MATQAT-TEMPLATE-LEN ; 
         matqat .matqat-template, q ; 
-brk "ALLOC"                     ; 
-        /* allocate prefix and text */
-dcl dd text-len bin(4) auto        ; 
-dcl dd prefix-len bin(4) auto        ; 
-dcl con MIN-PREFIX-LEN bin(4) init(21) ; 
-dcl dd prefix char(32767) bas(*)   ; 
-dcl spcptr prefix-ptr auto      ; 
-dcl dd text char(21) bas(*)  ; 
-dcl spcptr text-ptr auto        ; 
 
-        mult prefix-len, matqat-key-len, 2 ;
-        addn(s) prefix-len, MIN-PREFIX-LEN ;
-        modasa prefix-ptr, prefix-len ; 
-        modasa text-ptr, matqat-max-msg-size ; 
+        /* prepare enqueue prefix */
+dcl dd enq-prefix char(260) auto;
+        dcl dd enq-msg-len def(enq-prefix) pos(1) ;
+        dcl dd enq-key def(enq-prefix) pos(5) ;
 
-        /* deq looply */
-dcl spc prefix-t bas(prefix-ptr);
-        dcl dd time-enqueued char(8) dir ;
-        dcl dd deq-timeout char(8) dir ;
-        dcl dd rtn-msg-size bin(4) dir ;
-        dcl dd mod-acc-sts-opt char(1) dir ; 
+        cpynv enq-msg-len, msg-text-len ;
 
-        /* 1100,1010, GE */
-        cpybla mod-acc-sts-opt, x"CA" ; 
-        /* clear search key */
-        calli clear-search-key, *, .clear-search-key ; 
-deq-loop:       
-brk "DEQ"                       ; 
-        deq(b) prefix-ptr->prefix,
-                text-ptr,
-                q / eq(deq-loop), neq(end-deq-loop) ; 
-end-deq-loop:   
-brk "END"                       ; 
-        rtx *                   ; 
-
-/**
- * clear search key
- *
- * @pre prefix-ptr
- * @pre matqat-key-len
- *
- * @post search key portion of prefix
- */
-dcl insptr .clear-search-key auto ; 
-entry clear-search-key int      ;
-
-dcl dd index bin(4) auto        ;
-dcl spcptr search-key-ptr auto  ;
-dcl dd ch-key char(1) bas(search-key-ptr) ; 
-dcl dtaptr key-ptr auto         ; 
-
-        setsppfp search-key-ptr, prefix-ptr ;
-        addspp search-key-ptr, search-key-ptr, 21 ;
-        setdp key-ptr, ch-key   ; 
+        /* set enq-key */
+dcl dtaptr key-ptr auto         ;
+        setdp key-ptr, input-key; 
 
 dcl dd dtaptr-attr char(7) auto ;
         dcl dd * char(1) def(dtaptr-attr) init(x"04") ;
@@ -100,13 +71,14 @@ dcl dd dtaptr-attr char(7) auto ;
 
         cpynv dtaptr-attr-length, matqat-key-len ;
         setdpat key-ptr, dtaptr-attr ;
+        cpybla enq-key, key-ptr ; 
 
-        /* clear key-ptr */
-dcl dd *zero char(256) auto     ; 
-        cpybla key-ptr, *zero   ; 
+brk "ENQ"                       ; 
+        enq q, enq-prefix, .msg-text ; 
 
-        b .clear-search-key     ; 
-        
+brk "END"                       ;
+        rtx *                   ;
+
 /* template for MATQAT */        
 dcl dd matqat-template-buf char(128) auto bdry(16);
 dcl spcptr .matqat-template auto init(matqat-template-buf);
@@ -137,5 +109,5 @@ dcl con MATQAT-TEMPLATE-LEN bin(4) init(128) ;
 
 %include ptrres.mi              ; 
 
-pend                            ; 
-/* eof - clrusrq.mi */
+pend;
+/* eof - enqusrq.mi */
