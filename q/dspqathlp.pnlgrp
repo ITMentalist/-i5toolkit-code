@@ -4,6 +4,58 @@
 
 :pnlgrp.
 
+.* for CL command ENQUSRQ
+:help name='hlp/enq'.
+:p.
+ENQUSRQ command is a member of i5/OS Programmer's Toolkit.
+ENQUSRQ enqueue a messages to a user queue object which is
+specified in the Q parameter.
+:p.
+Refer to :hp2.http://i5toolkit.sourceforge.net:ehp2. for details of
+the open source project, i5/OS Programmer's Toolkit.
+To download i5/OS Programmer's Toolkit, please visit
+:hp2.http://sourceforge.net/projects/i5toolkit:ehp2..
+:p.
+:xh3.Bugs
+:p.
+Please report bugs to :hp2.junleili-cn@users.sourceforge.net:ehp2.
+:p.
+:xh3.Author
+:p.
+Junlei Li
+:p.
+:ehelp.
+
+:help name='hlp/enq/q'.Queue object (Q)
+:xh3.Queue object (Q)
+:p.
+Name of the queue object to display.
+:ehelp.
+
+:help name='hlp/enq/key'.Key data (KEY)
+:xh3.Key data (KEY)
+:p.
+Message key of the message to keyed user enqueue object.
+The length of a message key should be from 1 to 256.
+Specifiy *NONE if the target queue is a FIIO or LIFO queue,
+or if you want insert a message with blank key value.
+:ehelp.
+
+:help name='hlp/enq/msg'.Message text (MSG)
+:xh3.Message text (MSG)
+:p.
+Message text of the message to enqueue.
+:ehelp.
+
+:help name='hlp/enq/msglen'.Length of message text (MSGLEN)
+:xh3.Length of message text (MSGLEN)
+:p.
+Length of message text of the message to enqueue.
+This must be less than 64K.
+Specify 0 if you want enqueue a message with empty message text.
+:ehelp.
+.* eof - ENQUSRQ
+
 .* for CL command CLRUSRQ
 :help name='hlp/clq'.
 :p.

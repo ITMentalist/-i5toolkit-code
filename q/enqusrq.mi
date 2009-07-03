@@ -22,10 +22,11 @@ dcl dd q-name char(10) bas(.q-object) ;
 dcl dd q-lib char(10) bas(.q-object) pos(11);
 
 dcl dd input-key-length bin(2) bas(.key-data) ;
-dcl dd input-key char(1) bas(.key-data) pos(5);
+dcl dd input-key char(1) bas(.key-data) pos(3);
 
 dcl dd input-msg-length bin(2) bas(.msg-text) ;
-dcl dd input-msg char(1) bas(.msg-text) pos(5);
+dcl dd input-msg char(1) bas(.msg-text) pos(3);
+dcl spcptr input-msg-ptr auto   ; 
 
 dcl dd msg-text-len pkd(5, 0) bas(.msg-text-len) ; 
 dcl sysptr q auto                ;
@@ -56,8 +57,8 @@ brk "MATQAT"                    ;
 
         /* prepare enqueue prefix */
 dcl dd enq-prefix char(260) auto;
-        dcl dd enq-msg-len def(enq-prefix) pos(1) ;
-        dcl dd enq-key def(enq-prefix) pos(5) ;
+        dcl dd enq-msg-len bin(4) def(enq-prefix) pos(1) ;
+        dcl dd enq-key char(256) def(enq-prefix) pos(5) ;
 
         cpynv enq-msg-len, msg-text-len ;
 
@@ -73,8 +74,9 @@ dcl dd dtaptr-attr char(7) auto ;
         setdpat key-ptr, dtaptr-attr ;
         cpybla enq-key, key-ptr ; 
 
-brk "ENQ"                       ; 
-        enq q, enq-prefix, .msg-text ; 
+brk "ENQ"                       ;
+        setspp input-msg-ptr, input-msg ; 
+        enq q, enq-prefix, input-msg-ptr ; 
 
 brk "END"                       ;
         rtx *                   ;
