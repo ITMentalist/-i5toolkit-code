@@ -81,6 +81,7 @@ dcl dd enq-prefix char(260) auto;
         cpynv enq-msg-len, msg-text-len ;
 
         /* set enq-key */
+        cmpnv(b) input-key-length, 0 / eq(enqueue) ; 
 dcl dtaptr key-ptr auto         ;
         setdp key-ptr, input-key; 
 
@@ -93,6 +94,7 @@ dcl dd dtaptr-attr char(7) auto ;
         cpybla enq-key, key-ptr ; 
 
 brk "ENQ"                       ;
+enqueue:        
         setspp input-msg-ptr, input-msg ; 
         enq q, enq-prefix, input-msg-ptr ; 
 
