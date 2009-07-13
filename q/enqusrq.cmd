@@ -16,7 +16,7 @@
 /* along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>. */
 
 /* file enqusrq.mi */
-             CMD        PROMPT('Clear User Queue (CLRUSRQ)')
+             CMD        PROMPT('Enqueue User Queue (ENQUSRQ)')
 
              PARM       KWD(Q) TYPE(Q_OBJ) MIN(1) PROMPT('Queue +
                           object') /* Parm1: queue object */
