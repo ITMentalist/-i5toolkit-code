@@ -183,7 +183,7 @@ accept_input_parms(
 
   // set value for default parameters
   if(memcmp(mic_parm.public_auth_, _WS_10, 10) == 0)
-    memcpy(mic_parm.public_auth_, _AUTH_ALL, 10);
+    memcpy(mic_parm.public_auth_, _MIC_AUTH_ALL, 10);
 
   // library name
   if(memcmp(mic_parm.pgm_ + 10, _WS_10, 10) == 0)

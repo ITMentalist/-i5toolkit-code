@@ -23,7 +23,7 @@
 # to 
 #
 
-MAKER=LSBIN/RGMAKE
+MAKER=LSBIN/RUNSH
 HOST=i810
 RP=/home/ljl/chqs/i5tool/q
 HOSTCMD=rexec $(HOST)
@@ -39,10 +39,10 @@ upload:
 	ls *mi qmakefile | env WN_REMOTE_PATH=$(RP) WN_HOST=$(HOST) wn
 
 compile:
-	$(HOSTCMD) "CALL PGM($(MAKER)) PARM(X'00037F' '$(BINLIB)' '$(RP)' '')"
+	$(HOSTCMD) "CALL PGM($(MAKER)) PARM('00037' 'cd $(RP); export OS400=yes OUTPUTDIR=$(BINLIB); gmake -fqmakefile')"
 
 clean:
-	$(HOSTCMD) "CALL PGM($(MAKER)) PARM(X'00037F' '$(BINLIB)' '$(RP)' 'clean')"
+	$(HOSTCMD) "CALL PGM($(MAKER)) PARM('00037' 'cd $(RP); export OS400=yes OUTPUTDIR=$(BINLIB); gmake -fqmakefile clean')"
 
 uim_cmd:
 	$(HOSTCMD) "CRTPNLGRP PNLGRP(I5TOOLKIT/DSPQATHLP) SRCFILE(LS2008/DEC) SRCMBR(*PNLGRP) INCFILE(*SRCFILE) REPLACE(*YES)"

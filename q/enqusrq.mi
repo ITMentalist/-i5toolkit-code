@@ -129,7 +129,7 @@ dcl spc matqat-template-t bas(.matqat-template);
         dcl dd matqat-init-msg-num bin(4) dir;
 dcl con MATQAT-TEMPLATE-LEN bin(4) init(128) ;
 
-%include ptrres.mi              ; 
+/include ptrres.mi              ; 
 
 pend;
 /* eof - enqusrq.mi */

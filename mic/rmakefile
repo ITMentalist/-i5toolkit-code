@@ -40,7 +40,7 @@ clean_local:
 	make clean; true
 
 tar_src:
-	tar -cf $(TARF) *
+	tar -cf $(TARF) *.h *.hpp *.cpp makefile
 
 upload_src:
 	lftp -e "cd $(HOST_DIR); put $(TARF); by" $(HOST)

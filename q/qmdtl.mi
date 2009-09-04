@@ -451,12 +451,12 @@ dcl dd detail-data char(50)     def(uim-liste-lstdetail-vdtldata) pos(2) ;
 dcl dd detail-data-hex char(50) def(uim-liste-lstdetail-vdtldatah) pos(2) ;
 
 /* includes */
-%include uim.mi                 ; 
+/include uim.mi                 ; 
 dcl ol pl-main(.qui-alc) parm ext ; 
 
 /* more includes */
-%include qusec.mi               ; 
-%include sendmsg.mi             ;
+/include qusec.mi               ; 
+/include sendmsg.mi             ;
 
 /* debug */
 dcl dd d char(512) bas(*)       ; 

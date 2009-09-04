@@ -121,6 +121,7 @@ make_object_name20(
 /**
  * command options
     - -v <br> Verbose
+    - -V <br> Show version information
     - -h <br> Show help information
     - -o <br> Program name
     - -t <br> Text description
@@ -170,11 +171,14 @@ int main(int argc, char *argv[]) {
     case 'v':
       shell_parm->verbose_[0] = '1';
       break;
+    case 'V':
+      printf(_MIC_VERSION);
+      free(shell_parm);
+      return 0;
     case 'h':
       printf(_MIC_USAGE);
       free(shell_parm);
       return 0;
-      break;
     case 'o':  // shell_parm->cmd_parm_.pgm_
       pgm_name = strdup(optarg);
       break;

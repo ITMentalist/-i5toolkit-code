@@ -684,6 +684,7 @@ void mic::phase_c(
     throw internal_ex_t(ex_info, msgid);
   }
 
+
   free(ec);
 
 }
@@ -873,11 +874,17 @@ std::string mic::retrieve_exception_description(void* api_error_code) {
   Qus_EC_t *ec = (Qus_EC_t*)api_error_code;
   char *ex_data = (char*)ec + 16;
   Qmh_Rtvm_RTVM0100_t *info = NULL;
+  string r;
+  char ecbuf[_MIC_ECLEN] = {0};
+  Qus_EC_t *this_ec = (Qus_EC_t*)ecbuf;
+  string original_exid(ec->Exception_Id, 7);
 
   static const int INFO_LEN = 4096;
   info = (Qmh_Rtvm_RTVM0100_t*)malloc(INFO_LEN);
   memset(info, 0, INFO_LEN);
   info->Bytes_Available = INFO_LEN;
+  this_ec->Bytes_Provided = _MIC_ECLEN;
+
   QMHRTVM(
           info,
           INFO_LEN,
@@ -888,21 +895,25 @@ std::string mic::retrieve_exception_description(void* api_error_code) {
           ec->Bytes_Available - 16,  // minus the header length of Qus_EC_t (16 bytes)
           "*YES      ",
           "*NO       ",
-          ec
+          this_ec
           );
   if(ec->Bytes_Available != 0) {
 
     free(info);
-    return "";
+    r = "QMHRTVM() failed with excecption ID "
+      + string(this_ec->Exception_Id, 7)
+      + ", previous exception ID is "
+      + original_exid
+      + _NLS;
+    return r;
   }
 
   char *info_ptr = (char*)info + 24;
-  string r =
-    string(info_ptr, info->Length_Message_Returned)
+  r = string(info_ptr, info->Length_Message_Returned)
     + _NLS
     + string(info_ptr + info->Length_Message_Returned, info->Length_Help_Returned)
     + _NLS;
-
+ end:
   free(info);
   return r;
 }
@@ -927,7 +938,11 @@ void mic::report_exception(
   str += " -- " + info;
   if(from_shell) {
 
-    cerr << str << endl;
+    if(type == exbase_t::information)
+      cout << str << endl;
+    else
+      cerr << str << endl;
+
     return;
   }
 

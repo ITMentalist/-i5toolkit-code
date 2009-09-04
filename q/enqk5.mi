@@ -24,8 +24,8 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 CALL PGM(QUSCRTUQ) PARM('MAR1      LSBIN' 'USRQ' 'K' X'00000005' X'00000020' X'00000010' X'00001000' '*EXCLUDE' '''nothing :p"')
  */
 
-%include qusec.mi;
-%include ptrres.mi;
+/include qusec.mi;
+/include ptrres.mi;
 
 dcl spcptr .q-name parm;
 dcl spcptr .key parm;

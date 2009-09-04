@@ -50,10 +50,10 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 #     define _LEFT_BRAKET '\x4D'
 #     define _RIGHT_BRAKET '\x5D'
 #     define _OUTPUTDIR "\xD6\xE4\xE3\xD7\xE4\xE3\xC4\xC9\xD9"
-#     define _AUTH_ALL "\x5C\xC1\xD3\xD3\x40\x40\x40\x40\x40\x40"
+#     define _MIC_AUTH_ALL "\x5C\xC1\xD3\xD3\x40\x40\x40\x40\x40\x40"
 #     define _QSYSPRT  "\xD8\xE2\xE8\xE2\xD7\xD9\xE3\x40\x40\x40\x5C\xD3\xC9\xC2\xD3\x40\x40\x40\x40\x40"
 #     define _SV_LIBL  "\x5C\xD3\xC9\xC2\xD3\x40\x40\x40\x40\x40"
-#     define _MIC_SHELL_OPTIONS "\xA5\x88\x96\x7A\xA3\x7A\x93\x7A\x81\x7A\xC9\x7A\x98\x7A\xD3\x7A"
+#     define _MIC_SHELL_OPTIONS "\xA5\xE5\x88\x96\x7A\xA3\x7A\x93\x7A\x81\x7A\xC9\x7A\x98\x7A\xD3\x7A"
 #   else
 #     define _NLS "\n"
 #     define _TAB "\t"
@@ -76,10 +76,10 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 #     define _LEFT_BRAKET '('
 #     define _RIGHT_BRAKET ')'
 #     define _OUTPUTDIR "OUTPUTDIR"
-#     define _AUTH_ALL "*ALL      "
+#     define _MIC_AUTH_ALL "*ALL      "
 #     define _SV_LIBL  "*LIBL     "
 #     define _QSYSPRT  "QSYSPRT   *LIBL     "
-#     define _MIC_SHELL_OPTIONS "vho:t:l:a:I:q:L:"
+#     define _MIC_SHELL_OPTIONS "vVho:t:l:a:I:q:L:"
 #   endif
 
 /// usgae info
@@ -87,15 +87,34 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
   "Usage: mic [options] file"_NLS \
   "Options:"_NLS \
   _TAB"-v"_TAB"Verbose"_NLS \
+  _TAB"-V"_TAB"Show version information"_NLS \
   _TAB"-h"_TAB"Show help information"_NLS \
-  _TAB"-o program-name"_TAB"Program name"_NLS \
+  _TAB"-o program-name"_TAB"Name of created program object"_NLS \
   _TAB"-t text"_TAB"Text description"_NLS \
   _TAB"-l printer-file"_TAB"Output printer file name"_NLS \
   _TAB"-a public-authority"_TAB"Public authority"_NLS \
   _TAB"-I include-path"_TAB"Include path"_NLS \
   _TAB"-q compiler-option"_TAB"Compiler options"_NLS \
+  _TAB"-L library-name"_TAB"Library name of created program object"_NLS \
   _NLS \
   "Report bugs to junleili-cn@users.sourceforge.net"_NLS
+
+/// project name
+#  define _I5TOOLKIT "i5/OS Programmer's Toolkit"
+
+/// verion number of project i5toolkit
+#  define _I5TOOLKIT_VERSION "0.2.4"
+
+/// mic's version info
+#  define _MIC_VERSION \
+ "mic (" _I5TOOLKIT ") " _I5TOOLKIT_VERSION _NLS \
+ "Copyright (C) 2009  Junlei Li"_NLS \
+ _NLS                                                                   \
+ "i5/OS Programmer's Toolkit is distributed in the hope that it will"_NLS \
+ "be useful, but WITHOUT ANY WARRANTY; without even the implied warranty"_NLS \
+ "of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU"_NLS \
+ "General Public License for more details."_NLS                         \
+ _NLS
 
 /// maxinum length of a ifs path name
 #  define _MAX_IFS_PATH_LEN          512

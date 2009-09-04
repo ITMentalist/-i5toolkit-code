@@ -22,11 +22,11 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
  * display q message
  */
 
-%include qusec.mi;
-%include uim.mi;
-%include ptrres.mi;
+/include qusec.mi;
+/include uim.mi;
+/include ptrres.mi;
 
-%include qcmn.mi;
+/include qcmn.mi;
 
 /* debug */
 dcl dd chdbg char(512) bas(*);
@@ -718,7 +718,7 @@ dcl ol pl-get-object-attr(
   .p-object-attr
 ) parm int;
 
-%include qusrobjd.mi;
+/include qusrobjd.mi;
 dcl dd objd0200 char(180) auto;
 
 dcl insptr .get-object-attr;
@@ -1016,9 +1016,9 @@ dcl spcptr .qmsg-key auto;
 dcl spcptr .qmsg-text auto;
 
 /* misc includes */
-%include space.mi;
-%include sendmsg.mi;
-%include when.mi;
+/include space.mi;
+/include sendmsg.mi;
+/include when.mi;
 
 pend;
 

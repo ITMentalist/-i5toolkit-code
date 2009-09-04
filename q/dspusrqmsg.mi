@@ -24,7 +24,7 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
  * usage: call dspusrqmsg 'Q_NAME'
  */
 
-%include ptrres.mi;
+/include ptrres.mi;
 
 entry i-main(pl-main) ext;
 
@@ -80,8 +80,8 @@ dcl dd final-receiver-size bin(4) auto;
  *  - convert msge-enqueque-time to timestamp
  *  - display message enqueue time, message key, message text
  */
-%include when.mi;
-%include sendmsg.mi;
+/include when.mi;
+/include sendmsg.mi;
 
 dcl dd len bin(4) auto;
 dcl dd index bin(4) auto;

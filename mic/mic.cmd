@@ -36,7 +36,7 @@
 /* srcstmf */
              PARM       KWD(SRCPATH) TYPE(*PNAME) LEN(512) MIN(1) +   
                           VARY(*YES *INT2) CASE(*MIXED) +              
-                          INLPMTLEN(50) PROMPT('IFS source path name') 
+                          INLPMTLEN(50) PROMPT('Source path name') 
 
 /* description test of the generated PGM object */
              PARM       KWD(TEXT) TYPE(*CHAR) LEN(50) CASE(*MIXED) +

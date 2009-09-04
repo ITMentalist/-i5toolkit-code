@@ -28,9 +28,9 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
  *
  */
 
-%include ptrres.mi;
-%include qusec.mi;
-%include qcmn.mi;
+/include ptrres.mi;
+/include qusec.mi;
+/include qcmn.mi;
 
 /* misc variables */
 dcl dd error-msg char(128) auto;
@@ -383,8 +383,8 @@ entry report-error int;
 
   b .report-error;
 
-%include when.mi;
-%include sendmsg.mi;
+/include when.mi;
+/include sendmsg.mi;
 
 pend;
 

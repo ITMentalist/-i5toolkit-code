@@ -17,10 +17,9 @@
 
 % : %.mi
 	$(MIC) $(MIFLAGS) -o$@ $<
-	ln -fs /qsys.lib/$(OUTPUTDIR).lib/$@.pgm $@
 
 MIC=mic
-MIFLAGS=-v -fls2008/feb -q'*list' -q'*replace' -q'*xref' -I. -I../ref
+MIFLAGS=-v -q'*list' -q'*replace' -q'*xref' -I. -I../ref -L$(OUTPUTDIR)
 
 MAKE=gmake
 RM=del

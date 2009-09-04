@@ -22,8 +22,8 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
  * enqueue keyed user q whose key length is 64
  */
 
-%include qusec.mi;
-%include ptrres.mi;
+/include qusec.mi;
+/include ptrres.mi;
 
 dcl spcptr .q-name parm;
 dcl spcptr .key parm;
