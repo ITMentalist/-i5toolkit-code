@@ -54,6 +54,7 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 #     define _QSYSPRT  "\xD8\xE2\xE8\xE2\xD7\xD9\xE3\x40\x40\x40\x5C\xD3\xC9\xC2\xD3\x40\x40\x40\x40\x40"
 #     define _SV_LIBL  "\x5C\xD3\xC9\xC2\xD3\x40\x40\x40\x40\x40"
 #     define _MIC_SHELL_OPTIONS "\xA5\xE5\x88\x96\x7A\xA3\x7A\x93\x7A\x81\x7A\xC9\x7A\x98\x7A\xD3\x7A"
+#     define _A_OUT "\x81\x4B\x96\xA4\xA3"
 #   else
 #     define _NLS "\n"
 #     define _TAB "\t"
@@ -80,6 +81,7 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 #     define _SV_LIBL  "*LIBL     "
 #     define _QSYSPRT  "QSYSPRT   *LIBL     "
 #     define _MIC_SHELL_OPTIONS "vVho:t:l:a:I:q:L:"
+#     define _A_OUT "a.out"
 #   endif
 
 /// usgae info
@@ -229,8 +231,11 @@ struct _tag_mic_shell_param {
   /// verbose or not. '0' - silent, '1' - verbose
   char verbose_[1];
 
+  /// read stdin or not: '0' - not, '1' - yes
+  char read_stdin_[1];
+
   /// reserved
-  char rev_0_[6];
+  char rev_0_[5];
 
   /// offset to the name of the symbol link in IFS of target program
   unsigned int symbol_link_offset_;

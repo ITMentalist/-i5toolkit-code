@@ -148,15 +148,11 @@ int main(int argc, char *argv[]) {
   path_parm_t *path = NULL;
   compiler_options_t *options = NULL;
 
-  if(argc == 1) { // no arguments
-
-    printf(_MIC_USAGE);
-    return 1;
-  }
-
   shell_parm = (mic_shell_param_t*)malloc(_MAX_SHELL_PARAM_LENGTH);
   memset(shell_parm, 0, _MAX_SHELL_PARAM_LENGTH);
+  // init flags of shell_parm_t
   shell_parm->verbose_[0] = '0';
+  shell_parm->read_stdin_[0] = '0';
   options = (compiler_options_t*)((char*)shell_parm + _SHELL_PARM_HEADER_LENGTH + _MIC_CMD_PARM_OPTION_OFFSET);
 
   // init text_, output_, public_auth_
@@ -258,8 +254,11 @@ int main(int argc, char *argv[]) {
 
   } else {
 
-    printf(_ERROR"no input files."_NLS);
-    r = 1;
+    // read source from stdin
+    shell_parm->read_stdin_[0] = '1';
+
+    // set pgm_name to a.out
+    pgm_name = _A_OUT;
   }
 
   // determine ifs program name and name of the real *pgm object

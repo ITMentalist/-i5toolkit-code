@@ -56,7 +56,7 @@ all: $(TARGETS)
 endif
 	@echo "that's all!"
 
-mic.o: stmt.hpp source-unit.hpp builtin.hpp
+mic.o: stmt.hpp builtin.hpp
 
 mic: mic.o mic-main.o
 	$(CXX) -o $@ $^

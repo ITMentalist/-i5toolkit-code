@@ -222,16 +222,10 @@ bool mic::phase_a2(
     if(is_include(stmt, inc_path)) {
 
       // load included source unit
-      source_unit src(inc_path, inc_dirs);
-      if(!src) {
-
-        ex_info = "failed to read included source file -- ";
-        ex_info += inc_path;
-        throw compiler_ex_t(ex_info);
-      }
+      string source = read_source_file(inc_path, inc_dirs);
 
       // do phase_a0() on included source unit
-      const char *in = src.source();
+      const char *in = source.c_str();
       size_t len = strlen(in);
       char *out = (char*)malloc(len);
 
@@ -315,33 +309,39 @@ void mic::phase_a3(mic::stmtlist_t& l) {
 
 } // end of phase_a3()
 
-void mic::source_unit::read_source_file(const mic::stringlist_t& inc_dirs) {
+std::string
+mic::read_source_file(
+                      const std::string& path,
+                      const mic::stringlist_t& inc_dirs
+                      )
+  throw(mic::compiler_ex_t)
+{
 
   using namespace std;
   using namespace mic;
 
-  source_.empty();
-  status_ = false;
+  string ex_info;
   bool absolute = false;
 
   // check path_
-  size_t len = path_.length();
+  size_t len = path.length();
   if(len < 1) // empty path name
-    return;
+    throw compiler_ex_t("empty source file path name");
 
-  if(path_.at(0) == _SLASH) {
+  if(path.at(0) == _SLASH) {
 
     absolute == true;
     if(len < 2) // empty absolute path name
-      return;
+      throw compiler_ex_t("empty source file path name");
   }
 
   int job_ccsid = get_job_ccsid();
 
-  // try path_ first
-  int fd = open(path_.c_str(), O_RDONLY | O_TEXTDATA | O_CCSID, 0, job_ccsid);
+  // try path first
+  bool opened = false;
+  int fd = open(path.c_str(), O_RDONLY | O_TEXTDATA | O_CCSID, 0, job_ccsid);
   if(fd != -1)
-    status_ = true;
+    opened = true;
   else if(!absolute) { // relative path name
 
     // try directory names stored in inc_dirs
@@ -354,28 +354,34 @@ void mic::source_unit::read_source_file(const mic::stringlist_t& inc_dirs) {
       if(dir.at(len - 1) != _SLASH)
         dir += _SLASH;
 
-      path = dir + path_;
+      path = dir + path;
 
       fd = open(path.c_str(), O_RDONLY | O_TEXTDATA | O_CCSID, 0, job_ccsid);
       if(fd != -1) {
 
-        status_ = true;
+        opened = true;
         break;
       }
     }
 
-    if(!status_)
-      return;
+    if(!opened) {
+
+      ex_info = "failed to read source file -- ";
+      ex_info += path;
+      throw compiler_ex_t(ex_info);
+    }
   }
 
   // read source unit
+  string source;
   char ch = 0;
   while(read(fd, &ch, 1) > 0)
-    source_ += ch;
+    source += ch;
 
   close(fd);
 
-} // end of mic::source_unit::read_source_file
+  return source;
+}
 
 void mic::phase_a(
                   const char* source,

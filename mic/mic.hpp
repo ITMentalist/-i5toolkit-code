@@ -39,7 +39,6 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 // c++ classes
 #   include <mic_ex.hpp>
 #   include <stmt.hpp>
-#   include <source-unit.hpp>
 #   include <builtin.hpp>
 
 /**
@@ -225,6 +224,18 @@ namespace mic {
 
   /// returns name of a job's current library
   void get_cur_lib(char *curlib);
+
+  /**
+   * read ifs source file
+   *
+   * @param[in] path, source file path
+   * @param[in] search_dirs, ....
+   */
+  std::string
+  read_source_file(
+                   const std::string& path,
+                   const stringlist_t& inc_dirs
+                   ) throw(compiler_ex_t);
 
 };
 

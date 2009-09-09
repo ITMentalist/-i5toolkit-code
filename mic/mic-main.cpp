@@ -68,15 +68,18 @@ int main(int argc, char *argv[]) {
     string src_path(mic_parm.ifs_src_.path_, mic_parm.ifs_src_.len_);
     load_inc_dirs(inc_dirs, mic_parm);
 
-    source_unit src(src_path, inc_dirs);
-    if(!src) {
+    // read target source file
+    string source;
+    if(from_shell && shell_parm->read_stdin_[0] == '1') {
 
-      ex_info = "failed to read source file -- ";
-      ex_info += src.path();
-      throw compiler_ex_t(ex_info);
-    }
+      char ch = 0;
+      while(read(STDIN_FILENO, &ch, 1) > 0)
+        source += ch;
 
-    phase_a(src.source(), stmts, inc_dirs);
+    } else
+      source = read_source_file(src_path, inc_dirs);
+
+    phase_a(source.c_str(), stmts, inc_dirs);
 
     // phase b
     builtinmap_t b_map;
