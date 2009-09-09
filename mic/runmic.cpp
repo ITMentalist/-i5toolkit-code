@@ -258,7 +258,8 @@ int main(int argc, char *argv[]) {
     shell_parm->read_stdin_[0] = '1';
 
     // set pgm_name to a.out
-    pgm_name = _A_OUT;
+    if(pgm_name == NULL)
+      pgm_name = _A_OUT;
   }
 
   // determine ifs program name and name of the real *pgm object
