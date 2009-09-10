@@ -903,7 +903,7 @@ std::string mic::retrieve_exception_description(void* api_error_code) {
           "*NO       ",
           this_ec
           );
-  if(ec->Bytes_Available != 0) {
+  if(this_ec->Bytes_Available != 0) {
 
     free(info);
     r = "QMHRTVM() failed with excecption ID "
