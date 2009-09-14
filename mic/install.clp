@@ -18,8 +18,10 @@
 /* @file INSTALL.CLP */
 /* Create IFS symbol links for MIC */
              PGM
+
+             RMVLNK     OBJLNK('/usr/bin/mic')
+             MONMSG     MSGID(CPF0000)
+
              ADDLNK     OBJ('/qsys.lib/i5toolkit.lib/runmic.pgm') +
                           NEWLNK('/usr/bin/mic')
-             ADDLNK     OBJ('/qsys.lib/i5toolkit.lib/runmic.pgm') +
-                          NEWLNK('/usr/bin/runmic')
              ENDPGM
