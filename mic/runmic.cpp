@@ -29,6 +29,7 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 # include <unistd.h>
 
 # include <mic-def.h>
+# include <utils-in.hpp>
 # include <ctype.h>  // toupper()
 
 # ifdef __OS400__  // 400
@@ -74,32 +75,13 @@ make_upper(char* str, size_t len) {
 
 }
 
-/**
-   useful only in runmic.c
- */
-void
-copy_bytes_with_padding(
-			char* output,
-			char* source,
-			size_t output_length,
-			char  pad
-			) {
-
-  // @todo input checking
-
-  size_t cpylen = strlen(source);
-  cpylen = (cpylen < output_length) ? cpylen : output_length;
-
-  memset(output, pad, output_length);
-  memcpy(output, source, cpylen);
-
-}
-
 void
 make_object_name20(
 		   const char *source,
 		   char *name20
 		   ) {
+
+  using namespace mic;
 
   char *p = NULL;
   char *src = strdup(source);
@@ -135,6 +117,8 @@ make_object_name20(
 
  */
 int main(int argc, char *argv[]) {
+
+  using namespace mic;
 
   mic_shell_param_t* shell_parm = NULL;
   extern char *optarg;

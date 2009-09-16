@@ -40,6 +40,40 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 #   include <os400-mock.h>
 # endif
 
+/// EMI/MIC version number, used internally
+unsigned short mic_version_ = 0x0002;
+
+/**
+ * map from builtin-name to builtin-number
+ *
+ * entry format:
+ *  - builtin name, char(30)
+ *  - builtin number, char(4), nnnn, 表示ubin(2)
+ */
+char builtin_name_number_map_[] = {
+
+  "MEMCPY                        0001"
+  "SENDMSG                       0002"
+};
+
+bool mic::get_builtin_number_by_name(const char *name, char *number) {
+
+  using namespace mic;
+
+  char bname[_MAX_MIC_BUILTIN_NAME + 1] = {0};
+  copy_bytes_with_padding(bname, name, _MAX_MIC_BUILTIN_NAME, _WS);
+
+  char *pos = strstr(builtin_name_number_map_, bname);
+  if(pos == NULL)
+    return false;
+
+  pos += _MAX_MIC_BUILTIN_NAME;
+
+  memcpy(number, pos, 4);
+
+  return true;
+}
+
 void mic::phase_a0(const char *input, char *output, size_t len) {
 
   int i = 0, j = 0;

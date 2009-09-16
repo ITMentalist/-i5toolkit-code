@@ -46,6 +46,16 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
  */
 namespace mic {
 
+  /**
+   * get a builtin-number from mic::builtin_name_number_map_ by name
+   *
+   * @param[in] name, builtin name
+   * @param[out] number, builtin number
+   *
+   * @return bool, false if <var>name</var> is nout found
+   */
+  bool get_builtin_number_by_name(const char *name, char *number);
+
   // phase-a
 
   /**
@@ -174,7 +184,7 @@ namespace mic {
    */
   void phase_b(stmtlist_t& stmts, builtinmap_t& m)
     throw(compiler_ex_t, internal_ex_t)
-;
+    ;
 
   /**
    * dump statements to a output stream

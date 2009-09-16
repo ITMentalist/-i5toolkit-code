@@ -106,6 +106,7 @@ struct mic::builtin_t {
     using namespace std;
 
     int r = 0;
+    string ex_info;
     stmt_t& stmt = *it;
     const char *stmt_text = stmt.text().c_str();
     int b_inv_str_start = 0, b_inv_str_length = 0;
@@ -172,8 +173,12 @@ struct mic::builtin_t {
     }
 
     // check number of parameters
-    if(plist.size() != num_parms_)
-      ; // throw exception, 参数个数不符
+    if(plist.size() != num_parms_) { // invalid parameter number
+
+      ex_info = "invalid number of parameters when invoking builtin %";
+      ex_info += name_;
+      throw compiler_ex_t(ex_info);
+    }
 
     // replace statements in rep_stmts_
     stmtlist_t::iterator it_rep = rep_stmts_.begin();

@@ -95,6 +95,28 @@ namespace mic {
             );
   }
 
+  /**
+     useful only in runmic.c
+  */
+  inline
+  void
+  copy_bytes_with_padding(
+                          char* output,
+                          const char* source,
+                          size_t output_length,
+                          char  pad
+                          ) {
+
+    // @todo input checking
+
+    size_t cpylen = strlen(source);
+    cpylen = (cpylen < output_length) ? cpylen : output_length;
+
+    memset(output, pad, output_length);
+    memcpy(output, source, cpylen);
+
+  }
+
 };
 
 # endif // !defined __utils_in_hpp_

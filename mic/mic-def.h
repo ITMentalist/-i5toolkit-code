@@ -258,4 +258,6 @@ struct _tag_mic_shell_param {
 # define _MAX_SHELL_PARAM_LENGTH 0x40000 // 256K
 # define _SHELL_SPECIFIC_PARAM_START 0x20000 // 128K
 
+#   include <builtin-fmt.hpp>
+
 # endif // !defined __mic_def_h__
