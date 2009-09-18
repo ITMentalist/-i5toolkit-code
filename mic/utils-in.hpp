@@ -25,6 +25,7 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 # ifndef __utils_in_hpp_
 # define __utils_in_hpp_
 
+#  include <time.h>
 #  include <cpp-common.hpp>
 
 namespace mic {

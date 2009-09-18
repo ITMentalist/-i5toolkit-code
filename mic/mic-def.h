@@ -31,6 +31,7 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 
 // character constants
 #   ifdef __OS400__
+#     define _CH_NL  '\x25'
 #     define _NLS "\x25"
 #     define _TAB "\x05"
 #     define _WS  '\x40'
@@ -56,6 +57,7 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 #     define _MIC_SHELL_OPTIONS "\xA5\xE5\x88\x96\x7A\xA3\x7A\x93\x7A\x81\x7A\xC9\x7A\x98\x7A\xD3\x7A"
 #     define _A_OUT "\x81\x4B\x96\xA4\xA3"
 #   else
+#     define _CH_NL  '\n'
 #     define _NLS "\n"
 #     define _TAB "\t"
 #     define _WS ' '

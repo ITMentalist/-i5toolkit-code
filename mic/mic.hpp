@@ -52,9 +52,9 @@ namespace mic {
    * @param[in] name, builtin name
    * @param[out] number, builtin number
    *
-   * @return bool, false if <var>name</var> is nout found
+   * @return char *, NULL if <var>name</var> is nout found
    */
-  bool get_builtin_number_by_name(const char *name, char *number);
+  char* get_builtin_number_by_name(const char *name);
 
   // phase-a
 

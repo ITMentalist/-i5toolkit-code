@@ -55,9 +55,13 @@ key format: type code, char(1); builtin number, char(4), stmt-number ubin(2)
 /// mic builtin index entry length
 #   define _MIC_BUILTIN_INX_LEN 256
 
-#   define _INDEX_ENTRY_TYPE_HEADER  '\x00'
-#   define _INDEX_ENTRY_TYPE_BUILTIN '\x01'
-#   define _INDEX_ENTRY_TYPE_STMT    '\x02'
+/// max permitted number of stmts of in a single builtin
+#   define _MIC_MAX_BUILTIN_STMTS 4095
+
+#   define _INDEX_ENTRY_TYPE_HEADER    '\x00'
+#   define _INDEX_ENTRY_TYPE_BUILTIN   '\x01'
+#   define _INDEX_ENTRY_TYPE_STMT_REP  '\x02'
+#   define _INDEX_ENTRY_TYPE_STMT_BODY '\x03'
 
 typedef
 #   ifdef __OS400__
@@ -71,24 +75,24 @@ struct tag_builtin_key {
 
 } builtin_key_t;
 
+# define _MAX_BUILTIN_DESC (_MIC_BUILTIN_INX_LEN - _MIC_BUILTIN_KEY - _MAX_MIC_BUILTIN_NAME - 6)
+
 typedef 
 #   ifdef __OS400__
 _Packed
 #   endif
 struct tag_builtin_index {
 
-  /**
-   * builtin_index_t only use the type_ field of the 5 bytes key
-   *
-   * type code of index header is hex 00
-   */
-  builtin_key_t key_;
+  /* key */
+  char type_[1];      // hex 00
+  char reserved_[4];  // hex 00
+  char reserved2_[2]; // hex 00
 
   unsigned short index_ver_;
   unsigned short min_mic_ver_;
   unsigned short max_mic_ver_;
   unsigned short num_builtins_;
-  char release_notes_[_MIC_BUILTIN_INX_LEN - 8 - _MIC_BUILTIN_KEY];
+  char release_notes_[_MAX_BUILTIN_DESC];
 
 } builtin_index_t;
 
@@ -98,26 +102,29 @@ _Packed
 #   endif
 struct tag_builtin_header {
 
-  /**
-   * builtin_header_t
-      - set key_.type_ to hex 01
-      - use key_.builtin_num_ as builtin number
-      - use key_.stmt_num_ as the number of statements
+  /* key */
+  char type_[1];      // hex 01
+  char builtin_num_[4];
+  char reserved2_[2]; // hex 00
 
-      @remark each builtin's stmt number starts from hex 0001
-   */
-  builtin_key_t key_;
+  /// number of params
+  unsigned short num_param_;
+
+  /// number of replacement stmts
+  unsigned short num_rep_stmt_;
+
+  /// number of body stmts
+  unsigned short num_body_stmt_;
 
   /// builtin name
   char builtin_name_[_MAX_MIC_BUILTIN_NAME];
 
-  /// number of params
-  unsigned short num_params_;
-
   /// user data, e.g. comments
-  char user_data_[_MIC_BUILTIN_INX_LEN - _MIC_BUILTIN_KEY - _MAX_MIC_BUILTIN_NAME - 2];
+  char user_data_[_MAX_BUILTIN_DESC];
 
 } builtin_header_t;
+
+# define _MAX_STMT_LEN (_MIC_BUILTIN_INX_LEN - _MIC_BUILTIN_KEY)
 
 typedef
 #   ifdef __OS400__
@@ -125,12 +132,15 @@ _Packed
 #   endif
 struct tag_builtin_stmt {
 
-  builtin_key_t key_;
+  /* key */
+  char type_[1];      // hex 02, 03
+  char builtin_num_[4];
+  unsigned short stmt_num_;
 
-  char stmt_[_MIC_BUILTIN_INX_LEN - _MIC_BUILTIN_KEY];
+  char stmt_[_MAX_STMT_LEN];
 
 } builtin_stmt_t;
 
-#   define _EMI_BUILTIN_INDEX "EMIBUILTINLSBIN     "
+#   define _EMI_BUILTIN_INDEX "EMIBUILTINI5TOOLKIT "
 
 # endif

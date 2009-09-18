@@ -36,6 +36,9 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 #   include <quscrtus.h>
 #   include <qusptrus.h>
 #   include <recio.h>
+#   include <quscrtui.h>
+#   include <qusaddui.h>
+#   include <qusrtvui.h>
 # else
 #   include <os400-mock.h>
 # endif
@@ -56,22 +59,23 @@ char builtin_name_number_map_[] = {
   "SENDMSG                       0002"
 };
 
-bool mic::get_builtin_number_by_name(const char *name, char *number) {
+char* mic::get_builtin_number_by_name(const char *name) {
 
   using namespace mic;
 
+  char number[4 + 1] = {0};
   char bname[_MAX_MIC_BUILTIN_NAME + 1] = {0};
   copy_bytes_with_padding(bname, name, _MAX_MIC_BUILTIN_NAME, _WS);
 
   char *pos = strstr(builtin_name_number_map_, bname);
   if(pos == NULL)
-    return false;
+    return NULL;
 
   pos += _MAX_MIC_BUILTIN_NAME;
 
   memcpy(number, pos, 4);
 
-  return true;
+  return NULL; //strdup(number);
 }
 
 void mic::phase_a0(const char *input, char *output, size_t len) {
@@ -449,146 +453,204 @@ void mic::load_builtins(mic::builtinmap_t& m) {
   using namespace mic;
   using namespace std;
 
-  // 0000, %inc, just a DEMO
+  static const ent_len_len = 8 + _MIC_MAX_BUILTIN_STMTS * 8;
+
+  // load all builtins
+  char ecbuf[_MIC_ECLEN] = {0};
+  Qus_EC_t *ec = (Qus_EC_t*)ecbuf;
+  int bytes_returned;
+  int bytes_avail;
+  char *empty = NULL;
+  int rtn_entries = 0;
+  char lib_rtn[11] = {0};
+  char search_criteria_between[_MIC_BUILTIN_KEY * 2] = {0};
+  char search_criteria_equal[_MIC_BUILTIN_KEY] = {0}; // here-today
+  int search_type = 1; // 1=equal, 8=between
+  char *output = NULL;
+  int i = 0;
+  int ind = 0;
+  char *stmt_ptr = NULL;
+  string ex_info;
+
+  ec->Bytes_Provided = _MIC_ECLEN;
+
+  // allocate a large enough 'Entry lengths and entry offsets' buffer
+  empty = (char*)malloc(ent_len_len);
+
+  // read index header: key == x'00,00000000,0000'
+  output = (char*)malloc(8 + _MIC_BUILTIN_INX_LEN);
+  // set key value
+  memset(search_criteria_equal, 0, _MIC_BUILTIN_KEY);
+  search_type = 1;
+  QUSRTVUI(
+           output,
+           _MIC_BUILTIN_INX_LEN,
+           empty,
+           ent_len_len,
+           &rtn_entries,
+           lib_rtn,
+           _EMI_BUILTIN_INDEX,
+           "IDXE0100",
+           1,     // we need only one entry
+           search_type,  // 1=equal
+           search_criteria_equal,   // key == x'00,00000000,0000'
+           _MIC_BUILTIN_KEY,
+           0,
+           ec
+           );
+  if(rtn_entries == 0 || ec->Bytes_Available != 0) {
+
+    free(output);
+    free(empty);
+    throw internal_ex_t("failed in read EMI/MIC builtin index");
+  }
+
+  builtin_index_t inxh;
+  memcpy(&inxh, output + 8, _MIC_BUILTIN_INX_LEN);
+  free(output);
+
+  // check inxh.min_mic_ver_, inxh.max_mic_ver_, throw exception
+  if(mic_version_ > inxh.max_mic_ver_ || mic_version_ < inxh.min_mic_ver_) {
+
+    throw internal_ex_t("invalid EMI/MIC builtin index version");
+  }
+
   /*
-    user code:
-      mult(s) vv, %inc(ind);
-
-    mic:
-      CPYNV @0000-#1, IND;
-      CALLI @0000, *, .@0000;
-      MULT(S) VV, @0000-#RTN;
-
-    rep_stmts:
-      CPYNV @0000-#1, :1;
-      CALLI @0000, *, .@0000;
-
-    body:
-      DCL DD @0000-#RTN BIN(4) AUTO;
-      DCL DD @0000-#1   BIN(4) AUTO;
-      DCL INSPTR .@0000 AUTO;
-      ENTRY @0000 INT;
-        ADDN(S) @0000-#1, 1;
-        CPYNV   @0000-#RTN, @0000-#1;
-        B .@0000;
+   * read each builtin header: key == x'01,000000Fn,0000'
+   *
+   * pre-condition: inxh.num_builtins_
    */
+  for(i = 0; i < inxh.num_builtins_; i++) {
 
-  // inc
-  builtin_t inc("INC", "0000", 1, true);
-  inc.rep_stmts_.push_back(stmt_t("", "CPYNV @0000-#1, :1;"));
-  inc.rep_stmts_.push_back(stmt_t("", "CALLI @0000, *, .@0000;"));
+    search_type = 1;  // 1=equal
+    output = (char*)malloc(8 + _MIC_BUILTIN_INX_LEN);
+    sprintf(search_criteria_equal, "\x01%04d\x00\x00", i);
 
-  inc.body_.push_back(stmt_t("/* builtin INC */", "DCL DD @0000-#RTN BIN(4) AUTO;"));
-  inc.body_.push_back(stmt_t("", "DCL DD @0000-#1   BIN(4) AUTO;"));
-  inc.body_.push_back(stmt_t("", "DCL INSPTR .@0000 AUTO;"));
-  inc.body_.push_back(stmt_t("", "ENTRY @0000 INT;"));
-  inc.body_.push_back(stmt_t("", "ADDN(S) @0000-#1, 1;"));
-  inc.body_.push_back(stmt_t("", "CPYNV   @0000-#RTN, @0000-#1;"));
-  inc.body_.push_back(stmt_t("", "B .@0000;"));
+    // read each builtin header
+    QUSRTVUI(
+             output,
+             _MIC_BUILTIN_INX_LEN,
+             empty,
+             ent_len_len,
+             &rtn_entries,
+             lib_rtn,
+             _EMI_BUILTIN_INDEX,
+             "IDXE0100",
+             1,            // we need only one entry, the builtin header
+             search_type,  // 1=equal
+             search_criteria_equal,   // key == x'01,000000Fn,0000'
+             _MIC_BUILTIN_KEY,
+             0,
+             ec
+             );
+    if(rtn_entries == 0 || ec->Bytes_Available != 0) {
 
-  // memcpy
-  builtin_t MEMCPY("MEMCPY", "0001", 3);
+      free(output);
+      free(empty);
 
-  MEMCPY.rep_stmts_.push_back(stmt_t("", "SETSPPFP @0001-#1, :1  ;"));
-  MEMCPY.rep_stmts_.push_back(stmt_t("", "SETSPPFP @0001-#2, :2  ;"));
-  MEMCPY.rep_stmts_.push_back(stmt_t("", "CPYNV    @0001-#3, :3  ;"));
-  MEMCPY.rep_stmts_.push_back(stmt_t("", "CALLI @0001, *, .@0001 ;"));
+      ex_info = "failed to read builtin header: " + string(search_criteria_equal + 1, 4);
+      throw internal_ex_t(ex_info);
+    }
 
-  MEMCPY.body_.push_back(stmt_t("/* builtin MEMCPY */", "  DCL SPCPTR @0001-#1 AUTO        ;"));
-  MEMCPY.body_.push_back(stmt_t("", " DCL SPCPTR @0001-#2 AUTO        ;"));
-  MEMCPY.body_.push_back(stmt_t("", " DCL DD @0001-#3 BIN(4) AUTO     ;"));
-  MEMCPY.body_.push_back(stmt_t("", "  DCL INSPTR .@0001 AUTO         ;"));
-  MEMCPY.body_.push_back(stmt_t("", "  ENTRY @0001 INT                 ;"));
-  MEMCPY.body_.push_back(stmt_t("", "   DCL CON @0001-BYTES-PER-COPY BIN(4) INIT(32752) ;"));
-  MEMCPY.body_.push_back(stmt_t("", "  DCL DD @0001-LENGTH BIN(4)                   ;"));
-  MEMCPY.body_.push_back(stmt_t("", "  DCL DD @0001-CH-TARGET CHAR(1) BAS(@0001-#1) ;"));
-  MEMCPY.body_.push_back(stmt_t("", "  DCL DD @0001-CH-SOURCE CHAR(1) BAS(@0001-#2) ;"));
-  MEMCPY.body_.push_back(stmt_t("", "  DCL DTAPTR @0001-TARGET-PTR AUTO      ;"));
-  MEMCPY.body_.push_back(stmt_t("", "  DCL DTAPTR @0001-SOURCE-PTR AUTO      ;"));
-  MEMCPY.body_.push_back(stmt_t("", " DCL DD @0001-REMAINED BIN(4) AUTO     ;"));
-  MEMCPY.body_.push_back(stmt_t("", "  DCL DD @0001-TO-COPY BIN(4) AUTO      ;"));
-  MEMCPY.body_.push_back(stmt_t("", "           CPYNV @0001-LENGTH, @0001-#3              ;"));
-  MEMCPY.body_.push_back(stmt_t("", "           CPYNV @0001-REMAINED, @0001-LENGTH  ;"));
-  MEMCPY.body_.push_back(stmt_t("", "          CPYNV @0001-TO-COPY, @0001-BYTES-PER-COPY ;"));
-  MEMCPY.body_.push_back(stmt_t("", " LOOP:         CMPNV(B) @0001-REMAINED, @0001-TO-COPY / HI(=+2) ;"));
-  MEMCPY.body_.push_back(stmt_t("", "         CPYNV @0001-TO-COPY, @0001-REMAINED;"));
-  MEMCPY.body_.push_back(stmt_t("", "  : BRK 'SETDP'                     ;"));
-  MEMCPY.body_.push_back(stmt_t("", "                   SETDP @0001-TARGET-PTR, @0001-CH-TARGET ;"));
-  MEMCPY.body_.push_back(stmt_t("", "          SETDP @0001-SOURCE-PTR, @0001-CH-SOURCE ;"));
-  MEMCPY.body_.push_back(stmt_t("", "            DCL DD DTAPTR-ATTR CHAR(7) AUTO ;"));
-  MEMCPY.body_.push_back(stmt_t("", "         DCL DD * CHAR(1) DEF(DTAPTR-ATTR) INIT(X'04') ;"));
-  MEMCPY.body_.push_back(stmt_t("", "         DCL DD DTAPTR-ATTR-LENGTH BIN(2) DEF(DTAPTR-ATTR) POS(2) ;"));
-  MEMCPY.body_.push_back(stmt_t("", "          CPYNV DTAPTR-ATTR-LENGTH, @0001-TO-COPY ;"));
-  MEMCPY.body_.push_back(stmt_t("", " BRK 'SETDPAT'                   ;"));
-  MEMCPY.body_.push_back(stmt_t("", "          SETDPAT @0001-TARGET-PTR, DTAPTR-ATTR ;"));
-  MEMCPY.body_.push_back(stmt_t("", "          SETDPAT @0001-SOURCE-PTR, DTAPTR-ATTR ;"));
-  MEMCPY.body_.push_back(stmt_t("", "                   CPYBLA @0001-TARGET-PTR, @0001-SOURCE-PTR ;"));
-  MEMCPY.body_.push_back(stmt_t("", "                   SUBN(S) @0001-REMAINED, @0001-TO-COPY ;"));
-  MEMCPY.body_.push_back(stmt_t("", "         CMPNV(B) @0001-REMAINED, 0 / NHI(END-LOOP) ;"));
-  MEMCPY.body_.push_back(stmt_t("", "                   ADDSPP @0001-#1, @0001-#1, @0001-TO-COPY ;"));
-  MEMCPY.body_.push_back(stmt_t("", "          ADDSPP @0001-#2, @0001-#2, @0001-TO-COPY ;"));
-  MEMCPY.body_.push_back(stmt_t("", "           B LOOP                  ;"));
-  MEMCPY.body_.push_back(stmt_t("", "  END-LOOP: BRK 'MEMCPY-RTN'                       ;"));
-  MEMCPY.body_.push_back(stmt_t("", "          B .@0001                       ;"));
+    builtin_header_t bh;
+    memcpy(&bh, output + 8, _MIC_BUILTIN_INX_LEN);
+    free(output);
 
-  // sendmsg: 0002
-  builtin_t SENDMSG("SENDMSG", "0002", 2);
+    // instantiate a builtin_t
+    builtin_t b(
+                string(bh.builtin_name_),
+                string(bh.builtin_num_, 4),
+                bh.num_param_
+                );
 
-  SENDMSG.rep_stmts_.push_back(stmt_t("", "        SETSPP @0002-#1, :1   ;"));
-  SENDMSG.rep_stmts_.push_back(stmt_t("", "        CPYNV @0002-#2, :2   ;"));
-  SENDMSG.rep_stmts_.push_back(stmt_t("", "        CALLI @0002, *, .@0002  ;"));
+    // read builtin's replacement stmts
+    int ind = 0;
+    search_type = 8;
+    int output_len = 8 + _MIC_BUILTIN_INX_LEN * bh.num_rep_stmt_;
+    output = (char*)malloc(output_len);
+    // first criteria
+    memcpy(search_criteria_between, "\x02\x00\x00\x00\x00\x00\x00", _MIC_BUILTIN_KEY);
+    memcpy(search_criteria_between + 1, bh.builtin_num_, 4);
+    // second criteria
+    sprintf(search_criteria_between + _MIC_BUILTIN_KEY,
+            "\x02%4.4s",
+            bh.builtin_num_
+            );
+    *(unsigned short*)(search_criteria_between + _MIC_BUILTIN_KEY + 5) =
+      bh.num_rep_stmt_ - 1;
+    QUSRTVUI(
+             output,
+             output_len,
+             empty,
+             ent_len_len,
+             &rtn_entries,
+             lib_rtn,
+             _EMI_BUILTIN_INDEX,
+             "IDXE0100",
+             4095,         // max number of entries
+             search_type,  // 1=equal
+             search_criteria_between,
+             _MIC_BUILTIN_KEY,
+             _MIC_BUILTIN_KEY,
+             ec
+             );
 
-  SENDMSG.body_.push_back(stmt_t("/* builtin SENDMSG */", "DCL SPCPTR @0002-#1 AUTO;"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL DD @0002-#2 BIN(4) AUTO;"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL INSPTR .@0002;"));
-  SENDMSG.body_.push_back(stmt_t("", "ENTRY @0002 INT;"));
-  SENDMSG.body_.push_back(stmt_t("", "BRK '@0002-INIT'  ;"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL DD @0002-EC CHAR(256) AUTO;"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL SPCPTR @0002-EC-PTR AUTO INIT(@0002-EC);"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL SPC * BAS(@0002-EC-PTR);"));
-  SENDMSG.body_.push_back(stmt_t("", "        DCL DD @0002-EC-BYTES-IN BIN(4) DIR;"));
-  SENDMSG.body_.push_back(stmt_t("", "        DCL DD @0002-EC-BYTES-OUT BIN(4) DIR;"));
-  SENDMSG.body_.push_back(stmt_t("", "        DCL DD @0002-EC-EXID CHAR(7) DIR;"));
-  SENDMSG.body_.push_back(stmt_t("", "        DCL DD * CHAR(1) DIR;"));
-  SENDMSG.body_.push_back(stmt_t("", "        DCL DD @0002-EC-EXDATA CHAR(240) DIR;"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL DD @0002-SNDPM-MSGID CHAR(7) AUTO INIT(' ');"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL SPCPTR .@0002-SNDPM-MSGID AUTO INIT(@0002-SNDPM-MSGID);"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL DD @0002-SNDPM-MSGF CHAR(20) AUTO INIT(' ');"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL SPCPTR .@0002-SNDPM-MSGF AUTO INIT(@0002-SNDPM-MSGF);"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL SPCPTR .@0002-SNDPM-MSG AUTO;"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL DD @0002-SNDPM-MSGLEN BIN(4) AUTO;"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL SPCPTR .@0002-SNDPM-MSGLEN AUTO INIT(@0002-SNDPM-MSGLEN);"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL DD @0002-SNDPM-MSGTYPE CHAR(10) AUTO INIT('*INFO');"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL SPCPTR .@0002-SNDPM-MSGTYPE AUTO INIT(@0002-SNDPM-MSGTYPE);"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL DD @0002-SNDPM-CALLSTACK-ENTRY CHAR(10) AUTO INIT('*');"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL SPCPTR .@0002-SNDPM-CALLSTACK-ENTRY AUTO INIT(@0002-SNDPM-CALLSTACK-ENTRY);"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL DD @0002-SNDPM-CALLSTACK-COUNTER BIN(4) AUTO INIT(1);"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL SPCPTR .@0002-SNDPM-CALLSTACK-COUNTER AUTO INIT(@0002-SNDPM-CALLSTACK-COUNTER);"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL DD @0002-SNDPM-MSGKEY CHAR(4) AUTO INIT(' ');"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL SPCPTR .@0002-SNDPM-MSGKEY AUTO INIT(@0002-SNDPM-MSGKEY);"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL OL @0002-AL-SNDPM ("));
-  SENDMSG.body_.push_back(stmt_t("", "        .@0002-SNDPM-MSGID,"));
-  SENDMSG.body_.push_back(stmt_t("", "        .@0002-SNDPM-MSGF,"));
-  SENDMSG.body_.push_back(stmt_t("", "        .@0002-SNDPM-MSG,"));
-  SENDMSG.body_.push_back(stmt_t("", "        .@0002-SNDPM-MSGLEN,"));
-  SENDMSG.body_.push_back(stmt_t("", "        .@0002-SNDPM-MSGTYPE,"));
-  SENDMSG.body_.push_back(stmt_t("", "        .@0002-SNDPM-CALLSTACK-ENTRY,"));
-  SENDMSG.body_.push_back(stmt_t("", "        .@0002-SNDPM-CALLSTACK-COUNTER,"));
-  SENDMSG.body_.push_back(stmt_t("", "        .@0002-SNDPM-MSGKEY,"));
-  SENDMSG.body_.push_back(stmt_t("", "        @0002-EC-PTR"));
-  SENDMSG.body_.push_back(stmt_t("", ") ARG;"));
-  SENDMSG.body_.push_back(stmt_t("", "DCL SYSPTR .@0002-QMHSNDPM AUTO INIT('QMHSNDPM', TYPE(PGM));"));
-  SENDMSG.body_.push_back(stmt_t("", "BRK '@0002-START'  ;"));
-  SENDMSG.body_.push_back(stmt_t("", "        CPYNV @0002-EC-BYTES-IN, 256;"));
-  SENDMSG.body_.push_back(stmt_t("", "        SETSPPFP .@0002-SNDPM-MSG, @0002-#1;"));
-  SENDMSG.body_.push_back(stmt_t("", "        SETSPP .@0002-SNDPM-MSGLEN, @0002-#2;"));
-  SENDMSG.body_.push_back(stmt_t("", "        CALLX .@0002-QMHSNDPM, @0002-AL-SNDPM, *;"));
-  SENDMSG.body_.push_back(stmt_t("", "BRK '@0002-END'                 ;"));
-  SENDMSG.body_.push_back(stmt_t("", "        B .@0002;"));
+    char *stmt_ptr = output + 8;
+    for(ind = 0;
+        rtn_entries != 0 && ind < bh.num_rep_stmt_;
+        ind++, stmt_ptr += _MIC_BUILTIN_INX_LEN) {
 
-  m.insert(builtinmap_t::value_type("INC", inc));
-  m.insert(builtinmap_t::value_type("MEMCPY", MEMCPY));
-  m.insert(builtinmap_t::value_type("SENDMSG", SENDMSG));
+      b.rep_stmts_.push_back(stmt_t("", string(stmt_ptr + _MIC_BUILTIN_KEY)));
+
+    }
+    free(output);
+
+    // read builtin's body stmts
+    search_type = 8;
+    output_len = 8 + _MIC_BUILTIN_INX_LEN * bh.num_body_stmt_;
+    output = (char*)malloc(output_len);
+    // first criteria
+    memcpy(search_criteria_between, "\x03\x00\x00\x00\x00\x00\x00", _MIC_BUILTIN_KEY);
+    memcpy(search_criteria_between + 1, bh.builtin_num_, 4);
+    // second criteria
+    sprintf(search_criteria_between + _MIC_BUILTIN_KEY,
+            "\x03%4.4s",
+            bh.builtin_num_
+            );
+    *(unsigned short*)(search_criteria_between + _MIC_BUILTIN_KEY + 5) =
+      bh.num_body_stmt_ - 1;
+    QUSRTVUI(
+             output,
+             output_len,
+             empty,
+             ent_len_len,
+             &rtn_entries,
+             lib_rtn,
+             _EMI_BUILTIN_INDEX,
+             "IDXE0100",
+             4095,         // max number of entries
+             search_type,  // 1=equal
+             search_criteria_between,
+             _MIC_BUILTIN_KEY,
+             _MIC_BUILTIN_KEY,
+             ec
+             );
+    stmt_ptr = output + 8;
+    for(ind = 0;
+        rtn_entries != 0 && ind < bh.num_body_stmt_;
+        ind++, stmt_ptr += _MIC_BUILTIN_INX_LEN) {
+
+      b.body_.push_back(stmt_t("", string(stmt_ptr + _MIC_BUILTIN_KEY)));
+
+    }
+    free(output);
+
+    // insert builtin b into builtinmap_t m
+    m.insert(builtinmap_t::value_type(string(bh.builtin_name_), b));
+
+  } // end of for(inxh.num_builtins_)
+
+  free(empty);
 
 }
 

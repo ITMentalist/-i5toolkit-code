@@ -45,14 +45,12 @@ struct mic::builtin_t {
   builtin_t(
             const std::string& name,
             const std::string& bnum,
-            unsigned short num_parms = 0,
-            bool return_val = false
+            unsigned short num_parms = 0
             ) {
 
     name_ = name;
     bnum_ = bnum;
     num_parms_ = num_parms;
-    return_val_ = return_val;
   }
 
   /**
@@ -267,9 +265,6 @@ protected:
 
   /// number of builtin parameters
   unsigned short num_parms_;
-
-  /// whether or not returns a value
-  bool return_val_;
 
 };
 

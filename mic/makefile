@@ -22,7 +22,7 @@
 ifeq ($(OS400), yes)
 	MAKE=gmake
 	CC=icc
-	CXX=icc -+
+	CXX=icc -+v
 	RM=del
 else
 	MAKE=make
@@ -47,7 +47,7 @@ endif
 CFLAGS=-g -I.
 CXXFLAGS=-g -I.
 
-TARGETS=mic.o mic-main.o runmic mic
+TARGETS=mic.o mic-main.o runmic mic crt-inx fill-inx inxat loadinx
 
 ifeq ($(OS400), yes)
 all: $(TARGETS) cmd_pnlgrp
