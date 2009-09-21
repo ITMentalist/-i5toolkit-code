@@ -205,6 +205,11 @@ accept_input_parms(
 
 } // end of accept_input_parms
 
+const char *_mic_spec_incdirs[] = {
+  "/usr/local/include/emi/api",
+  "/usr/local/include/emi/mi"
+};
+
 void
 load_inc_dirs(
               mic::stringlist_t& inc_dirs,
@@ -222,6 +227,12 @@ load_inc_dirs(
     string dir(dirs.dirs_[i].path_, dirs.dirs_[i].len_);
     inc_dirs.push_back(dir);
   } // end of for()
+
+  // append mic internal/special include dirs
+  for(i = 0; i < _NUM_SPECIAL_INCDIRS; i++) {
+
+    inc_dirs.push_back(_mic_spec_incdirs[i]);
+  }
 
 } // end of load_inc_dirs()
 

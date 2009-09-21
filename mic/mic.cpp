@@ -349,7 +349,7 @@ void mic::phase_a3(mic::stmtlist_t& l) {
 
 std::string
 mic::read_source_file(
-                      const std::string& path,
+                      const std::string& src_path,
                       const mic::stringlist_t& inc_dirs
                       )
   throw(mic::compiler_ex_t)
@@ -360,6 +360,7 @@ mic::read_source_file(
 
   string ex_info;
   bool absolute = false;
+  string path = src_path;
 
   // check path_
   size_t len = path.length();
@@ -383,7 +384,6 @@ mic::read_source_file(
   else if(!absolute) { // relative path name
 
     // try directory names stored in inc_dirs
-    string path;
     stringlist_t::const_iterator it = inc_dirs.begin();
     for(; it != inc_dirs.end(); ++it) {
 
@@ -392,7 +392,7 @@ mic::read_source_file(
       if(dir.at(len - 1) != _SLASH)
         dir += _SLASH;
 
-      path = dir + path;
+      path = dir + src_path;
 
       fd = open(path.c_str(), O_RDONLY | O_TEXTDATA | O_CCSID, 0, job_ccsid);
       if(fd != -1) {
@@ -405,7 +405,7 @@ mic::read_source_file(
     if(!opened) {
 
       ex_info = "failed to read source file -- ";
-      ex_info += path;
+      ex_info += src_path;
       throw compiler_ex_t(ex_info);
     }
   }
@@ -453,7 +453,7 @@ void mic::load_builtins(mic::builtinmap_t& m) {
   using namespace mic;
   using namespace std;
 
-  static const ent_len_len = 8 + _MIC_MAX_BUILTIN_STMTS * 8;
+  static const int ent_len_len = 8 + _MIC_MAX_BUILTIN_STMTS * 8;
 
   // load all builtins
   char ecbuf[_MIC_ECLEN] = {0};

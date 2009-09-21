@@ -86,6 +86,12 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 #     define _A_OUT "a.out"
 #   endif
 
+/**
+ * number of special inc dirs
+ */
+#  define _NUM_SPECIAL_INCDIRS 2
+extern const char *_mic_spec_incdirs[];
+
 /// usgae info
 #  define _MIC_USAGE \
   "Usage: mic [options] file"_NLS \
