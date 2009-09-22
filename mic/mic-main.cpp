@@ -1,3 +1,4 @@
+
 /*
 This file is part of i5/OS Programmer's Toolkit.
 
@@ -78,6 +79,14 @@ int main(int argc, char *argv[]) {
 
     } else
       source = read_source_file(src_path, inc_dirs);
+
+    // deny empty source
+    if(source.size() == 0) {
+
+      ex_info = "empty source file -- ";
+      ex_info += src_path;
+      throw compiler_ex_t(ex_info);
+    }
 
     phase_a(source.c_str(), stmts, inc_dirs);
 
