@@ -1,0 +1,18 @@
+/* *
+ * @file qusdltus.emi
+ *
+ * Delete User Space (QUSDLTUS) API
+ */
+
+/* prototype of QUSCLTUS */
+dcl spcptr emi-qusdltus-al-usrspc auto ;
+dcl spcptr emi-qusdltus-al-ec auto  ;
+dcl ol emi-qusdltus-al (
+        emi-qusdltus-al-usrspc,
+        emi-qusdltus-al-ec
+) arg                           ;
+
+dcl spcptr emi-qusdltus-sept-ptr baspco ;
+        dcl sysptr emi-qusdltus bas(emi-qusdltus-sept-ptr) pos(86305) ;
+
+/* eof - qusdltus.emi */
