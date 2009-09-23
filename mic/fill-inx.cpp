@@ -90,8 +90,8 @@ int main(int argc, char *argv[]) {
 }
 
 /**
- * format of a header file
- *  - only one line
+ * format of a header file (only one line)
+ * 
  *  - version number of the index
  *  - min mic version
  *  - max mic version
