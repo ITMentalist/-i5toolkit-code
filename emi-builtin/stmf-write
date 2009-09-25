@@ -1,7 +1,7 @@
 4       3       4       70      STMF-WRITE write to a *STMF file
-        CPYNV  @0004-#1, FD              ;
-        SETSPP .@0004-#2, STR            ;
-        CPYNV  @0004-#3, 8               ;
+        CPYNV  @0004-#1, :1              ;
+        SETSPP .@0004-#2, :2             ;
+        CPYNV  @0004-#3, :3              ;
         CALLI @0004, *, .@0004           ;
 /* builtin %STMF-WRITE */ DCL INSPTR .@0004 AUTO                   ;
 DCL DD @0004-#1 BIN(4) AUTO              ;

@@ -1,5 +1,5 @@
 3       1       2       63      STMF-CLOSE close an opened file descriptor
-        CPYNV @0003-#1, FD      ;
+        CPYNV @0003-#1, :1      ;
         CALLI @0003, *, .@0003  ;
 /* builtin %STMF-CLOSE */ DCL INSPTR .@0003 AUTO                   ;
 DCL DD @0003-#1 BIN(4) AUTO              ;

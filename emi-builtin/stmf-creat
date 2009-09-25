@@ -1,6 +1,6 @@
 2       2       3       67      STMF-CREAT create a new *STMF file or truncate an existing *STMF file
-        SETSPP .@0002-#1, PATH-NAME ;
-        CPYNV  @0002-#2, FILE-MODE  ;
+        SETSPP .@0002-#1, :1 ;
+        CPYNV  @0002-#2, :2  ;
         CALLI @0002, *, .@0002  ;
 /* BUILTIN %STMF-CREAT */ DCL INSPTR .@0002 AUTO                   ;
 DCL SPCPTR .@0002-#1 AUTO                ;
