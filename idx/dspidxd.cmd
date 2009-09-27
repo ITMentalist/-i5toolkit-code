@@ -14,13 +14,14 @@
 /*  */
 /* You should have received a copy of the GNU General Public License */
 /* along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>. */
-/** @file dspqd.cmd */
 
-             CMD        PROMPT('Clear User Queue (CLRUSRQ)')
+/** @file dspidxd.cmd */
+
+             CMD        PROMPT('Display User Index Description')
 
 /* queue name */
-             PARM       KWD(Q) TYPE(Q_NAME) MIN(1) PROMPT('Queue +
-                          object')
+             PARM       KWD(Q) TYPE(Q_NAME) MIN(1) PROMPT('User +
+                          Index object')
 
 /* qualifiers */
  Q_NAME:     QUAL       TYPE(*NAME) LEN(10) MIN(1)
