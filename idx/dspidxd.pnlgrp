@@ -1,0 +1,139 @@
+.* This file is part of i5/OS Programmer's Toolkit.
+.* 
+.* Copyright (C) 2009  Junlei Li (李君磊).
+.* 
+.* i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+.* it under the terms of the GNU General Public License as published by
+.* the Free Software Foundation, either version 3 of the License, or
+.* (at your option) any later version.
+.* 
+.* i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+.* but WITHOUT ANY WARRANTY; without even the implied warranty of
+.* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.* GNU General Public License for more details.
+.* 
+.* You should have received a copy of the GNU General Public License
+.* along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+
+.*
+.* @file dspidxd.pnlgrp
+.*
+
+:pnlgrp.
+
+:copyr.(C)Copyright 2009,2010 Junlei Li &colon.p
+
+.* my help info
+:import name='*'
+        pnlgrp='*libl/idxhlp'
+        .
+
+.*
+.* classes
+.*
+
+.*
+.* charater types
+.*
+:class name=o32
+       basetype='igc 32'
+       .
+:eclass.
+:class name=a10
+       basetype='char 10'
+       .
+:eclass.
+:class name=a1
+       basetype='char 1'
+       .
+:eclass.
+
+.*
+.* integer types
+.*
+:class  name=bin2
+        basetype='bin 15'
+        .
+:eclass.
+:class  name=bin4
+        basetype='bin 31'
+        .
+:eclass.
+
+.*
+.* vars
+.*
+
+:var name=vtitle
+     class=o32
+     .
+.* vars of rcd rcommon
+:var name=vidx
+     class=a10
+     .
+:var name=vlib
+     class=a10
+     .
+:var name=vobjtype
+     class=a10
+     .
+:var name=vobjasp
+     class=bin2
+     .
+:var name=vextattr
+     class=a10
+     .
+:var name=vowner
+     class=a10
+     .
+:var name=vdomain
+     class=a10
+     .
+
+.*
+.* varrcd
+.*
+:varrcd name=rtitle
+        vars='vtitle'
+        .
+:varrcd name=rcommon
+        vars='vidx vlib vobjtype vobjasp vextattr vowner vdomain'
+        .
+
+.*
+.* key lists
+.*
+:keyl   name=klistmain.
+:keyi   key=f1
+        help='help/key/f1'
+        action=help
+        varupd=no
+        .
+:keyi   key=f3
+        help='help/key/f3'
+        action='exit noset'
+        varupd=yes
+        .F3=Exit
+:keyi   key=f12
+        help='help/key/f12'
+        action='cancel set'
+        varupd=yes
+        .F12=Cancel
+:keyi   key=enter
+        help='help/key/enter'
+        action=enter
+        .
+:keyi   key=pageup
+        help='help/key/pageup'
+        action=pageup
+        .
+:keyi   key=pagedown
+        help='help/key/pagedown'
+        action=pagedown
+        .
+:ekeyl.
+
+.im dspidxattr
+
+:epnlgrp.
+.* eof - dspidxd.pnlgrp

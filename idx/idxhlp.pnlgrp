@@ -1,0 +1,54 @@
+.* This file is part of i5/OS Programmer's Toolkit.
+.* 
+.* Copyright (C) 2009  Junlei Li (李君磊).
+.* 
+.* i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+.* it under the terms of the GNU General Public License as published by
+.* the Free Software Foundation, either version 3 of the License, or
+.* (at your option) any later version.
+.* 
+.* i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+.* but WITHOUT ANY WARRANTY; without even the implied warranty of
+.* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.* GNU General Public License for more details.
+.* 
+.* You should have received a copy of the GNU General Public License
+.* along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+
+.*
+.* help info of index tools
+.*
+
+:pnlgrp.
+
+.* for CL command DSPIDXD
+:help name='hlp/idxd'.
+:p.
+CL DSPIDXD command is a member of i5/OS Programmer's Toolkit.  The
+DSPIDXD command displays attributes of a user index object whose MI
+object type and subtype is hex 00A1.
+:p.
+Refer to :hp2.http://i5toolkit.sourceforge.net:ehp2. for details of
+the open source project, i5/OS Programmer's Toolkit.  To download
+i5/OS Programmer's Toolkit, please visit
+:hp2.http://sourceforge.net/projects/i5toolkit:ehp2..
+:p.
+:xh3.Bugs
+:p.
+Please report bugs to :hp2.junleili-cn@users.sourceforge.net:ehp2.
+:p.
+:xh3.Author
+:p.
+Junlei Li
+:p.
+:ehelp.
+
+:help name='hlp/idxd/usrkdx'.User Index Object (USRIDX)
+:xh3.User Index Object (USRIDX)
+:p.
+Name and library of user index object (USRIDX) object whose attributes
+are to be displayed.
+:ehelp.
+
+:epnlgrp.
+.* eof - idxhlp.pnlgrp

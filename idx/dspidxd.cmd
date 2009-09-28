@@ -20,7 +20,7 @@
              CMD        PROMPT('Display User Index Description')
 
 /* queue name */
-             PARM       KWD(Q) TYPE(Q_NAME) MIN(1) PROMPT('User +
+             PARM       KWD(USRIDX) TYPE(Q_NAME) MIN(1) PROMPT('User +
                           Index object')
 
 /* qualifiers */
