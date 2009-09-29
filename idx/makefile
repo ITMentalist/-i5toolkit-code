@@ -56,24 +56,20 @@ endif
 CFLAGS=-g -I.
 CXXFLAGS=-g -I.
 
-TARGETS=dspidxd
+TARGETS=dspidxd rtvidxd
 
 ifeq ($(OS400), yes)
-all: $(TARGETS) cmd_pnlgrp
+all: $(TARGETS)
 else
 all: $(TARGETS)
 endif
 	@echo "that's all!"
-
-mic.o: stmt.hpp builtin.hpp
-
-mic: mic.o mic-main.o
-	$(CXX) -o $@ $^
 
 clean:
 	$(RM) $(TARGETS)
 
 cmd_pnlgrp:
 	@echo "attention: compiling CL command and panel-groups ..."
-#	system "CRTPNLGRP PNLGRP($(OUTPUTDIR)/MICHLP) SRCFILE(LS2008/DEC) SRCMBR(*PNLGRP)"
-#	system "CRTCMD CMD($(OUTPUTDIR)/MIC) PGM($(OUTPUTDIR)/MIC) SRCFILE(LS2008/DEC) SRCMBR(MIC) HLPPNLGRP($(OUTPUTDIR)/MICHLP) HLPID('HLP/MIC')"
+	system "CRTPNLGRP PNLGRP(I5TOOLKIT/IDXHLP) SRCFILE(LS2008/UIM) SRCMBR(*PNLGRP) INCFILE(*SRCFILE) REPLACE(*YES)"
+	system "CRTPNLGRP PNLGRP(I5TOOLKIT/DSPIDXD) SRCFILE(LS2008/UIM) SRCMBR(*PNLGRP) INCFILE(*SRCFILE) REPLACE(*YES)"
+	system "CRTCMD CMD($(OUTPUTDIR)/DSPIDXD) PGM($(OUTPUTDIR)/DSPIDXD) SRCFILE(LS2008/DEC) SRCMBR(DSPIDXD) HLPPNLGRP($(OUTPUTDIR)/IDXHLP) HLPID('HLP/IDXD')"

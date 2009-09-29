@@ -524,7 +524,7 @@ void mic::load_builtins(mic::builtinmap_t& m) {
 
     search_type = 1;  // 1=equal
     output = (char*)malloc(8 + _MIC_BUILTIN_INX_LEN);
-    sprintf(search_criteria_equal, "\x01%04d\x00\x00", i);
+    sprintf(search_criteria_equal, "\x01%04X\x00\x00", i);
 
     // read each builtin header
     QUSRTVUI(

@@ -42,7 +42,7 @@
 :datai var=vidx
        help='common/object'
        usage=out
-       .Queue
+       .Object
 :datai   var=vlib
          help='common/object'
          usage=out
@@ -86,6 +86,73 @@
 :edata.
 
 .* index attributes
+:data    depth='*'
+         scroll=yes
+         layout=1
+         botsep=space
+         compact
+         .
+
+:datacol width=30.
+:datacol width=10.
+:datacol width='*'.
+
+:datagrp grpsep=indent
+         compact
+         .User Index Attributes
+
+:datai   var=vlenattr
+         help='idx/lenattr'
+         usage=out
+         .Entry length attribute
+:datac.F=Fixed-length
+:datac.V=Variable-length
+:datai   var=vimdupd
+         help='idx/imdupd'
+         usage=out
+         .Immediate update
+:datac.0=No immediate update
+:datac.1=Immediate update
+:datai   var=vkeyins
+         help='idx/keyins'
+         usage=out
+         .Key insertion
+:datac.0=No insertion by key
+:datac.1=Insertion by key
+:datai   var=vopt
+         help='idx/opt'
+         usage=out
+         .Optimized processing mode
+:datac.0=Random references
+:datac.1=Sequential references
+:datai   var=ventlen
+         help='idx/entlen'
+         usage=out
+         .Entry length
+:datai   var=vmaxentlen
+         help='idx/maxentlen'
+         usage=out
+         .Maximum entry length
+:datai   var=vkeylen
+         help='idx/keylen'
+         usage=out
+         .Key length
+:datai   var=ventadded
+         help='idx/entadded'
+         usage=out
+         .Number of entries added
+:datai   var=ventrmved
+         help='idx/entrmved'
+         usage=out
+         .Number of entries removed
+:datai   var=vnumrtv
+         help='idx/numrtv'
+         usage=out
+         .Number of retrieve operations
+
+:edatagrp.
+
+:edata.
 
 :epanel.
 

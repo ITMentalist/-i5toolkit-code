@@ -100,7 +100,7 @@
 
 :datagrp grpsep=indent
          compact
-         .Object creation options
+         .Data Queue Attributes
 
 :datai   var=vdmsglen
          help='dtaq/msglen'

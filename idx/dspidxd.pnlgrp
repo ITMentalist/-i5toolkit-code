@@ -90,6 +90,39 @@
      class=a10
      .
 
+.* vars, index attributes
+:var name=vlenattr
+     class=a1
+     .
+:var name=vimdupd
+     class=a1
+     .
+:var name=vkeyins
+     class=a1
+     .
+:var name=vopt
+     class=a1
+     .
+:var name=ventlen
+     class=bin4
+     .
+:var name=vmaxentlen
+     class=bin4
+     .
+:var name=vkeylen
+     class=bin4
+     .
+:var name=ventadded
+     class=bin4
+     .
+:var name=ventrmved
+     class=bin4
+     .
+:var name=vnumrtv
+     class=bin4
+     .
+
+
 .*
 .* varrcd
 .*
@@ -98,6 +131,10 @@
         .
 :varrcd name=rcommon
         vars='vidx vlib vobjtype vobjasp vextattr vowner vdomain'
+        .
+:varrcd name=ridxattr
+        vars='vlenattr vimdupd vkeyins vopt ventlen vmaxentlen vkeylen'
+        vars='ventadded ventrmved vnumrtv'
         .
 
 .*

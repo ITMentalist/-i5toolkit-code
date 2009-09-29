@@ -201,9 +201,7 @@ Leave the display panel
 :p.
 :xh2.Object
 :p.
-The name of the currently displayed queue object.
-:p.
-The name of the library containing the currently displayed queue object.
+Name and library of the current displayed queue object.
 :ehelp.
 
 :help name='common/objasp'.

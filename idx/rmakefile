@@ -33,11 +33,8 @@ TARF=idx.tar
 CMD_COMPILE=
 CMD_CLEAN=
 
-all: clean_local tar_src upload_src compile
-	@echo "END OF COMPILATION: MIC"
-
-clean_local:
-	make clean; true
+all: tar_src upload_src compile
+	@echo "END OF COMPILATION: src/idx"
 
 tar_src:
 	tar -cf $(TARF) *mi makefile
