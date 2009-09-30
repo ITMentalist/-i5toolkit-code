@@ -129,8 +129,8 @@ dcl insptr .get-idxd auto                           ;
 entry get-idxd int                                  ;
 
         cpynv emi-ec-bytes-in, emi-qusec-len ;
-        setsppfp .emi-qusruiat-al-ec, emi-qusec-ptr ;
-        cpybla emi-qusruiat-al-idx, idx-object      ;
+        setsppfp .emi-qusruiat-ec, emi-qusec-ptr ;
+        cpybla emi-qusruiat-idx, idx-object      ;
         callx emi-qusruiat, emi-qusruiat-al, *      ;
 
         /* set varrcd RIDXATTR */

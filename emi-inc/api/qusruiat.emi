@@ -22,13 +22,13 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
  *
  * for API QUSRUIAT
  *
- * @attention remember to init SPCPTR .emi-qusruiat-al-ec and emi-qusruiat-al-idx before call QUSRUIAT
+ * @attention remember to init SPCPTR .emi-qusruiat-ec and emi-qusruiat-idx before call QUSRUIAT
  */
 
 /* IDXA0100 */
 dcl dd emi-qusruiat-idxa0100 char(60) auto ;
-dcl spcptr .emi-qusruiat-al-rcv auto init(emi-qusruiat-idxa0100);
-dcl spc * bas(.emi-qusruiat-al-rcv) ;
+dcl spcptr .emi-qusruiat-rcv auto init(emi-qusruiat-idxa0100);
+dcl spc * bas(.emi-qusruiat-rcv) ;
         dcl dd emi-qusruiat-idxa0100-bytes-rtn bin(4) dir ;
         dcl dd emi-qusruiat-idxa0100-bytes-avail bin(4) dir ;
         dcl dd emi-qusruiat-idxa0100-idx-name char(10) dir  ;
@@ -45,21 +45,21 @@ dcl spc * bas(.emi-qusruiat-al-rcv) ;
         dcl dd emi-qusruiat-idxa0100-ent-rmved bin(4) dir   ;
         dcl dd emi-qusruiat-idxa0100-num-opt   bin(4) dir   ;
 
-dcl dd emi-qusruiat-al-rcv-len bin(4) auto init(60)            ;
-dcl spcptr .emi-qusruiat-al-rcv-len auto init(emi-qusruiat-al-rcv-len) ;
-dcl dd emi-qusruiat-al-fmt char(8) auto init("IDXA0100")       ;
-dcl spcptr .emi-qusruiat-al-fmt auto init(emi-qusruiat-al-fmt);
-dcl dd emi-qusruiat-al-idx char(20) auto                      ;
-dcl spcptr .emi-qusruiat-al-idx auto init(emi-qusruiat-al-idx) ;
-dcl spcptr .emi-qusruiat-al-ec auto;
+dcl dd emi-qusruiat-rcv-len bin(4) auto init(60)            ;
+dcl spcptr .emi-qusruiat-rcv-len auto init(emi-qusruiat-rcv-len) ;
+dcl dd emi-qusruiat-fmt char(8) auto init("IDXA0100")       ;
+dcl spcptr .emi-qusruiat-fmt auto init(emi-qusruiat-fmt);
+dcl dd emi-qusruiat-idx char(20) auto                      ;
+dcl spcptr .emi-qusruiat-idx auto init(emi-qusruiat-idx) ;
+dcl spcptr .emi-qusruiat-ec auto;
 
 /* prototype of QUSRUIAT */
 dcl ol emi-qusruiat-al (
-        .emi-qusruiat-al-rcv,
-        .emi-qusruiat-al-rcv-len,
-        .emi-qusruiat-al-fmt,
-        .emi-qusruiat-al-idx,
-        .emi-qusruiat-al-ec
+        .emi-qusruiat-rcv,
+        .emi-qusruiat-rcv-len,
+        .emi-qusruiat-fmt,
+        .emi-qusruiat-idx,
+        .emi-qusruiat-ec
 ) arg                           ;
 
 /* hex 1517 */

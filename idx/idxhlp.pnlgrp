@@ -21,12 +21,13 @@
 
 :pnlgrp.
 
-.* for CL command DSPIDXD
+.* for CL command DSPIDXD and INSIDX
 :help name='hlp/idxd'.
 :p.
-CL DSPIDXD command is a member of i5/OS Programmer's Toolkit.  The
-DSPIDXD command displays attributes of a user index object whose MI
-object type and subtype is hex 00A1.
+CL commands DSPIDXD and INSIDX are members of i5/OS Programmer's
+Toolkit.  The DSPIDXD command displays attributes of a user index
+object whose MI object type and subtype is hex 0E0A.  The INSIDX
+command insert an entry into a user index.
 :p.
 Refer to :hp2.http://i5toolkit.sourceforge.net:ehp2. for details of
 the open source project, i5/OS Programmer's Toolkit.  To download
@@ -46,8 +47,31 @@ Junlei Li
 :help name='hlp/idxd/usridx'.User Index Object (USRIDX)
 :xh3.User Index Object (USRIDX)
 :p.
-Name and library of user index object (USRIDX) object whose attributes
-are to be displayed.
+Name and library of the user index object (*USRIDX) object.
+:ehelp.
+
+:help name='hlp/idxd/entry'.Entry data (ENTRY)
+:xh3.Entry data (ENTRY)
+:p.
+Entry data to insert into the user index.
+:ehelp.
+
+:help name='hlp/idxd/entlen'.Entry length (ENTLEN)
+:xh3.Entry length (ENTLEN)
+:p.
+Length of entry data.  For a fixed-length-entry user index object, the
+actural entry length of the user index will be used instead.  Use CL
+command DSPIDXD to check the entry length attributes of a user index
+object.
+:ehelp.
+
+:help name='hlp/idxd/replace'.Insert with replacement (REPLACE)
+:xh3.Insert with replacement (REPLACE)
+:p.
+Valid only for a keyed user index.  Specify *YES to replace the nonkey
+portion of the index entry if the key is already in the user index.
+Specify *NO to insert the entry only if the key is not already in the
+user index.
 :ehelp.
 
 .* for panel IDXATTR

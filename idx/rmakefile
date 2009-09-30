@@ -45,5 +45,8 @@ upload_src:
 compile:
 	rexec $(HOST) "call pgm($(RMAKER)) parm('00037' 'cd $(HOST_DIR); tar -xf $(TARF); export OS400=yes OUTPUTDIR=$(BINLIB); gmake')"
 
+uim_cmd:
+	rexec $(HOST) "call pgm($(RMAKER)) parm('00037' 'cd $(HOST_DIR); tar -xf $(TARF); export OS400=yes OUTPUTDIR=$(BINLIB); gmake cmd_pnlgrp')"
+
 clean:
 	rexec $(HOST) "call pgm($(RMAKER)) parm('00037' 'cd $(HOST_DIR); export OS400=yes; gmake clean')"
