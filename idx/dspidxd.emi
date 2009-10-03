@@ -81,12 +81,12 @@ entry get-objd int                                  ;
 
         /* allocate buffer */
 dcl dd buf-len bin(4) auto      ;
-        modasa .eim-qusrobjd-objd0200, eim-qusrobjd-objd0200-len ;
+        modasa .emi-qusrobjd-objd0200, emi-qusrobjd-objd0200-len ;
 
         /* retrieve obj d */
         setsppfp .emi-qusrobjd-receiver,
-          .eim-qusrobjd-objd0200                             ;
-        cpynv emi-qusrobjd-buflen, eim-qusrobjd-objd0200-len ;
+          .emi-qusrobjd-objd0200                             ;
+        cpynv emi-qusrobjd-buflen, emi-qusrobjd-objd0200-len ;
         cpybla emi-qusrobjd-format-name, "OBJD0200"          ;
         cpybla emi-qusrobjd-object-lib, idx-object           ;
         cpyblap emi-qusrobjd-object-type, "*USRIDX", ' '     ;
@@ -119,8 +119,8 @@ dcl spc * bas(obj-attr-ptr)                 ;
         %uim-putv(apph, obj-attr, 62, "RCOMMON", emi-qusec) ;
 
         /* release objd-ptr */
-        subn buf-len, 0, eim-qusrobjd-objd0200-len ;
-        modasa .eim-qusrobjd-objd0200, buf-len     ;
+        subn buf-len, 0, emi-qusrobjd-objd0200-len ;
+        modasa .emi-qusrobjd-objd0200, buf-len     ;
 
         b .get-objd             ;
 

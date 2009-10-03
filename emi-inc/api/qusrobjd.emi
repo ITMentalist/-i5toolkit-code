@@ -25,13 +25,13 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
  *  - QUSROBJD
  *
  * structures declared here:
- *  - eim-qusrobjd-objd0100-tqus-objd0100-t
- *  - eim-qusrobjd-objd0100-tqus-objd0200-t
+ *  - emi-qusrobjd-objd0100-tqus-objd0100-t
+ *  - emi-qusrobjd-objd0100-tqus-objd0200-t
  *  - 
  *
  * contants declared here:
- *  - eim-qusrobjd-objd0100-len
- *  - eim-qusrobjd-objd0200-len
+ *  - emi-qusrobjd-objd0100-len
+ *  - emi-qusrobjd-objd0200-len
  *  - 
  *
  * @todo 3 other structures :p
@@ -79,9 +79,9 @@ dcl spcptr emi-qusrobjd-sept-ptr baspco ;
  *
  * @ref Qus_OBJD0100_t
  */
-dcl spcptr .eim-qusrobjd-objd0100 auto;
-dcl spc eim-qusrobjd-objd0100-t
-        bas(.eim-qusrobjd-objd0100);
+dcl spcptr .emi-qusrobjd-objd0100 auto;
+dcl spc emi-qusrobjd-objd0100-t
+        bas(.emi-qusrobjd-objd0100);
   dcl dd emi-qusrobjd-objd0100-bytes-out bin(4) dir;
   dcl dd emi-qusrobjd-objd0100-bytes-in bin(4) dir;
   dcl dd emi-qusrobjd-objd0100-obj-name char(10) dir;
@@ -108,9 +108,9 @@ dcl spc eim-qusrobjd-objd0100-t
  *
  * @ref Qus_OBJD0200_t
  */
-dcl spcptr .eim-qusrobjd-objd0200 auto;
-dcl spc eim-qusrobjd-objd0200-t
-        bas(.eim-qusrobjd-objd0200);
+dcl spcptr .emi-qusrobjd-objd0200 auto;
+dcl spc emi-qusrobjd-objd0200-t
+        bas(.emi-qusrobjd-objd0200);
   dcl dd emi-qusrobjd-objd0200-bytes-out bin(4) dir;
   dcl dd emi-qusrobjd-objd0200-bytes-in bin(4) dir;
   dcl dd emi-qusrobjd-objd0200-obj-name char(10) dir;
@@ -140,11 +140,11 @@ dcl spc eim-qusrobjd-objd0200-t
 /**
  * length of structure emi-qusrobjd-objd0100-t
  */
-dcl con eim-qusrobjd-objd0100-len bin(4) init(90);
+dcl con emi-qusrobjd-objd0100-len bin(4) init(90);
 
 /**
  * length of structure emi-qusrobjd-objd0200-t
  */
-dcl con eim-qusrobjd-objd0200-len bin(4) init(180);
+dcl con emi-qusrobjd-objd0200-len bin(4) init(180);
 
 /* eof - qusrobjd.emi */
