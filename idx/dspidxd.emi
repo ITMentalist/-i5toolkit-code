@@ -52,8 +52,6 @@ dcl dd len bin(4) auto init(32)                                   ;
         calli get-idxd, *, .get-idxd ;
 
         %uim-putv(apph, title, len, "RTITLE", emi-qusec);
-brk 'GET'                                               ;
-        %uim-getv(apph, title, len, "RTITLE", emi-qusec);
 
         /* display panel IDXATTR */
         %uim-dspp(apph, "IDXATTR", 'Y', emi-qusec);
