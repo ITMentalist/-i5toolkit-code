@@ -30,6 +30,8 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 #   include <quscrtui.h>
 #   include <qusaddui.h>
 #   include <qusrtvui.h>
+# else
+#   include <os400-mock.h>
 # endif // defined __OS400__
 
 # include <builtin-fmt.hpp>
@@ -38,7 +40,7 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 
 int main() {
 
-  static const ent_len_len = 8 + _MIC_MAX_BUILTIN_STMTS * 8;
+  static const unsigned ent_len_len = 8 + _MIC_MAX_BUILTIN_STMTS * 8;
 
   // load all builtins
   char ecbuf[_MIC_ECLEN] = {0};

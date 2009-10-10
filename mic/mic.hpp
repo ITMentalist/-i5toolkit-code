@@ -187,11 +187,18 @@ namespace mic {
     ;
 
   /**
-   * dump statements to a output stream
+   * dump statements to a stl string
    *
    * dump_stmts write both a stmt_t's comment and statement text to <var>output</var>.
    */
   void dump_stmts(const stmtlist_t& stmts, std::string& output);
+
+  /**
+   * dump statements to a readable stream file
+   *
+   * dump_stmts write both a stmt_t's comment and statement text to <var>output</var>.
+   */
+  void dump_stmts2(const stmtlist_t& stmts, const std::string& path);
 
   /**
      phase C

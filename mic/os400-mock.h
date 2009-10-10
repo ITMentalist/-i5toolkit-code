@@ -45,7 +45,6 @@ void QPRCRTPG (void *,          /* Intermediate representation of */
                ...)             /* Optional Parameter:
                                    Error code                  */
 {
-  printf("call QPRCRTPG() ... "_NLS);
 }
 
 typedef struct Qus_EC
@@ -105,6 +104,23 @@ typedef struct tag_Qwc_JOBI0400 {
   int Bytes_Avail;
   int Coded_Char_Set_ID;
 } Qwc_JOBI0400_t;
+
+inline
+void QUSRTVUI(void *,           /* Receiver variable              */
+              int,              /* Length of receiver variable    */
+              void *,           /* Entry lengths and offsets      */
+              int,              /* Len entry lengths and offsets  */
+              int *,            /* Number entries returned        */
+              char *,           /* Returned library name          */
+              char *,           /* Qualified user index name      */
+              char *,           /* Format                         */
+              int,              /* Maximum number of entries      */
+              int,              /* Search type                    */
+              void *,           /* Search criteria                */
+              int,              /* Length search criteria         */
+              int,              /* Search criteria offset         */
+              void *)           /* Error code                     */
+{}
 
 #   define O_TEXTDATA 0
 #   define O_CCSID    0

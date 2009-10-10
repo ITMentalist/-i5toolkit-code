@@ -4,11 +4,14 @@
 # include <stdio.h>
 # include <string.h>
 
-# include <qusruiat.h>
-# include <qusec.h>
+# ifdef __OS400__
+#   include <qusruiat.h>
+#   include <qusec.h>
+# endif
 
 int main() {
 
+# ifdef __OS400__
   Qus_IDXA0100_t info;
   char eb[256] = {0};
   Qus_EC_t *ec = (Qus_EC_t*)eb;
@@ -27,5 +30,6 @@ int main() {
     return 1;
   }
 
+# endif
   return 0;
 }

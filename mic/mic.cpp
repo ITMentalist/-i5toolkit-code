@@ -742,6 +742,24 @@ void mic::dump_stmts(
 
 }
 
+void mic::dump_stmts2(
+                      const stmtlist_t& stmts,
+                      const std::string& path
+                      ) {
+
+  using namespace std;
+  using namespace mic;
+
+  ofstream output(path.c_str());
+
+  stmtlist_t::const_iterator it = stmts.begin();
+  for(; it != stmts.end(); ++it)
+    output << it->comment() << it->text() << endl;
+
+  output.close();
+}
+
+
 void mic::phase_c(
                   mic::stmtlist_t& stmts,
                   mic_cmd_param_t& mic_parm

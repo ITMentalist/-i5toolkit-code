@@ -49,8 +49,12 @@ int write_header(const char *file);
 int write_builtin(const char *file);
 void read_to_eol(std::ifstream& f, char *buf, size_t len);
 
+# ifdef __OS400__
 extern "OS"
 void CRT_INX();
+# else
+void CRT_INX() {}
+# endif
 
 int main(int argc, char *argv[]) {
 
