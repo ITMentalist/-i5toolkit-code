@@ -17,8 +17,8 @@
 
 # define _usage "Usage info: convert external object type to " \
   "MI (Machine Interface) object type." NEW_LINE               \
-  "    miobjtype mi-obj-type" NEW_LINE                         \
-  " - mi-obj-type, MI (Machine Interface) object type, such "  \
+  "    miobjtype external-obj-type" NEW_LINE                   \
+  " - external-obj-type, such "                                \
   "*FILE, *USRIDX, *USRQ" NEW_LINE                             \
   NEW_LINE                                                     \
   "e.g. miobjtype *USRIDX" NEW_LINE

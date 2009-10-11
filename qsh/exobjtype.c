@@ -16,10 +16,10 @@
 # define ECLEN        32
 
 # define _usage "Usage info: convert MI (Machine Interface) object type to " \
-  "external object type." NEW_LINE \
-  "    exobjtype xxxx" NEW_LINE \
-  " - xxxx, hexadecimal MI object type" NEW_LINE \
-  NEW_LINE \
+  "external object type." NEW_LINE                                      \
+  "    exobjtype xxxx" NEW_LINE                                         \
+  " - xxxx, hexadecimal MI object type" NEW_LINE                        \
+  NEW_LINE                                                              \
   "e.g. exobjtype 0401" NEW_LINE
 
 static char *_err_info[8] = {
