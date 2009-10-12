@@ -125,7 +125,7 @@ extern const char *_mic_spec_incdirs[];
 #  define _I5TOOLKIT "i5/OS Programmer's Toolkit"
 
 /// verion number of project i5toolkit
-#  define _I5TOOLKIT_VERSION "0.2.4"
+#  define _I5TOOLKIT_VERSION "0.2.10"
 
 /// mic's version info
 #  define _MIC_VERSION \
