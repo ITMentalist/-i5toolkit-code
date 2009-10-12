@@ -29,6 +29,7 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 #  include <fstream>
 #  include <list>
 #  include <map>
+#  include <stack>
 #  include <algorithm>
 #  include <exception>
 

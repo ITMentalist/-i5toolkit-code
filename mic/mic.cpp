@@ -347,6 +347,170 @@ void mic::phase_a3(mic::stmtlist_t& l) {
 
 } // end of phase_a3()
 
+bool
+mic::is_cond_directive(
+                       const std::string &s,
+                       mic::cond_directive_type_t &dir_type,
+                       std::string &operand
+                       ) throw(mic::compiler_ex_t)
+{
+
+  using namespace std;
+  using namespace mic;
+
+  string ex_info;
+  char c = _SLASH;
+  char *text = strdup(s.c_str());
+
+  // leading '/'
+  size_t pos = strspn(text, _WSS);
+  if(text[pos] != _SLASH)
+    return false;
+
+  // keyword include
+  // tokenize by: '/', ' ', ';'
+  char *tok;
+  char delimiters[] =
+# ifdef __OS400__
+    "\x61\x40\x5E";
+# else
+    "/ ;";
+# endif
+  char *str = strtok_r(text, delimiters, &tok);
+  if(str == NULL)
+    return false;
+
+  // set dir_type
+  bool check_operand = true;
+  if(strcmp(str, _KEYWORD_DEFINE) == 0) // define
+    dir_type = directive_define;
+
+  else if(strcmp(str, _KEYWORD_UNDEF) == 0) // undef
+    dir_type = directive_undef;
+
+  else if(strcmp(str, _KEYWORD_IFDEF) == 0) // ifdef
+    dir_type = directive_ifdef;
+
+  else if(strcmp(str, _KEYWORD_IFNDEF) == 0) // ifndef
+    dir_type = directive_ifndef;
+
+  else if(strcmp(str, _KEYWORD_ENDIF) == 0) { // endif
+
+    dir_type = directive_endif;
+    check_operand = false;
+  }
+  else if(strcmp(str, _KEYWORD_ELSE) == 0) { // else
+
+    dir_type = directive_else;
+    check_operand = false;
+  }
+  else
+      dir_type = directive_unknown;
+
+  if(check_operand) {
+
+    str = strtok_r(NULL, delimiters, &tok);
+    if(str == NULL) // throw exception
+      throw compiler_ex_t("directives /define, /undef, /ifdef, /ifndef should be followed by a macro name.");
+
+    operand = str;
+  }
+
+  return true;
+
+} // end of is_cond_directive()
+
+bool mic::and_bool_stack(const std::stack<bool>& stk) {
+
+  std::stack<bool> s(stk);
+  while(!s.empty()) {
+
+    if(!s.top())
+      return false;
+
+    s.pop();
+  }
+
+  return true;
+}
+
+
+
+void mic::phase_a4(mic::stmtlist_t& stmts) {
+
+  using namespace std;
+  using namespace mic;
+
+  // condition collection
+  typedef std::list<std::string> condlist_t;
+  condlist_t conds;
+
+  // condition stack
+  typedef std::stack<bool> condstack_t;
+  condstack_t stk;
+
+  // ... ...
+  cond_directive_type_t dir_type;
+  string macro;
+  condlist_t::iterator it = conds.end();
+  bool status = false;
+  bool erase = false;
+
+  stmtlist_t::iterator it_stmt = stmts.begin();
+  while(it_stmt != stmts.end()) {
+
+    erase = false;
+    const char *text = it_stmt->text().c_str();
+
+    if(is_cond_directive(it_stmt->text(), dir_type, macro)) {
+
+      erase = true;
+
+      switch(dir_type) {
+      case directive_define:
+        conds.push_back(macro);
+        break;
+      case directive_undef:
+        it = find(conds.begin(), conds.end(), macro);
+        conds.erase(it);  // erase MACRO from conds
+        break;
+      case directive_ifdef:
+        it = find(conds.begin(), conds.end(), macro);
+        status = (it != conds.end());
+        stk.push(status);
+        break;
+      case directive_ifndef:
+        it = find(conds.begin(), conds.end(), macro);
+        status = (it == conds.end());
+        stk.push(status);
+        break;
+      case directive_endif:
+        stk.pop();
+        break;
+      case directive_else:
+        stk.top() = !stk.top();
+        break;
+      default:
+        break;
+      }
+
+    } // if is conditional directives
+    else {
+
+      if(!stk.empty() && !and_bool_stack(stk))
+        erase = true;
+
+    }
+
+    if(erase)
+      it_stmt = stmts.erase(it_stmt);
+    else
+        ++it_stmt;
+
+  } // while()
+
+} // end of phase_a4()
+
 std::string
 mic::read_source_file(
                       const std::string& src_path,
@@ -444,7 +608,11 @@ void mic::phase_a(
                depth
                );
 
+  // make upper
   phase_a3(stmts);
+
+  // conditional directives
+  phase_a4(stmts);
 
 }
 
@@ -759,6 +927,18 @@ void mic::dump_stmts2(
   output.close();
 }
 
+void mic::dump_stmts3(
+                      const stmtlist_t& stmts
+                      ) {
+
+  using namespace std;
+  using namespace mic;
+
+  stmtlist_t::const_iterator it = stmts.begin();
+  for(; it != stmts.end(); ++it)
+    cout << it->comment() << it->text() << endl;
+
+}
 
 void mic::phase_c(
                   mic::stmtlist_t& stmts,

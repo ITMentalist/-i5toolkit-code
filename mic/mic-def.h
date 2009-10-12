@@ -46,6 +46,12 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 #     define _SLASH '\x61'
 #     define _SLASHS "\x61"
 #     define _KEYWORD_INCLUDE "\x89\x95\x83\x93\xA4\x84\x85"
+#     define _KEYWORD_DEFINE "\xC4\xC5\xC6\xC9\xD5\xC5"
+#     define _KEYWORD_UNDEF "\xE4\xD5\xC4\xC5\xC6"
+#     define _KEYWORD_IFDEF "\xC9\xC6\xC4\xC5\xC6"
+#     define _KEYWORD_IFNDEF "\xC9\xC6\xD5\xC4\xC5\xC6"
+#     define _KEYWORD_ENDIF "\xC5\xD5\xC4\xC9\xC6"
+#     define _KEYWORD_ELSE "\xC5\xD3\xE2\xC5"
 #     define _PEND "\xD7\xC5\xD5\xC4"
 #     define _COLON '\x7A'
 #     define _LEFT_BRAKET '\x4D'
@@ -74,6 +80,12 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 #     define _SLASH '/'
 #     define _SLASHS "/"
 #     define _KEYWORD_INCLUDE "include"
+#     define _KEYWORD_DEFINE "DEFINE"
+#     define _KEYWORD_UNDEF "UNDEF"
+#     define _KEYWORD_IFDEF "IFDEF"
+#     define _KEYWORD_IFNDEF "IFNDEF"
+#     define _KEYWORD_ENDIF "ENDIF"
+#     define _KEYWORD_ELSE "ELSE"
 #     define _PEND "PEND"
 #     define _COLON ':'
 #     define _LEFT_BRAKET '('

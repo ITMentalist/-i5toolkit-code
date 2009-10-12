@@ -86,7 +86,7 @@ namespace mic {
    *  - '/'后面出现include path-name，空格数不限
    *  - 如果路径中含space，需要使用`"' quote
    *    - 不允许用 single quote 括，不然处理麻烦
-   *
+   * 
    * @param[in] stmt
    * @param[out] path name
    *
@@ -120,6 +120,40 @@ namespace mic {
    * skip constants quoted by ' and "
    */
   void phase_a3(stmtlist_t& l);
+
+  typedef enum tag_cond_directive_type {
+
+    directive_define = 0x01,
+    directive_undef  = 0x02,
+    directive_ifdef  = 0x03,
+    directive_ifndef = 0x04,
+    directive_endif  = 0x05,
+    directive_else   = 0x06,
+    directive_unknown   = 0xFF
+
+  } cond_directive_type_t;
+
+  /**
+   * does a statement contains a conditional directive
+   */
+  bool
+  is_cond_directive(
+                    const std::string &s,
+                    mic::cond_directive_type_t &dir_type,
+                    std::string &operand
+                    )
+    throw(compiler_ex_t)
+    ;
+
+  /**
+   * do AND operation using all elements on a stack
+   */
+  bool and_bool_stack(const std::stack<bool>& stk);
+
+  /**
+   * deal with conditional directives
+   */
+  void phase_a4(stmtlist_t& l);
 
   /**
    * phase A
@@ -199,6 +233,11 @@ namespace mic {
    * dump_stmts write both a stmt_t's comment and statement text to <var>output</var>.
    */
   void dump_stmts2(const stmtlist_t& stmts, const std::string& path);
+
+  /**
+   * dump statements to stdout
+   */
+  void dump_stmts3(const stmtlist_t& stmts);
 
   /**
      phase C
