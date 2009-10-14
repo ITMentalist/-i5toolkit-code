@@ -468,27 +468,37 @@ void mic::phase_a4(mic::stmtlist_t& stmts) {
 
       switch(dir_type) {
       case directive_define:
-        conds.push_back(macro);
+        if(and_bool_stack(stk)) // works only when *on
+          conds.push_back(macro);
         break;
       case directive_undef:
-        it = find(conds.begin(), conds.end(), macro);
-        conds.erase(it);  // erase MACRO from conds
+        if(and_bool_stack(stk)) { // works only when *on
+          it = find(conds.begin(), conds.end(), macro);
+          conds.erase(it);  // erase MACRO from conds
+        }
         break;
       case directive_ifdef:
-        it = find(conds.begin(), conds.end(), macro);
-        status = (it != conds.end());
-        stk.push(status);
+        if(and_bool_stack(stk)) { // works only when *on
+          it = find(conds.begin(), conds.end(), macro);
+          status = (it != conds.end());
+          stk.push(status);
+        } else
+          stk.push(false);
         break;
       case directive_ifndef:
-        it = find(conds.begin(), conds.end(), macro);
-        status = (it == conds.end());
-        stk.push(status);
+        if(and_bool_stack(stk)) { // works only when *on
+          it = find(conds.begin(), conds.end(), macro);
+          status = (it == conds.end());
+          stk.push(status);
+        } else
+          stk.push(false);
         break;
       case directive_endif:
         stk.pop();
         break;
       case directive_else:
-        stk.top() = !stk.top();
+        if(and_bool_stack(stk)) // works only when *on
+          stk.top() = !stk.top();
         break;
       default:
         break;
