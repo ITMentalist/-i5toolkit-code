@@ -23,6 +23,9 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
  * @ref t-qusec.emi
  */
 
+/ifndef __emi_qusec_h__         ;
+/define __emi_qusec_h__         ;
+
 /*
 API error code structure
 
@@ -39,4 +42,5 @@ dcl spc * bas(emi-qusec-ptr);
         dcl dd emi-ec-exdata char(496) dir; /* exception data */
 dcl con emi-qusec-len bin(2) init(512);
 
+/endif                          ;
 /* eof - qusec.mi */

@@ -37,6 +37,9 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
  * @todo 3 other structures :p
  */
 
+/ifndef __emi_qusrobjd_h__      ;
+/define __emi_qusrobjd_h__      ;
+
 /**
  * usage:
  *  - allocate receiver buffer, structure OBJD0100, 0200, ...
@@ -147,4 +150,5 @@ dcl con emi-qusrobjd-objd0100-len bin(4) init(90);
  */
 dcl con emi-qusrobjd-objd0200-len bin(4) init(180);
 
+/endif                          ;
 /* eof - qusrobjd.emi */

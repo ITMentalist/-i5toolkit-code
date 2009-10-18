@@ -30,6 +30,9 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
  *  - callx emi-qusaddui
  */
 
+/ifndef __emi_qusaddui_h__      ;
+/define __emi_qusaddui_h__      ;
+
 dcl dd emi-qusaddui-rtn-lib char(10) auto ;
 dcl spcptr .emi-qusaddui-rtn-lib auto init(emi-qusaddui-rtn-lib) ;
 dcl dd emi-qusaddui-num-added bin(4) auto                        ;
@@ -63,4 +66,5 @@ dcl ol emi-qusaddui-al (
 dcl spcptr emi-qusaddui-sept-ptr baspco ;
         dcl sysptr emi-qusaddui bas(emi-qusaddui-sept-ptr) pos(86177) ;
 
+/endif                          ;
 /* eof - qusaddui.emi */

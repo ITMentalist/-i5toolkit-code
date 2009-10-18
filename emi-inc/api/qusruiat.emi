@@ -25,6 +25,9 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
  * @attention remember to init SPCPTR .emi-qusruiat-ec and emi-qusruiat-idx before call QUSRUIAT
  */
 
+/ifndef __emi_qusruiat_h__      ;
+/define __emi_qusruiat_h__      ;
+
 /* IDXA0100 */
 dcl dd emi-qusruiat-idxa0100 char(60) auto ;
 dcl spcptr .emi-qusruiat-rcv auto init(emi-qusruiat-idxa0100);
@@ -66,4 +69,5 @@ dcl ol emi-qusruiat-al (
 dcl spcptr emi-qusruiat-sept-ptr baspco ;
         dcl sysptr emi-qusruiat bas(emi-qusruiat-sept-ptr) pos(86385) ;
 
+/endif                          ;
 /* eof - qusruiat.emi */

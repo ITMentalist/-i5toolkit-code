@@ -23,6 +23,9 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
  * Delete User Space (QUSDLTUS) API
  */
 
+/ifndef __emi_qusdltus_h__      ;
+/define __emi_qusdltus_h__      ;
+
 /* prototype of QUSCLTUS */
 dcl spcptr .emi-qusdltus-al-usrspc auto ;
 dcl spcptr .emi-qusdltus-al-ec auto  ;
@@ -34,4 +37,5 @@ dcl ol emi-qusdltus-al (
 dcl spcptr emi-qusdltus-sept-ptr baspco ;
         dcl sysptr emi-qusdltus bas(emi-qusdltus-sept-ptr) pos(86305) ;
 
+/endif                          ;
 /* eof - qusdltus.emi */
