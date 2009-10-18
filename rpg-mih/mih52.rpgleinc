@@ -1,0 +1,43 @@
+     /**
+      * This file is part of i5/OS Programmer's Toolkit.
+      * 
+      * Copyright (C) 2009  Junlei Li.
+      * 
+      * i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+      * it under the terms of the GNU General Public License as published by
+      * the Free Software Foundation, either version 3 of the License, or
+      * (at your option) any later version.
+      * 
+      * i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+      * but WITHOUT ANY WARRANTY; without even the implied warranty of
+      * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      * GNU General Public License for more details.
+      * 
+      * You should have received a copy of the GNU General Public License
+      * along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+      */
+
+     /**
+      * @file mih52.rpgleinc
+      *
+      * Header of system builtins for ILE RPG provided by the
+      * open-source project i5/OS Programmer's Toolkit.
+      * For details please refer to the project's web site,
+      * http://i5toolkit.sourceforge.net/
+      *
+      * @attention This header is for i5/OS Release 5 Version 2.
+      */
+
+      /if not defined(i5toolkit_rpg_mih52)
+      /define i5toolkit_rpg_mih52
+
+      /if defined(*CRTBNDRPG)
+     h dftactgrp(*no)
+      /endif
+
+     /* ACOS */
+     d acos            pr             8f   extproc('_ACOS')
+     d     x                          8f   value
+
+      /endif
+     /* eof - mih52.rpgleinc */
