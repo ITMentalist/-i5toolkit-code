@@ -20,16 +20,16 @@
 #
 
 % : %.rpgle
-	system "crtbndrpg pgm($@) srcstmf('$(CURDIR)/$<') $(RPGFLAGS)"; \
+	system "crtbndrpg pgm($(OUTPUTDIR)/$@) srcstmf('$(CURDIR)/$<') $(RPGFLAGS)"; \
 	ln -fs "/qsys.lib/$(OUTPUTDIR).lib/$@.pgm" $@
 
-CURDIR=$(shell pwd)
+# CURDIR=$(shell pwd)
 MIHDIR=/usr/local/include/rpg-mih
 RPGFLAGS=incdir('$(MIHDIR)' '$(CURDIR)') replace(*yes)
 
 RM=del
 
-TARGETS=t001
+TARGETS=t001 t002
 
 all: $(TARGETS)
 	@echo "compilation done -- rpg-mih"

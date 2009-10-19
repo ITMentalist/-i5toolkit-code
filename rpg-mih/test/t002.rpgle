@@ -18,17 +18,22 @@
       */
 
      /**
-      * @file t001.rpgle
+      * @file t002.rpgle
       *
-      * test of acos
+      * test of andcstr
       */
 
       /copy mih52
-     d f               s              8f
+     d str1            s              8a
+     d str2            s              8a
+     d result          s              8a
 
       /free
-          f = acos(0.5);
-          dsply 'result:' '' f;
+
+          str1 = x'69';  // 01101001        
+          str2 = x'91';  // 10010001        
+          andcstr(result : str1 : str2 : 1); // 01101000, x'68'
+          dsply 'result' '' result;         
 
           *inlr = *on;
       /end-free

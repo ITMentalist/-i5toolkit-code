@@ -27,24 +27,21 @@
 
 HOST=i810
 RMAKER=RUNSH
-BINLIB=i5toolkit
+BINLIB=lsbin
 HOST_DIR=/home/ljl/chqs/rpg-mih
 TARF=ha.tar
 
-all: clean_local tar_src upload_src compile
-	@echo "END OF COMPILATION: MIC"
-
-clean_local:
-	make clean; true
+all: tar_src upload_src compile
+	@echo "END OF COMPILATION: rmakefile"
 
 tar_src:
-	tar -cf $(TARF) *.h *.hpp *.cpp *.c makefile
+	tar -cf $(TARF) *rpgle makefile
 
 upload_src:
 	lftp -e "cd $(HOST_DIR); put $(TARF); by" $(HOST)
 
 compile:
-	rexec $(HOST) "call pgm($(RMAKER)) parm('00037' 'cd $(HOST_DIR); tar -xf $(TARF); export OS400=yes OUTPUTDIR=$(BINLIB); gmake')"
+	rexec $(HOST) "call pgm($(RMAKER)) parm('00037' 'cd $(HOST_DIR); tar -xf $(TARF); export CURDIR=$(HOST_DIR) OUTPUTDIR=$(BINLIB); gmake')"
 
 clean:
 	rexec $(HOST) "call pgm($(RMAKER)) parm('00037' 'cd $(HOST_DIR); export OS400=yes; gmake clean')"
