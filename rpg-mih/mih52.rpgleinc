@@ -48,6 +48,13 @@
      d     str2                   32767a   options(*varsize)
      d     length                    10u 0 value
 
+     /* ANDSTR: And String */
+     d andstr          pr                  extproc('_ANDSTR')
+     d     receiver               32767a   options(*varsize)
+     d     str1                   32767a   options(*varsize)
+     d     str2                   32767a   options(*varsize)
+     d     length                    10u 0 value
+
      /* end -- calculation builtins */
 
       /endif
