@@ -48,12 +48,33 @@
      d     str2                   32767a   options(*varsize)
      d     length                    10u 0 value
 
-     /* ANDSTR: And String */
+     /* ANDSTR: and string */
      d andstr          pr                  extproc('_ANDSTR')
      d     receiver               32767a   options(*varsize)
      d     str1                   32767a   options(*varsize)
      d     str2                   32767a   options(*varsize)
      d     length                    10u 0 value
+
+     /* ASIN */
+     d asin            pr             8f   extproc('_ASIN')
+     d     x                          8f   value
+
+     /* ATAN */
+     d atan            pr             8f   extproc('_ATAN')
+     d     x                          8f   value
+
+     /* ATANH, arc tangent hyperbolic */
+     d atanh           pr             8f   extproc('_ATANH')
+     d     x                          8f   value
+
+     /* STRLENNULL, compute length of null-terminated string */
+     d strlennull      pr            10u 0 extproc('__strlen')
+     d     str                    32767a   options(*varsize)
+
+     /* STRLENNULL, compare null-terminated strings */
+     d strcmpnull      pr            10u 0 extproc('__strcmp')
+     d     str1                   32767a   options(*varsize)
+     d     str2                   32767a   options(*varsize)
 
      /* end -- calculation builtins */
 

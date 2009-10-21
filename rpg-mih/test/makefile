@@ -20,7 +20,7 @@
 #
 
 % : %.rpgle
-	system "crtbndrpg pgm($(OUTPUTDIR)/$@) srcstmf('$(CURDIR)/$<') $(RPGFLAGS)"; \
+	system "crtbndrpg pgm($(OUTPUTDIR)/$@) srcstmf('$(CURDIR)/$<') $(RPGFLAGS)"
 	ln -fs "/qsys.lib/$(OUTPUTDIR).lib/$@.pgm" $@
 
 # CURDIR=$(shell pwd)
@@ -29,7 +29,7 @@ RPGFLAGS=incdir('$(MIHDIR)' '$(CURDIR)') replace(*yes)
 
 RM=del
 
-TARGETS=t001 t002
+TARGETS=t001 t002 t003 t004 t005 t006 t007
 
 all: $(TARGETS)
 	@echo "compilation done -- rpg-mih"
