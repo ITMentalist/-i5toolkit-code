@@ -18,9 +18,9 @@
       */
 
      /**
-      * @file t007.rpgle
+      * @file t008.rpgle
       *
-      * test of strcmpnull
+      * test of strncmpnull
       */
 
       /copy mih52
@@ -33,7 +33,7 @@
 
           str1 = 'Tom and Jerry' + x'00'; // the bigger string
           str2 = 'Tom and jerry' + x'00';
-          flag = strcmpnull(str1 : str2);
+          flag = strncmpnull(str1 : str2 : 8);
 
           select;
           when flag = -1;

@@ -72,9 +72,27 @@
      d     str                    32767a   options(*varsize)
 
      /* STRLENNULL, compare null-terminated strings */
-     d strcmpnull      pr            10u 0 extproc('__strcmp')
+     d strcmpnull      pr            10i 0 extproc('__strcmp')
      d     str1                   32767a   options(*varsize)
      d     str2                   32767a   options(*varsize)
+
+     /* STRNCMPNULL, compare null-terminated strings constrained */
+     d strncmpnull     pr            10i 0 extproc('_STRNCMPNULL')
+     d     str1                   32767a   options(*varsize)
+     d     str2                   32767a   options(*varsize)
+     d     length                    10u 0 value
+
+     /* CMPTOPAD, compare to pad */
+     d cmptopad        pr            10i 0 extproc('_CMPTOPAD')
+     d     str                    32767a   options(*varsize)
+     d     pad                        1a   value
+     d     length                    10u 0 value
+
+     /* COMSTR, complement string */
+     d comstr          pr                  extproc('_COMSTR')
+     d     receiver               32767a   options(*varsize)
+     d     source                 32767a   options(*varsize)
+     d     length                    10u 0 value
 
      /* end -- calculation builtins */
 

@@ -18,35 +18,21 @@
       */
 
      /**
-      * @file t007.rpgle
+      * @file t009.rpgle
       *
-      * test of strcmpnull
+      * test of cmptopad
       */
 
       /copy mih52
-     d str1            s             32a
-     d str2            s             32a
-     d flag            s             10i 0
-     d msg             s             16a
+
+     d str             s             16a
+     d rtn             s             10i 0
 
       /free
 
-          str1 = 'Tom and Jerry' + x'00'; // the bigger string
-          str2 = 'Tom and jerry' + x'00';
-          flag = strcmpnull(str1 : str2);
+           str = '999997799';
+           rtn = cmptopad(str : '9' : 10);
+           dsply 'result' '' rtn;
 
-          select;
-          when flag = -1;
-              msg = 'str2 is greater';
-          when flag = 0;
-              msg = 'equal';
-          when flag = 1;
-              msg = 'str1 is greater';
-          other;
-              msg = 'impossible!';
-          endsl;
-
-          dsply 'result' '' msg;
-
-          *inlr = *on;
+           *inlr = *on;
       /end-free
