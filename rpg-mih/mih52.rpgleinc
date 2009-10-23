@@ -96,5 +96,18 @@
 
      /* end -- calculation builtins */
 
+     /* pointer resolution */
+     d rslvsp_tmpl     ds                  qualified
+     d     obj_type                   2a
+     d     obj_name                  30a
+     d     auth                       2a   inz(x'0000')
+
+     d rslvsp2         pr                  extproc('_RSLVSP2')
+     d     obj                         *
+     d     opt                       34a
+
+
+     /* end -- pointer resolution */
+
       /endif
      /* eof - mih52.rpgleinc */
