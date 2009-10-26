@@ -106,8 +106,24 @@
      d     obj                         *
      d     opt                       34a
 
-
      /* end -- pointer resolution */
+     /**
+      * NPM_PARMLIST_ADDR, npm procedure parameter list address.
+      *
+      * @return space pointer to a npm_plist_t structure
+      */
+     d npm_plist       pr              *   extproc('_NPMPARMLISTADDR')
+
+     d npm_plist_t     ds                  qualified based(dummy_ptr)
+     d     parm_desc_...
+     d       list                      *
+     d     mch_wrk_...
+     d       ara                     16a
+     d     argvs                       *   dim(400)
+
+     /* program execution */
+
+     /* end -- program execution */
 
       /endif
      /* eof - mih52.rpgleinc */

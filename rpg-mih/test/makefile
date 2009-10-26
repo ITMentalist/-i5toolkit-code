@@ -29,7 +29,7 @@ RPGFLAGS=incdir('$(MIHDIR)' '$(CURDIR)') replace(*yes)
 
 RM=del
 
-TARGETS=t001 t002 t003 t004 t005 t006 t007 t008 t009 t010 t011
+TARGETS=t001 t002 t003 t004 t005 t006 t007 t008 t009 t010 t011 t012
 
 all: $(TARGETS)
 	@echo "compilation done -- rpg-mih"
