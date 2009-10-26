@@ -40,7 +40,7 @@
       */
      d callpgmv        pr                  extproc('_CALLPGMV')
      d     pgm_ptr                     *
-     d     argv                        *   dim(400)
+     d     argv                        *   dim(400) options(*varsize)
      d     argc                      10u 0 value
 
       /endif
