@@ -48,11 +48,18 @@
      d     strval                     5a
      d     pkdval                     5p 2 overlay(strval)
 
+     d dl              ds                  likeds(parm_desc_list_t)
+     d                                     based(mptr)           
+     d mptr            s               *
+
       /free
 
            plist_ptr = npm_plist();
-           buf_ptr = plist.argvs(1);
-           buf_ptr = plist.argvs(2);
+
+           dsply 'main proc' '' ;
+	
+           mptr = plist.parm_desc_list ;
+           dsply 'num parms' '' dl.argc ;
 
            vv(p1 : p2);
            *inlr = *on;
@@ -63,9 +70,18 @@
      d     str                        5a
      d     pkd                        5p 2
 
+     d desclist        ds                  likeds(parm_desc_list_t)
+     d                                     based(desclist_ptr)
+     d desclist_ptr    s               *
+
       /free
 
            plist_ptr = npm_plist();
+
+           dsply 'sub-proc' ''  ;
+	
+           desclist_ptr = plist.parm_desc_list ;
+           dsply 'num parms' '' desclist.argc ;
 
            buf_ptr = plist.argvs(1);
            dsply 'p1' '' strval;

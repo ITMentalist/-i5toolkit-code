@@ -121,6 +121,10 @@
      d       ara                     16a
      d     argvs                       *   dim(400)
 
+     d parm_desc_...
+     d       list_t    ds                  qualified based(dummy_ptr)
+     d     argc                      10i 0
+
      /* program execution */
 
      /* end -- program execution */
