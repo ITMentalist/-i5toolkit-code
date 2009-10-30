@@ -23,7 +23,7 @@
         title=vtitle
         help='help/abt'
         keyl=klistmain
-        mbar=mbmain
+.*        mbar=mbmain
         enter='return 100'
         .
 

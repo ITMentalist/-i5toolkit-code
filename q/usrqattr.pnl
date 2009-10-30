@@ -24,7 +24,7 @@
 .* 真想不明白UIM按啥规则拼PANEL的HELP信息
         help='help/abt'
         keyl=klistmain
-        mbar=mbmain
+.*        mbar=mbmain
         enter='return 100'
         .
 
