@@ -20,7 +20,7 @@
      /**
       * @file t005.rpgle
       *
-      * test of atan and atanh
+      * test of atan, atanh, cot
       */
 
       /copy mih52
@@ -32,6 +32,9 @@
 
           f = atanh(0.5);
           dsply 'atanh(0.5)' '' f;
+
+          f = cot(0.785)        ;
+          dsply 'cot(0.785)' '' f ;
 
           *inlr = *on;
       /end-free

@@ -43,16 +43,16 @@
 
      /* ANDCSTR: And Complemented String */
      d andcstr         pr                  extproc('_ANDCSTR')
-     d     receiver               32767a   options(*varsize)
-     d     str1                   32767a   options(*varsize)
-     d     str2                   32767a   options(*varsize)
+     d     receiver                   1a   options(*varsize)
+     d     str1                       1a   options(*varsize)
+     d     str2                       1a   options(*varsize)
      d     length                    10u 0 value
 
      /* ANDSTR: and string */
      d andstr          pr                  extproc('_ANDSTR')
-     d     receiver               32767a   options(*varsize)
-     d     str1                   32767a   options(*varsize)
-     d     str2                   32767a   options(*varsize)
+     d     receiver                   1a   options(*varsize)
+     d     str1                       1a   options(*varsize)
+     d     str2                       1a   options(*varsize)
      d     length                    10u 0 value
 
      /* ASIN */
@@ -69,30 +69,59 @@
 
      /* STRLENNULL, compute length of null-terminated string */
      d strlennull      pr            10u 0 extproc('__strlen')
-     d     str                    32767a   options(*varsize)
+     d     str                        1a   options(*varsize)
 
      /* STRLENNULL, compare null-terminated strings */
      d strcmpnull      pr            10i 0 extproc('__strcmp')
-     d     str1                   32767a   options(*varsize)
-     d     str2                   32767a   options(*varsize)
+     d     str1                       1a   options(*varsize)
+     d     str2                       1a   options(*varsize)
 
      /* STRNCMPNULL, compare null-terminated strings constrained */
      d strncmpnull     pr            10i 0 extproc('_STRNCMPNULL')
-     d     str1                   32767a   options(*varsize)
-     d     str2                   32767a   options(*varsize)
+     d     str1                       1a   options(*varsize)
+     d     str2                       1a   options(*varsize)
      d     length                    10u 0 value
 
      /* CMPTOPAD, compare to pad */
      d cmptopad        pr            10i 0 extproc('_CMPTOPAD')
-     d     str                    32767a   options(*varsize)
+     d     str                        1a   options(*varsize)
      d     pad                        1a   value
      d     length                    10u 0 value
 
      /* COMSTR, complement string */
      d comstr          pr                  extproc('_COMSTR')
-     d     receiver               32767a   options(*varsize)
-     d     source                 32767a   options(*varsize)
+     d     receiver                   1a   options(*varsize)
+     d     source                     1a   options(*varsize)
      d     length                    10u 0 value
+
+     /* COS, cosine */
+     d cos             pr             8f   extproc('_COS')
+     d     x                          8f   value
+
+     /* COSH, cosine hyperbolic */
+     d cosh            pr             8f   extproc('_COSH')
+     d     x                          8f   value
+
+     /* COT, cotangent */
+     d cot             pr             8f   extproc('_COT')
+     d     x                          8f   value
+
+     /* CPYBYTES, copy bytes */
+     d cpybytes        pr                  extproc('_CPYBYTES')
+     d     target                      *   value
+     d     source                      *   value
+     d     length                    10u 0 value
+
+     /* CPYBO, copy bytes overlapping */
+     d cpybo           pr                  extproc('_CPYBO')
+     d     target                      *   value
+     d     source                      *   value
+     d     length                    10u 0 value
+
+     /* STRCPYNULL, copy null-terminated string */
+     d strcpynull      pr              *   extproc('__strcpy')
+     d     target                     1a   options(*varsize)
+     d     source                     1a   options(*varsize)
 
      /* end -- calculation builtins */
 

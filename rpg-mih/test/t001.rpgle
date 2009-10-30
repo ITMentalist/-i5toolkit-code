@@ -20,7 +20,7 @@
      /**
       * @file t001.rpgle
       *
-      * test of acos
+      * test of acos, cos, cosh
       */
 
       /copy mih52
@@ -28,7 +28,13 @@
 
       /free
           f = acos(0.5);
-          dsply 'result:' '' f;
+          dsply 'acos:' '' f;
+
+          f = cos(f);
+          dsply 'cos:' '' f;
+
+          f = cosh(f);
+          dsply 'cosh:' '' f;
 
           *inlr = *on;
       /end-free

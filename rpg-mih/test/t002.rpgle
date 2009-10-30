@@ -30,9 +30,9 @@
 
       /free
 
-          str1 = x'69';  // 01101001        
-          str2 = x'91';  // 10010001        
-          andcstr(result : str1 : str2 : 1); // 01101000, x'68'
+          str1 = x'E9';  // 11101001        
+          str2 = x'7E';  // 01111110
+          andcstr(result : str1 : str2 : 1); // 10000001, x'81'(a)
           dsply 'result' '' result;         
 
           *inlr = *on;
