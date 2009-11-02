@@ -123,9 +123,47 @@
      d     target                     1a   options(*varsize)
      d     source                     1a   options(*varsize)
 
+     /* STRNCPYNULL, copy null-terminated string constrained */
+     d strncpynull     pr              *   extproc('_STRNCPYNULL')
+     d     target                     1a   options(*varsize)
+     d     source                     1a   options(*varsize)
+     d     length                    10u 0 value
+
+     /* STRNCPYNULLPAD, copy null-terminated string constrained, null padded */
+     d strncpynullpad  pr              *   extproc('_STRNCPYNULLPAD')
+     d     target                     1a   options(*varsize)
+     d     source                     1a   options(*varsize)
+     d     length                    10u 0 value
+
+     /* EEXP, exponential function of e */
+     d exp             pr             8f   extproc('_EEXP')
+     d     x                          8f   value
+
+     /* FINDBYTE, find byte */
+     d findbyte        pr              *   extproc('_FINDBYTE')
+     d     source                     1a   options(*varsize)
+     d     to_search                  1a   value
+
+     /* MEMCHR, find character constrained */
+     d memchr          pr              *   extproc('_MEMCHR')
+     d     source                      *   value
+     d     to_search                  1a   value
+     d     length                    10u 0 value
+
+     /* STRCHRNULL, find character in null-terminated string */
+     d strchrnull      pr              *   extproc('_STRCHRNULL')
+     d     source                      *   value
+     d     to_search                  1a   value
+
      /* end -- calculation builtins */
 
      /* pointer resolution */
+
+     /* CMPPTRT, compare pointer type */
+     d cmpptrt         pr            10i 0 extproc('_CMPPTRT')
+     d     ptr_type                   1a   value
+     d     ptr                         *   value
+
      d rslvsp_tmpl     ds                  qualified
      d     obj_type                   2a
      d     obj_name                  30a
