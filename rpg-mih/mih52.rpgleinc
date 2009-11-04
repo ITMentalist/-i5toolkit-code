@@ -155,6 +155,22 @@
      d     source                      *   value
      d     to_search                  1a   value
 
+     /* LN, logarithm base e (natural logarithm) */
+     d log             pr             8f   extproc('_LN')
+     d     x                          8f   value
+
+     /* MEMCMP, memory compare  */
+     d memcmp          pr            10i 0 extproc('__memcmp')
+     d     addr1                       *   value
+     d     addr2                       *   value
+     d     length                    10u 0 value
+
+     /* MEMCPY, memory copy  */
+     d memcpy          pr              *   extproc('__memcpy')
+     d     addr1                       *   value
+     d     addr2                       *   value
+     d     length                    10u 0 value
+
      /* end -- calculation builtins */
 
      /* pointer resolution */
