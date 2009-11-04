@@ -26,7 +26,7 @@
       /copy mih54
 
      d qmhsndpm        s               *
-     d argv            s               *   dim(400)
+     d argv            s               *   dim(10)
 
      d qusec_t         ds           256    qualified
      d     bytes_in                  10i 0
