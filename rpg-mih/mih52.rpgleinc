@@ -186,6 +186,11 @@
 
      /* PROPB. Cannot find its builtin name! Anyone can help? */
 
+     /* RETCA, retrieve computational attributes */
+     /* @attention parm selector is documented wrongly as ubin(4) in ibm's doc */
+     d retca           pr            10u 0 extproc('_RETCA')
+     d     selector                   1a   value
+
      /* end -- calculation builtins */
 
      /* pointer resolution */
