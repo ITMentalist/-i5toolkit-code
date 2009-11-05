@@ -167,9 +167,24 @@
 
      /* MEMCPY, memory copy  */
      d memcpy          pr              *   extproc('__memcpy')
-     d     addr1                       *   value
-     d     addr2                       *   value
+     d     target                      *   value
+     d     source                      *   value
      d     length                    10u 0 value
+
+     /* MEMMOV, memory move  */
+     d memmove         pr              *   extproc('_MEMMOVE')
+     d     target                      *   value
+     d     source                      *   value
+     d     length                    10u 0 value
+
+     /* ORSTR: or string */
+     d orstr           pr                  extproc('_ORSTR')
+     d     receiver                   1a   options(*varsize)
+     d     str1                       1a   options(*varsize)
+     d     str2                       1a   options(*varsize)
+     d     length                    10u 0 value
+
+     /* PROPB. Cannot find its builtin name! Anyone can help? */
 
      /* end -- calculation builtins */
 

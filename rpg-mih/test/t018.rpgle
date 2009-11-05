@@ -18,38 +18,35 @@
       */
 
      /**
-      * @file t017.rpgle
+      * @file t018.rpgle
       *
-      * test of memcmp(), memcpy()
+      * test of memmove()
       */
 
       /copy mih52
 
-     d str1            s             32a
-     d str2            s             32a
-     d flag            s             10i 0
-     d msg             s             16a
+     d ds              ds                  qualified
+     d     p1                          *
+     d     p2                          *
+
+     d words           s             16a   inz('Hello!  World!')
+     d hello           ds             8    based(ds.p1)
+     d world           ds             8    based(ds.p2)
+     d ptr             s               *
 
       /free
 
-          str1 = 'Tom and Jerry' + x'00'; // the bigger string
-          str2 = 'Tom and jerry' + x'00';
-          flag = memcmp(%addr(str1) : %addr(str2) : 15);
-          select;
-          when flag = -1;
-              msg = 'str2 is greater';
-          when flag = 0;
-              msg = 'equal';
-          when flag = 1;
-              msg = 'str1 is greater';
-          other;
-              msg = 'impossible!';
-          endsl;
+           // set ds.p1, ds.p2
+           ds.p1 = %addr(words);
+           ds.p2 = %addr(words) + 8;
+           dsply hello '' world;
 
-          dsply 'result' '' msg;
+           // exchange 2 pointers in DS by memmove()
+           // instruction MEMMOVE can be used to copy pointers!
+           memmove(%addr(ptr) : %addr(ds.p1) : 16);
+           memmove(%addr(ds.p1) : %addr(ds.p2) : 16);
+           memmove(%addr(ds.p2) : %addr(ptr) : 16);
+           dsply hello '' world;
 
-          // memcpy()
-          memcpy(%addr(str1) : %addr(str2) : 15);
-
-          *inlr = *on;
+           *inlr = *on;
       /end-free

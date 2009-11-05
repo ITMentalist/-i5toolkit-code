@@ -33,6 +33,18 @@
 
       /copy mih52
 
+     /* MPYADD, multiply-add */
+     d mpyadd          pr             8f   extproc('_MPYADD')
+     d   multiplicand                 8f   value
+     d   multiplier                   8f   value
+     d   addend                       8f   value
+
+     /* MPYSUB, multiply-sub */
+     d mpysub          pr             8f   extproc('_MPYSUB')
+     d   multiplicand                 8f   value
+     d   multiplier                   8f   value
+     d   addend                       8f   value
+
      /**
       * CALLPGMV
       *

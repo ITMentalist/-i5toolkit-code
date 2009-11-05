@@ -20,7 +20,7 @@
      /**
       * @file t015.rpgle
       *
-      * test of exp()
+      * test of exp(), log(), mpyadd(), mpysub()
       */
 
       /copy mih52
@@ -28,11 +28,22 @@
      d f               s              8f
 
       /free
+
+          // exp() and log()
           f = exp(2)            ;
           dsply 'exp(2):' '' f  ;
 
           f = log(f)            ;
           dsply 'log(f):' '' f  ;
+
+          // mpyadd() and mpysub()
+      /if defined(*v5r4m0)
+          f = mpyadd(2.1 : 7.5 : 16.9);
+          dsply 'MPYADD' '' f;
+
+          f = mpysub(2.1 : 7.5 : 16.9);
+          dsply 'MPYSUB' '' f;
+      /endif
 
           *inlr = *on;
       /end-free

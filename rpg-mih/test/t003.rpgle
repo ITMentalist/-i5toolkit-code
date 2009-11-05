@@ -20,7 +20,7 @@
      /**
       * @file t003.rpgle
       *
-      * test of andstr
+      * test of andstr()
       */
 
       /copy mih52
@@ -34,7 +34,12 @@
           str1 = x'96';   // 10010110
           str2 = x'CA';   // 11001010
           andstr(result : str1 : str2 : 1);
-          dsply 'result:' '' result;
+          dsply 'andstr:' '' result; // x'82'
+
+          str1 = x'61';   // 01100001
+          str2 = x'88';   // 10001000
+          orstr(result : str1 : str2 : 1);
+          dsply 'orstr:' '' result; // x'E9', 11101001
 
           *inlr = *on;
       /end-free
