@@ -184,7 +184,16 @@
      d     str2                       1a   options(*varsize)
      d     length                    10u 0 value
 
-     /* PROPB. Cannot find its builtin name! Anyone can help? */
+     /* POWER, x to the y power */
+     d power           pr             8f   extproc('_POWER')
+     d     x                          8f   value
+     d     x                          8f   value
+
+     /* PROPB, propogate byte */
+     d propb           pr              *   extproc('__memset')
+     d     target                      *   value
+     d     src_byte                   1a   value
+     d     length                    10u 0 value
 
      /* RETCA, retrieve computational attributes */
      /* @attention parm selector is documented wrongly as ubin(4) in ibm's doc */

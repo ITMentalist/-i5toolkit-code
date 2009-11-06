@@ -20,7 +20,7 @@
      /**
       * @file t015.rpgle
       *
-      * test of exp(), log(), mpyadd(), mpysub()
+      * test of exp(), log(), mpyadd(), mpysub(), power()
       */
 
       /copy mih52
@@ -44,6 +44,9 @@
           f = mpysub(2.1 : 7.5 : 16.9);
           dsply 'MPYSUB' '' f;
       /endif
+
+          f = power(2 : 32);
+          dsply '2^32' '' f;
 
           *inlr = *on;
       /end-free

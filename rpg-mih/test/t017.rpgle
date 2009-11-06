@@ -20,7 +20,7 @@
      /**
       * @file t017.rpgle
       *
-      * test of memcmp(), memcpy()
+      * test of memcmp(), memcpy(), propb()
       */
 
       /copy mih52
@@ -31,6 +31,10 @@
      d msg             s             16a
 
       /free
+
+          // propb()
+          propb(%addr(msg) : '_' : 16);
+          dsply 'propb()' '' msg;
 
           str1 = 'Tom and Jerry' + x'00'; // the bigger string
           str2 = 'Tom and jerry' + x'00';
