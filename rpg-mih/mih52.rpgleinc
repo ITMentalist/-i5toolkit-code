@@ -241,5 +241,10 @@
 
      /* end -- program execution */
 
+     /* process and thread management */
+     d pcoptr          pr              *   extproc('_PCOPTR')
+
+     /* end -- process and thread management */
+
       /endif
      /* eof - mih52.rpgleinc */
