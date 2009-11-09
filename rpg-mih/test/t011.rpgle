@@ -63,7 +63,7 @@
            argv(7) = %addr(call_stk_cnt);
            argv(8) = %addr(msgkey     );
            argv(9) = %addr(ec         );
-      /if defined(V5R4M0)
+      /if defined(*V5R4M0)
            ec.bytes_in = qusec_len;
            callpgmv(qmhsndpm : argv : 9);
       /endif

@@ -35,7 +35,7 @@
            pco_ptr = pcoptr();
            memcpy(%addr(sept_ptr) : pco_ptr : 16);
 
-           // check septs(2899)
+           // locate system pointer to QCLRDTAQ
            qclrdtaq = septs(2899);
 
            *inlr = *on;
