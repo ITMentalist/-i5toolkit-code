@@ -200,6 +200,11 @@
      d retca           pr            10u 0 extproc('_RETCA')
      d     selector                   1a   value
 
+     /* SETCA, set computational attributes */
+     d setca           pr                  extproc('_SETCA')
+     d     new_ca                    10u 0 value
+     d     selector                  10u 0 value
+
      /* end -- calculation builtins */
 
      /* pointer resolution */
