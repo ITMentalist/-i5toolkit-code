@@ -20,7 +20,7 @@
      /**
       * @file t001.rpgle
       *
-      * test of acos, cos, cosh
+      * test of acos, cos, cosh, sin, sinh
       */
 
       /copy mih52
@@ -35,6 +35,13 @@
 
           f = cosh(f);
           dsply 'cosh:' '' f;
+
+          f = acos(0);  // Pi/2
+          f = sin(f);
+          dsply 'sin(Pi/2):' '' f;
+
+          f = sinh(acos(0));
+          dsply 'sinh(Pi/2):' '' f;
 
           *inlr = *on;
       /end-free

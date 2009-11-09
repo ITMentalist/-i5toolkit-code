@@ -18,33 +18,27 @@
       */
 
      /**
-      * @file t003.rpgle
+      * @file t021.rpgle
       *
-      * test of andstr(), orstr(), xorstr()
+      * test of testrpl()
       */
 
       /copy mih52
 
-     d str1            s              1a
-     d str2            s              1a
-     d result          s              1a
+     d org             c                   'tom cruise'
+     d str             s             16a
+     d cmp             s              2a   inz('tc')
+     d rpl             s              2a   inz('TC')
 
       /free
 
-          str1 = x'96';   // 10010110
-          str2 = x'CA';   // 11001010
-          andstr(result : str1 : str2 : 1);
-          dsply 'andstr:' '' result; // x'82'
+           str = org;
+           testrpl(%addr(str)
+                   : 16
+                   : %addr(cmp)
+                   : %addr(rpl)
+                   : 2 );
+           dsply org '' str;
 
-          str1 = x'61';   // 01100001
-          str2 = x'88';   // 10001000
-          orstr(result : str1 : str2 : 1);
-          dsply 'orstr:' '' result; // x'E9', 11101001
-
-          str1 = x'65';   // 01100101
-          str2 = x'82';   // 10000010
-          xorstr(result : str1 : str2 : 1);
-          dsply 'xorstr:' '' result; // x'E7', 11100111
-
-          *inlr = *on;
+           *inlr = *on;
       /end-free

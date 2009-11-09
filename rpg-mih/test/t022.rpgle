@@ -18,33 +18,23 @@
       */
 
      /**
-      * @file t003.rpgle
+      * @file t022.rpgle
       *
-      * test of andstr(), orstr(), xorstr()
+      * test of testsubset()
       */
 
       /copy mih52
 
-     d str1            s              1a
-     d str2            s              1a
-     d result          s              1a
+     d str1            s              5a   inz('jenny')
+     d str2            s              5a   inz('JENNY')
+     d str3            s              3a   inz(x'818283')
+     d str4            s              3a   inz(x'939293')
+     d rtn             s             10u 0
 
       /free
 
-          str1 = x'96';   // 10010110
-          str2 = x'CA';   // 11001010
-          andstr(result : str1 : str2 : 1);
-          dsply 'andstr:' '' result; // x'82'
+           rtn = testsubset(%addr(str1) : %addr(str2) : 5); // rtn = 1
+           rtn = testsubset(%addr(str3) : %addr(str4) : 3); // rtn = 1
 
-          str1 = x'61';   // 01100001
-          str2 = x'88';   // 10001000
-          orstr(result : str1 : str2 : 1);
-          dsply 'orstr:' '' result; // x'E9', 11101001
-
-          str1 = x'65';   // 01100101
-          str2 = x'82';   // 10000010
-          xorstr(result : str1 : str2 : 1);
-          dsply 'xorstr:' '' result; // x'E7', 11100111
-
-          *inlr = *on;
+           *inlr = *on;
       /end-free

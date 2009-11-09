@@ -36,5 +36,12 @@
           f = cot(0.785)        ;
           dsply 'cot(0.785)' '' f ;
 
+          f = tan(acos(0)/2);
+          dsply 'tan(Pi/4)' '' f ;
+
+          f = tanh(acos(0)/2);
+          dsply 'tanh(Pi/4)' '' f ;
+
           *inlr = *on;
       /end-free
+
