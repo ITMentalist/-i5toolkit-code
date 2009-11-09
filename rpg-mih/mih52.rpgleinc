@@ -281,6 +281,9 @@
      d     opt                       34a
 
      /* end -- pointer resolution */
+
+     /* program execution */
+
      /**
       * NPM_PARMLIST_ADDR, npm procedure parameter list address.
       *
@@ -299,7 +302,6 @@
      d       list_t    ds                  qualified based(dummy_ptr)
      d     argc                      10i 0
 
-     /* program execution */
 
      /* end -- program execution */
 
