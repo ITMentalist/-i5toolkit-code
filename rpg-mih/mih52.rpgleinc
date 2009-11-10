@@ -35,7 +35,11 @@
      h dftactgrp(*no)
       /endif
 
-     /* calculation builtins */
+     /* computation instructions */
+
+     /* end -- computation instructions */
+
+     /* bound program calculation builtins */
 
      /* ACOS */
      d acos            pr             8f   extproc('_ACOS')
@@ -71,7 +75,7 @@
      d strlennull      pr            10u 0 extproc('__strlen')
      d     str                        1a   options(*varsize)
 
-     /* STRLENNULL, compare null-terminated strings */
+     /* STRCMPNULL, compare null-terminated strings */
      d strcmpnull      pr            10i 0 extproc('__strcmp')
      d     str1                       1a   options(*varsize)
      d     str2                       1a   options(*varsize)
@@ -171,7 +175,7 @@
      d     source                      *   value
      d     length                    10u 0 value
 
-     /* MEMMOV, memory move  */
+     /* MEMMOVE, memory move  */
      d memmove         pr              *   extproc('_MEMMOVE')
      d     target                      *   value
      d     source                      *   value
@@ -196,7 +200,6 @@
      d     length                    10u 0 value
 
      /* RETCA, retrieve computational attributes */
-     /* @attention parm selector is documented wrongly as ubin(4) in ibm's doc */
      d retca           pr            10u 0 extproc('_RETCA')
      d     selector                   1a   value
 
@@ -205,7 +208,7 @@
      d     new_ca                    10u 0 value
      d     selector                  10u 0 value
 
-     /* SCANS, scan extended.  @todo usage */
+     /* SCANX, scan extended.  @todo usage */
      d scanx           pr            10i 0 extproc('_SCANX')
      d     base_...
      d       locator                   *
@@ -262,7 +265,7 @@
      d     str2                       1a   options(*varsize)
      d     length                    10u 0 value
 
-     /* end -- calculation builtins */
+     /* end -- bound program calculation builtins */
 
      /* pointer resolution */
 
@@ -270,6 +273,12 @@
      d cmpptrt         pr            10i 0 extproc('_CMPPTRT')
      d     ptr_type                   1a   value
      d     ptr                         *   value
+
+     /* CPYBWP, copy bytes with pointers */
+     d cpybwp          pr                  extproc('_CPYBWP')
+     d     receiver                    *   value             
+     d     source                      *   value             
+     d     length                    10u 0 value             
 
      d rslvsp_tmpl     ds                  qualified
      d     obj_type                   2a
@@ -301,7 +310,6 @@
      d parm_desc_...
      d       list_t    ds                  qualified based(dummy_ptr)
      d     argc                      10i 0
-
 
      /* end -- program execution */
 
