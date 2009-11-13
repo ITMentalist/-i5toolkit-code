@@ -314,7 +314,23 @@
      /* end -- program execution */
 
      /* process and thread management */
+
+     /* PCOPTR, returns a SPCPTR to the PCO (process communication object) object */
      d pcoptr          pr              *   extproc('_PCOPTR')
+
+     /* MATPRAGP, materialize process activation groups */
+     d matpragp        pr                  extproc('_MATPRAGP')
+     d     receiver                    *   value
+
+     d matpragp_...
+     d   tmpl_t        ds                  qualified
+     d                                     based(dummy_ptr)
+     d     buf                    65535a
+     d     bytes_in                  10i 0 overlay(buf : 1)
+     d     bytes_out                 10i 0 overlay(buf : 5)
+     d     agp_num                   10i 0 overlay(buf : 9)
+     d     agp_marks                  4a   dim(16380)
+     d                                     overlay(buf : 13)
 
      /* end -- process and thread management */
 
