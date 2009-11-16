@@ -26,7 +26,12 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 /define __emi_pgm_act_h__       ;
 
 /* Activation group attribute (used by MATAGPAT). */
-dcl spc emi-ag-attr-t bas(*)    ;
+dcl con emi-ag-attr-len-basic bin(2) init(h'88') ;
+dcl spcptr emi-ag-attr-ptr auto             ;
+dcl spc emi-ag-attr-t bas(emi-ag-attr-ptr)  ;
+        dcl dd emi-ag-attr-bytes-in bin(4) dir ;
+        dcl dd emi-ag-attr-bytes-out bin(4) dir ;
+        dcl dd * char(8) dir                    ;
         dcl sysptr emi-ag-attr-root-pgm dir ;
         dcl dd * char(16) dir               ;
         dcl sysptr emi-ag-attr-stg-rcc-key dir ; /* Storage address recycling key */
