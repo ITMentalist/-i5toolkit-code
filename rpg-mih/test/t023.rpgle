@@ -38,7 +38,6 @@
 
      d ptr             s               *
      d str2            ds             3    based(ptr)
-     d receiver        s              3a
 
       /free
 
@@ -61,13 +60,14 @@
            cvthc(%addr(hexstr) : %addr(str) : 6);
            dsply 'ASCII' '' hexstr;
 
-           // XLATEB1, str2 is overlapped with translate table
+           // XLATEB1, the receiver param is overlapped with translate table
+           // and the source string
            ptr = %addr(table) + 33;
-           xlateb1(%addr(receiver)
+           xlateb1( ptr
                    : ptr             // str2: x'818283'
                    : %addr(table)
                    : 3);
-           cvthc(%addr(hexstr) : %addr(receiver) : 6);
+           cvthc(%addr(hexstr) : ptr : 6);
            dsply 'ASCII' '' hexstr;
 
            *inlr = *on;
