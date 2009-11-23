@@ -313,6 +313,22 @@
 
      /* end -- program execution */
 
+     /* queue management */
+
+     /* message prefix used by instruction ENQ */
+     d enq_prefix_t    ds                  qualified
+     d     msg_len                   10i 0
+      * for keyed *USRQ
+     d     msg_key                  256a
+
+     /* enqueue a *USRQ */
+     d enq             pr                  extproc('_ENQ')
+     d     queue                       *
+     d     msg_prefix                  *   value
+     d     msg                         *   value
+
+     /* end -- queue management */
+
      /* process and thread management */
 
      /* PCOPTR, returns a SPCPTR to the PCO (process communication object) object */
