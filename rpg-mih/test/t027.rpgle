@@ -18,36 +18,36 @@
       */
 
      /**
-      * @file t026.rpgle
+      * @file t027.rpgle
       *
-      * test of deqi()
-      *
-      * Dequeue a *USRQ.
+      * test of modasa(), matptr()
       */
 
       /copy mih52
 
-     d q               s               *
-     d prefix          ds                  likeds(deq_prefix_t)
-     d text            s             16a   inz(*all'-')
-     d rtn             s             10i 0
+     d a               s             35a
+     d b               s             12a
+     d ptr             s               *
+     d len             s             10i 0
+
+     d tmpl_ptr        s               *
+     d tmpl            ds                  likeds(matptr_tmpl_t)
+     d                                     based(tmpl_ptr)
+
+     d info_ptr        s               *
+     d spcptr_info     ds                  likeds(matptr_spcptr_info)
+     d                                     based(info_ptr)
 
       /free
 
-           // resolve target *USRQ QPROC
-           rslvsp_tmpl.obj_type = x'0A02';
-           rslvsp_tmpl.obj_name = 'QPROC';
-           rslvsp2(q : rslvsp_tmpl);
+           ptr = %addr(a);
+           len = matptr_spcptr_info_length;
+           tmpl_ptr = modasa(len);
+           tmpl.bytes_in = matptr_spcptr_info_length;
 
-           // enqueue *USRQ QPROC
-           prefix.msg_len = 16;
-           rtn = deqi( %addr(prefix) : %addr(text) : q );
-
-           if rtn = 1;
-               dsply 'Q entry' '' text;
-           else;
-               dsply 'nothing DEQed' '';
-           endif;
+           matptr(tmpl_ptr : ptr);
+           info_ptr = tmpl_ptr + matptr_header_length;
+           // check structure spcptr_info for returned SPCPTR info
 
            *inlr = *on;
       /end-free

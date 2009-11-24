@@ -280,6 +280,39 @@
      d     source                      *   value             
      d     length                    10u 0 value             
 
+     /*  */
+     d matptr_tmpl_t   ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     ptr_type                   1a
+
+     /* length of MATPTR template header */
+     d matptr_header_...
+     d   length        c                   9
+
+     /* length of SPCPTR information */
+     d matptr_spcptr_...
+     d   info_length   c                   96
+
+     /* SPCPTR info structure */
+     d matptr_spcptr_...
+     d   info          ds                  qualified
+     d                                     based(dummy_ptr)
+     d     ctx_type                   2a                                        context type
+     d     ctx_name                  30a                                        context name
+     d     obj_type                   2a                                        object type
+     d     obj_name                  30a                                        object name
+     d     offset                    10i 0                                      offset into space
+     d     ptr_target                 2a                                        PTR target info
+     d                                1a                                        reserved
+     d     ext_offset                 8a                                        teraspace offest
+
+     /* MATPTR, materialize pointer attributes */
+     d matptr          pr                  extproc('_MATPTR')
+     d     receiver                    *   value
+     d     ptr                         *
+
      d rslvsp_tmpl     ds                  qualified
      d     obj_type                   2a
      d     obj_name                  30a
@@ -292,6 +325,12 @@
      /* end -- pointer resolution */
 
      /* program execution */
+
+     /* MODASA, modify automatic storage allocation */
+     /* Note that unlike MI instruction MODASA, builtin _MODASA */
+     /* cannot be used to truncate ASF */
+     d modasa          pr              *   extproc('_MODASA')
+     d     mod_size                  10u 0 value
 
      /**
       * NPM_PARMLIST_ADDR, npm procedure parameter list address.
