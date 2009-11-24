@@ -318,14 +318,35 @@
      /* message prefix used by instruction ENQ */
      d enq_prefix_t    ds                  qualified
      d     msg_len                   10i 0
-      * for keyed *USRQ
+      * for keyed queue objects
      d     msg_key                  256a
 
-     /* enqueue a *USRQ */
+     /* enqueue to a queue object */
      d enq             pr                  extproc('_ENQ')
      d     queue                       *
      d     msg_prefix                  *   value
      d     msg                         *   value
+
+     /* message prefix used by instruction ENQ */
+     d deq_prefix_t    ds                  qualified
+     d     deq_time                   8a
+     d     time_out                   8a
+     d     msg_len                   10i 0
+     d     state_flag                 1a
+      * for keyed queue objects; input key, output key
+     d     msg_keys                 512a
+
+     /* dequeue from a queue object without waiting */
+     d deqi            pr            10i 0 extproc('_DEQI')
+     d     msg_prefix                  *   value
+     d     msg                         *   value
+     d     queue                       *
+
+     /* dequeue from or wait on a queue object */
+     d deqwait         pr                  extproc('_DEQWAIT')
+     d     msg_prefix                  *   value
+     d     msg                         *   value
+     d     queue                       *
 
      /* end -- queue management */
 
