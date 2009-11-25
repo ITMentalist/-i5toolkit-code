@@ -29,6 +29,7 @@
 
      d ptr             s               *
      d len             s             10i 0
+     d domain          s             10a   inz('System')
 
      d tmpl_ptr        s               *
      d tmpl            ds                  likeds(matptr_tmpl_t)
@@ -54,11 +55,15 @@
            info_ptr = tmpl_ptr + matptr_header_length;
 
            // check structure sysptr_info for returned SYSPTR info
+           dsply 'Library' '' sysptr_info.ctx_name;
+           dsply 'Program' '' sysptr_info.obj_name;
 
            if tstbts(%addr(sysptr_info.ptr_target) : 0) = 1;
                // SYSPTR can be accessed from user state
                // in other words, SYSPTR is in user domain
+               domain = 'User';
            endif;
+           dsply 'Domain' '' domain;
 
            *inlr = *on;
       /end-free
