@@ -18,45 +18,39 @@
       */
 
      /**
-      * @file t028.rpgle
+      * @file t030.rpgle
       *
-      * test of matptr()
-      *
-      * Materialize a SYSPTR
+      * Materialize a PROCPTR
       */
 
       /copy mih52
 
-     d ptr             s               *
-     d domain          s             10a   inz('System')
+     d i_main          pr                  extpgm('T030')
+     d     pptr                        *
 
      d info_ptr        s               *
-     d sysptr_info     ds                  likeds(matptr_sysptr_info_t)
+     d info            ds                  likeds(matptr_procptr_info_t)
      d                                     based(info_ptr)
+
+     d i_main          pi
+     d     pptr                        *
 
       /free
 
-           // resolve the SYSPTR addresses to myself
-           rslvsp_tmpl.obj_type = x'0201';
-           rslvsp_tmpl.obj_name = 'T028';
-           rslvsp2(ptr : rslvsp_tmpl);
+           // allocate storage for MATPTR template
+           info_ptr = modasa(matptr_procptr_info_length);
+           info.bytes_in = matptr_procptr_info_length;
 
-           // allocate MATPTR template buffer
-           info_ptr = modasa(matptr_sysptr_info_length);
-           sysptr_info.bytes_in = matptr_sysptr_info_length;
+           // materialize input PROCPTR
+           matptr(info_ptr : pptr);
 
-           matptr(info_ptr : ptr);
-
-           // check structure sysptr_info for returned SYSPTR info
-           dsply 'Library' '' sysptr_info.ctx_name;
-           dsply 'Program' '' sysptr_info.obj_name;
-
-           if tstbts(%addr(sysptr_info.ptr_target) : 0) = 1;
-               // SYSPTR can be accessed from user state
-               // in other words, SYSPTR is in user domain
-               domain = 'User';
-           endif;
-           dsply 'Domain' '' domain;
+           // check returned PROCPTR attributes
+           dsply 'module number' '' info.mod_num;
+           dsply 'procedure number' '' info.proc_num;
+           // program name:  info.pgm
+           // library name:  info.ctx
+           // AG mark:       info.ag_mark
+           // ... ...
 
            *inlr = *on;
       /end-free

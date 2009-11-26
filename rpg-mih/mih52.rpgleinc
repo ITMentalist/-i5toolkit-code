@@ -290,12 +290,12 @@
      d     source                      *   value             
      d     length                    10u 0 value             
 
-     /*  */
+     /* MATPTR template header */
      d matptr_tmpl_t   ds                  qualified
      d                                     based(dummy_ptr)
-     d     bytes_in                  10i 0
-     d     bytes_out                 10i 0
-     d     ptr_type                   1a
+     d     bytes_in                  10i 0                                      bytes provided
+     d     bytes_out                 10i 0                                      bytes available
+     d     ptr_type                   1a                                        returned pointer type
 
      /* length of MATPTR template header */
      d matptr_header_...
@@ -307,8 +307,11 @@
 
      /* SYSPTR info structure */
      d matptr_sysptr_...
-     d   info          ds                  qualified
+     d   info_t        ds                  qualified
      d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0                                      bytes provided
+     d     bytes_out                 10i 0                                      bytes available
+     d     ptr_type                   1a                                        returned pointer type
      d     ctx_type                   2a                                        context type
      d     ctx_name                  30a                                        context name
      d     obj_type                   2a                                        object type
@@ -322,8 +325,11 @@
 
      /* SPCPTR info structure */
      d matptr_spcptr_...
-     d   info          ds                  qualified
+     d   info_t        ds                  qualified
      d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0                                      bytes provided
+     d     bytes_out                 10i 0                                      bytes available
+     d     ptr_type                   1a                                        returned pointer type
      d     ctx_type                   2a                                        context type
      d     ctx_name                  30a                                        context name
      d     obj_type                   2a                                        object type
@@ -332,6 +338,28 @@
      d     ptr_target                 2a                                        PTR target info
      d                                1a                                        reserved
      d     ext_offset                 8a                                        teraspace offest
+
+     /* length of PROCPTR information */
+     d matptr_procptr_info_length...
+     d                 c                   80
+
+     /* PROCPTR info structure */
+     d matptr_procptr_info_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0                                      bytes provided
+     d     bytes_out                 10i 0                                      bytes available
+     d     ptr_type                   1a                                        returned pointer type
+     d     ptr_status                 1a                                        pointer status
+     d                                6a                                        reserved
+     d     mod_num                   10u 0                                      module number
+     d     proc_num                  10u 0                                      procedure number
+     d     act_mark                  10u 0                                      activation mark
+     d     ag_mark                   10u 0                                      activation group mark
+     d     pgm                         *                                        containing program
+     d     process                     *                                        containing process
+     d     act_mark2                  8a                                        8-bytes activation mark
+     d     ag_mark2                   8a                                        8-bytes activation group mark
 
      /* MATPTR, materialize pointer attributes */
      d matptr          pr                  extproc('_MATPTR')

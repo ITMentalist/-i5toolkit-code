@@ -18,32 +18,42 @@
       */
 
      /**
-      * @file t027.rpgle
+      * @file t029.rpgle
       *
-      * test of modasa(), matptr()
+      * test of matptr()
+      *
+      * call program T030 passing a PROCPTR (procedure pointer)
       */
 
-      /copy mih52
+     h dftactgrp(*no)
+     h bnddir('QC2LE')
 
-     d a               s             35a
-     d b               s             12a
-     d ptr             s               *
-     d len             s             10i 0
+     d t030            pr                  extpgm('T030')
+     d     ppp                         *   procptr
 
-     d info_ptr        s               *
-     d spcptr_info     ds                  likeds(matptr_spcptr_info_t)
-     d                                     based(info_ptr)
+     d increase        pr
+     d     num                       10i 0
+
+     d ptr             s               *   procptr
 
       /free
 
-           ptr = %addr(a);
-           len = matptr_spcptr_info_length;
-           info_ptr = modasa(len);
-           spcptr_info.bytes_in = matptr_spcptr_info_length;
+           ptr = %paddr(increase);
+           t030(ptr);
 
-           matptr(info_ptr : ptr);
-
-           // check structure spcptr_info for returned SPCPTR info
+           // call T030 with procptr addressing a
+           // libc procedure
+           ptr = %paddr('printf');
+           t030(ptr);
 
            *inlr = *on;
       /end-free
+
+     p increase        b
+     d increase        pi
+     d     num                       10i 0
+
+     c                   eval      num = num + 1
+     c                   return
+
+     p increase        e
