@@ -22,7 +22,7 @@
       *
       * test of matptr()
       *
-      * call program T030 passing a PROCPTR (procedure pointer)
+      * call program T030.
       */
 
      h dftactgrp(*no)

@@ -32,6 +32,11 @@
      d info            ds                  likeds(matptr_procptr_info_t)
      d                                     based(info_ptr)
 
+     d sysptr_info_ptr...
+     d                 s               *
+     d sysptr_info     ds                  likeds(matptr_sysptr_info_t)
+     d                                     based(sysptr_info_ptr)
+
      d i_main          pi
      d     pptr                        *
 
@@ -47,8 +52,15 @@
            // check returned PROCPTR attributes
            dsply 'module number' '' info.mod_num;
            dsply 'procedure number' '' info.proc_num;
-           // program name:  info.pgm
-           // library name:  info.ctx
+
+           sysptr_info_ptr = modasa(matptr_sysptr_info_length);
+           sysptr_info.bytes_in = matptr_sysptr_info_length;
+
+           // retrieve containing program's name and library
+           matptr(sysptr_info_ptr : info.pgm);
+           dsply 'program name' '' sysptr_info.obj_name;
+           dsply 'library name' '' sysptr_info.ctx_name;
+
            // AG mark:       info.ag_mark
            // ... ...
 
