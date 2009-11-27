@@ -442,6 +442,58 @@
 
      /* end -- queue management */
 
+     /* context management */
+
+     /* MATCTX option structure */ 
+     d matctx_option_t...
+     d                 ds            46    qualified
+     d     sel_flag                   1a                                        selection flag
+     d     sel_criteria...
+     d                                1a                                        selection criteria
+     d     name_len                   5i 0                                      selection name length
+     d     obj_type                   1a                                        object type code
+     d     obj_subtype...
+     d                                1a                                        object sub-type code
+     d     name                      30a                                        object name
+     d     timestamp...
+     d                                8a                                        selection timestamp
+     d     asp_num                    2a                                        indepedent ASP number
+
+     /* length of MATCTX option structure */ 
+     d matctx_option_length...
+     d                 c                   46
+
+     /* MATCTX template */
+     d matctx_receiver1_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0                                      bytes provided
+     d     bytes_out                 10i 0                                      bytes available
+     d     ctx_type                   2a                                        context type/sub-type
+     d     ctx_name                  30a                                        context name
+     d     ctx_opt                    4a                                        context options
+     d     rcvy_opt                   4a                                        recovery options
+     d     spc_size                  10i 0                                      space size
+     d     spc_init_val...
+     d                                1a                                        initial value of space
+     d     perf_cls                   4a                                        performance class
+     d                               23a                                        reserved
+     d     acc_grp                     *                                        access groupd
+
+     d matctx_offset1...
+     d                 c                   96
+
+     /* MATCTX, materialize context */
+     d matctx1         pr                  extproc('_MATCTX1')
+     d     receiver                    *   value
+     d     option                    46a
+
+     d matctx2         pr                  extproc('_MATCTX2')
+     d     receiver                    *   value
+     d     ctx                         *
+     d     option                    46a
+
+     /* end -- context management */
+
      /* process and thread management */
 
      /* PCOPTR, returns a SPCPTR to the PCO (process communication object) object */
