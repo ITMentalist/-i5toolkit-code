@@ -29,7 +29,12 @@
 
      d q               s               *
      d prefix          ds                  likeds(enq_prefix_t)
-     d text            s              8a   inz('Hello')
+     /*
+      * make sure the message text operand is aligned to
+      * 16 bytes boundary when the target queue object
+      * can contain pointers in queue entries.
+      */
+     d text            s             16a   inz('Hello')
 
       /free
 

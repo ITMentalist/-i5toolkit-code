@@ -29,6 +29,11 @@
 
      d q               s               *
      d prefix          ds                  likeds(deq_prefix_t)
+     /*
+      * make sure the message text operand is aligned to
+      * 16 bytes boundary when the target queue object
+      * can contain pointers in queue entries.
+      */
      d text            s             16a   inz(*all'-')
      d rtn             s             10i 0
 
@@ -39,7 +44,7 @@
            rslvsp_tmpl.obj_name = 'QPROC';
            rslvsp2(q : rslvsp_tmpl);
 
-           // enqueue *USRQ QPROC
+           // dequeue *USRQ QPROC
            prefix.msg_len = 16;
            rtn = deqi( %addr(prefix) : %addr(text) : q );
 

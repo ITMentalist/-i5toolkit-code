@@ -419,7 +419,7 @@
      d     msg_prefix                  *   value
      d     msg                         *   value
 
-     /* message prefix used by instruction ENQ */
+     /* message prefix used by instruction DEQ */
      d deq_prefix_t    ds                  qualified
      d     deq_time                   8a
      d     time_out                   8a
