@@ -81,7 +81,8 @@ dcl spc prefix-t bas(prefix-ptr);
 
         /* 1100,1010, GE */
         cpybla mod-acc-sts-opt, x"CA" ; 
-        /* clear search key */
+        /* clear search key for a keyed queue */
+        cmpnv(b) matqat-key-len, 0 / eq(=+2)         ;
         calli clear-search-key, *, .clear-search-key ; 
 deq-loop:       
 brk "DEQ"                       ; 
@@ -106,10 +107,10 @@ entry clear-search-key int      ;
 dcl dd index bin(4) auto        ;
 dcl spcptr search-key-ptr auto  ;
 dcl dd ch-key char(1) bas(search-key-ptr) ; 
-dcl dtaptr key-ptr auto         ; 
+dcl dtaptr key-ptr auto         ;
 
         setsppfp search-key-ptr, prefix-ptr ;
-        addspp search-key-ptr, search-key-ptr, 21 ;
+        addspp search-key-ptr, search-key-ptr, MIN-PREFIX-LEN ;
         setdp key-ptr, ch-key   ; 
 
 dcl dd dtaptr-attr char(7) auto ;
@@ -124,7 +125,7 @@ dcl dd *zero char(256) auto     ;
         cpybla key-ptr, *zero   ; 
 
         b .clear-search-key     ; 
-        
+
 /* template for MATQAT */        
 dcl dd matqat-template-buf char(128) auto bdry(16);
 dcl spcptr .matqat-template auto init(matqat-template-buf);
