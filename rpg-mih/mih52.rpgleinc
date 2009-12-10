@@ -494,6 +494,44 @@
 
      /* end -- context management */
 
+     /* authorization management */
+
+     /* MATAUU template */
+     d matauu_tmpl_t   ds            16    qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     public_auth...
+     d                                2a
+     d     num_private_users...
+     d                                5i 0
+     d     reserved                   4a
+
+     /* long format privately authorized USRPRF struction */
+     d auth_desc_long_t...
+     d                 ds            80    qualified
+     d                                     based(dummy_ptr)
+     d     usrprf_type...
+     d                                2a
+     d     usrprf_name...
+     d                               30a
+     d     private_auth...
+     d                                2a
+     d     reserved                  12a
+     d     usrprf                      *
+
+     /* length of structure auth_desc_long_t */
+     d AUTH_DESC_LONG_LENGTH...
+     d                 c                   80
+
+     /* MATAUU, materialize authorized users */
+     d matauu          pr                  extproc('_MATAUU')
+     d     receiver                    *   value
+     d     obj                         *
+     d     option                     1a
+
+     /* end -- authorization management */
+
      /* process and thread management */
 
      /* PCOPTR, returns a SPCPTR to the PCO (process communication object) object */

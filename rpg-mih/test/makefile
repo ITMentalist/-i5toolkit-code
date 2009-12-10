@@ -31,7 +31,7 @@ RM=del
 
 TARGETS=t001 t002 t003 t004 t005 t006 t007 t008 t009 t010 t011 t012 t013 t014 t015 \
 	t016 t017 t018 t019 t020 t021 t022 t023 t024 t025 \
-	t028 t029 t030 t031
+	t028 t029 t030 t031 t032
 
 all: $(TARGETS)
 	@echo "compilation done -- rpg-mih"
