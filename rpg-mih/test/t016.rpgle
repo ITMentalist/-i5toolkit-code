@@ -35,7 +35,7 @@
       /free
 
            // findbyte()
-           pos = findbyte(str : x'00') ;
+           pos = findbyte(%addr(str) : x'00') ;
            offset = pos - %addr(str)   ;
            dsply 'offset' '' offset    ;
 

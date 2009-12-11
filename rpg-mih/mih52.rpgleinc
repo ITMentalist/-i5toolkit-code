@@ -145,7 +145,7 @@
 
      /* FINDBYTE, find byte */
      d findbyte        pr              *   extproc('_FINDBYTE')
-     d     source                     1a   options(*varsize)
+     d     source                      *   value
      d     to_search                  1a   value
 
      /* MEMCHR, find character constrained */
