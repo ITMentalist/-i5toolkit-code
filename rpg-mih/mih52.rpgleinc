@@ -37,6 +37,45 @@
 
      /* computation instructions */
 
+     /* CPRDATA template */
+     d cprdata_tmpl_t  ds                  qualified
+     d                                     based(dummy_ptr)
+     d     source_len                10i 0
+     d     target_len                10i 0
+     d     returned_target_len...
+     d                               10i 0
+     d     algorithm                  5i 0
+     d                               18a
+     d     source                      *
+     d     target                      *
+
+     /* length of cprdata_tmpl_t */
+     d CPRDATA_TMPL_LENGTH...
+     d                 c                   64
+
+     /* CPRDATA, compress data */
+     d cprdata         pr                  extproc('_CPRDATA')
+     d    tmpl                         *   value
+
+     /* DCPDATA template */
+     d dcpdata_tmpl_t  ds                  qualified
+     d                                     based(dummy_ptr)
+     d                                4a
+     d     result_len                10i 0
+     d     returned_result_len...
+     d                               10i 0
+     d                               20a
+     d     source                      *
+     d     target                      *
+
+     /* length of dcpdata_tmpl_t */
+     d DCPDATA_TMPL_LENGTH...
+     d                 c                   64
+
+     /* DCPDATA, decompress data */
+     d dcpdata         pr                  extproc('_DCPDATA')
+     d    tmpl                         *   value
+
      /* end -- computation instructions */
 
      /* bound program calculation builtins */
