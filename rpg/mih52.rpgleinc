@@ -414,6 +414,11 @@
      d     obj                         *
      d     opt                       34a
 
+     /* TESTPTR, test pointer */
+     d testptr         pr            10i 0 extproc('_TESTPTR')
+     d     ptr                         *   value              
+     d     type                       1a   value              
+
      /* end -- pointer resolution */
 
      /* program execution */
@@ -441,6 +446,12 @@
      d parm_desc_...
      d       list_t    ds                  qualified based(dummy_ptr)
      d     argc                      10i 0
+
+     /* MATINVE, materialize invocation entry */
+     /* @todo link error! */ 
+     d*matinve         pr                  extproc('_MATINVE')
+     d*    receiver                    *   value
+     d*    option                    10u 0 value
 
      /* end -- program execution */
 
