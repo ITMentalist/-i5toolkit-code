@@ -448,10 +448,39 @@
      d     argc                      10i 0
 
      /* MATINVE, materialize invocation entry */
-     /* @todo link error! */ 
+     /* @todo MCH4227! */ 
      d*matinve         pr                  extproc('_MATINVE')
      d*    receiver                    *   value
      d*    option                    10u 0 value
+
+     /* MATINVAT, materialize invocation attributes */
+     d matinvat        pr                  extproc('_MATINVAT1')
+     d     receiver                    *   value
+     d     selection                   *   value
+
+     /* receiver template when materializing ASF pointer */
+     d matinvat_asf_selection_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     num_attr                  10i 0
+     d     flag1                      1a
+     d                                3a
+     d     ind_offset                10i 0
+     d     ind_length                10i 0
+     d     attr_id                   10i 0
+     d     flag2                      1a
+     d                                3a
+     d     rcv_offset                10i 0
+     d     rcv_length                10i 0
+
+     /* length of DS matinvat_asf_selection_t */
+     d matinvat_asf_selection_length...
+     d                 c                   32
+
+     /* receiver template when materializing ASF pointer */
+     d matinvat_asf_receiver_t...
+     d                 ds                  qualified
+     d     asf_ptr                     *
 
      /* end -- program execution */
 
