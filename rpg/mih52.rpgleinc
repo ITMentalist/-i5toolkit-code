@@ -484,6 +484,39 @@
 
      /* end -- program execution */
 
+     /* heap management */
+     /* CRTHS template */
+     d crths_tmpl_t    ds            96    qualified
+     d                                     based(dummy_ptr)
+     d                                8a
+     d     max_alloc                 10i 0
+     d     min_bdry                  10i 0
+     d     crt_size                  10i 0
+     d     ext_size                  10i 0
+     d     domain                     5i 0
+     d     crt_option                 6a
+     d                               64a
+
+     /* CRTHS, create AG-based heap space */
+     d crths           pr                  extproc('_CRTHS')
+     d     heap_id                   10i 0
+     d     crt_tmpl                        likeds(crths_tmpl_t)
+
+     /* SETHSSMK, set activation group-based heap space storage mark */ 
+     d sethssmk        pr                  extproc('_SETHSSMK')
+     d     mark                        *
+     d     heap_id                   10i 0
+
+     /* FREHSSMK, free activation group-based heap space storage from mark */
+     d frehssmk        pr                  extproc('_FREHSSMK')
+     d     mark                        *
+
+     /* DESHS, destroy AG-based heap space */
+     d deshs           pr                  extproc('_DESHS')
+     d     heap_id                   10i 0
+
+     /* end -- heap management */
+
      /* queue management */
 
      /* message prefix used by instruction ENQ */
