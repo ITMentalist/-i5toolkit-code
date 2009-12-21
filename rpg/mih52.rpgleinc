@@ -663,6 +663,9 @@
      d     agp_marks                  4a   dim(16380)
      d                                     overlay(buf : 13)
 
+     /* RETTHID, retrieve thread identifier */
+     d retthid         pr             8a   extproc('_RETTHID')
+
      /* end -- process and thread management */
 
       /endif
