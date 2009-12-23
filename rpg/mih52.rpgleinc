@@ -634,7 +634,7 @@
 
      /* length of structure auth_desc_long_t */
      d AUTH_DESC_LONG_LENGTH...
-     d                 c                   80
+     d                 c                   64
 
      /* MATAUU, materialize authorized users */
      d matauu          pr                  extproc('_MATAUU')
