@@ -38,10 +38,16 @@
      d len             s             10i 0
      d ind             s             10i 0
 
+     d i_main          pr                  extpgm('T032')
+     d     pgm_name                  10a                 
+                                                         
+     d i_main          pi                                
+     d     pgm_name                  10a                 
+
       /free
 
            rslvsp_tmpl.obj_type = x'0201';
-           rslvsp_tmpl.obj_name = 'DEC10'; // PGM object DEC10
+           rslvsp_tmpl.obj_name = pgm_name;
            rslvsp2(dec10 : rslvsp_tmpl);
 
            // materialize privately authorized profiles
