@@ -76,6 +76,12 @@
      d dcpdata         pr                  extproc('_DCPDATA')
      d    tmpl                         *   value
 
+     /* TSTBTS, test bit in string                         */
+     /* @return 1 if bit is set, otherwise 0               */
+     d tstbts          pr            10i 0 extproc('_TSTBTS')
+     d     str                         *   value
+     d     offset                    10u 0 value
+
      /* end -- computation instructions */
 
      /* bound program calculation builtins */
@@ -308,14 +314,6 @@
 
      /* computation and branching */
 
-     /* TSTBTS, test bit in string                         */
-     /* @return 1 if bit is set, otherwise 0               */
-     d tstbts          pr            10i 0 extproc('_TSTBTS')
-     d     str                         *   value
-     d     offset                    10u 0 value
-
-     /* end -- computation and branching */
-
      /* pointer resolution */
 
      /* CMPPTRT, compare pointer type */
@@ -459,7 +457,7 @@
      d     selection                   *   value
 
      /* receiver template when materializing ASF pointer */
-     d matinvat_asf_selection_t...
+     d matinvat_selection_t...
      d                 ds                  qualified
      d                                     based(dummy_ptr)
      d     num_attr                  10i 0
@@ -473,26 +471,39 @@
      d     rcv_offset                10i 0
      d     rcv_length                10i 0
 
-     /* length of DS matinvat_asf_selection_t */
-     d matinvat_asf_selection_length...
+     /* length of DS matinvat_selection_t */
+     d matinvat_selection_length...
      d                 c                   32
 
-     /* receiver template when materializing ASF pointer */
+     /* receiver template when materializing ASF pointer; option 2 */
      d matinvat_asf_receiver_t...
      d                 ds                  qualified
      d     asf_ptr                     *
 
+     /* receiver template when materializing AG mark; option 14 */
+     d matinvat_ag_mark_rcv_t...
+     d                 ds            16    qualified
+     d     ag_mark                   10u 0
+     d                               12a
+
      /* end -- program execution */
 
      /* heap management */
+
+     /* ALCHSS, allocate activation group-based heap space storage */
+     d alchss          pr              *   extproc('_ALCHSS')
+     d     heap_id                   10i 0 value
+     d     size                      10i 0 value
+
      /* CRTHS template */
+     d crths_tmpl_len  c                   96
      d crths_tmpl_t    ds            96    qualified
      d                                     based(dummy_ptr)
      d                                8a
-     d     max_alloc                 10i 0
-     d     min_bdry                  10i 0
-     d     crt_size                  10i 0
-     d     ext_size                  10i 0
+     d     max_alloc                 10u 0
+     d     min_bdry                  10u 0
+     d     crt_size                  10u 0
+     d     ext_size                  10u 0
      d     domain                     5i 0
      d     crt_option                 6a
      d                               64a
@@ -501,6 +512,44 @@
      d crths           pr                  extproc('_CRTHS')
      d     heap_id                   10i 0
      d     crt_tmpl                        likeds(crths_tmpl_t)
+
+     /* MATHSAT, materialize activation group-based heap space attributes */
+     d mathsat         pr                  extproc('_MATHSAT')
+     d     tmpl                        *   value
+     d     head_id_tmpl...
+     d                                 *   value
+     d     selection                  1a
+
+     /* MATHSAT template */
+     d mathsat_tmpl_len...
+     d                 c                   128
+     d mathsat_tmpl_t  ds           128    qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     max_alloc                 10u 0
+     d     min_bdry                  10u 0
+     d     crt_size                  10u 0
+     d     ext_size                  10u 0
+     d     domain                     5i 0
+     d     crt_option                 6a
+     d                               64a
+     d     cur_out_alc...
+     d                               10u 0
+     d     num_realc                 10u 0
+     d     num_free                  10u 0
+     d     num_alc                   10u 0
+     d     max_out_alc...
+     d                               10u 0
+     d     stg_unit_size...
+     d                               10u 0
+     d     num_marks                 10u 0
+     d     num_ext                   10u 0
+
+     /* MATHSAT's heap id template */
+     d heap_id_t       ds            16    qualified
+     d    ag_mark                    10u 0
+     d    heap_id                    10u 0
 
      /* SETHSSMK, set activation group-based heap space storage mark */ 
      d sethssmk        pr                  extproc('_SETHSSMK')

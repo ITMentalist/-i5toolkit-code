@@ -31,7 +31,7 @@
 
       /copy mih52
 
-     d asf_tmpl        ds                  likeds(matinvat_asf_selection_t)
+     d asf_tmpl        ds                  likeds(matinvat_selection_t)
      d                                     based(asf_tmpl_ptr)
      d asf_tmpl_ptr    s               *
      d asf_rcv         ds                  likeds(matinvat_asf_receiver_t)
@@ -48,10 +48,10 @@
       /free
 
            // init asf_tmpl
-           asf_tmpl_ptr = modasa(matinvat_asf_selection_length);
+           asf_tmpl_ptr = modasa(matinvat_selection_length);
            propb(asf_tmpl_ptr
                  : x'00'
-                 : matinvat_asf_selection_length);
+                 : matinvat_selection_length);
 
            asf_tmpl.num_attr   = 1;
            asf_tmpl.flag1      = x'00';
