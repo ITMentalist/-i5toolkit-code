@@ -104,6 +104,7 @@
            //     mat_tmpl.num_marks = 0     
            //     mat_tmpl.num_ext = 0       
 
+           frehss(ptr)   ;
            deshs(heap_id);
 
            *inlr = *on;

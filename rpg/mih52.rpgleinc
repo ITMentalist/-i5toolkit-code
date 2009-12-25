@@ -495,6 +495,10 @@
      d     heap_id                   10i 0 value
      d     size                      10i 0 value
 
+     /* FREHSS, free activation group-based heap space storage */
+     d frehss          pr                  extproc('_FREHSS')
+     d     ptr                         *   value
+
      /* CRTHS template */
      d crths_tmpl_len  c                   96
      d crths_tmpl_t    ds            96    qualified
