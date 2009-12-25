@@ -26,17 +26,24 @@
       /copy mih52
 
      d pco_ptr         s               *
-     d sept_ptr        s               *
-     d septs           s               *   dim(7000) based(sept_ptr)
+     d pco             ds                  qualified
+     d                                     based(pco_ptr)
+     d     sept_ptr                    *
+     d                               48a
+     d     qtemp                       *
+      * system entry point table
+     d septs           s               *   dim(7000)
+     d                                     based(pco.sept_ptr)
      d qclrdtaq        s               *
 
       /free
 
            pco_ptr = pcoptr();
-           memcpy(%addr(sept_ptr) : pco_ptr : 16);
 
            // locate system pointer to QCLRDTAQ
            qclrdtaq = septs(2899);
+
+           // check qtemp and qclrdtaq
 
            *inlr = *on;
       /end-free
