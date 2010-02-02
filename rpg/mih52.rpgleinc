@@ -31,10 +31,6 @@
       /if not defined(i5toolkit_rpg_mih52)
       /define i5toolkit_rpg_mih52
 
-      /if defined(*CRTBNDRPG)
-     h dftactgrp(*no)
-      /endif
-
      /* computation instructions */
 
      /* CPRDATA template */
@@ -380,6 +376,24 @@
      d matptr_procptr_info_length...
      d                 c                   80
 
+     /* DTAPTR attributes */
+     d matptr_dtaptr_info_length...
+     d                 c                   84
+     d matptr_dtaptr_info_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0                                      bytes provided
+     d     bytes_out                 10i 0                                      bytes available
+     d     ptr_type                   1a                                        returned pointer type
+     d     dta_type                   1a                                        scalar type
+     d     dta_length                 5u 0                                      scalar length
+     d                                4a                                        reserved
+     d     ctx_type                   2a
+     d     ctx_name                  30a
+     d     obj_type                   2a
+     d     obj_name                  30a
+     d     offset                    10i 0
+
      /* PROCPTR info structure */
      d matptr_procptr_info_t...
      d                 ds                  qualified
@@ -418,6 +432,19 @@
      d     type                       1a   value              
 
      /* end -- pointer resolution */
+
+     /* space addressing */
+     /* SETDP, set data pointer */
+     d setdp           pr              *   extproc('_SETDP')
+     d     addr                        *   value
+     d     attr                       7a   value
+
+     /* SETDPADR, set data pointer addressability */
+     d setdpadr        pr              *   extproc('_SETDPADR')
+     d     dtaptr                      *   value
+     d     addr                        *   value
+
+     /* end -- space addressing */
 
      /* program execution */
 
