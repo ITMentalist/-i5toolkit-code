@@ -1,7 +1,7 @@
 /*
 This file is part of i5/OS Programmer's Toolkit.
 
-Copyright (C) 2009  Junlei Li (李君磊).
+Copyright (C) 2010  Junlei Li (李君磊).
 
 i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -130,7 +130,7 @@ extern const char *_mic_spec_incdirs[];
 /// mic's version info
 #  define _MIC_VERSION \
  "mic (" _I5TOOLKIT ") " _I5TOOLKIT_VERSION _NLS \
- "Copyright (C) 2009  Junlei Li"_NLS \
+ "Copyright (C) 2010  Junlei Li"_NLS \
  _NLS                                                                   \
  "i5/OS Programmer's Toolkit is distributed in the hope that it will"_NLS \
  "be useful, but WITHOUT ANY WARRANTY; without even the implied warranty"_NLS \
