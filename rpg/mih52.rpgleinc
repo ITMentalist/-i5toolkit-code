@@ -746,6 +746,16 @@
      /* RETTHID, retrieve thread identifier */
      d retthid         pr             8a   extproc('_RETTHID')
 
+     /* WAITTIME, wait on time */
+     d waittime        pr                  extproc('_WAITTIME')
+     d     wait_tmpl                 16a
+
+     /* wait template for WAITTIME */
+     d wait_tmpl_t     ds            16    qualified
+     d     interval                   8a
+     d     option                     2a
+     d                                6a
+
      /* end -- process and thread management */
 
       /endif
