@@ -23,6 +23,7 @@
       * test of memcmp(), memcpy(), propb()
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d str1            s             32a

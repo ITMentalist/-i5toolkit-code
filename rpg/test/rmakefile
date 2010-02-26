@@ -25,7 +25,8 @@
 #  - call RUNSH, pass the following parameters: CCSID, qshell command
 #
 
-HOST=i810
+# HOST=i810
+HOST=g525
 RMAKER=RUNSH
 BINLIB=lsbin
 HOST_DIR=/home/ljl/chqs/rpg-mih

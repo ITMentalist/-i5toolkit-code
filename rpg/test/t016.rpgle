@@ -23,6 +23,7 @@
       * test of findbyte(), memchr(), strchrnull()
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d str             s             16a   inz(*blank)

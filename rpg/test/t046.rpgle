@@ -18,22 +18,26 @@
       */
 
      /**
-      * @file t009.rpgle
+      * @file t046.rpgle
       *
-      * test of cmptopad
+      * test of MATPGMNM
       */
 
+      /if defined(*crtbndrpg)
      h dftactgrp(*no)
+      /endif
+
       /copy mih52
 
-     d str             s             16a
-     d rtn             s             10i 0
+     d me              ds                  likeds(matpgmnm_tmpl_t)
 
       /free
+           propb(%addr(me) : x'00' : matpgmnm_tmpl_len);
+           me.bytes_in = matpgmnm_tmpl_len;
+           me.format   = 0;
+           matpgmnm(me);
 
-           str = '999997799';
-           rtn = cmptopad(str : '9' : 10);
-           dsply 'result' '' rtn;
+           dsply 'BPGM name' '' me.bpgm_name;
 
            *inlr = *on;
       /end-free

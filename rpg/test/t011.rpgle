@@ -23,6 +23,7 @@
       * test of callpgmv
       */
 
+     h dftactgrp(*no)
       /copy mih54
 
      d qmhsndpm        s               *

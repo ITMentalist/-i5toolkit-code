@@ -29,6 +29,7 @@
       *            automatic storage. It should be called by T040A.
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d asf_tmpl        ds                  likeds(matinvat_selection_t)

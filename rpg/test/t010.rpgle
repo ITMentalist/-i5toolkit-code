@@ -23,6 +23,7 @@
       * test of comstr
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d str             s              8a

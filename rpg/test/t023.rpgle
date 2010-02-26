@@ -23,6 +23,7 @@
       * test of xlateb(), xlateb1()
       */
 
+     h dftactgrp(*no)
      h bnddir('QC2LE')
 
       /copy mih52

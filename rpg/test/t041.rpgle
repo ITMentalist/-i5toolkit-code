@@ -23,6 +23,7 @@
       * test of heap management instructions
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d CEEGTST         pr

@@ -23,6 +23,7 @@
       * test of strlennull
       */
 
+     h dftactgrp(*no)
       /copy mih52
      d str             s             32a
      d len             s             10u 0

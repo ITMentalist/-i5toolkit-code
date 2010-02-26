@@ -25,6 +25,7 @@
       * Dequeue a *USRQ.
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d q               s               *

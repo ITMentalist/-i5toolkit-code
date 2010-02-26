@@ -23,6 +23,7 @@
       * test of atan, atanh, cot
       */
 
+     h dftactgrp(*no)
       /copy mih52
      d f               s              8f
 

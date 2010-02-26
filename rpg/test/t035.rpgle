@@ -23,6 +23,7 @@
       * test of TS APIs, cprdata(), dcpdata().
       */
 
+     h dftactgrp(*no)
      h bnddir('QC2LE')
 
       /copy mih52

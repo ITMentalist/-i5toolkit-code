@@ -24,6 +24,7 @@
       * retrieve *USRPRFs from the machine context (of system ASP)
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
       * SPCPTR to receiver

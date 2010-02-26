@@ -23,6 +23,7 @@
       * test of pcoptr()
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d pco_ptr         s               *
@@ -39,6 +40,8 @@
       /free
 
            pco_ptr = pcoptr();
+           // or
+           // pco_ptr = pcoptr2();
 
            // locate system pointer to QCLRDTAQ
            qclrdtaq = septs(2899);

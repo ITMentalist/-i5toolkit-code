@@ -23,6 +23,7 @@
       * test of asin
       */
 
+     h dftactgrp(*no)
       /copy mih52
      d f               s              8f
 

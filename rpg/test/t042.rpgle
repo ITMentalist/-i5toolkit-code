@@ -23,6 +23,7 @@
       * test of mathsat()
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d heap_id         s             10i 0

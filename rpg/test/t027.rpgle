@@ -23,6 +23,7 @@
       * test of modasa(), matptr()
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d a               s             35a

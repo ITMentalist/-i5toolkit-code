@@ -24,6 +24,7 @@
       * retrieve privately authorized USRPRF to a PGM object
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d mat_opt         s              1a   inz(x'32')

@@ -23,7 +23,8 @@
       * test of exp(), log(), mpyadd(), mpysub(), power()
       */
 
-      /copy mih52
+     h dftactgrp(*no)
+      /copy mih54
 
      d f               s              8f
 

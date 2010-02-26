@@ -23,6 +23,7 @@
       * test of testrpl()
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d org             c                   'tom cruise'

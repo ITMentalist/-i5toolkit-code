@@ -448,6 +448,27 @@
 
      /* program execution */
 
+     /* MATPGMNM, materialize program name */
+     d matpgmnm        pr                  extproc('_MATPGMNM')
+     d     rcv_tmpl                        likeds(matpgmnm_tmpl_t)
+
+     d matpgmnm_tmpl_t...
+     d                 ds            80    qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     format                    10i 0
+     d                                4a
+     d     ctx_type                   2a
+     d     ctx_name                  30a
+     d     bpgm_type                  2a
+     d     bpgm_name                 30a
+     d matpgmnm_tmpl_len...
+     d                 c                   80
+
+     /* end -- program execution */
+
+     /* program execution */
+
      /* MODASA, modify automatic storage allocation */
      /* Note that unlike MI instruction MODASA, builtin _MODASA */
      /* cannot be used to truncate ASF */
@@ -728,6 +749,9 @@
 
      /* PCOPTR, returns a SPCPTR to the PCO (process communication object) object */
      d pcoptr          pr              *   extproc('_PCOPTR')
+
+     /* PCOPTR2, returns a SPCPTR to the PCO (process communication object) object */
+     d pcoptr2         pr              *   extproc('_PCOPTR2')
 
      /* MATPRAGP, materialize process activation groups */
      d matpragp        pr                  extproc('_MATPRAGP')

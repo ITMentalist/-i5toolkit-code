@@ -25,6 +25,7 @@
       * Materialize a SYSPTR
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d ptr             s               *

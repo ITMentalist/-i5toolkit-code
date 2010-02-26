@@ -23,6 +23,7 @@
       * test of npm_plist()
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d plist_ptr       s               *

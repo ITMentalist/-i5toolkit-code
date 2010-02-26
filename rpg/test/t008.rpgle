@@ -23,6 +23,7 @@
       * test of strncmpnull
       */
 
+     h dftactgrp(*no)
       /copy mih52
      d str1            s             32a
      d str2            s             32a

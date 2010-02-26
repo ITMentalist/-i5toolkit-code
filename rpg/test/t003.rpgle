@@ -23,6 +23,7 @@
       * test of andstr(), orstr(), xorstr()
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d str1            s              1a

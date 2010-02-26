@@ -23,6 +23,7 @@
       * test of memmove()
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d ds              ds                  qualified

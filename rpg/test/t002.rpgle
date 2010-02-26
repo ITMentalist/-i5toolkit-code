@@ -23,6 +23,7 @@
       * test of andcstr
       */
 
+     h dftactgrp(*no)
       /copy mih52
      d str1            s              8a
      d str2            s              8a

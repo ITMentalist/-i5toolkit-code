@@ -18,7 +18,7 @@
       */
 
      /**
-      * @file t044.rpgle
+      * @file t045.rpgle
       *
       * test of WAITTIME
       */

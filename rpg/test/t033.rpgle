@@ -23,6 +23,7 @@
       * test of teraspace APIs
       */
 
+     h dftactgrp(*no)
      h bnddir('QC2LE')
 
       /copy mih52

@@ -25,6 +25,7 @@
       * List all AGs (activation groups) in the current job.
       */
 
+     h dftactgrp(*no)
      h bnddir('QC2LE')
 
       /copy mih52

@@ -23,6 +23,7 @@
       * test of retca(), setca()
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d f1              s              8f   inz(99.5)

@@ -23,6 +23,7 @@
       * Materialize a PROCPTR
       */
 
+     h dftactgrp(*no)
       /copy mih52
 
      d i_main          pr                  extpgm('T030')
