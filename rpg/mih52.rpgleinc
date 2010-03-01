@@ -78,6 +78,16 @@
      d     str                         *   value
      d     offset                    10u 0 value
 
+     /* CLRBTS, clear bit in string */
+     d clrbts          pr                  extproc('_CLRBTS')
+     d     str                         *   value
+     d     offset                    10u 0 value
+
+     /* SETBTS, set bit in string */
+     d setbts          pr                  extproc('_SETBTS')
+     d     str                         *   value
+     d     offset                    10u 0 value
+
      /* end -- computation instructions */
 
      /* bound program calculation builtins */
