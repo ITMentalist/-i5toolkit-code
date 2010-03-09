@@ -88,6 +88,27 @@
      d     str                         *   value
      d     offset                    10u 0 value
 
+     /* CVTEFN, convert external form to numeric value */
+     d cvtefn          pr                  extproc('_CVTEFN')
+     d     receiver                    *   value
+     d     rcv_attr                   7a
+     d     source                      *   value
+     d     src_length                10u 0
+     d     mask                       3a
+
+     /* data structure used as CPYECLAP's operand 3 */
+     d cpyeclap_pad_t  ds                  qualified
+     d     single_byte_pad_value...
+     d                                1a
+     d     double_byte_pad_value...
+     d                                2a
+
+     /* CPYECLAP, copy extended characters left-adjusted with pad */
+     d cpyeclap        pr                  extproc('_CPYECLAP')
+     d     receiver                    *
+     d     source                      *
+     d     pad                             likeds(cpyeclap_pad_t)
+
      /* end -- computation instructions */
 
      /* bound program calculation builtins */
@@ -329,9 +350,9 @@
 
      /* CPYBWP, copy bytes with pointers */
      d cpybwp          pr                  extproc('_CPYBWP')
-     d     receiver                    *   value             
-     d     source                      *   value             
-     d     length                    10u 0 value             
+     d     receiver                    *   value
+     d     source                      *   value
+     d     length                    10u 0 value
 
      /* MATPTR template header */
      d matptr_tmpl_t   ds                  qualified
@@ -438,8 +459,8 @@
 
      /* TESTPTR, test pointer */
      d testptr         pr            10i 0 extproc('_TESTPTR')
-     d     ptr                         *   value              
-     d     type                       1a   value              
+     d     ptr                         *   value
+     d     type                       1a   value
 
      /* end -- pointer resolution */
 
@@ -504,7 +525,7 @@
      d     argc                      10i 0
 
      /* MATINVE, materialize invocation entry */
-     /* @todo MCH4227! */ 
+     /* @todo MCH4227! */
      d*matinve         pr                  extproc('_MATINVE')
      d*    receiver                    *   value
      d*    option                    10u 0 value
@@ -613,7 +634,7 @@
      d    ag_mark                    10u 0
      d    heap_id                    10u 0
 
-     /* SETHSSMK, set activation group-based heap space storage mark */ 
+     /* SETHSSMK, set activation group-based heap space storage mark */
      d sethssmk        pr                  extproc('_SETHSSMK')
      d     mark                        *
      d     heap_id                   10i 0
@@ -667,7 +688,7 @@
 
      /* context management */
 
-     /* MATCTX option structure */ 
+     /* MATCTX option structure */
      d matctx_option_t...
      d                 ds            46    qualified
      d     sel_flag                   1a                                        selection flag
@@ -682,7 +703,7 @@
      d                                8a                                        selection timestamp
      d     asp_num                    2a                                        indepedent ASP number
 
-     /* length of MATCTX option structure */ 
+     /* length of MATCTX option structure */
      d matctx_option_length...
      d                 c                   46
 
@@ -791,6 +812,24 @@
      d                                6a
 
      /* end -- process and thread management */
+
+     /* misc system builtins */
+
+     /* jump buffer structure used by __setjmp/2, and libc procedure longjmp() */
+     d jmp_buf_t       ds                  qualified 
+     d     inv_ptr                     *             
+     d     lbl_ptr                     *             
+     d     num                       10i 0           
+
+     /* __setjmp */
+     d setjmp          pr            10i 0 extproc('__setjmp')
+     d     jmpbuf                          likeds(jmp_buf_t)
+
+     /* __setjmp2 */
+     d setjmp2         pr                  extproc('__setjmp2')
+     d     lbl_ptr                     *
+
+     /* end -- misc system builtins */
 
       /endif
      /* eof - mih52.rpgleinc */
