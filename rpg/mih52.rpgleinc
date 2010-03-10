@@ -813,7 +813,7 @@
 
      /* end -- process and thread management */
 
-     /* misc system builtins */
+     /* undocumented system builtins */
 
      /* jump buffer structure used by __setjmp/2, and libc procedure longjmp() */
      d jmp_buf_t       ds                  qualified 
@@ -829,7 +829,13 @@
      d setjmp2         pr                  extproc('__setjmp2')
      d     lbl_ptr                     *
 
-     /* end -- misc system builtins */
+     /* return space pointer to current process' SEPT */
+     d sysept          pr              *   extproc('_SYSEPT')
+
+     /* return system pointer to current process' QTEMP */
+     d qtempptr        pr              *   extproc('_QTEMPPTR')
+
+     /* end -- undocumented system builtins */
 
       /endif
      /* eof - mih52.rpgleinc */
