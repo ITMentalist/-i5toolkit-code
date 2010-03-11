@@ -109,6 +109,24 @@
      d     source                      *
      d     pad                             likeds(cpyeclap_pad_t)
 
+     /* CPYNV, copy numeric value */
+     d lbcpynv         pr                  extproc('_LBCPYNV')
+     d     receiver                    *   value
+     d     receiver_attr...
+     d                                7a
+     d     source                      *   value
+     d     source_attr...
+     d                                7a
+
+     /* CPYNV, copy numeric value and round the result half adjusted. */
+     d lbcpynvr        pr                  extproc('_LBCPYNVR')
+     d     receiver                    *   value
+     d     receiver_attr...
+     d                                7a
+     d     source                      *   value
+     d     source_attr...
+     d                                7a
+
      /* end -- computation instructions */
 
      /* bound program calculation builtins */
