@@ -514,6 +514,12 @@
      d matpgmnm_tmpl_len...
      d                 c                   80
 
+     /* INVP, returns invocation pointer */
+     d invp            pr              *   extproc('_INVP')
+      * relative invocation number; now must be 0
+     d     relative_invocation_number...
+     d                               10u 0 value
+
      /* end -- program execution */
 
      /* program execution */
