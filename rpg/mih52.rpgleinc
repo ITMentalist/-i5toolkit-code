@@ -710,6 +710,42 @@
 
      /* end -- queue management */
 
+     /* mutex management */
+     d mutex_t         ds                  qualified
+     d     ctrl_area                 16a
+     d     name                      16a
+
+     /* CRTMTX template */
+     d crtmtx_option_t...
+     d                 ds                  qualified
+     d                                1a
+     d     name_opt                   1a
+     d     keep_valid_opt...
+     d                                1a
+     d     recursive_opt...
+     d                                1a
+     d                               28a
+
+     /**
+      * CRTMTX (create pointer-based mutex)
+      *
+      * @return 0 if the mutex is created; otherwise an error number.
+      */
+     d crtmtx          pr            10i 0 extproc('_CRTMTX')
+     d     mtx_addr                    *   value
+     d     crt_opt                     *   value
+
+     /**
+      * DESMTX (destroy pointer-based mutex)
+      *
+      * @return 0 if the mutex is created; otherwise an error number.
+      */
+     d desmtx          pr            10i 0 extproc('_DESMTX')
+     d     mtx_addr                    *   value
+     d     des_opt                     *   value
+
+     /* end -- mutex management */
+
      /* context management */
 
      /* MATCTX option structure */
