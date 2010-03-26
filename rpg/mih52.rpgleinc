@@ -497,6 +497,23 @@
 
      /* program execution */
 
+     /* ACTPG, activate non-bound program */
+     d actpg           pr                  extproc('_ACTPG')
+     d     ssf                         *
+     d     pgm                         *
+
+     /* _DEACTPG1, deactivate non-bound program */
+     d deactpg         pr                  extproc('_DEACTPG1')
+     d     pgm                         *
+
+     /**
+      * _DEACTPG2
+      *
+      *  @todo when and how to use it??
+      */
+     d deactpg2        pr                  extproc('_DEACTPG2')
+     d     pgm                         *
+
      /* MATPGMNM, materialize program name */
      d matpgmnm        pr                  extproc('_MATPGMNM')
      d     rcv_tmpl                        likeds(matpgmnm_tmpl_t)
@@ -519,6 +536,108 @@
       * relative invocation number; now must be 0
      d     relative_invocation_number...
      d                               10u 0 value
+
+     /* basic attribute of a activation group */
+     d agp_basic_attr_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                8a
+     d     root_pgm                    *
+     d                               16a
+      * Storage address recycling key
+     d     stg_addr_rcc_key...
+     d                                 *
+     d     agp_name                  30a
+     d                                2a
+     d     agp_mark                   4a
+     d                                4a
+     d     heap_cnt                  10u 0
+     d     act_cnt                   10u 0
+     d     stat_atg_size...
+     d                               10u 0
+     d                                4a
+     d     agp_attr                   1a
+      * Process access group (PAG) membership advisory attributes
+     d     pag_adv                    1a
+     d                                6a
+     d     long_agp_mark...
+     d                                8a
+
+     /* list of heap ids of a activation group */
+     d agp_heap_id_list_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                8a
+     d     heap_id                   10i 0 dim(1)
+
+     /* list of program activation entries */
+     d agp_acte_list_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                8a
+     d     act_ent                    4a   dim(1)
+
+     /* MATAGPAT, materialize activation group attributes */
+     d matagpat        pr                  extproc('_MATAGPAT')
+     d     receiver                    *   value
+     d     agp_mark                   4a
+     d     attr_sel                   1a
+
+     /* basic activation attributes */
+     d act_basic_attr_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                8a
+     d     pgm                         *
+     d     act_mark                   4a
+     d     agp_mark                   4a
+     d     inv_cnt                   10u 0
+     d     ssf_cnt                   10u 0
+     d     pgm_type                   1a
+     d     act_attr                   1a
+     d     tgt_agp                    1a
+     d                                1a
+      * dependent activation count
+     d     dep_act_cnt...
+     d                               10u 0
+     d     long_act_mark...
+     d                                8a
+     d     long_agp_mark...
+     d                                8a
+
+     /* SSF list entry */
+     d ssf_liste_t...
+     d                 ds                  qualified
+     d     ssf_ptr                     *
+     d     ssf_size                  10u 0
+     d                               12a
+
+     /* SSF list of an program activation entry */
+     d act_ssf_list_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                8a
+     d     ssf_ent                         likeds(ssf_liste_t)
+     d                                     dim(1)
+
+     /* dependent activation entries of an program activation entry */
+     d act_dep_acte_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                8a
+     d     dep_act                    4a   dim(1)
+
+     /* MATACTAT, materialize activation attributes */
+     d matactat        pr                  extproc('_MATACTAT')
+     d     receiver                    *   value
+     d     act_mark                   4a
+     d     attr_sel                   1a
 
      /* end -- program execution */
 
