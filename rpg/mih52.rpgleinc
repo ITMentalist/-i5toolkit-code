@@ -992,6 +992,18 @@
 
      /* end -- process and thread management */
 
+     /* Machine Observation */
+
+     /**
+      * TESTTOBJ, test temporary object
+      *
+      * @return 1 if syp points to a temporary object, otherwise 0.
+      */
+     d testtobj        pr            10i 0 extproc('_TESTTOBJ')
+     d     syp                         *
+
+     /* end -- Machine Observation */
+
      /* undocumented system builtins */
 
      /* jump buffer structure used by __setjmp/2, and libc procedure longjmp() */
