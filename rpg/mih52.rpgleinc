@@ -480,9 +480,18 @@
      d     ptr                         *   value
      d     type                       1a   value
 
+     /* SETSPPFP, set space pointer from pointer */
+     d setsppfp        pr              *   extproc('_SETSPPFP')
+     d     src_ptr                     *   value
+
+     /* SETSPFP, set system pointer from pointer */
+     d setspfp         pr              *   extproc('_SETSPFP')
+     d     src_ptr                     *   value
+
      /* end -- pointer resolution */
 
      /* space addressing */
+
      /* SETDP, set data pointer */
      d setdp           pr              *   extproc('_SETDP')
      d     addr                        *   value
@@ -494,6 +503,146 @@
      d     addr                        *   value
 
      /* end -- space addressing */
+
+     /* space management */
+
+     /**
+      * CRTS template
+      *
+      * @remark obj_type, object type/subtype, must be hex 19EF
+      */
+     d crts_tmpl_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     obj_type                   2a
+     d     obj_name                  30a
+     /*
+      * create option, char(4)
+      * bit 0, existence attribute, 0=temporary, 1=permanent
+      * bit 1, length attribute, 0=fixed-length, 1=variable-length
+      * bit 2, Initial context,
+      *        0=Addressability is not inserted into context
+      *        1=Addressability is inserted into context
+      * bit 3, access group,
+      *        0=Do not create as member of access group
+      *        1=Create as member of access group
+      * bit 4-5, reserved(binary 0)
+      * bit 6, public authority specified, 0=no, 1=yes
+      *        for a temporary space object, default pub-auth is *ALL;
+      *        for a permanent space object, default pub-auth is *NONE.
+      * bit 7, initial owner specified, 0=no, 1=yes
+      *        a temporary space object does not have an owner
+      * bit 8-11, reserved(binary 0)
+      * bit 12, set public authority in operand 1, 0=no, 1=yes
+      * bit 13, initialize space, 0=yes, 1=no
+      * bit 14, automatically expand space, 0=no, 1=yes
+      * bit 15-16, hardware storage protetion level
+      *        00=reference and modify allowed for user state programs
+      *        01=only reference allowed for user state programs
+      *        10=invalid(yield template value invalid exception, hex 3801)
+      *        11=no reference or modify allowed for user state programs
+      * bit 17, process temporary space accounting
+      *        0=the temporary space will be tracked to the creating process
+      *        1=the temporary space will not be tracked to the creating process
+      * bit 18-20, reserved(binary 0)
+      * bit 21, always enforce hardware storage protection of space
+      *        0=enforce hardware storage protection of this space
+      *          only when hardware storage protection is being enforced
+      *          for all storage.
+      *        1=always enforce hardware storage protection of this space.
+      * bit 22-31, reserved(binary 0)
+      */
+     d     crt_opt                    4a
+     d                                2a
+      * to specify the system ASP, use x'0000'
+     d     asp_num                    2a
+     d     spc_size                  10i 0
+     d     init_val                   1a
+     /*
+      * performance class
+      *
+      * bit 0, space alignment; ignored if bit 3 is set to 1
+      *   0=The space associated with the object is allocated to allow
+      *     proper alignment of pointers at 16-byte alignments within the
+      *     space. If the size of space field is zero, this value must be
+      *     specified.
+      *   1=The space associated with the object is allocated to allow proper
+      *     alignment of pointers at 16-byte alignments within the space as
+      *     well as to allow proper alignment of input/output buffers at
+      *     512-byte alignments within the space.
+      * bit 1, clear(or bring?) the space into main memory during creating
+      *   0=Only a minimum amount (up to 4K) of the space will be in main
+      *     storage upon completion of the instruction.
+      *   1=Most of the space, with some limits enforced by the machine, will
+      *     be in main storage upon completion of the instruction.
+      * bit 2, Spread the space object among storage devices, 0=no, 1=yes
+      * bit 3, Machine chooses space alignment
+      *   0=the space alignment indicated by bit 0 is performed
+      *   1=The machine will choose the space alignment most beneficial to
+      *     performance, which may reduce maximum space capacity. When
+      *     this value is specified, the space alignment field is
+      *     ignored, but the alignment chosen will be a multiple of
+      *     512. The maximum capacity for a space object for which the
+      *     machine has chosen the alignment is returned by option Hex
+      *     0003 of MATMDATA. The maximum space capacity for a
+      *     particular space object is returned by MATS.
+      * bit 4, Reserved (binary 0)
+      * bit 5, Main storage pool selection,
+      *   0=Process default main storage pool is used for object.
+      *   1=Machine default main storage pool is used for object.
+      * bit 6, Transient storage pool selection,
+      *   0=Default main storage pool (process default or machine
+      *     default as specified for main storage pool selection) is
+      *     used for object.
+      *   1=transient storage pool is used for object.
+      * bit 7, Obsolete, This field is no longer used and will be ignored.
+      * bit 8-15, Unit number
+      * bit 16-23, reserved (binary 0)
+      * bit 24-31, expanded transfer size advisory. specifies the
+      *            desired number of pages to be transferred between
+      *            main store and auxiliary storage for implicit
+      *            access state changes. This value is only an
+      *            advisory; the machine may use a value of its choice
+      *            for performing access state changes under some
+      *            circumstances. For example, the machine may limit
+      *            the transfer size to a smaller value than is
+      *            specified. A value of zero is an explicit
+      *            indication that the machine should use the machine
+      *            default storage transfer size for this object.
+      */
+     d     perf_cls                   4a
+     d                                1a
+     d     pub_auth                   2a
+      * offset to template extension
+     d     ext_offset                10i 0
+      * context
+     d     ctx                         *
+      * access group
+     d     acc_grp                     *
+
+     /* template extension of CRTS */
+     d crts_tmpl_ext_t...
+     d                 ds                  qualified
+     d     usrprf                      *
+     d     max_spc_size_needed...
+     d                               10i 0
+      * hex 0000, domain is choosed by the machine
+      * hex 0001, user domain
+      * hex 8000, system domain
+     d     domain                     2a
+     d                               42a
+
+     /* CRTS, create space */
+     d crts            pr                  extproc('_CRTS')
+     d     spcobj                      *
+     d     crt_tmpl                    *   value
+
+     /* DESS, create space */
+     d dess            pr                  extproc('_DESS')
+     d     spcobj                      *
+
+     /* end -- space management */
 
      /* program execution */
 
@@ -791,6 +940,162 @@
      d     heap_id                   10i 0
 
      /* end -- heap management */
+
+     /* independent index */
+
+     /* template of CRTINX */
+     d crtinx_tmpl_t   ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     obj_type                   2a
+     d     obj_name                  30a
+      * creation option
+     d     crt_opt                    4a
+      * recovery option
+     d     rcvy_opt                   4a
+     d     spc_size                  10i 0
+     d     init_spc_val...
+     d                                1a
+      * performance class
+     d     perf_cls                   4a
+     d                                3a
+      * extension offset
+     d     ext_offset                10i 0
+     d     ctx                         *
+     d     acc_grp                     *
+     d     inx_attr                   1a
+      * argument length
+     d     arg_len                    5i 0
+      * key length
+     d     key_len                    5i 0
+      * longer template
+     d                               12a
+      * template version, must be hex 00
+     d     tmpl_ver                   1a
+      * index format,
+      *   0=maximum object size of 4G bytes
+      *   1=maximum object size of 1T bytes
+     d     inx_fmt                    1a
+     d                               61a
+
+      * template extension of CRTINX
+     d crtinx_tmpl_ext_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     usrprf                      *
+     d                                4a
+      * domain assigned to created object
+      *   hex 0000=the domain will be choosed by the machine
+      *   hex 0001=user domain
+     d     obj_domain                 2a
+     d                               42a
+
+     /* template of MATINXAT */
+     d matinxat_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     obj_type                   2a
+     d     obj_name                  30a
+      * creation option
+     d     crt_opt                    4a
+      * recovery option
+     d     rcvy_opt                   4a
+     d     spc_size                  10i 0
+     d     init_spc_val...
+     d                                1a
+      * performance class
+     d     perf_cls                   4a
+     d                                3a
+      * extension offset
+     d     ext_offset                10i 0
+     d     ctx                         *
+     d     acc_grp                     *
+     d     inx_attr                   1a
+      * argument length
+     d     arg_len                    5i 0
+      * key length
+     d     key_len                    5i 0
+      * index statistics
+     d     entries_inserted...
+     d                               10u 0
+     d     entries_removed...
+     d                               10u 0
+     d     find_operations...
+     d                               10u 0
+
+     /* CRTINX, create independent index */
+     d crtinx          pr                  extproc('_CRTINX')
+     d     index                       *
+     d     tmpl                        *   value
+     d
+
+     /* DESINX, destroy independent index */
+     d desinx          pr                  extproc('_DESINX')
+     d     index                       *
+
+     /* MATINXAT, materialize independent index attributes */
+     d matinxat        pr                  extproc('_MATINXAT')
+     d     attr                        *   value
+     d     index                       *
+
+     /* option list structure used by INSINXEN and FNDINXEN */
+     d inx_option_list_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     rule_opt                   2a
+     d     arg_len                    5u 0
+     d     arg_offset                 5i 0
+     d     occ_cnt                    5i 0
+     d     rtn_cnt                    5i 0
+      * offset 10
+      * returned index entries: entry length 5u0, offset 5i0
+
+     d inx_entry_length_offset_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     length                     5u 0
+     d     offset                     5i 0
+
+     /* INSINXEN, insert independent index entry */
+     d insinxen        pr                  extproc('_INSINXEN')
+     d     index                       *
+     d     argument                    *   value
+     d     opt_list                    *   value
+
+     /* FNDINXEN, find independent index entry */
+     d fndinxen        pr                  extproc('_FNDINXEN')
+     d     receiver                    *   value
+     d     index                       *
+     d     opt_list                    *   value
+     d     argument                    *   value
+
+     /* template of MODINX */
+     d modinx_tmpl_t   ds                  qualified
+      * bit 1, immediate update
+      *   0=do not modify
+      *   1=modify
+      * bit 2, index coherency tracking
+      *   0=do not modify
+      *   1=modify
+     d     mod_sel                    1a
+      * bit 1, immediate update
+      *   0=no immediate update
+      *   1=immediate update
+      * bit 2, index coherency tracking
+      *   0=do not track index coherency
+      *   1=track index coherency
+     d     new_attr                   1a
+     d     reserved                   2a
+
+     /* MODINX, modify independent index */
+     d modinx          pr                  extproc('_MODINX')
+     d     index                       *
+     d     opt                         *   value
+
+     /* end -- independen index */
 
      /* queue management */
 
