@@ -480,7 +480,11 @@
      d     ptr                         *   value
      d     type                       1a   value
 
-     /* SETSPPFP, set space pointer from pointer */
+     /**
+      * SETSPPFP, set space pointer from pointer
+      * @attention this prototype does NOT work on a SYSPTR
+      * @todo      why?
+      */
      d setsppfp        pr              *   extproc('_SETSPPFP')
      d     src_ptr                     *   value
 
@@ -1072,6 +1076,13 @@
      d     opt_list                    *   value
      d     argument                    *   value
 
+     /* RMVINXEN, remove independent index entry */
+     d rmvinxen        pr                  extproc('_RMVINXEN1')
+     d     receiver                    *   value
+     d     index                       *
+     d     opt_list                    *   value
+     d     argument                    *   value
+
      /* template of MODINX */
      d modinx_tmpl_t   ds                  qualified
       * bit 1, immediate update
@@ -1156,7 +1167,7 @@
       * @return 0 if the mutex is created; otherwise an error number.
       */
      d crtmtx          pr            10i 0 extproc('_CRTMTX')
-     d     mtx_addr                    *   value
+     d     mtx                             likeds(mutex_t)
      d     crt_opt                     *   value
 
      /**
@@ -1165,8 +1176,54 @@
       * @return 0 if the mutex is created; otherwise an error number.
       */
      d desmtx          pr            10i 0 extproc('_DESMTX')
-     d     mtx_addr                    *   value
+     d     mtx                             likeds(mutex_t)
      d     des_opt                     *   value
+
+     /* LOCKMTX template */
+     d lockmtx_tmpl_t...
+     d                 ds                  qualified
+     /* hex 00 = wait infinitely
+      * hex 01 = wait for the mutex for the specified amount of
+      *          time. If the mutex still cannot be obtained, the
+      *          EAGAIN error number is returned.
+      * hex 02 = return immmediately with an EBUSY error number.
+      */
+     d     timeout_opt...
+     d                                1a
+     /*
+      * bit 1, wait time-out format
+      *   0 = time-out is specified in seconds/microseconds
+      *   1 = time-out is a 8-byte system clock value
+      *
+      * bit 2, MPL control during wait
+      *   0 = remain in the current MPL set
+      *   1 = do not remain in the current MPL set
+      *
+      * bit 3, asynchronous signals processing option
+      *   0 = do not allow asynchronous signal processing during mutex wait
+      *   1 = allow asynchronous signal processing during mutex wait
+      *
+      * bit 4, wait type
+      *   0 = normal wait
+      *   1 = restrict wait
+      *
+      * @remark The wait type option is used by kernel-mode programs
+      *         or procedures to specify what type of wait to
+      *         perform. The wait type field is ignored when the
+      *         thread execution mode is not kernel-mode.
+      */
+     d     lock_opt                   1a
+     d                                6a
+     d     timeout                    8a
+
+     /* LOCKMTX, lock pointer-based mutex */
+     d lockmtx         pr            10i 0 extproc('_LOCKMTX')
+     d     mtx                             likeds(mutex_t)
+     d     request                     *   value
+
+     /* UNLKMTX, unlock ponter-based mutex */
+     d unlkmtx         pr            10i 0 extproc('_UNLKMTX')
+     d     mtx                             likeds(mutex_t)
 
      /* end -- mutex management */
 

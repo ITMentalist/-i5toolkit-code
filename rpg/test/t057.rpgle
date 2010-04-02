@@ -75,6 +75,12 @@
                dsply 'index entry found' '' entry;
            endif;
 
+           // remove entry '0BJD0200...' from index NIHAO
+           rmvinxen( %addr(entry)
+                   : inx
+                   : opt_ptr
+                   : %addr(entry) );
+
            dealloc opt_ptr;
 
            // retrieve index attributes
@@ -83,7 +89,7 @@
            inx_attr.bytes_in = tmpl_len;
            matinxat(inx_attr_ptr : inx);
              // INX_ATTR.ENTRIES_INSERTED = 2
-             // INX_ATTR.ENTRIES_REMOVED = 0
+             // INX_ATTR.ENTRIES_REMOVED = 1
              // INX_ATTR.FIND_OPERATIONS = 1
 
            // modify index NIHAO
