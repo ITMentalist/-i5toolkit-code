@@ -483,10 +483,11 @@
      /**
       * SETSPPFP, set space pointer from pointer
       * @attention this prototype does NOT work on a SYSPTR
+      *            unless src_ptr is declared as a procptr?!
       * @todo      why?
       */
      d setsppfp        pr              *   extproc('_SETSPPFP')
-     d     src_ptr                     *   value
+     d     src_ptr                     *   value procptr
 
      /* SETSPFP, set system pointer from pointer */
      d setspfp         pr              *   extproc('_SETSPFP')

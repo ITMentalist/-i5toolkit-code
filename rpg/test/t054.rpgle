@@ -29,6 +29,11 @@
       * );
       * PEND;
       * @endcode
+      *
+      * (1) layout of an OPM program's static storage frame (SSF)
+      * (2) resolve OPM MI program SPR1_A
+      * (3) activate OPM program SPR1_A using ACTPG, and then access
+      *     SSF of SPR1_A
       */
 
       /if defined(*crtbndrpg)
@@ -36,6 +41,7 @@
       /endif
 
       /copy mih54
+     /* layout of an OPM program's static storage frame (SSF) (1) */
      d ssf_t           ds                  qualified
      d   header                      64a
      d   data                        32a
@@ -48,16 +54,18 @@
 
       /free
 
-           // resolve program ojbect
+           // resolve OPM MI program SPR1_A (2)
            rslvsp_tmpl.obj_type = x'0201';
            rslvsp_tmpl.obj_name = 'SPR1_A'; // OPM PGM uses static storage
            rslvsp2 (pgm : rslvsp_tmpl);
 
-           // activate OPM program SPR1_A
+           // activate OPM program SPR1_A (3)
            actpg (ssf_ptr : pgm);
            dsply 'Static variable' '' ssf.data;
 
+      /if defined(*v5r4m0)
            callpgmv(pgm : argv : 0);
+      /endif
 
            // deactivate OPM program SPR1_A
            deactpg (pgm);
