@@ -461,6 +461,24 @@
      d     act_mark2                  8a                                        8-bytes activation mark
      d     ag_mark2                   8a                                        8-bytes activation group mark
 
+     /* label pointer attributes */
+     d matptr_lblptr_info_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0                                      bytes provided
+     d     bytes_out                 10i 0                                      bytes available
+     d     ptr_type                   1a                                        returned pointer type
+     d     ptr_status                 1a                                        pointer status
+     d                                6a                                        reserved
+     d     mod_num                   10u 0                                      module number
+     d     proc_num                  10u 0                                      procedure number
+     d     num_stmt                  10u 0                                      number of stmt IDs
+     d     int_id                     4a                                        internal ID
+     d     pgm                         *                                        containing program
+     d     stmts                     10u 0 dim(1)                               statement IDs
+     d min_lblptr_info_len...
+     d                 c                   52
+
      /* MATPTR, materialize pointer attributes */
      d matptr          pr                  extproc('_MATPTR')
      d     receiver                    *   value
@@ -650,6 +668,35 @@
      /* end -- space management */
 
      /* program execution */
+
+     /* bound program activation definition template */
+     d actbpgm_dfn_t   ds            32    qualified
+     d     agp_mark                  10u 0
+     d     act_mark                  10u 0
+     d                                7a
+     d     indicator                  1a
+     d                               16a
+
+     /* ACTBPGM, activate bound program */
+     d actbpgm         pr                  extproc('_ACTBPGM')
+     d     act_dfn                         likeds(actbpgm_dfn_t)
+     d     pgm                         *
+
+     /* MATACTEX, materialize activation export */
+     d matactex        pr                  extproc('_MATACTEX')
+     d     act_mark                  10u 0 value
+      * 1=by export ID, 2=by name
+     d     ind_type                  10u 0 value
+      * export ID, start from 1
+     d     number                    10u 0 value
+     d     name                        *   value
+      * returned procedure pointer
+     d     proc_ptr                    *   procptr
+      * 0=item not found
+      * 1=procedure export
+      * 2=data export
+      * 3=inaccessible data export
+     d     ext_type                  10u 0
 
      /* ACTPG, activate non-bound program */
      d actpg           pr                  extproc('_ACTPG')

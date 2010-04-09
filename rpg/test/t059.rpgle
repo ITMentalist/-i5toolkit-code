@@ -55,7 +55,7 @@
            cvthc(%addr(hexstr) : %addr(str) : 6);
            dsply 'EBCDIC' '' hexstr;
 
-           xlateb(%addr(str) : table_ptr : 3); (3)
+           xlateb(%addr(str) : table_ptr : 3); // (3)
 
            // after translation
            cvthc(%addr(hexstr) : %addr(str) : 6);
