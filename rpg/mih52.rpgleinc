@@ -1416,7 +1416,7 @@
 
      /* undocumented system builtins */
 
-     /* jump buffer structure used by __setjmp/2, and libc procedure longjmp() */
+     /* jump buffer structure used by __setjmp, and libc procedure longjmp() */
      d jmp_buf_t       ds                  qualified 
      d     inv_ptr                     *             
      d     lbl_ptr                     *             
