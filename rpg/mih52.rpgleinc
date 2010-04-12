@@ -479,6 +479,19 @@
      d min_lblptr_info_len...
      d                 c                   52
 
+     /* synchronization pointer attributes */
+     d matptr_synptr_info_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0                                      bytes provided
+     d     bytes_out                 10i 0                                      bytes available
+     d     ptr_type                   1a                                        returned pointer type
+     d     ptr_status                 1a                                        pointer status
+     d     syn_obj_type...
+     d                                2a                                        synchronization object type
+     d                                1a
+     d min_synptr_info_len...
+     d                 c                   13
+
      /* MATPTR, materialize pointer attributes */
      d matptr          pr                  extproc('_MATPTR')
      d     receiver                    *   value
@@ -1195,7 +1208,8 @@
 
      /* mutex management */
      d mutex_t         ds                  qualified
-     d     ctrl_area                 16a
+      * synchronization pointer
+     d     syn_ptr                     *
      d     name                      16a
 
      /* CRTMTX template */

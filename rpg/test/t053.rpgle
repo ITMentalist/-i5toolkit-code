@@ -20,7 +20,7 @@
      /**
       * @file t053.rpgle
       *
-      * test of CRTMTX, DESMTX
+      * test of index management instructions
       */
 
       /if defined(*crtbndrpg)
@@ -39,6 +39,8 @@
      d desopt          s             10i 0 inz(0)
      d buf             s             32a
      d rtn             s             10i 0
+     d synptr_attr     ds                  likeds(
+     d                                       matptr_synptr_info_t)
 
       /free
            mtx.name = 'Hello mutex';
@@ -46,15 +48,18 @@
            crtopt.name_opt       = x'01';
            crtopt.keep_valid_opt = x'00';
            crtopt.recursive_opt  = x'01';
-           rtn = crtmtx(mtx : %addr(crtopt));
+           rtn = crtmtx(mtx : %addr(crtopt)); // (1)
 
            if rtn <> 0;
-               dsply '_CRTMTX failed' '' rtn;
-           else;
-               dsply 'mutex created' '' rtn;
+               // crtmtx failed
            endif;
 
-           // lock mutex
+           // materialize attrubtes of mtx (2)
+           synptr_attr.bytes_in = min_synptr_info_len;
+           matptr(%addr(synptr_attr) : mtx.syn_ptr);
+             // SYNPTR_ATTR.SYN_OBJ_TYPE = hex 0001 (mutex)
+
+           // lock mutex (3)
            rtn = lockmtx(mtx : *null);
              // now use DSPJOB OPTION(*MUTEX) to check job mutexes
 
