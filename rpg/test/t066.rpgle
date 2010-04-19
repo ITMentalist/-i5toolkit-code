@@ -18,32 +18,23 @@
       */
 
      /**
-      * @file t021.rpgle
+      * @file t066.rpgle
       *
-      * test of testrpl()
+      * test of MATTODAT
       */
-
      h dftactgrp(*no)
-      /copy mih52
 
-     d org             c                   'tom cruise'
-     d str             s             16a
-     d cmp             s              2a   inz('tc')
-     d rpl             s              2a   inz('TC')
+      /copy mih52
+     d tod             ds                  likeds(mattodat_utc_clock_t)
+     d adj             ds                  likeds(mattodat_adjustment_t)
+     d rtn             s             10i 0
 
       /free
+           tod.bytes_in = mattodat_utc_clock_len;
+           rtn = mattodat(%addr(tod) : 1);
 
-           str = org;
-           // replace all 't' in str to 'T', all 'c' to 'C'
-           //   by using MI instruction
-           //   Test and Replace Characters (TSTRPLC).
-           testrpl(%addr(str)
-                   : 16
-                   : %addr(cmp)
-                   : %addr(rpl)
-                   : 2 );
-           dsply org '' str;
-             // str='Tom Cruise'
+           adj.bytes_in = mattodat_adjustment_len;
+           rtn = mattodat(%addr(adj) : 2);
 
            *inlr = *on;
       /end-free

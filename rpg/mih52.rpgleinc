@@ -357,7 +357,53 @@
 
      /* end -- bound program calculation builtins */
 
-     /* computation and branching */
+     /* date/time/timestamp */
+
+     /* materialization template of UTC TOD clock for MATTODAT */
+     d mattodat_utc_clock_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                8a
+     d     time_of_day...
+     d                                8a
+     d     timezone_offset...
+     d                               10i 0
+     d                                4a
+     d mattodat_utc_clock_len...
+     d                 c                   32
+
+     /* materialization template of TOD clock adjustment for MATTODAT */
+     d mattodat_adjustment_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     adj_opt                    2a
+     d                                6a
+      * Time interval is a time value which specifies the remaining
+      * amount of time by which the time-of-day clock will be
+      * increased or decreased.
+     d time_interval...
+     d                                8a
+      * Adjustment duration is a time value which provides an estimate
+      * of the amount of time required in order to complete the
+      * time-of-day clock adjustment.
+     d adj_duration...
+     d                                8a
+     d mattodat_adjustment_len...
+     d                 c                   32
+
+     /**
+      * MATTODAT, materialize time of day clock attributes
+      *
+      * @return 0 upon successful completion, otherwise an error number
+      * incicates the corresponding error condition.
+      */
+     d mattodat        pr            10i 0 extproc('_MATTODAT')
+     d     attr                        *   value
+     d     selection                 10u 0 value
+
+     /* end -- date/time/timestamp */
 
      /* pointer resolution */
 
@@ -1444,10 +1490,10 @@
      d setjmp2         pr                  extproc('__setjmp2')
      d     lbl_ptr                     *
 
-     /* return space pointer to current process' SEPT */
+     /* returns a space pointer to the SEPT */
      d sysept          pr              *   extproc('_SYSEPT')
 
-     /* return system pointer to current process' QTEMP */
+     /* returna a system pointer to current process' QTEMP */
      d qtempptr        pr              *   extproc('_QTEMPPTR')
 
      /* end -- undocumented system builtins */
