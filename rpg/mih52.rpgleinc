@@ -359,6 +359,146 @@
 
      /* date/time/timestamp */
 
+     /* SAA DDAT without era table and calenday table */
+     d saa_ddat1_t     ds            36    qualified
+     d                                     based(dummy_ptr)
+     d                                5u 0
+     d     fmt_code                   5u 0
+     d     date_sep                   1a
+     d     time_sep                   1a
+      * timezone definitions
+     d     hour_time_zone...
+     d                                5u 0
+     d     minute_time_zone...
+     d                                5u 0
+      * duration definitions
+     d     month_def                  5u 0
+     d     year_def                   5u 0
+      * century definitions
+     d     current_century...
+     d                               10u 0
+     d     century_division...
+     d                               10u 0
+     d     calendar_table_offset...
+     d                               10u 0
+     d                                6a
+     d saa_ddat1_len   c                   36
+
+     /* SAA DDAT with era table and calenday table */
+     d saa_ddat2_t     ds           116    qualified
+     d                                     based(dummy_ptr)
+     d                                5u 0
+     d     fmt_code                   5u 0
+     d     date_sep                   1a
+     d     time_sep                   1a
+      * timezone definitions
+     d     hour_time_zone...
+     d                                5u 0
+     d     minute_time_zone...
+     d                                5u 0
+      * duration definitions
+     d     month_def                  5u 0
+     d     year_def                   5u 0
+      * century definitions
+     d     current_century...
+     d                               10u 0
+     d     century_division...
+     d                               10u 0
+     d     calendar_table_offset...
+     d                               10u 0
+     d                                6a
+      * era table. SAA DDAT has only one era table
+     d     era_table_elements...
+     d                                5u 0
+     d     era_origin_date...
+     d                               10u 0
+     d     era_name...
+     d                               32a
+     d                               12a
+      * calendar table
+     d     calendar_table_elements...
+     d                                5u 0
+     d     gregorian_effective_date...
+     d                               10u 0
+     d     gregorain_calendar_type...
+     d                                5u 0
+     d                               10a
+     d     null_effective_date...
+     d                               10u 0
+     d     null_calendar_type...
+     d                                5u 0
+     d                               10a
+     d saa_ddat2_len   c                   116
+     d saa_ddat2_caltbl_offset...
+     d                 c                   82
+     d saa_origine_date...
+     d                 c                   1721426
+     d saa_era_name    c                   'AD, anno Domini'
+     d gregorian_end_date...
+     d                 c                   5373485
+     d null_calendar_type...
+     d                 c                   x'0000'
+     d gregorian_calendar_type...
+     d                 c                   x'0001'
+     d julian_calendar_type...
+     d                 c                   x'0002'
+
+     /*
+      * compute-duration instruction template for
+      * instruction CDD, CTD, and CTSD.
+      */
+     d dt_compute_duration_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     tmpl_size                 10u 0
+     d     op1_ddat_index...
+     d                                5u 0
+     d     op2_ddat_index...
+     d                                5u 0
+     d     op3_ddat_index...
+     d                                5u 0
+     d                                2a
+     d     op2_length                 5u 0
+     d     op3_length                 5u 0
+     d                               26a
+      * DDAT list
+     d     ddat_list_len...
+     d                               10u 0
+     d     ddats                      5u 0
+     d                               10a
+      * DDAT offsets of type ubin(4)
+     d     ddat_offsets...
+     d                               10u 0 dim(256)
+      * DDATs
+     d datetime_ddat_list_offset...
+     d                 c                   42
+
+     /* CDD, compute date duration */
+     d cdd             pr                  extproc('_CDD')
+      * address of a pkd(8,0) scalar
+     d     date_duration...
+     d                                 *   value
+      * address of end-date
+     d     date1                       *   value
+      * address of begin-date
+     d     date2                       *   value
+      * instruction template
+     d     inst_tmpl                       likeds(
+     d                                       dt_compute_duration_tmpl_t)
+
+     /* CTD, compute time duration */
+     d ctd             pr                  extproc('_CTD')
+      * address of a pkd(8,0) scalar
+     d     time_duration...
+     d                                 *   value
+      * address of end-time
+     d     time1                       *   value
+      * address of begin-time
+     d     time2                       *   value
+      * instruction template
+     d     inst_tmpl                       likeds(
+     d                                       dt_compute_duration_tmpl_t)
+
      /* materialization template of UTC TOD clock for MATTODAT */
      d mattodat_utc_clock_t...
      d                 ds                  qualified
@@ -372,36 +512,6 @@
      d                                4a
      d mattodat_utc_clock_len...
      d                 c                   32
-
-     /* materialization template of TOD clock adjustment for MATTODAT */
-     d mattodat_adjustment_t...
-     d                 ds                  qualified
-     d     bytes_in                  10i 0
-     d     bytes_out                 10i 0
-     d     adj_opt                    2a
-     d                                6a
-      * Time interval is a time value which specifies the remaining
-      * amount of time by which the time-of-day clock will be
-      * increased or decreased.
-     d time_interval...
-     d                                8a
-      * Adjustment duration is a time value which provides an estimate
-      * of the amount of time required in order to complete the
-      * time-of-day clock adjustment.
-     d adj_duration...
-     d                                8a
-     d mattodat_adjustment_len...
-     d                 c                   32
-
-     /**
-      * MATTODAT, materialize time of day clock attributes
-      *
-      * @return 0 upon successful completion, otherwise an error number
-      * incicates the corresponding error condition.
-      */
-     d mattodat        pr            10i 0 extproc('_MATTODAT')
-     d     attr                        *   value
-     d     selection                 10u 0 value
 
      /* end -- date/time/timestamp */
 
@@ -1332,6 +1442,131 @@
      /* UNLKMTX, unlock ponter-based mutex */
      d unlkmtx         pr            10i 0 extproc('_UNLKMTX')
      d     mtx                             likeds(mutex_t)
+
+     /* MATMTX, materialize mutex */
+     d matmtx          pr                  extproc('_MATMTX')
+     d     reciever                    *   value
+     d     mtx                             likeds(mutex_t)
+     d     opt                         *   value
+
+     /* basic mutex attribute template */
+     d mutex_basic_attr_t...
+     d                 ds            80    qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                4a
+     d     num_waiters...
+     d                               10i 0
+     d     name                      16a
+     d     owner_process_id...
+     d                               30a
+     d                               18a
+
+     /* basic mutex attribute template */
+     d mutex_basic_attr2_t...
+     d                 ds            80    qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                4a
+     d     num_waiters...
+     d                               10i 0
+     d     name                      16a
+     d     owner_process_id...
+     d                               30a
+     d                                2a
+     d     owner_thread_id...
+     d                                8a
+     d     owner_thread_unique_value...
+     d                                8a
+
+     /* basic mutex attribute template */
+     d mutex_basic_attr3_t...
+     d                 ds           240    qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                4a
+     d     num_waiters...
+     d                               10i 0
+     d     name                      16a
+     d     owner_process_id...
+     d                               30a
+     d                                2a
+     d     owner_thread_id...
+     d                                8a
+     d     owner_thread_unique_value...
+     d                                8a
+     d     last_locker_process_id...
+     d                               30a
+     d                                2a
+     d     last_locker_thread_id...
+     d                                8a
+     d     last_locker_thread_unique_value...
+     d                                8a
+     d     last_unlocker_process_id...
+     d                               30a
+     d                                2a
+     d     last_unlocker_thread_id...
+     d                                8a
+     d     last_unlocker_thread_unique_value...
+     d                                8a
+      * 00 = recursive attempls to lock this mutex will not
+      *      be permitted
+      * 01 = recursive attempls to lock this mutex will be permitted
+      *      by the same thread has already locked the MTX
+     d     recursive_flag...
+     d                                1a
+     d     keep_valid_flag...
+     d                                1a
+      * 00 = holding thread has not terminated
+      * 01 = holding thread has terminated
+     d     pending_flag...
+     d                                1a
+     d                               13a
+     d     lock_count                20u 0
+      * first 8 characters of the name of the program module
+      * that created the mutex
+     d     creator                    8a
+     d     original_mutex...
+     d                                 *
+     d                               16a
+
+     /* mutex waiter structure */
+     d mutex_waiter_t  ds            48    qualified
+     d     process_id                30a
+     d                               18a
+
+     /* mutex waiter structure */
+     d mutex_waiter2_t...
+     d                 ds            48    qualified
+     d     process_id                30a
+     d                                2a
+     d     thread_id                  8a
+     d     thread_unique_value...
+     d                                8a
+
+     /* standard materialization template of MATMTX */
+     d matmtx_std_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     basic_attr                      likeds(mutex_basic_attr_t)
+     d     waiters                         likeds(mutex_waiter_t)
+     d                                     dim(1024)
+
+     /* format 0 extended materialization template of MATMTX */
+     d matmtx_ext0_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     basic_attr                      likeds(mutex_basic_attr2_t)
+     d     waiters                         likeds(mutex_waiter2_t)
+     d                                     dim(1024)
+
+     /* format 1 extended materialization template of MATMTX */
+     d matmtx_ext1_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     basic_attr                      likeds(mutex_basic_attr3_t)
+     d     waiters                         likeds(mutex_waiter2_t)
+     d                                     dim(1024)
 
      /* end -- mutex management */
 

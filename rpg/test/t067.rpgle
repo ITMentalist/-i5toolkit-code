@@ -18,24 +18,34 @@
       */
 
      /**
-      * @file t066.rpgle
+      * @file t067.rpgle
       *
-      * test of MATTODAT
+      * test of MATMTX. Called by SPR14 (see spr14.emi).
       */
      h dftactgrp(*no)
+      /copy mih52
 
-      /copy mih54
-     d tod             ds                  likeds(mattodat_utc_clock_t)
-     d adj             ds                  likeds(mattodat_adjustment_t)
-     d rtn             s             10i 0
+     /* user code */
+     d i_main          pr                  extpgm('T067')
+     d     mtx                             likeds(mutex_t)
+
+     d i_main          pi
+     d     mtx                             likeds(mutex_t)
+
+     d mtx_attr        ds                  likeds(matmtx_ext1_tmpl_t)
+     d                                     based(tmpl_ptr)
+     d tmpl_ptr        s               *
+     d tmpl_len        c                   4096
+     d matmtx_opt      s             10u 0
 
       /free
-      /if defined(*v5r4m0)
-           tod.bytes_in = mattodat_utc_clock_len;
-           rtn = mattodat(%addr(tod) : 1);
+           tmpl_ptr = %alloc(tmpl_len);
+           propb(tmpl_ptr : x'00' : tmpl_len);
+           mtx_attr.basic_attr.bytes_in = tmpl_len;
+           matmtx_opt = x'00000006';
+           matmtx(tmpl_ptr : mtx : %addr(matmtx_opt));
+             // check returned mutex attributes in ds mtx_attr
 
-           adj.bytes_in = mattodat_adjustment_len;
-           rtn = mattodat(%addr(adj) : 2);
-      /endif
+           dealloc tmpl_ptr;
            *inlr = *on;
       /end-free

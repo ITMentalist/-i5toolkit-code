@@ -55,5 +55,35 @@
      d     argv                        *   dim(1) options(*varsize)
      d     argc                      10u 0 value
 
+     /* materialization template of TOD clock adjustment for MATTODAT */
+     d mattodat_adjustment_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     adj_opt                    2a
+     d                                6a
+      * Time interval is a time value which specifies the remaining
+      * amount of time by which the time-of-day clock will be
+      * increased or decreased.
+     d time_interval...
+     d                                8a
+      * Adjustment duration is a time value which provides an estimate
+      * of the amount of time required in order to complete the
+      * time-of-day clock adjustment.
+     d adj_duration...
+     d                                8a
+     d mattodat_adjustment_len...
+     d                 c                   32
+
+     /**
+      * MATTODAT, materialize time of day clock attributes
+      *
+      * @return 0 upon successful completion, otherwise an error number
+      * incicates the corresponding error condition.
+      */
+     d mattodat        pr            10i 0 extproc('_MATTODAT')
+     d     attr                        *   value
+     d     selection                 10u 0 value
+
       /endif
      /* eof - mih54.rpgleinc */
