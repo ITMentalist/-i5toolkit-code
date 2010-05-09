@@ -20,7 +20,7 @@
      /**
       * @file t064.rpgle
       *
-      * test of ept54.rpgle
+      * test of ept54.rpgleinc
       *  - call UIM API QUILNGTX.
       */
      h dftactgrp(*no)
