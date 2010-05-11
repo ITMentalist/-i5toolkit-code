@@ -1691,9 +1691,21 @@
 
      /* wait template for WAITTIME */
      d wait_tmpl_t     ds            16    qualified
-     d     interval                   8a
+     d     interval                  20u 0
      d     option                     2a
      d                                6a
+
+     /* 1 second in format of system clock */
+     d sysclock_one_second...
+     d                 c                   x'00000000F4240000'
+
+     /* 1 hour in format of system clock */
+     d sysclock_one_hour...
+     d                 c                   x'00000D693A400000'
+
+     /* 1 week in format of system clock */
+     d sysclock_one_week...
+     d                 c                   x'0008CD0E3A000000'
 
      /* end -- process and thread management */
 

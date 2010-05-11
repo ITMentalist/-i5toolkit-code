@@ -32,7 +32,7 @@
       /free
 
            propb (%addr(tmpl) : x'00' : 16);
-           tmpl.interval = x'00000000F4240000'; // 1 second
+           tmpl.interval = sysclock_one_second * 10;
            tmpl.option   = x'1000';
 
            waittime(tmpl);

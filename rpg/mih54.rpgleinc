@@ -85,5 +85,20 @@
      d     attr                        *   value
      d     selection                 10u 0 value
 
+     /* Shared storage synchronization */
+
+     /* CHKKLVAL, check lock value */
+     d chklkval        pr            10i 0 extproc('_CHKLKVAL')
+     d     lock                      20i 0
+     d     old_val                   20i 0 value
+     d     new_val                   20i 0 value
+
+     /* CLRKLVAL, check lock value */
+     d clrlkval        pr                  extproc('_CLRLKVAL')
+     d     lock                      20i 0
+     d     new_val                   20i 0 value
+
+     /* end -- Shared storage synchronization */
+
       /endif
      /* eof - mih54.rpgleinc */
