@@ -42,7 +42,7 @@
 
       /free
 
-           rtn = pthread_create(%addr(thd)
+           rtn = pthread_create( thd
                                : *null
                                : %paddr(func)
                                : %addr(hello) );
@@ -50,7 +50,7 @@
                // error handling
            endif;
 
-           pthread_join(thd : status);
+           rtn = pthread_join(thd : status);
            *inlr = *on;
       /end-free
 

@@ -75,14 +75,14 @@
            thd_parm(2).tls_key      = tls_key;
            thd_parm(2).tls_size_ind = 'L'; // large TLS allocation
 
-           rtn = pthread_create(%addr(thd(1))
+           rtn = pthread_create( thd(1)
                                : *null
                                : %paddr(thread_main)
                                : %addr(thd_parm(1)) );
            if rtn <> 0;
                // error handling
            endif;
-           rtn = pthread_create(%addr(thd(2))
+           rtn = pthread_create( thd(2)
                                : *null
                                : %paddr(thread_main)
                                : %addr(thd_parm(2)) );
@@ -161,7 +161,7 @@
      d     source                      *   value
      d     length                    10i 0 value
 
-     d tid             s              8a
+     d tid             s             20u 0
      d chtid           s             16a
      d tls             s               *
      d greeting        s             32a   based(tls)

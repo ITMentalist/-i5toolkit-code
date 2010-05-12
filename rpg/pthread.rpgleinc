@@ -44,7 +44,7 @@
 
      /* create thread */
      d pthread_create  pr            10i 0 extproc('pthread_create')
-     d     thread                      *   value
+     d     thread                          likeds(pthread_t)
      d     attr                        *   value
      d     proc                        *   procptr
      d                                     value
