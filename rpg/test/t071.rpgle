@@ -36,6 +36,7 @@
      d r4              s             20u 0
 
       /free
+      /if defined(*v5r4m0)
            r1 = atmcadd4(a : 1);  // r1 = 7, a = 8
            r1 = atmcadd4(a : -1); // r1 = 8, a = 7
            r2 = atmcadd8(b : 1);  // r2 = 7, b = 8
@@ -44,6 +45,6 @@
            r4 = atmcand8(d : 0);  // r4 = 7, d = 0
            r3 = atmcor4(c : 7);   // r3 = 0, c = 7
            r4 = atmcor8(d : 7);   // r4 = 0, d = 7
-
+      /endif
            *inlr = *on;
       /end-free

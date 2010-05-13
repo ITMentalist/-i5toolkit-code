@@ -1009,10 +1009,6 @@
      d     act_mark                   4a
      d     attr_sel                   1a
 
-     /* end -- program execution */
-
-     /* program execution */
-
      /* MODASA, modify automatic storage allocation */
      /* Note that unlike MI instruction MODASA, builtin _MODASA */
      /* cannot be used to truncate ASF */
@@ -1043,7 +1039,29 @@
      d*    receiver                    *   value
      d*    option                    10u 0 value
 
-     /* MATINVAT, materialize invocation attributes */
+     /* invocation identification structure */
+     d invocation_id_t...
+     d                 ds                  qualified
+     d     inv_offset                10i 0
+     d     originating_inv_offset...
+     d                               10i 0
+     d     inv_range                 10i 0
+     d                                4a
+     d     inv_ptr                     *
+     d                               16a
+
+     /**
+      * MATINVAT, materialize invocation attributes.
+      *
+      * @todo 不好使呢 :p 成了对当前inv操作，值写在了invid上
+      */
+     d matinvatX       pr                  extproc('_MATINVAT1')
+     d     receiver                    *   value
+     d     invocation_id...
+     d                                     likeds(invocation_id_t)
+     d     selection                   *   value
+
+     /* materialize attributes of the current invocation */
      d matinvat        pr                  extproc('_MATINVAT1')
      d     receiver                    *   value
      d     selection                   *   value
@@ -1077,6 +1095,28 @@
      d                 ds            16    qualified
      d     ag_mark                   10u 0
      d                               12a
+
+     /* activation template for RINZSTAT */
+     d rinzstat_tmpl_t...
+     d                 ds                  qualified
+     d     pgm                         *
+     d     agp_mark                  10u 0
+
+     /* activation template for RINZSTAT */
+     d rinzstat_tmpl2_t...
+     d                 ds                  qualified
+     d     pgm                         *
+     d     agp_mark                  20u 0
+
+     /* RINZSTAT, reinitialize static storage */
+     d rinzstat        pr                  extproc('_RINZSTAT')
+     d     activation_tmpl...
+     d                                     likeds(rinzstat_tmpl_t)
+
+     /* RINZSTAT2, reinitialize static storage */
+     d rinzstat2       pr                  extproc('_RINZSTAT2')
+     d     activation_tmpl...
+     d                                     likeds(rinzstat_tmpl2_t)
 
      /* end -- program execution */
 

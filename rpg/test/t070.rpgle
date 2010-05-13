@@ -44,7 +44,6 @@
      d ind             s             10i 0
 
       /free
-
            // start threads
            rtn = pthread_create( thd(1)
                                : *null
@@ -88,6 +87,7 @@
      d msg             s              8a
 
       /free
+      /if defined(*v5r4m0)
 
            propb (%addr(tmpl) : x'00' : 16);
            tmpl.interval = sysclock_one_second;
@@ -102,7 +102,7 @@
            dsply 'Yeah! I got it!' '' msg;
 
            clrlkval(lock : 0);
-
+      /endif
            return *null;
       /end-free
      p thd_proc        e

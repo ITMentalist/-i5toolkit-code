@@ -161,8 +161,9 @@
      d     source                      *   value
      d     length                    10i 0 value
 
-     d tid             s             20u 0
-     d chtid           s             16a
+     d                 ds
+     d tid                            8a
+     d num_tid                       20u 0 overlay(tid)
      d tls             s               *
      d greeting        s             32a   based(tls)
 
@@ -173,11 +174,9 @@
 
            // consume TLS storage
            tid = retthid();
-           cvthc( %addr(chtid) : %addr(tid) : 16);
-           greeting = 'From ' + chtid + ': Ni hao!';
+           greeting = 'From ' + %char(num_tid) + ': Ni hao!';
            dsply 'Greetings' '' greeting;
 
       /end-free
      p func            e
-
      /* EOF */

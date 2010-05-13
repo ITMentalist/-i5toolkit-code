@@ -144,6 +144,10 @@
      d     lock                      20i 0
      d     new_val                   20i 0 value
 
+     /* SYNCSTG, synchronize shared storage access */
+     d syncstg         pr                  extproc('_SYNCSTG')
+     d     action                    10u 0 value
+
      /* end -- Shared storage synchronization */
 
       /endif
