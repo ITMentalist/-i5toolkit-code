@@ -1,0 +1,19 @@
+     /**
+      * @file uim.rpgleinc
+      *
+      * ILE RPG header for UIM APIs.  For details please refer to the
+      * project's web site, http://i5toolkit.sourceforge.net/
+      */
+
+      /copy apiec
+
+     /* UIM application APIs */
+     /* Close Application (QUICLOA) API */
+     d quicloa         pr                  extpgm('QUICLOA')
+     d     app_handle...
+     d                                8a
+     d     close_option...
+     d                                1a
+     d     ec                              likeds(qusec_t)
+
+     /* end -- UIM application APIs */
