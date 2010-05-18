@@ -1,4 +1,23 @@
      /**
+      * This file is part of i5/OS Programmer's Toolkit.
+      *
+      * Copyright (C) 2010  Junlei Li.
+      *
+      * i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+      * it under the terms of the GNU General Public License as published by
+      * the Free Software Foundation, either version 3 of the License, or
+      * (at your option) any later version.
+      *
+      * i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+      * but WITHOUT ANY WARRANTY; without even the implied warranty of
+      * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      * GNU General Public License for more details.
+      *
+      * You should have received a copy of the GNU General Public License
+      * along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+      */
+
+     /**
       * @file uim.rpgleinc
       *
       * ILE RPG header for UIM APIs.  For details please refer to the
@@ -7,7 +26,7 @@
 
       /copy apiec
 
-     /* UIM application APIs */
+     /* UIM Application APIs */
      /* Close Application (QUICLOA) API */
      d quicloa         pr                  extpgm('QUICLOA')
      d     app_handle...
@@ -16,4 +35,92 @@
      d                                1a
      d     ec                              likeds(qusec_t)
 
-     /* end -- UIM application APIs */
+     /* Open Display Application (QUIOPNDA) API */
+     d quiopnda        pr                  extpgm('QUIOPNDA')
+     d     app_handle...
+     d                                8a
+     d     panel_name...
+     d                               20a
+     d     app_scope...
+     d                               10i 0
+     d     exit_pgm_interface...
+     d                               10i 0
+     d     full_screen_help...
+     d                                1a
+     d     ec                              likeds(qusec_t)
+
+     /**
+      * uim_open_result_t
+      */
+     d uim_open_result_t...
+     d                 ds                  qualified
+     d     conv_error                 1a
+     d     data_loss                  1a
+
+     /* Open Display Application (QUIOPNDA) API. number of parms is 9 */
+     d quiopnda2       pr                  extpgm('QUIOPNDA')
+     d     app_handle...
+     d                                8a
+     d     panel_name...
+     d                               20a
+     d     app_scope...
+     d                               10i 0
+     d     exit_pgm_interface...
+     d                               10i 0
+     d     full_screen_help...
+     d                                1a
+     d     ec                              likeds(qusec_t)
+     d     open_result...
+     d                                     likeds(uim_open_result_t)
+     d     result_len                10i 0
+     d     result_available...
+     d                               10i 0
+
+     /* Open Print Application (QUIOPNPA) API */
+     d quiopnpa        pr                  extpgm('QUIOPNPA')
+     d     app_handle...
+     d                                8a
+     d     panel_name...
+     d                               20a
+     d     app_scope...
+     d                               10i 0
+     d     exit_pgm_interface...
+     d                               10i 0
+     d     prtf_name                 20a
+     d     splf_name                 10a
+      * 'Y', the ODP is shared
+      * 'N', the ODP is not shared
+      * 'F', use the share value of the printer file
+     d     share_odp                  1a
+     d     user_data                 10a
+     d     ec                              likeds(qusec_t)
+
+     /* Open Print Application (QUIOPNPA) API. number of parms is 12 */
+     d quiopnpa2       pr                  extpgm('QUIOPNPA')
+     d     app_handle...
+     d                                8a
+     d     panel_name...
+     d                               20a
+     d     app_scope...
+     d                               10i 0
+     d     exit_pgm_interface...
+     d                               10i 0
+     d     prtf_name                 20a
+     d     splf_name                 10a
+      * 'Y', the ODP is shared
+      * 'N', the ODP is not shared
+      * 'F', use the share value of the printer file
+     d     share_odp                  1a
+     d     user_data                 10a
+     d     ec                              likeds(qusec_t)
+     d     open_result...
+     d                                     likeds(uim_open_result_t)
+     d     result_len                10i 0
+     d     result_available...
+     d                               10i 0
+
+     /* end -- UIM Application APIs */
+
+     /* UIM Display APIs */
+
+     /* end -- UIM Display APIs */
