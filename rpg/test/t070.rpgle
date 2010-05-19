@@ -20,7 +20,8 @@
      /**
       * @file t070.rpgle
       *
-      * test of CHKLKVAL/CLRLKVAL
+      * Test of CHKLKVAL/CLRLKVAL. This is also an example of implementing thread
+      * synchronization by using instruction CHKLKVAL and CLRLKVAL.
       *
       * @remark Note that this is a multi-threaded program.
       *         You should run this program in batch job
