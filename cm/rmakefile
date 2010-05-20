@@ -1,0 +1,13 @@
+#
+# @file rmakefile
+#
+# @remark This makefile is supposed to be used from a unix-like PC
+#         where a make utility is available.
+#
+
+HOST=g525
+
+all: pack_src upload_src compile
+
+
+clean:

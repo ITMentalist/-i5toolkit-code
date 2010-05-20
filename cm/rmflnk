@@ -1,0 +1,19 @@
+#! /bin/sh
+#
+# @file rmflnk
+#
+# remove a stream file following possible symbolic link
+#
+
+for symlnk in $*
+do
+    # remove target of the symbolic link
+    target=$(readlink $symlnk)
+    if [ ! -z $target ]
+    then
+        rm $target
+    fi
+
+    # remove the symbolic link
+    rm $symlnk
+done

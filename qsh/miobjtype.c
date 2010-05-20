@@ -39,7 +39,7 @@ char *map_cvttp_error(const char *exid);
 int main(int argc, char *argv[]) {
 
   char ecb[ECLEN] = {0};
-  char ex_type[10] = {"          "};
+  char ex_type[11] = {"          "};
   char mi_type[2] = {0};
   int i = 0;
   size_t len = 0;

@@ -19,38 +19,23 @@
 # makefile of qsh
 #
 
-ifeq ($(OS400), yes)
-	MAKE=gmake
-	CC=icc
-	CXX=icc -+v
-	RM=del
-else
-	MAKE=make
-	CC=gcc
-	CXX=g++
-	RM=rm
-endif
+# make rules
+.c:
+	system "crtbndc $(BIN_LIB)/$@ srcstmf('$<') dbgview(*none) output(*print)"
+	ln -s /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
 
-export MAKE
-export CC
-export CXX
-export RM
+BIN_LIB=
+WHERE=$(shell pwd)
 
-ifndef CC
-	CC=gcc
-endif
+# exobjtype.pgm, 记着找回来 exobjtype.c
+TARGETS=miobjtype rlink
 
-ifndef CXX
-	CXX=g++
-endif
-
-CFLAGS=-g -I.
-CXXFLAGS=-g -I.
-
-TARGETS=exobjtype miobjtype
-
-all: $(TARGETS)
+all: pre $(TARGETS)
 	@echo "end of compilation: sub-dir qsh."
 
+pre:
+	@echo "makefile >>>> WHERE=$(WHERE)"
+	@echo "makefile >>>> BIN_LIB=$(BIN_LIB)"
+
 clean:
-	$(RM) $(TARGETS)
+	qsh -c "rmflnk $(TARGETS)"
