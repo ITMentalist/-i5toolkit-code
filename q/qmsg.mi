@@ -97,7 +97,7 @@ resolve-q:
 end-resolve:
 
   /* open display application */
-  cpyblap pnlgrp, "DSPQM     *LIBL", " ";
+  cpyblap pnlgrp, "DSPQM     I5TOOLKIT", " ";
   callx .quiopnda, argl-opnda, *;
   cmpnv(b) uim-ec-bytes-out, 0 / eq(=+4);
   setspp .qusec, uim-ec;

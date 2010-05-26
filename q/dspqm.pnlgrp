@@ -27,7 +27,7 @@
 
 .* import help info
 :import name='*'
-        pnlgrp='*libl/dspqathlp'
+        pnlgrp='i5toolkit/dspqathlp'
         .
 
 .* class

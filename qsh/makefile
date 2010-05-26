@@ -22,20 +22,16 @@
 # make rules
 .c:
 	system "crtbndc $(BIN_LIB)/$@ srcstmf('$<') dbgview(*none) output(*print)"
-	ln -s /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
+	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
 
 BIN_LIB=
 WHERE=$(shell pwd)
 
 # exobjtype.pgm, 记着找回来 exobjtype.c
-TARGETS=miobjtype rlink
+TARGETS=exobjtype miobjtype rlink
 
-all: pre $(TARGETS)
+all: $(TARGETS)
 	@echo "end of compilation: sub-dir qsh."
-
-pre:
-	@echo "makefile >>>> WHERE=$(WHERE)"
-	@echo "makefile >>>> BIN_LIB=$(BIN_LIB)"
 
 clean:
 	qsh -c "rmflnk $(TARGETS)"

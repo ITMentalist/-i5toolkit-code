@@ -1,0 +1,113 @@
+/**
+ * @file gendbfsrc.emi
+ *
+ * @param [in] stmf-path
+ * @param [out] mbr-path in IFS format
+ *
+ * @remark 使用 srcpf QTEMP／DBFSRC 存放库文件系统源码
+ * @remark 使用 space object QTEMP/DBFSRC 存 当前使用的 member 名, e.g. #000000001
+ *
+ * @todo 如果细致的话, 应该考虑输入的 stmf-path 的长度的问题!
+ * @todo Options for command CRTSRCPF is temporarily set to 'RCDLEN(198) IGCDTA(*YES)'
+ */
+
+dcl spcptr stmf-path-ptr parm   ;
+dcl spcptr mbr-path-ptr parm    ;
+dcl ol pl-main(
+        stmf-path-ptr,
+        mbr-path-ptr
+) parm ext                      ;
+entry *(pl-main) ext            ;
+
+        /* check and optionally create srcpf */
+        calli crt-srcpf, *, crt-srcpf-ptr ;
+
+        /* determine source member name */
+
+        /* create srcpf member */
+dcl dd qnam char(10) auto init("FEB38") ;
+dcl spcptr qnam-ptr auto init(qnam)     ;
+dcl dd qlib char(10) auto init("LSBIN") ;
+dcl spcptr qlib-ptr auto init(qlib)     ;
+dcl ol al-clr(qnam-ptr, qlib-ptr) arg   ;
+        callx ept(h'0B53'), al-clr, *   ;
+
+brk "END"                       ;
+        rtx *                   ;
+
+dcl insptr recovery-cpf9801     ;
+dcl excm ex-cpf9801 excid(h'9801') bp(on-cpf9801) imd cv("CPF") ;
+on-cpf9801:     
+
+	b recovery-cpf9801      ;
+
+/**
+ * 看 QTEMP/DBFSRC 在不在
+ *
+ * @post srcpf-exists
+ */
+dcl insptr crt-srcpf-ptr auto   ;
+entry crt-srcpf int             ;
+
+        setip recovery-cpf9801, srcpf-not-found ;
+
+        /* chkobj ... */
+        cpyblap cmd, "CHKOBJ ", " " ;
+        cpybla cmd(11:21), SRCPF    ;
+        cpybla cmd(33:10), *FILE  ;
+        triml cmd-len, cmd, ' '   ;
+        callx ept(QCMDEXC-INX), al-qcmdexc, * ;
+
+        b end-crt-srcpf         ;
+
+srcpf-not-found:
+        cpyblap cmd, "CRTSRCPF ", ' ' ;
+        cpybla cmd(12:21), SRCPF      ;
+        cpybla cmd(33:24), "RCDLEN(198) IGCDTA(*YES)" ; /* @todo */
+        triml cmd-len, cmd, ' ' ;
+ brk "1"                              ;
+        callx ept(QCMDEXC-INX), al-qcmdexc, * ;
+
+end-crt-srcpf:  
+        b crt-srcpf-ptr         ;
+
+dcl insptr crt-mbr-ptr auto     ;
+entry crt-mbr int               ;
+
+        setip recovery-cpf9801, usrspc-not-found ;
+
+        cpyblap cmd, "CHKOBJ ", " " ;
+        cpybla cmd(11:21), USRSPC    ;
+        cpybla cmd(33:10), *USRSPC  ;
+        triml cmd-len, cmd, ' '   ;
+        callx ept(QCMDEXC-INX), al-qcmdexc, * ;
+
+usrspc-not-found:       
+
+
+        b crt-mbr-ptr           ;
+
+/* globals */
+/* sept */
+dcl spc pco-obj baspco          ;
+        dcl spcptr ept-ptr dir  ;
+dcl sysptr ept(7001) bas(ept-ptr) ;
+
+dcl con QCMDEXC-INX bin(2) init(h'07C5')     ;
+dcl con SRCPF char(21) init("QTEMP/DBFSRC")  ;
+dcl con USRSPC char(21) init("QTEMP/DBFSRC") ;
+dcl con *FILE char(10) init("*FILE")         ;
+dcl con *USRSPC char(10) init("*USRSPC")     ;
+dcl dd cmd char(4096) auto                   ;
+dcl spcptr cmd-ptr auto init(cmd)            ;
+dcl dd cmd-len pkd(15,5) auto                ;
+dcl spcptr cmd-len-ptr auto init(cmd-len)    ;
+dcl dd igc char(3) auto init("IGC")          ;
+dcl spcptr igc-ptr auto init(igc)            ;
+dcl ol al-qcmdexc (
+        cmd-ptr,
+        cmd-len-ptr,
+        igc-ptr
+) arg                           ;
+
+pend                            ;

@@ -82,7 +82,7 @@ entry *(plist-main) ext;
   b farewell;
 :
   /* open display application */
-  cpyblap pnlgrp, "DSPQAT    *LIBL", " ";
+  cpyblap pnlgrp, "DSPQAT    I5TOOLKIT", " ";
   callx .quiopnda, argl-opnda, *;
   cmpnv(b) uim-ec-bytes-out, 0 / eq(=+4);
   setspp .qusec, uim-ec;
