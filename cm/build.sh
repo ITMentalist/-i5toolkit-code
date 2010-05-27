@@ -24,11 +24,14 @@
 # @remark This scipt file is supported to run in the PASE environment.
 #
 
-USAGE="usage: ./build.sh [params-to-make ...]"
+USAGE="usage: ./build.sh build-log [params-to-make ...]"
 
 # change current directory
 DIR=$(dirname $0)
 cd $DIR
 
+BUILD_LOG=$1
+
 # run make
-make $*
+shift 1
+make $* > $BUILD_LOG

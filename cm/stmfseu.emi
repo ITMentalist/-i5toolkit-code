@@ -1,0 +1,102 @@
+/**
+ * @file stmfseu.emi
+ *
+ * function desciption
+ *  - accept input params from CL command STMFSEU
+ *    - stmf-path
+ *    - srctype
+ *    - option: ' ', '2', '5', '6'
+ *      @remark option ' ' is equal to '2'
+ *  - invoke GENDBFSRC to create a new source member in QTEMP/DBFSRC
+ *  - invoke SEU to let the user edit, view, or print target stmf source
+ *  - copy changed source member back to stmf
+ */
+
+dcl spcptr stmf-path-ptr parm   ;
+dcl spcptr srctype-ptr parm     ;
+dcl spcptr seu-opt-ptr parm     ;
+dcl spcptr stmf-ccsid-ptr parm  ;
+dcl ol pl-main (
+        stmf-path-ptr,
+        srctype-ptr,
+        seu-opt-ptr,
+        stmf-ccsid-ptr
+) parm ext                      ;
+entry welcome(pl-main) ext      ;
+
+dcl spc stmf-path-t bas(stmf-path-ptr) ;
+        dcl dd stmf-path-len bin(2) dir ;
+        dcl dd stmf-path char(5000) dir ;
+dcl dd srctype char(10) bas(srctype-ptr) ;
+dcl dd seu-opt char(1) bas(seu-opt-ptr)  ;
+dcl dd stmf-ccsid bin(2) bas(stmf-ccsid-ptr) ;
+
+        /* generate source member in QTEMP/DBFSRC */
+        callx gen-pgm, al-gen, * ;
+brk '1'                          ;
+        /* record source member's last modification time */
+dcl dd begin-time bin(4) auto   ;
+dcl dd end-time bin(4) auto     ;
+        callx mtime, al-mtime, * ;
+        cpynv begin-time, stmf-mtime ;
+brk '2'                              ;
+        /* determine SRCTYPE */
+        cmpbla(b) srctype, "          " / neq(=+2) ;
+        calli set-srctype, *, set-srctype-ptr      ;
+:       
+        /* invoke SEU -- here */
+
+        /* record source member's last modification time */
+        callx mtime, al-mtime, * ;
+        cpynv end-time, stmf-mtime ;
+brk '99'                           ;
+
+brk 'END'                       ;
+        rtx *                   ;
+
+/**
+ * set-srctype
+ *
+ * invoked when user doesn't specifies SRCTYPE parm
+ */
+dcl insptr set-srctype-ptr auto ;
+entry set-srctype int           ;
+
+        b set-srctype-ptr       ;
+
+/* globals ... */
+dcl sysptr gen-pgm auto init (
+        "GENDBFSRC",
+        ctx("I5TOOLKIT"),
+        type(pgm)
+)                               ;
+
+dcl dd mbr-path char(30) auto            ;
+dcl spcptr mbr-path-ptr auto init(mbr-path)  ;
+dcl spc mbr-path-t bas(mbr-path-ptr)         ;
+        dcl dd mbrp-srcpf-name char(10) dir  ;
+        dcl dd mbrp-srcpf-lib char(10) dir   ;
+        dcl dd mbrp-srcmbr-name char(10) dir ;
+
+dcl ol al-gen (
+        mbr-path-ptr,
+        stmf-path-ptr,
+        srctype-ptr
+) arg                           ;
+
+dcl spcptr mtime-path-ptr auto  ;
+dcl dd stmf-mtime bin(4) auto   ;
+dcl spcptr stmf-mtime-ptr auto init(stmf-mtime) ;
+dcl ol al-mtime (
+        mtime-path-ptr,
+        stmf-mtime-ptr
+) arg                           ;
+dcl sysptr mtime auto init (
+        "MTIME",
+        ctx("I5TOOLKIT"),
+        type(pgm)
+)                               ;
+dcl spcptr pos auto             ;
+dcl dd pos-ch char(1) bas(pos)  ;
+
+pend                            ;

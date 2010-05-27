@@ -21,7 +21,7 @@
 
 BIN_LIB=
 MAKERULES=rules.mk
-TARGETS=gendbfsrc
+TARGETS=gendbfsrc stmfseu mtime
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir cm."
