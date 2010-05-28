@@ -52,7 +52,12 @@ brk "1"                               ;
           "ADDPFM FILE(QTEMP/DBFSRC) MBR(#000000000) SRCTYPE(0123456789)",
           ' '                   ;
         cpybla cmd(31:10), mbrp-srcmbr-name ;
+        cmpbla(b) src-type, "*SAME     " / eq(=+3) ;
         cpybla cmd(51:10), src-type         ;
+        b addpfm-src-type                   ;
+:       
+        cpybla cmd(51:10), "*NONE     " ;
+addpfm-src-type:        
 brk "2"                               ;
         triml cmd-len, cmd, ' '       ;
         callx ept(QCMDEXC-INX), al-qcmdexc, * ;

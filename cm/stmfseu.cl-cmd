@@ -8,9 +8,10 @@
 
              CMD        PROMPT('Start SEU on Stream Files')
              /* PATH OF TARGET STREAM FILE */
-             PARM       KWD(STMF) TYPE(*PNAME) LEN(5000) VARY(*YES +
-                          *INT2) CASE(*MIXED) KEYPARM(*YES) +
-                          INLPMTLEN(50) PROMPT('Stream file')
+             PARM       KWD(STMF) TYPE(*PNAME) LEN(5000) MIN(1) +
+                          VARY(*YES *INT2) CASE(*MIXED) +
+                          KEYPARM(*YES) INLPMTLEN(50) +
+                          PROMPT('Stream file')
              /* SOURCE TYPE */
              PARM       KWD(SRCTYPE) TYPE(*CHAR) LEN(10) RSTD(*YES) +
                           DFT(*SAME) VALUES(BAS BASP BND C CBL +
@@ -35,6 +36,6 @@
                           SPCVAL((*BLANK ' ')) CASE(*MONO) +
                           PROMPT(OPTION)
              /* STMF CCSID */
-             PARM       KWD(STMFCCSID) TYPE(*INT2) DFT(0) +
+             PARM       KWD(STMFCCSID) TYPE(*INT2) DFT(1208) +
                           PMTCTL(*PMTRQS) PROMPT('Stream file CCSID')
 /* EOF */
