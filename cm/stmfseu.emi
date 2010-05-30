@@ -40,13 +40,26 @@ dcl dd srctype char(10) bas(srctype-ptr) ;
 dcl dd seu-opt char(1) bas(seu-opt-ptr)  ;
 dcl dd stmf-ccsid bin(2) bas(stmf-ccsid-ptr) ;
 
-        /* touch stmf-path */
+        /* if seu-opt ==  ' ' or '2', touch target stmf */
+        cmpbla(b) seu-opt, '5' / eq(after-touch) ;
+        cmpbla(b) seu-opt, '6' / eq(after-touch) ;
+
         cpybla stmf-path-null, stmf-path ;
         triml len, stmf-path-null, ' '   ;
         setspp pos-ptr, stmf-path-null   ;
         addspp pos-ptr, pos-ptr, len     ;
         cpybla pos-ch, x'00'             ;
         callx touch, al-touch, * ; /* @todo 如果 touch-rtn-val 非0就该返回了! */
+        cmpnv(b) touch-rtn-val, 0 / eq(after-touch) ;
+        cpyblap msg,
+          "Failed to open stream file: ",
+          ' ' ;
+        cpybla msg(31:34), stmf-path ;
+        triml msg-len, msg, ' '      ;
+        %sendmsg (msg, msg-len)      ;
+
+        b see-you               ;
+after-touch:    
 brk '0'                          ;
         /* generate source member in QTEMP/DBFSRC */
         callx gen-pgm, al-gen, * ;
@@ -95,11 +108,13 @@ brk '4'                                       ;
         callx mtime, al-mtime, * ;
         cpynv end-time, stmf-mtime ;
         cmpnv(b) end-time, begin-time / eq(=+2) ;
+brk '98'                                        ;
         calli cpy-stmf-back, *, cpy-stmf-back-ptr ;
 :       
 brk '99'                        ;
 
 brk 'END'                       ;
+see-you:        
         rtx *                   ;
 
 /**
@@ -264,5 +279,7 @@ dcl spcptr dta-attr-ptr auto init(dta-attr) ;
 dcl spc * bas(dta-attr-ptr)     ;
         dcl dd dta-attr-type char(1) dir ;
         dcl dd dta-attr-len bin(2) dir   ;
+dcl dd msg char(64) auto        ;
+dcl dd msg-len bin(2) auto      ;
 
 pend                            ;
