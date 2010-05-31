@@ -21,7 +21,7 @@
 
 BIN_LIB=
 MAKERULES=rules.mk
-TARGETS=gendbfsrc stmfseu mtime touch
+TARGETS=gendbfsrc stmfseu mtime touch unlink crtfrmstmf
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir cm."

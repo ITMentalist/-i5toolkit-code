@@ -1,0 +1,164 @@
+/**
+ * @file crtfrmstmf.emi
+ *
+ * CPP program of CL command CRTFRMSTMF
+ *
+ */
+
+dcl spcptr obj-lib-ptr parm     ;
+dcl spcptr cmd-name-ptr parm    ;
+dcl spcptr stmf-path-ptr parm   ;
+dcl spcptr cmd-parm-ptr parm    ;
+dcl ol pl-main(
+        obj-lib-ptr,
+        cmd-name-ptr,
+        stmf-path-ptr,
+        cmd-parm-ptr
+) parm ext       ;
+
+entry *(pl-main) ext            ;
+
+dcl dd obj-lib char(20) bas(obj-lib-ptr)   ;
+        dcl dd obj-name char(10) def(obj-lib) pos(1) ;
+        dcl dd lib-name char(10) def(obj-lib) pos(11) ;
+dcl dd cmd-name char(10) bas(cmd-name-ptr) ;
+
+dcl spc stmf-path-t bas(stmf-path-ptr)  ;
+        dcl dd stmf-path-len bin(2) dir ;
+        dcl dd stmf-path char(5000) dir ;
+
+dcl spc cmd-parm-t bas(cmd-parm-ptr)   ;
+        dcl dd cmd-parm-len bin(2) dir ;
+        dcl dd cmd-parm char(2000) dir ;
+
+brk 'GEN'                  ;
+
+        /* generate srcpf member for stmf source */
+        callx gen-pgm, al-gen, * ;
+
+brk 'CMD'                       ;
+/*
+CRTXXXNNNI XXX(-----/-----) SRCFILE(----/----) SRCMBR(--10--) other-params
+           11               11+34=45           45+31=76       76+20=96
+*/
+        cpyblap cmd, cmd-name, ' '  ;
+        search index, valid-cmds, cmd-name, 1 ;
+        cpybla cmd(12:10), valid-obj-types(index) ;
+        triml len, cmd, ' '         ;  /* obj(lib/name) */
+        setspp pos-ptr, cmd         ;
+        addspp pos-ptr, pos-ptr, len ;
+        cpybla pos-ch1, '('          ;
+        addspp pos-ptr, pos-ptr, 1   ;
+        cpybla pos-ch10, lib-name    ;
+        triml len, cmd, ' '         ;
+        setspp pos-ptr, cmd         ;
+        addspp pos-ptr, pos-ptr, len ;
+        cpybla pos-ch1, '/'          ;
+        addspp pos-ptr, pos-ptr, 1   ;
+        cpybla pos-ch10, obj-name    ;
+        addspp pos-ptr, pos-ptr, 10   ;
+        cpybla pos-ch1, ')'          ;
+        setspp pos-ptr, cmd          ;
+        addspp pos-ptr, pos-ptr, 45  ; /* srcfile(lib/name) */
+        cpybla pos-ch10, "SRCFILE("  ;
+        addspp pos-ptr, pos-ptr, 8   ;
+        cpybla pos-ch10, mbrp-srcpf-lib ;
+        triml len, cmd, ' '         ;
+        setspp pos-ptr, cmd         ;
+        addspp pos-ptr, pos-ptr, len ;
+        cpybla pos-ch1, '/'          ;
+        addspp pos-ptr, pos-ptr, 1   ;
+        cpybla pos-ch10, mbrp-srcpf-name ;
+        addspp pos-ptr, pos-ptr, 10   ;
+        cpybla pos-ch1, ')'          ;
+        setspp pos-ptr, cmd          ;
+        addspp pos-ptr, pos-ptr, 76  ; /* srcfile(lib/name) */
+        cpybla pos-ch10, "SRCMBR("   ;
+        addspp pos-ptr, pos-ptr, 7   ;
+        cpybla pos-ch10, mbrp-srcmbr-name ;
+        addspp pos-ptr, pos-ptr, 10   ;
+        cpybla pos-ch1, ')'          ;
+        setspp pos-ptr, cmd          ;
+        addspp pos-ptr, pos-ptr, 96  ; /* other params */
+        setdp dta-ptr, pos-ch1         ;
+        cpynv dta-len, cmd-parm-len   ;
+        setdpat dta-ptr, dta-attr      ;
+        cpybla dta-ptr, cmd-parm      ;
+
+        /* invoke CL command */
+        triml cmd-len, cmd, ' '       ;
+        callx ept(QCMDEXC-INX), al-qcmdexc, * ;
+
+brk 'END'                       ;
+see-you:        
+        rtx *                   ;
+
+/* globals ... */
+dcl dd mbr-path char(30) auto            ;
+dcl spcptr mbr-path-ptr auto init(mbr-path)  ;
+dcl spc mbr-path-t bas(mbr-path-ptr)         ;
+        dcl dd mbrp-srcpf-name char(10) dir  ;
+        dcl dd mbrp-srcpf-lib char(10) dir   ;
+        dcl dd mbrp-srcmbr-name char(10) dir ;
+dcl dd srctype char(10) auto init(' ')       ;
+dcl spcptr srctype-ptr auto init(srctype)    ;
+
+dcl ol al-gen (
+        mbr-path-ptr,
+        stmf-path-ptr,
+        srctype-ptr
+) arg                           ;
+
+dcl sysptr gen-pgm auto init (
+        "GENDBFSRC",
+        ctx("I5TOOLKIT"),
+        type(pgm)
+)                               ;
+
+dcl dd len bin(2) auto          ;
+dcl dd index bin(2) auto        ;
+dcl spcptr pos-ptr auto         ;
+dcl dd pos-ch10 char(10) bas(pos-ptr) ;
+dcl dd pos-ch11 char(11) bas(pos-ptr) ;
+dcl dd pos-ch1 char(1) bas(pos-ptr)   ;
+dcl dd pos-ch6 char(6) bas(pos-ptr)   ;
+dcl dtaptr dta-ptr auto         ;
+dcl dd dta-attr char(7) auto    ;
+        dcl dd dta-type char(1) def(dta-attr) pos(1) init(x'04') ;
+        dcl dd dta-len bin(2) unsgnd def(dta-attr) pos(2)        ;
+
+dcl dd valid-cmds(10) char(10) auto init(
+        *(1)"CRTBNDCL",
+        "CRTCLPGM",
+        "CRTCLMOD",
+        " "
+)                               ;
+dcl dd valid-obj-types(10) char(10) auto init(
+        *(1)"PGM",
+        "PGM",
+        "MODULE",
+        " "
+)                               ;
+
+dcl spc pco-obj baspco          ;
+        dcl spcptr ept-ptr dir  ;
+        dcl sysptr wcbt dir     ;
+        dcl sysptr dmcq dir     ;
+        dcl sysptr devd dir     ;
+        dcl sysptr qtemp dir    ;
+dcl sysptr ept(7001) bas(ept-ptr) ;
+dcl con QCMDEXC-INX bin(2) init(h'07C5')     ;
+
+dcl dd cmd char(5000) auto      ;
+dcl spcptr cmd-ptr auto init(cmd)            ;
+dcl dd cmd-len pkd(15,5) auto                ;
+dcl spcptr cmd-len-ptr auto init(cmd-len)    ;
+dcl dd igc char(3) auto init("IGC")          ;
+dcl spcptr igc-ptr auto init(igc)            ;
+dcl ol al-qcmdexc (
+        cmd-ptr,
+        cmd-len-ptr,
+        igc-ptr
+) arg                           ;
+
+pend                            ;

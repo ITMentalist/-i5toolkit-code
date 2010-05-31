@@ -19,36 +19,25 @@
  */
 
 /**
- * @file mtime.c
- *
- * Returns the last modification time of an IFS object in form of
- * time_t.  Usage: call mtime parm('/ifs/object/path/name'
- * last-modification-time)
- *
- * @remark the last modification-time param is in form of time_t, aka
- * 4-byte binary.
+ * @file unlink.c
  */
 
-# include <stdlib.h>
-# include <sys/stat.h>
+# include <unistd.h>
 
+/**
+ * @param [in] null-terminated stream file path name.
+ * @param [out] optional return value, 0 if successful.
+ */
 int main(int argc, char *argv[]) {
 
   int r = 0;
-  struct stat f_info;
 
-  if(argc < 3)
-    return 1;
+  if(argc < 2)
+    return -1;
 
-  r = stat(argv[1], &f_info);
-  if(r == 0)
-    *((int*)argv[2]) = f_info.st_mtime;
-  else
-    *((int*)argv[2]) = 0;
+  r = unlink(argv[1]);
+  if(argc >= 3)
+    *((int*)argv[2]) = r;
 
-  /* return value */
-  if(argc >= 4)
-    *((int*)argv[3]) = r;
-
-  return r;
+  return 0;
 }

@@ -1,3 +1,23 @@
+/*
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute it
+ * and/or modify it under the terms of the GNU General Public License as
+ * published by the Free Software Foundation, either version 3 of the
+ * License, or (at your option) any later version.
+ * 
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will be
+ * useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
 /**
  * @file stmfseu.emi
  *
@@ -10,15 +30,6 @@
  *  - invoke GENDBFSRC to create a new source member in QTEMP/DBFSRC
  *  - invoke SEU to let the user edit, view, or print target stmf source
  *  - copy changed source member back to stmf
-
-here:   新建 STMF 时
-
-Keyword CCSID not valid for this command.
-Error found on CPYTOSTMF command.        
-Errors occurred in command.              
-
-解决：因为有了 callx touch, CPYTOSTMF已经不需要加CCSID参数了
-
  */
 
 dcl spcptr stmf-path-ptr parm   ;
@@ -49,6 +60,12 @@ dcl dd stmf-ccsid bin(2) bas(stmf-ccsid-ptr) ;
         setspp pos-ptr, stmf-path-null   ;
         addspp pos-ptr, pos-ptr, len     ;
         cpybla pos-ch, x'00'             ;
+
+        setspp mtime-path-ptr, stmf-path-null ;
+        callx mtime, al-mtime, *              ;
+        cmpnv(b) mtime-rtn-val, 0 / eq(=+2)   ;
+        cpybla not-saved-newly-created-stmf, '1' ;
+:       
         callx touch, al-touch, * ; /* @todo 如果 touch-rtn-val 非0就该返回了! */
         cmpnv(b) touch-rtn-val, 0 / eq(after-touch) ;
         cpyblap msg,
@@ -70,6 +87,7 @@ dcl dd end-time bin(4) auto     ;
         cpyblap mtime-path,
           QTEMP-DBFSRC-PATH, /* @todo 这里应该由 getdbfsrc 的输出参数求, 不应该写死 */
           x'00' ;
+        setspp mtime-path-ptr, mtime-path          ;
         cpybla mtime-path(33:10), mbrp-srcmbr-name ;
         callx mtime, al-mtime, * ;
         cpynv begin-time, stmf-mtime ;
@@ -112,7 +130,14 @@ brk '98'                                        ;
         calli cpy-stmf-back, *, cpy-stmf-back-ptr ;
 :       
 brk '99'                        ;
-
+        /* if target stmf is created by TOUCH, but the SEU user doesn't save it, delete target stmt created by TOUCH. */
+        /* @todo 这个逻辑不对，这样只要是新建的都会被删除的 */
+/*
+        cmpbla(b)
+          not-saved-newly-created-stmf,
+          '1' / neq(=+2)    ;
+        callx unlink, al-unlink, * ;
+*/
 brk 'END'                       ;
 see-you:        
         rtx *                   ;
@@ -147,22 +172,6 @@ entry cpy-stmf-back int           ;
         setdpat dta-ptr, dta-attr    ;
         cpybla dta-ptr, "') STMFOPT(*REPLACE)" ;
 
-        /* ccsid */
-/*
-        cmpnv(b) stmf-ccsid, 0 / eq(invoke-cpytostmf) ;
-        triml len, cmd, ' '                           ;
-        addn(s) len, 1                                ;
-        setspp pos-ptr, cmd                           ;
-        addspp pos-ptr, pos-ptr, len                  ;
-        setdp dta-ptr, pos-ch                         ;
-        cpynv dta-attr-len, 12                        ;
-        setdpat dta-ptr, dta-attr                     ;
-        cpybla dta-ptr, "CCSID(     )"                ;
-dcl dd cvtnc-attr char(7) auto init(x'02000500000000') ;
-dcl dd pos-ch5 char(5) bas(pos-ptr)                    ;
-        addspp pos-ptr, pos-ptr, 6                     ;
-        cvtnc  pos-ch5, stmf-ccsid, cvtnc-attr         ;
-*/
 invoke-cpytostmf:
 brk '5'                         ;
 
@@ -227,9 +236,12 @@ dcl dd mtime-path char(61) auto ; /* --here, 要是 null-terminated */
 dcl spcptr mtime-path-ptr auto init(mtime-path) ;
 dcl dd stmf-mtime bin(4) auto   ;
 dcl spcptr stmf-mtime-ptr auto init(stmf-mtime) ;
+dcl dd mtime-rtn-val bin(4) auto                ;
+dcl spcptr mtime-rtn-val-ptr auto init(mtime-rtn-val) ;
 dcl ol al-mtime (
         mtime-path-ptr,
-        stmf-mtime-ptr
+        stmf-mtime-ptr,
+        mtime-rtn-val-ptr
 ) arg                           ;
 dcl sysptr mtime auto init (
         "MTIME",
@@ -248,6 +260,14 @@ dcl ol al-touch (
 ) arg                           ;
 dcl sysptr touch auto init (
         "TOUCH",
+        ctx("I5TOOLKIT"),
+        type(pgm)
+)                               ;
+dcl ol al-unlink (
+        stmf-path-null-ptr
+) arg                           ;
+dcl sysptr unlink auto init (
+        "UNLINK",
         ctx("I5TOOLKIT"),
         type(pgm)
 )                               ;
@@ -281,5 +301,6 @@ dcl spc * bas(dta-attr-ptr)     ;
         dcl dd dta-attr-len bin(2) dir   ;
 dcl dd msg char(64) auto        ;
 dcl dd msg-len bin(2) auto      ;
+dcl dd not-saved-newly-created-stmf char(1) auto init('0') ;
 
 pend                            ;
