@@ -1,6 +1,6 @@
 # This file is part of i5/OS Programmer's Toolkit.
 # 
-# Copyright (C) 2010  Junlei Li (李君磊).
+# Copyright (C) 2009  Junlei Li (李君磊).
 # 
 # i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,30 +19,30 @@
 # make remotely
 #
 # tasks:
-#  - tar source file: makefile src test
-#  - upload tar file to remote host
-#  - unpack tar file on remote host
-#  - call RUNSH, pass the following parameters: CCSID, qshell command
+#  - pack source file: makefile src test
+#  - upload source package to remote host
+#  - unpack source package on remote host
+#  - compile sources using PASE's make utitlity
 #
 
-# HOST=i810
 HOST=g525
-RMAKER=RUNSH
-BINLIB=lsbin
-HOST_DIR=/home/ljl/chqs/rpg-mih
-TARF=ha.tar
+BIN_LIB=lsbin
+HOST_DIR=/home/ljl/chqs/rpg
+BUILD_SCRIPT=$(HOST_DIR)/build.sh
+BUILD_LOG=.build-log
+SRC_LIST=$(shell find . -type f -cnewer last-upload -a \( -name '*.rpgle' -o -name '*.emi' -o -name '*.java' \) ) ../../rules.mk makefile build.sh
 
-all: tar_src upload_src compile
-	@echo "END OF COMPILATION: rmakefile"
-
-tar_src:
-	tar -cf $(TARF) *rpgle makefile
+all: upload_src compile
+	@echo "end of compilation -- i5toolkit/rpg"
 
 upload_src:
-	lftp -e "cd $(HOST_DIR); put $(TARF); by" $(HOST)
+	lftp -e "cd $(HOST_DIR); mput $(SRC_LIST); by" $(HOST)
+	touch last-upload
 
 compile:
-	rexec $(HOST) "call pgm($(RMAKER)) parm('00037' 'cd $(HOST_DIR); tar -xf $(TARF); export CURDIR=$(HOST_DIR) OUTPUTDIR=$(BINLIB); gmake')"
+	rexec $(HOST) "CALL QP2SHELL PARM('$(BUILD_SCRIPT)' '$(HOST_DIR)/$(BUILD_LOG)' '-e BIN_LIB=$(BIN_LIB) -e MAKERULES=rules.mk')"
+	lftp -e "cd $(HOST_DIR); get $(BUILD_LOG); by" $(HOST)
+	cat $(BUILD_LOG)
 
 clean:
-	rexec $(HOST) "call pgm($(RMAKER)) parm('00037' 'cd $(HOST_DIR); export OS400=yes; gmake clean')"
+	rexec $(HOST) "CALL QP2SHELL PARM('$(BUILD_SCRIPT)' '$(HOST_DIR)/$(BUILD_LOG)' 'clean')"

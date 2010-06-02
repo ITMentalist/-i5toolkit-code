@@ -82,9 +82,10 @@ CRTXXXNNNI XXX(-----/-----) SRCFILE(----/----) SRCMBR(--10--) other-params
         addspp pos-ptr, pos-ptr, 96  ; /* other params */
         setdp dta-ptr, pos-ch1         ;
         cpynv dta-len, cmd-parm-len   ;
+        cmpnv(b) dta-len, 0 / eq (=+3) ;
         setdpat dta-ptr, dta-attr      ;
         cpybla dta-ptr, cmd-parm      ;
-
+:       
         /* invoke CL command */
         triml cmd-len, cmd, ' '       ;
         callx ept(QCMDEXC-INX), al-qcmdexc, * ;
@@ -92,6 +93,27 @@ CRTXXXNNNI XXX(-----/-----) SRCFILE(----/----) SRCMBR(--10--) other-params
 brk 'END'                       ;
 see-you:        
         rtx *                   ;
+
+/* in case that the called CL command fails with *escape message */
+dcl excm ex-cpf0000 excid(h'0000') bp(on-cpf0000) imd cv('CPF') ;
+on-cpf0000:     
+dcl dd exc-info char(256) auto bdry(16) ;
+dcl spcptr exc-info-ptr auto init(exc-info) ;
+dcl spc exc-info-t bas(exc-info-ptr)        ;
+        dcl dd exc-bytes-in bin(4) dir      ;
+        dcl dd exc-bytes-out bin(4) dir     ;
+        dcl dd exc-id char(2) dir           ;
+        dcl dd exc-cv-len bin(2) dir        ;
+        dcl dd exc-cv char(32) dir          ;
+        dcl dd exc-msg-ref-key char(4) dir  ;
+        dcl dd exc-data char(208) dir       ;
+
+        cpynv exc-bytes-in, 256 ;
+        retexcpd exc-info-ptr, x'00' ; /* BP */
+
+        /* @todo -- here */
+brk "EXC"                       ;
+        b see-you               ;
 
 /* globals ... */
 dcl dd mbr-path char(30) auto            ;
@@ -127,17 +149,37 @@ dcl dd dta-attr char(7) auto    ;
         dcl dd dta-type char(1) def(dta-attr) pos(1) init(x'04') ;
         dcl dd dta-len bin(2) unsgnd def(dta-attr) pos(2)        ;
 
+/*
+currently supported cl commands:
+CRTBNDCL 
+CRTCLPGM 
+CRTCLMOD 
+CRTRPGPGM
+CRTRPGPGM
+CRTPF    
+CRTLF    
+CHGLF    
+CRTCMD   
+*/
 dcl dd valid-cmds(10) char(10) auto init(
         *(1)"CRTBNDCL",
         "CRTCLPGM",
         "CRTCLMOD",
-        " "
+        "CRTRPGPGM",
+        "CRTPF",
+        "CHGPF",
+        "CRTLF",
+        "CRTCMD"
 )                               ;
 dcl dd valid-obj-types(10) char(10) auto init(
         *(1)"PGM",
         "PGM",
         "MODULE",
-        " "
+        "PGM",
+        "FILE",
+        "FILE",
+        "FILE",
+        "CMD"
 )                               ;
 
 dcl spc pco-obj baspco          ;
@@ -160,5 +202,40 @@ dcl ol al-qcmdexc (
         cmd-len-ptr,
         igc-ptr
 ) arg                           ;
+
+dcl dd sndpm-msgid char(7) auto init('CPF9898') ;
+dcl spcptr sndpm-msgid-ptr auto init(sndpm-msgid) ;
+dcl dd sndpm-msgf char(20) auto init('QCPFMSG   QSYS') ;
+dcl spcptr sndpm-msgf-ptr auto init(sndpm-msgf)        ;
+dcl dd sndpm-msg char(32) auto                         ;
+dcl spcptr sndpm-msg-ptr auto init(sndpm-msg)          ;
+dcl dd sndpm-msg-len bin(4) auto                       ;
+dcl spcptr sndpm-msg-len-ptr auto init(sndpm-msg-len)  ;
+dcl dd sndpm-msg-type char(10) auto init('*ESCAPE')    ;
+dcl spcptr sndpm-msg-type-ptr auto init(sndpm-msg-type) ;
+dcl dd sndpm-stk-ent char(10) auto init('*')            ;
+dcl spcptr sndpm-stk-ent-ptr auto init(sndpm-stk-ent)   ;
+dcl dd sndpm-stk-cnt bin(4) auto init(1)                ;
+dcl spcptr sndpm-stk-cnt-ptr auto init(sndpm-stk-cnt)   ;
+dcl dd sndpm-msg-key char(4) auto                       ;
+dcl spcptr sndpm-msg-key-ptr auto init(sndpm-msg-key)   ;
+dcl dd api-ec char(16) auto bdry(16)      ;
+dcl spcptr api-ec-ptr auto init(api-ec)   ;
+dcl spc api-ec-t bas(api-ec-ptr)          ;
+        dcl dd apiec-bin bin(4) dir       ;
+        dcl dd apiec-bout bin(4) dir      ;
+        dcl dd apiec-msgid char(7) dir    ;
+dcl ol al-qmhsndpm (
+        sndpm-msgid-ptr,
+        sndpm-msgf-ptr,
+        sndpm-msg-ptr,
+        sndpm-msg-len-ptr,
+        sndpm-msg-type-ptr,
+        sndpm-stk-ent-ptr,
+        sndpm-stk-cnt-ptr,
+        sndpm-msg-key,
+        api-ec-ptr
+) arg                           ;
+dcl con QMHSNDPM-INX bin(2) init(h'10AD') ;
 
 pend                            ;

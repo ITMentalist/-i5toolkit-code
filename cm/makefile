@@ -16,12 +16,12 @@
 # along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
 
 #
-# makefile of qsh
+# makefile of subproject SCM Tools (cm)
 #
 
-BIN_LIB=
+BIN_LIB=i5toolkit
 MAKERULES=rules.mk
-TARGETS=gendbfsrc stmfseu mtime touch unlink crtfrmstmf
+TARGETS=gendbfsrc stmfseu mtime touch unlink crtfrmstmf crtfrmstmf.cmd stmfseu.cmd
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir cm."

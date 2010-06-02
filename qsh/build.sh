@@ -30,5 +30,8 @@ USAGE="usage: ./build.sh [params-to-make ...]"
 DIR=$(dirname $0)
 cd $DIR
 
+BUILD_LOG=$1
+
 # run make
-make $*
+shift 1
+make $* > $BUILD_LOG

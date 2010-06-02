@@ -1761,6 +1761,42 @@
 
      /* end -- Machine Observation */
 
+     /* Machine Interface Support Functions */
+
+     /* structure uuid_t */
+     d uuid_t          ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                8a
+     d     rtn_uuid                  16a
+
+     /* GENUUID, generate universal unique identifier. */
+     d genuuid         pr                  extproc('_GENUUID')
+     d     uuid                            likeds(uuid_t)
+
+     d matmatr_tmpl_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+
+     /**
+      * structure matmatr_tmpl_0004_t. can be used to retrieve Machine
+      * serial identification info.
+      */
+     d matmatr_tmpl_0004_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     machine_serial_number...
+     d                                8a
+
+     /* MATMATR, materialize machine attributes. */
+     d matmatr         pr                  extproc('_MATMATR1')
+     d     receiver                        likeds(matmatr_tmpl_t)
+     d     mat_attr                   2a
+
+     /* end -- Machine Interface Support Functions */
+
      /* undocumented system builtins */
 
      /* jump buffer structure used by __setjmp, and libc procedure longjmp() */

@@ -64,7 +64,7 @@ dcl dd stmf-ccsid bin(2) bas(stmf-ccsid-ptr) ;
         setspp mtime-path-ptr, stmf-path-null ;
         callx mtime, al-mtime, *              ;
         cmpnv(b) mtime-rtn-val, 0 / eq(=+2)   ;
-        cpybla not-saved-newly-created-stmf, '1' ;
+        cpybla newly-created, '1' ;
 :       
         callx touch, al-touch, * ; /* @todo 如果 touch-rtn-val 非0就该返回了! */
         cmpnv(b) touch-rtn-val, 0 / eq(after-touch) ;
@@ -125,19 +125,16 @@ brk '4'                                       ;
         /* record source member's last modification time */
         callx mtime, al-mtime, * ;
         cpynv end-time, stmf-mtime ;
-        cmpnv(b) end-time, begin-time / eq(=+2) ;
-brk '98'                                        ;
+        cmpnv(b) end-time, begin-time / eq(=+3) ;
+        cpybla newly-created, '0'               ; /* if srcmbr changed, clear the newly-created flag */
         calli cpy-stmf-back, *, cpy-stmf-back-ptr ;
 :       
 brk '99'                        ;
         /* if target stmf is created by TOUCH, but the SEU user doesn't save it, delete target stmt created by TOUCH. */
-        /* @todo 这个逻辑不对，这样只要是新建的都会被删除的 */
-/*
         cmpbla(b)
-          not-saved-newly-created-stmf,
+          newly-created,
           '1' / neq(=+2)    ;
         callx unlink, al-unlink, * ;
-*/
 brk 'END'                       ;
 see-you:        
         rtx *                   ;
@@ -301,6 +298,6 @@ dcl spc * bas(dta-attr-ptr)     ;
         dcl dd dta-attr-len bin(2) dir   ;
 dcl dd msg char(64) auto        ;
 dcl dd msg-len bin(2) auto      ;
-dcl dd not-saved-newly-created-stmf char(1) auto init('0') ;
+dcl dd newly-created char(1) auto init('0') ;
 
 pend                            ;
