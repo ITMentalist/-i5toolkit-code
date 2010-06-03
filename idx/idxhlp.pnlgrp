@@ -23,8 +23,7 @@
 
 .* for CL command DSPIDXD and INSIDX
 :help name='hlp/idxd'.
-:p.
-CL commands DSPIDXD and INSIDX are members of i5/OS Programmer's
+:p.CL commands DSPIDXD and INSIDX are members of i5/OS Programmer's
 Toolkit.  The DSPIDXD command displays attributes of a user index
 object whose MI object type and subtype is hex 0E0A.  The INSIDX
 command insert an entry into a user index.

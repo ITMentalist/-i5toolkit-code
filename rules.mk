@@ -1,6 +1,6 @@
 # 
 
-.SUFFIXES: .rpg .rpgle .c .cpp .clp .clle .cmd .cl-cmd .module \
+.SUFFIXES: .rpg .rpgle .c .cpp .clp .clle .cmd .cl-cmd .module .pf .lf .file \
 	.mi .emi
 
 #PRESET VARIABLES
@@ -40,3 +40,10 @@ MAKE=make
 .clle.module:
 	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCLMOD) srcstmf('$<') parm('$(CLLEFLAGS)')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.module" $*.module
+.pf.file:
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CHGPF) srcstmf('$<') parm('$(CHGPFFLAGS)')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.file" $*.file
+.lf.file:
+	-system "dltf file($(BIN_LIB)/$*)"
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTLF) srcstmf('$<') parm('$(CRTLFFLAGS)')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.file" $*.file

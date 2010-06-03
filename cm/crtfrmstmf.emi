@@ -111,7 +111,30 @@ dcl spc exc-info-t bas(exc-info-ptr)        ;
         cpynv exc-bytes-in, 256 ;
         retexcpd exc-info-ptr, x'00' ; /* BP */
 
-        /* @todo -- here */
+        /* send error message */
+        cpyblap err-msg, cmd-name, ' ' ;
+        cpybla err-msg(11:24),
+          "FAILED on *STMF source '" ;
+/* available stmf source length in err-msg field: 256 - 34 -2 */
+dcl con HOW-LONG bin(2) init(220)    ;
+        cmpnv(b) stmf-path-len, HOW-LONG / lo(=+3) ;
+        cpynv dta-len, HOW-LONG                    ;
+        b compare-with-how-long                    ;
+:
+        cpynv dta-len, stmf-path-len ;
+compare-with-how-long:
+        setspp pos-ptr, err-msg ;
+        addspp pos-ptr, pos-ptr, 34 ;
+        setdp dta-ptr, pos-ch1      ;
+        setdpat dta-ptr, dta-attr   ;
+        cpybla dta-ptr, stmf-path   ;
+        addspp pos-ptr, pos-ptr, dta-len ;
+        cpybla pos-ch1, "'"         ;
+
+        cpynv sendmsg-ec-bytes-in, SENDMSG-USECLEN;
+        triml err-msglen, err-msg, ' '            ;
+        callx ept(QMHSNDPM-INX), argl-sndpm, *    ;
+
 brk "EXC"                       ;
         b see-you               ;
 
@@ -203,39 +226,47 @@ dcl ol al-qcmdexc (
         igc-ptr
 ) arg                           ;
 
-dcl dd sndpm-msgid char(7) auto init('CPF9898') ;
-dcl spcptr sndpm-msgid-ptr auto init(sndpm-msgid) ;
-dcl dd sndpm-msgf char(20) auto init('QCPFMSG   QSYS') ;
-dcl spcptr sndpm-msgf-ptr auto init(sndpm-msgf)        ;
-dcl dd sndpm-msg char(32) auto                         ;
-dcl spcptr sndpm-msg-ptr auto init(sndpm-msg)          ;
-dcl dd sndpm-msg-len bin(4) auto                       ;
-dcl spcptr sndpm-msg-len-ptr auto init(sndpm-msg-len)  ;
-dcl dd sndpm-msg-type char(10) auto init('*ESCAPE')    ;
-dcl spcptr sndpm-msg-type-ptr auto init(sndpm-msg-type) ;
-dcl dd sndpm-stk-ent char(10) auto init('*')            ;
-dcl spcptr sndpm-stk-ent-ptr auto init(sndpm-stk-ent)   ;
-dcl dd sndpm-stk-cnt bin(4) auto init(1)                ;
-dcl spcptr sndpm-stk-cnt-ptr auto init(sndpm-stk-cnt)   ;
-dcl dd sndpm-msg-key char(4) auto                       ;
-dcl spcptr sndpm-msg-key-ptr auto init(sndpm-msg-key)   ;
-dcl dd api-ec char(16) auto bdry(16)      ;
-dcl spcptr api-ec-ptr auto init(api-ec)   ;
-dcl spc api-ec-t bas(api-ec-ptr)          ;
-        dcl dd apiec-bin bin(4) dir       ;
-        dcl dd apiec-bout bin(4) dir      ;
-        dcl dd apiec-msgid char(7) dir    ;
-dcl ol al-qmhsndpm (
-        sndpm-msgid-ptr,
-        sndpm-msgf-ptr,
-        sndpm-msg-ptr,
-        sndpm-msg-len-ptr,
-        sndpm-msg-type-ptr,
-        sndpm-stk-ent-ptr,
-        sndpm-stk-cnt-ptr,
-        sndpm-msg-key,
-        api-ec-ptr
-) arg                           ;
+dcl dd sendmsg-ec char(128) auto;
+dcl spcptr .sendmsg-ec auto init(sendmsg-ec);
+dcl spc * bas(.sendmsg-ec);
+  dcl dd sendmsg-ec-bytes-in bin(4) dir;
+  dcl dd sendmsg-ec-bytes-out bin(4) dir;
+  dcl dd sendmsg-ec-exid char(7) dir;
+  dcl dd * char(1) dir;
+  dcl dd sendmsg-ec-exdata char(112) dir;
+dcl con SENDMSG-USECLEN bin(4) init(128);
+
+dcl dd sndpm-msgid char(7) auto init('CPF9898');
+dcl spcptr .sndpm-msgid auto init(sndpm-msgid);
+dcl dd sndpm-msgf char(20) auto init('QCPFMSG   QSYS');
+dcl spcptr .sndpm-msgf auto init(sndpm-msgf);
+
+dcl dd err-msg char(256) auto init(' ') ;
+dcl spcptr .sndpm-msg auto init(err-msg) ;
+dcl dd err-msglen bin(4) auto            ;
+dcl spcptr .sndpm-msglen auto init(err-msglen) ;
+
+dcl dd sndpm-msgtype char(10) auto init("*ESCAPE");
+dcl spcptr .sndpm-msgtype auto init(sndpm-msgtype);
+dcl dd sndpm-callstack-entry char(10) auto init("*");
+dcl spcptr .sndpm-callstack-entry auto init(sndpm-callstack-entry);
+dcl dd sndpm-callstack-counter bin(4) auto init(1);
+dcl spcptr .sndpm-callstack-counter auto init(sndpm-callstack-counter);
+dcl dd sndpm-msgkey char(4) auto init(" ");
+dcl spcptr .sndpm-msgkey auto init(sndpm-msgkey);
+
+dcl ol argl-sndpm (
+        .sndpm-msgid,
+        .sndpm-msgf,
+        .sndpm-msg,
+        .sndpm-msglen,
+        .sndpm-msgtype,
+        .sndpm-callstack-entry,
+        .sndpm-callstack-counter,
+        .sndpm-msgkey,
+        .sendmsg-ec
+) arg ;
+dcl sysptr .qmhsndpm auto init("QMHSNDPM", type(pgm));
 dcl con QMHSNDPM-INX bin(2) init(h'10AD') ;
 
 pend                            ;
