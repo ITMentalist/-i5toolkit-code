@@ -42,9 +42,11 @@ calculator: calculate.module calculator.module
 		text('A simple calculator program')"
 	ln -s /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
 
-oneyear: exports.file
+# RPG program ONEYEAR depends on LF EXPERTS
+oneyear: experts.file
 
-exports.file: teamates.file
+# LF EXPERTS depends on PF TEAMATES
+experts.file: teamates.file
 
 clean:
 	qsh -c "/usr/bin/rmflnk $(TARGETS)"

@@ -1,7 +1,7 @@
      /**
       * @file calculator.rpgle
       *
-      * call CLLE module CALCULATE
+      * call CLLE module CALCULATE.
       */
      d val             s             15p 5
      d rtn             s             15p 5
