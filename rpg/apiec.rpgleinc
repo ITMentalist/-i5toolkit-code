@@ -25,6 +25,9 @@
       * http://i5toolkit.sourceforge.net/
       */
 
+      /if not defined(i5toolkit_rpg_apiec)
+      /define i5toolkit_rpg_apiec
+
      d qusec_t         ds                  qualified
      d                                     based(dummy_ptr)
       * bytes provided
@@ -56,3 +59,6 @@
      d     exc_data_length...
      d                               10i 0
       * exception data
+
+      * not defined(i5toolkit_rpg_apiec)
+      /endif

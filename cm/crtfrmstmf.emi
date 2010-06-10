@@ -192,7 +192,8 @@ dcl dd valid-cmds(10) char(10) auto init(
         "CRTPF",
         "CHGPF",
         "CRTLF",
-        "CRTCMD"
+        "CRTCMD",
+        "CRTPNLGRP"
 )                               ;
 dcl dd valid-obj-types(10) char(10) auto init(
         *(1)"PGM",
@@ -202,7 +203,8 @@ dcl dd valid-obj-types(10) char(10) auto init(
         "FILE",
         "FILE",
         "FILE",
-        "CMD"
+        "CMD",
+        "PNLGRP"
 )                               ;
 
 dcl spc pco-obj baspco          ;

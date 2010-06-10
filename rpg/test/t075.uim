@@ -25,6 +25,7 @@
 
 :copyr.Copyright text ... &colon.p
 
+.* classes
 :class  name=a1
         basetype='char 1'
         width=1.
@@ -45,11 +46,21 @@
         .
 :eclass.
 
+.* variables
+:var    name=vpgmf5
+        class=clspgm
+        .
 :var    name=vtitle
         class=o50
         .
+
+.* records
 :varrcd name=rcdttl
-        vars='vtitle'.
+        vars='vtitle'
+        .
+:varrcd name=rcdpgm
+        vars='vpgmf5'
+        .
 
 .* key lists
 :keyl   name=klistmain.
@@ -74,7 +85,7 @@
         .F4=Prompt
 :keyi   key=f5
         help='help/help'
-        action='return 1'
+        action='call vpgmf5'
         .F5=Refresh
 :keyi   key=enter
         help='help/help'

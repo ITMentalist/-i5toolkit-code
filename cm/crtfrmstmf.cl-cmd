@@ -5,7 +5,7 @@
              PARM       KWD(CMD) TYPE(*CHAR) LEN(10) RSTD(*YES) +
                           VALUES(CRTBNDCL CRTCLPGM CRTCLMOD +
                           CRTRPGPGM CRTRPGPGM CRTPF CRTLF CHGPF +
-                          CRTCMD) MIN(1) PROMPT('CL command to +
+                          CRTCMD CRTPNLGRP) MIN(1) PROMPT('CL command to +
                           create object')
              PARM       KWD(SRCSTMF) TYPE(*PNAME) LEN(5000) MIN(1) +
                           VARY(*YES *INT2) CASE(*MIXED) +

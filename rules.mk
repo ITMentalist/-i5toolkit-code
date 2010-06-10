@@ -1,7 +1,7 @@
 # 
 
 .SUFFIXES: .rpg .rpgle .c .cpp .clp .clle .cmd .cl-cmd .module .pf .lf .file \
-	.mi .emi
+	.mi .emi .uim .pnlgrp
 
 #PRESET VARIABLES
 MAKE=make
@@ -47,3 +47,6 @@ MAKE=make
 	-system "dltf file($(BIN_LIB)/$*)"
 	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTLF) srcstmf('$<') parm('$(CRTLFFLAGS)')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.file" $*.file
+.uim.pnlgrp:
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTPNLGRP) srcstmf('$<') parm('$(CRTPNLGRPFLAGS)')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.pnlgrp" $*.pnlgrp
