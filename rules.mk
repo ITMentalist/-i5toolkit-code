@@ -40,8 +40,12 @@ MAKE=make
 .clle.module:
 	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCLMOD) srcstmf('$<') parm('$(CLLEFLAGS)')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.module" $*.module
+# if target PF exists change it using CHFPF, otherwise create a new one using CRTPF
 .pf.file:
-	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CHGPF) srcstmf('$<') parm('$(CHGPFFLAGS)')"
+	if [ -e /qsys.lib/$(BIN_LIB).lib/$*.FILE ]; then \
+	  system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CHGPF) srcstmf('$<') parm('$(CHGPFFLAGS)')"; \
+	else system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTPF) srcstmf('$<') parm('$(CRTPFFLAGS)')"; \
+	fi
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.file" $*.file
 .lf.file:
 	-system "dltf file($(BIN_LIB)/$*)"
