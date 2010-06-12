@@ -9,7 +9,7 @@
            setll *loval REC;
            dow '1';
                read REC;
-               if %eof(EXPORTS);
+               if %eof(EXPERTS);
                    leave;
                endif;
 

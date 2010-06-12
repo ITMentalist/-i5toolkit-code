@@ -32,7 +32,7 @@ CLFLAGS=text($<)
 # CL command ADD has a output parameter and should be used only in CL programs.
 CMDFLAGS=allow(*bpgm *ipgm)
 RPGLEFLAGS=dbgview(*all) replace(*yes) incdir('/usr/local/include/rpg')
-TARGETS=uuidgen hello add add.cmd calculator teamates.file experts.file oneyear
+TARGETS=uuidgen hello add add.cmd calculator experts.file teamates.file oneyear
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir cm/test."
@@ -49,4 +49,4 @@ oneyear: experts.file
 experts.file: teamates.file
 
 clean:
-	qsh -c "/usr/bin/rmflnk $(TARGETS)"
+	-qsh -c "/usr/bin/rmflnk $(TARGETS) calculate.module calculator.module"

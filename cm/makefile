@@ -18,10 +18,12 @@
 #
 # makefile of subproject SCM Tools (cm)
 #
+# @remark CL command CRTFRMSTMF must be compiled manually for the first time, since it is used to compile itself.
+#
 
 BIN_LIB=i5toolkit
 MAKERULES=rules.mk
-TARGETS=gendbfsrc stmfseu mtime touch unlink crtfrmstmf crtfrmstmf.cmd stmfseu.cmd
+TARGETS=gendbfsrc stmfseu mtime touch unlink crtfrmstmf crtfrmstmf.cmd stmfseu.cmd rmflnk
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir cm."
