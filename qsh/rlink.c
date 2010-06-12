@@ -55,5 +55,7 @@ int main(int argc, char *argv[]) {
   len = readlink(argv[1], buf, len);
 
   printf("%s\x25", buf);
+
+  free(buf);
   return 0;
 }

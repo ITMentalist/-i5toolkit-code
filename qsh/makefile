@@ -21,7 +21,7 @@
 
 # make rules
 .c:
-	system "crtbndc $(BIN_LIB)/$@ srcstmf('$<') dbgview(*none) output(*print)"
+	system "crtbndc $(BIN_LIB)/$@ srcstmf('$<') dbgview(*all) output(*print)"
 	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
 
 BIN_LIB=
