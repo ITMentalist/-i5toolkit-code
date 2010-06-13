@@ -178,7 +178,7 @@ CRTBNDCL
 CRTCLPGM 
 CRTCLMOD 
 CRTRPGPGM
-CRTRPGPGM
+CRTCBLPGM
 CRTPF    
 CRTLF    
 CHGLF    
@@ -189,6 +189,7 @@ dcl dd valid-cmds(10) char(10) auto init(
         "CRTCLPGM",
         "CRTCLMOD",
         "CRTRPGPGM",
+        "CRTCBLPGM",
         "CRTPF",
         "CHGPF",
         "CRTLF",
@@ -199,6 +200,7 @@ dcl dd valid-obj-types(10) char(10) auto init(
         *(1)"PGM",
         "PGM",
         "MODULE",
+        "PGM",
         "PGM",
         "FILE",
         "FILE",
