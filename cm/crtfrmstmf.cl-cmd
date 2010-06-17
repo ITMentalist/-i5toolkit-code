@@ -2,7 +2,7 @@
              /* PROGRAM */
              PARM       KWD(OBJ) TYPE(QOBJLIB) MIN(1) KEYPARM(*YES) +
                           PROMPT('Object')
-             PARM       KWD(CMD) TYPE(*CHAR) LEN(10) RSTD(*YES) +
+             PARM       KWD(CMD) TYPE(*SNAME) LEN(10) RSTD(*YES) +
                           VALUES(CRTBNDCL CRTCLPGM CRTCLMOD +
                           CRTRPGPGM CRTCBLPGM CRTPF CRTLF CHGPF +
                           CRTCMD CRTPNLGRP) MIN(1) PROMPT('CL command to +
