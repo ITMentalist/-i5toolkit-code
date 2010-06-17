@@ -180,12 +180,24 @@ such as Subversion and the PASE make utility.
 :ehelp.
 
 .*******************************
-.* CL command STMFSEU
+.* CL command CRTFRMSTMF
 .*******************************
 
-:help name='stmfseu'.
+:help name='crtfrmstmf'.
 :p.
-
+CL command Create Object from STMF (CRTFRMSTMF) is designed to enable
+miscellaneous create-commands that do NOT support stream file source
+code to create objects from source stream files. For example, the
+Create Bound CL Program (CRTBNDCL) command, and the Create Command
+(CRTCMD) command. The purpose of CRTFRMSTMF is that all types of i5/OS
+source code can be maintained in and built from stream files in i5/OS
+Integrated File System (IFS). CRTFRMSTMF works as a proxy layer
+between IFS stream source files and create-commands that only accept
+source code stored in physical file (PF) members. When invoked,
+CRTFRMSTMF copies the source code stored in SRCSTMF to a temparory PF
+member, invokes the create-command specified by parameter CMD on the
+temparory PF member and passes parameters to the target create-command
+specified in parameter PARM.
 
 :p.
 Refer to :hp2.http://i5toolkit.sourceforge.net:ehp2. for details of

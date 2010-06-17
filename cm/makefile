@@ -32,5 +32,9 @@ stmfseu.cmd: stmfseu.cl-cmd
 	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') parm('PGM($(BIN_LIB)/$*) HLPPNLGRP($(BIN_LIB)/CMHLP) HLPID(''STMFSEU'')')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
+crtfrmstmf.cmd: crtfrmstmf.cl-cmd
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') parm('PGM($(BIN_LIB)/$*) HLPPNLGRP($(BIN_LIB)/CMHLP) HLPID(''CRTFRMSTMF'')')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
+
 clean:
 	qsh -c "/usr/bin/rmflnk $(TARGETS)"
