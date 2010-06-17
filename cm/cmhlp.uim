@@ -1,0 +1,212 @@
+.* This file is part of i5/OS Programmer's Toolkit.
+.* 
+.* Copyright (C) 2010  Junlei Li (李君磊).
+.* 
+.* i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+.* it under the terms of the GNU General Public License as published by
+.* the Free Software Foundation, either version 3 of the License, or
+.* (at your option) any later version.
+.* 
+.* i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+.* but WITHOUT ANY WARRANTY; without even the implied warranty of
+.* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.* GNU General Public License for more details.
+.* 
+.* You should have received a copy of the GNU General Public License
+.* along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+
+.*
+.* @file cmhlp.uim
+.*
+.* help info of SCM commands
+.*
+
+:pnlgrp.
+
+.*******************************
+.* CL command STMFSEU
+.*******************************
+
+:help name='stmfseu'.
+:p.
+
+CL command Start SEU on Stream Files (STMFSEU) enables i5/OS
+programmers to work with source code stored in stream files (STMF)
+using the Source Entry Utility (SEU). STMFSEU is a glue layer between
+SEU and source stream files. By specify the OPTION parameter of
+STMFSEU programmers can edit, view, or print source stream files via
+STMFSEU.
+
+:p.
+Refer to :hp2.http://i5toolkit.sourceforge.net:ehp2. for details of
+the open source project, i5/OS Programmer's Toolkit. To download
+i5/OS Programmer's Toolkit, please visit:
+:hp2.http://sourceforge.net/projects/i5toolkit:ehp2..
+
+:p.
+:xh3.Bugs
+:p.
+Please report bugs to :hp2.junleili-cn@users.sourceforge.net:ehp2.
+
+:p.
+:xh3.Author
+:p.
+Junlei Li
+:p.
+:ehelp.
+
+.*
+.* parameter STMF
+.*
+:help name='stmfseu/stmf'.Stream file (STMF)
+
+:xh3.Stream file (STMF)
+:p.
+
+Specifies the path name of source STMF to edit, view, or print. The
+path name should be a valid i5/OS Interated File System (IFS) stream
+file path, either a absolute path name or a relative path name. For
+example:
+
+:ul.
+:li.An absolute path name: /home/rgp-programmer/project-i5toolkit/scm-tools/test/hello.rpgle.
+:li.A relative path name that specifies a source stream file in the
+parent directory of the current directory: ../mih52.rpgleinc
+:eul.
+
+:ehelp.
+
+.*
+.* parameter SRCTYPE
+.*
+:help name='stmfseu/srctype'.Source type (SRCTYPE)
+
+:xh3.Source type (SRCTYPE)
+:p.
+
+Specifies the type of source member to edit or create. The possible values are:
+:p.
+
+:hp2.*SAME:ehp2.
+:p.
+
+The default value of paramteter SRCTYPE. When *SAME is specified,
+STMFSEU use the extension file name of the target stream file as the
+value of parameter SRCTYPE.
+:p.
+
+:hp2.TYPE:ehp2.
+:p.
+
+This value allows you to specify the type of source to use. You can
+specify any combination up to 10 characters, or you can specify a type
+supported by SEU.
+
+The following member types are supported:
+:ul.
+
+:li.Operating system types. BAS, BASP, BND, C, CBLLE, CBL, CICSC,
+CICSCBLLE, CICSCBL, CICSMAP, CICSSQLCBL, CL, CLD, CLLE, CLP, CMD, CPP,
+DFU, DSPF, FTN, ICFF, LF, MENU, MNU, MNUCMD, MNUDDS, PAS, PF, PLI,
+PNLGRP, PRTF, QRY, REXX, RMC, RPG, RPGLE, RPT, SPADCT, SQLC, SQLCLE,
+SQLCBL, SQLCBLLE, SQLFTN, SQLPLI, SQLRPG, SQLRPGLE, SRT, TBL, and TXT.
+
+:li.System/38 types. BAS38, BASP38, BSCF38, CBL38, CL38, CLP38, CMD38,
+CMNF38, DFU38, DSPF38, LF38, MXDF38, PF38, PLI38, PRTF38, QRY38,
+RPG38, RPT38, SRT38, and TXT38.
+
+:li.System/36 types. ARS36, ASM36, BAS36, BASP36, BGC36, BGD36, BGF36,
+CBL36, DFU36, DSPF36, DTA36, FOR36, MNU36, MSGF36, OCL36, PHL36,
+RPG36, RPT36, SRT36, TXT36, UNS36, and WSU36.
+
+:eul.
+
+:ehelp.
+
+.*
+.* parameter OPTION
+.*
+:help name='stmfseu/option'.Option (OPTION)
+
+:xh3.Option (OPTION)
+:p.
+
+Specifies the function to perform on the selected member. The default
+value depends on if you specify a member name. If you do not specify a
+member name, the default is *BLANK, which indicates no action. If you
+specify a member name, the default value is 2 (Edit). This specifies
+an Edit session for the member.
+:p.
+
+The possible value is:
+:p.
+:hp2.*BLANK or ' ':ehp2.
+:p.
+This is the default value if you do not specify a member name. *BLANK specifies no action.
+:p.
+
+:hp2.2=Edit a member:ehp2.
+:p.
+Type 2 after you have selected the option parameter to go to the Edit display.
+:p.
+
+:hp2.5=Browse a member:ehp2.
+:p.
+Type 5 after you have selected the option parameter to go to the Browse display.
+:p.
+
+:hp2.6=Print Member:ehp2.
+:p.
+Type 6 to print the member specified.
+:p.
+
+:ehelp.
+
+.*
+.* parameter STMFCCSID
+.*
+:help name='stmfseu/stmfccsid'.Stream file CCSID (STMFCCSID)
+
+:xh3.Stream file CCSID (STMFCCSID)
+:p.
+
+When creating a new source stream file using STMFSEU, this parameter
+can be specified to determine the CCSID attribute of the result stream
+file. The default value of parameter STMFCCSID is 1208 (the UTF-8
+CCSID). This is because that STMFSEU is designed to work with Software
+Configuration Management (SCM) tools migrated from common platforms
+such as Subversion and the PASE make utility.
+
+:ehelp.
+
+.*******************************
+.* CL command STMFSEU
+.*******************************
+
+:help name='stmfseu'.
+:p.
+
+
+:p.
+Refer to :hp2.http://i5toolkit.sourceforge.net:ehp2. for details of
+the open source project, i5/OS Programmer's Toolkit. To download
+i5/OS Programmer's Toolkit, please visit:
+:hp2.http://sourceforge.net/projects/i5toolkit:ehp2..
+
+:p.
+:xh3.Bugs
+:p.
+Please report bugs to :hp2.junleili-cn@users.sourceforge.net:ehp2.
+
+:p.
+:xh3.Author
+:p.
+Junlei Li
+:p.
+:ehelp.
+
+
+
+
+:epnlgrp.
+.* eof - cmhlp.uim

@@ -32,7 +32,7 @@
                           KEYPARM(*YES) INLPMTLEN(50) +
                           PROMPT('Stream file')
              /* SOURCE TYPE */
-             PARM       KWD(SRCTYPE) TYPE(*CHAR) LEN(10) RSTD(*YES) +
+             PARM       KWD(SRCTYPE) TYPE(*SNAME) LEN(10) RSTD(*YES) +
                           DFT(*SAME) VALUES(BAS BASP BND C CBL +
                           CBLLE CICSC CICSCBL CICSCBLLE CICSMAP +
                           CICSSQLCBL CL CLD CLP CLLE CMD CPP DFU +
