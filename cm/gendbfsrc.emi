@@ -102,8 +102,8 @@ dcl spc * bas(dta-attr-ptr)     ;
         cpynv dta-attr-len, 67        ;
         setdpat pos-dta, dta-attr     ;
         cpybla pos-dta,
-          "') MBROPT(*REPLACE) CVTDTA(*AUTO) STMFCODPAG(*STMF) DBFCCSID(*FILE)"
-                                ;
+          "') MBROPT(*REPLACE) CVTDTA(*AUTO) STMFCODPAG(*STMF) DBFCCSID(*FILE) TABEXPN(*NO)"
+                                ; /* --here */
         triml cmd-len, cmd, ' '       ;
         callx ept(QCMDEXC-INX), al-qcmdexc, * ;
 

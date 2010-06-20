@@ -217,7 +217,86 @@ Junlei Li
 :p.
 :ehelp.
 
+.*
+.* parameter OBJ
+.*
+:help name='crtfrmstmf/obj'.Object (OBJ)
 
+:xh3.Object (OBJ)
+:p.
+
+Qualified object name of the object to be created with target create-command.
+:p.
+
+:hp2.Qualifier 1: Object:ehp2.
+Specify the name of the created object to be created.
+:p.
+
+
+:hp2.Qualifier 2: Library:ehp2.
+:p.
+
+:hp2.Name:ehp2.
+Specify the name of the library where the created object is to be stored.
+:p.
+
+:hp2.*CURLIB:ehp2.
+The creatd object is to be stored in the current library.
+:p.
+
+:ehelp.
+
+.*
+.* parameter CMD
+.*
+:help name='crtfrmstmf/cmd'.CL command to create object (CMD)
+
+:xh3.CL command to create object (CMD)
+:p.
+
+Name of the create-command used to create the object. The
+create-commands currently supported by CRTFRMSTMF are:
+
+:ul.
+:li.Create Bound CL Program (CRTBNDCL).
+:li.Create CL Program (CRTCLPGM).
+:li.Create CL Module (CRTCLMOD).
+:li.Create RPG/400 Program (CRTRPGPGM).
+:li.Create COBOL Program (CRTCBLPGM).
+:li.Create Physical File (CRTPF).
+:li.Create Logical File (CRTLF).
+:li.Change Physical File (CHGPF).
+:li.Create Command (CRTCMD).
+:li.Create Panel Group (CRTPNLGRP).
+:eul.
+
+:ehelp.
+
+.*
+.* parameter SRCSTMF
+.*
+:help name='crtfrmstmf/srcstmf'.Additional command parameters (PARM)
+
+:xh3.Additional command parameters (PARM)
+:p.
+
+Specifies the path name of the stream file containing the source code
+from which the object is to be created. The path name can be either
+absolutely or relatively qualified.
+
+:ehelp.
+
+.*
+.* parameter PARM
+.*
+:help name='crtfrmstmf/parm'.
+
+:xh3.
+:p.
+
+Specifies parameters to be passed target create-command, except SRCFILE and SRCMBR.
+
+:ehelp.
 
 
 :epnlgrp.
