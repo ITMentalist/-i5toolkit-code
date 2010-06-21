@@ -32,29 +32,21 @@
                           KEYPARM(*YES) INLPMTLEN(50) +
                           PROMPT('Stream file')
              /* SOURCE TYPE */
-             PARM       KWD(SRCTYPE) TYPE(*SNAME) LEN(10) RSTD(*YES) +
-                          DFT(*SAME) VALUES(BAS BASP BND C CBL +
-                          CBLLE CICSC CICSCBL CICSCBLLE CICSMAP +
-                          CICSSQLCBL CL CLD CLP CLLE CMD CPP DFU +
-                          DSPF FTN ICFF LF MENU MNU MNUCMD MNUDDS +
-                          PAS PF PLI PNLGRP PRTF QRY REXX RMC RPG +
-                          RPGLE RPT SPADCT SQLC SQLCBL SQLCBLLE +
-                          SQLFTN SQLPLI SQLRPG SQLRPGLE SRT TBL TXT +
-                          BAS38 BASP38 BSCF38 CBL38 CL38 CLP38 +
-                          CMD38 CMNF38 DFU38 DSPF38 LF38 MXDF38 +
-                          PF38 PLI38 PRTF38 QRY38 RPG38 RPT38 SRT38 +
-                          TXT38 ARS36 ASM36 BAS36 BASP36 BGC36 +
-                          BGD36 BGF36 CBL36 DFU36 DTA36 DSPF36 +
-                          FOR36 MNU36 MSGF36 OCL36 PHL36 RPG36 +
-                          RPT36 SRT36 TXT36 UNS36 WSU36) +
-                          SPCVAL((*SAME '*SAME')) CASE(*MONO) +
-                          PROMPT('Source type')
+             PARM       KWD(SRCTYPE) TYPE(*SNAME) LEN(10) RTNVAL(*NO) +
+                          RSTD(*NO) DFT(*SAME) SPCVAL((*SAME '*SAME')) +
+                          CASE(*MONO) CHOICE(*PGM) +
+                          CHOICEPGM(I5TOOLKIT/CHSTMFSEU) PROMPT('Source type')
              /* SEU OPTION  */
              PARM       KWD(OPTION) TYPE(*CHAR) LEN(1) RSTD(*YES) +
                           DFT(*BLANK) VALUES(' ' 2 5 6) +
                           SPCVAL((*BLANK ' ')) CASE(*MONO) +
-                          PROMPT(OPTION)
+                          PROMPT('Option')
              /* STMF CCSID */
              PARM       KWD(STMFCCSID) TYPE(*INT2) DFT(1208) +
                           PMTCTL(*PMTRQS) PROMPT('Stream file CCSID')
+             /* End of line characters */
+             PARM       KWD(ENDLINFMT) TYPE(*CHAR) LEN(10) RSTD(*YES) +
+                          DFT(*LF) VALUES(*LF *CR *CRLF *LFCR *FIXED) +
+                          CHOICE(*VALUES) PMTCTL(*PMTRQS) +
+                          PROMPT('End of line characters')
 /* EOF */

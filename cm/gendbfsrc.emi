@@ -99,12 +99,12 @@ dcl spc * bas(dta-attr-ptr)     ;
 
         addspp pos, pos, dta-attr-len ;
         setdp pos-dta, pos-ch         ;
-        cpynv dta-attr-len, 67        ;
+        cpynv dta-attr-len, 80        ; /* length of ') MBROPT ... TABEXPN(*NO) */
         setdpat pos-dta, dta-attr     ;
         cpybla pos-dta,
           "') MBROPT(*REPLACE) CVTDTA(*AUTO) STMFCODPAG(*STMF) DBFCCSID(*FILE) TABEXPN(*NO)"
-                                ; /* --here */
-        triml cmd-len, cmd, ' '       ;
+                                ;
+        triml cmd-len, cmd, ' ' ;
         callx ept(QCMDEXC-INX), al-qcmdexc, * ;
 
 brk "END"                       ;

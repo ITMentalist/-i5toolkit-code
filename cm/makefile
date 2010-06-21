@@ -23,16 +23,16 @@
 
 BIN_LIB=i5toolkit
 MAKERULES=../rules.mk
-TARGETS=gendbfsrc stmfseu mtime touch unlink crtfrmstmf cmhlp.pnlgrp crtfrmstmf.cmd stmfseu.cmd rmflnk
+TARGETS=gendbfsrc stmfseu chstmfseu mtime touch unlink crtfrmstmf cmhlp.pnlgrp crtfrmstmf.cmd stmfseu.cmd rmflnk
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir cm."
 
-stmfseu.cmd: stmfseu.cl-cmd
+stmfseu.cmd: stmfseu.cl-cmd cmhlp.pnlgrp
 	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') parm('PGM($(BIN_LIB)/$*) HLPPNLGRP($(BIN_LIB)/CMHLP) HLPID(''STMFSEU'')')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
-crtfrmstmf.cmd: crtfrmstmf.cl-cmd
+crtfrmstmf.cmd: crtfrmstmf.cl-cmd cmhlp.pnlgrp
 	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') parm('PGM($(BIN_LIB)/$*) HLPPNLGRP($(BIN_LIB)/CMHLP) HLPID(''CRTFRMSTMF'')')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 

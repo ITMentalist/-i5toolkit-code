@@ -179,6 +179,75 @@ such as Subversion and the PASE make utility.
 
 :ehelp.
 
+.*
+.* parameter ENDLINFMT
+.*
+:help name='stmfseu/endlinfmt'.End of line characters (ENDLINFMT)
+
+:xh3.End of line characters (ENDLINFMT)
+:p.
+
+Specifies the end-of-line characters to insert into the stream file
+when the result source code stored in the temparory source member
+being copied back to the source stream file.  Default to :hp2.*LF:ehp2..
+
+:p.
+If one of the end-of-line character options is selected
+(ENDLINFMT(*FIXED) is not specified) the database file records are
+transformed to variable-length stream file text lines as they are
+copied. Each database file record is trimmed of any trailing blanks.
+Then, the data is converted to the destination data format (if
+specified) and the end-of-line character is appended to the end of the
+text line.  The text line is copied to the stream file.
+:p.
+
+:hp2.*LF:ehp2.
+:p.
+    Line-feed is appended to the end of each line.
+:p.
+
+:hp2.*CR:ehp2.
+:p.
+    Carriage-return is appended to the end of each line.
+:p.
+
+:hp2.*CRLF:ehp2.
+:p.
+    Carriage-return followed by line-feed is appended to the end of each
+    line.
+:p.
+
+:hp2.*LFCR:ehp2.
+:p.
+    Line-feed followed by carriage-return is appended to the end of each
+    line.
+:p.
+
+:hp2.*FIXED:ehp2.
+:p.
+    The lines in the stream file are written as fixed length records.
+    CR and LF characters are not added at the end of each line, trailing
+    blanks are not removed from the end of each record.  The length of
+    the stream file records equals the length of the database file
+    records.
+:p.
+
+    Only stream files and database files with compatible encoding
+    schemes which do not result in the expansion of data record lengths
+    are valid with this option.  If an incompatible combination of
+    encoding schemes is detected, the operation will fail.
+:p.
+
+    The following encoding scheme combinations are supported:
+:ul.
+:li.Single-byte to single-byte
+:li.Double-byte to double-byte
+:li.Mixed ASCII to mixed ASCII
+:li.Mixed EBCDIC to mixed EBCDIC
+:eul.
+
+:ehelp.
+
 .*******************************
 .* CL command CRTFRMSTMF
 .*******************************
@@ -231,7 +300,6 @@ Qualified object name of the object to be created with target create-command.
 :hp2.Qualifier 1: Object:ehp2.
 Specify the name of the created object to be created.
 :p.
-
 
 :hp2.Qualifier 2: Library:ehp2.
 :p.

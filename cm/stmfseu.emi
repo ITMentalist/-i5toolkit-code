@@ -36,11 +36,13 @@ dcl spcptr stmf-path-ptr parm   ;
 dcl spcptr srctype-ptr parm     ;
 dcl spcptr seu-opt-ptr parm     ;
 dcl spcptr stmf-ccsid-ptr parm  ;
+dcl spcptr end-line-ptr parm    ;
 dcl ol pl-main (
         stmf-path-ptr,
         srctype-ptr,
         seu-opt-ptr,
-        stmf-ccsid-ptr
+        stmf-ccsid-ptr,
+        end-line-ptr
 ) parm ext                      ;
 entry welcome(pl-main) ext      ;
 
@@ -50,6 +52,7 @@ dcl spc stmf-path-t bas(stmf-path-ptr) ;
 dcl dd srctype char(10) bas(srctype-ptr) ;
 dcl dd seu-opt char(1) bas(seu-opt-ptr)  ;
 dcl dd stmf-ccsid bin(2) bas(stmf-ccsid-ptr) ;
+dcl dd end-line char(10) bas(end-line-ptr)   ;
 
         /* if seu-opt ==  ' ' or '2', touch target stmf */
         cmpbla(b) seu-opt, '5' / eq(after-touch) ;
@@ -165,9 +168,14 @@ entry cpy-stmf-back int           ;
         setspp pos-ptr, cmd     ;
         addspp pos-ptr, pos-ptr, len ;
         setdp dta-ptr, pos-ch        ;
-        cpynv dta-attr-len, 20       ;
+        cpynv dta-attr-len, 38       ;
         setdpat dta-ptr, dta-attr    ;
-        cpybla dta-ptr, "') STMFOPT(*REPLACE)" ;
+        cpybla dta-ptr, "') STMFOPT(*REPLACE) ENDLINFMT(*LF   )" ;
+        addspp pos-ptr, pos-ptr, 31 ;
+        setdp dta-ptr, pos-ch        ;
+        cpynv dta-attr-len, 6        ;
+        setdpat dta-ptr, dta-attr    ;
+        cpybla dta-ptr, end-line     ;
 
 invoke-cpytostmf:
 brk '5'                         ;
