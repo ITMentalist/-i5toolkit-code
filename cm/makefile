@@ -28,12 +28,15 @@ TARGETS=gendbfsrc stmfseu chstmfseu mtime touch unlink crtfrmstmf cmhlp.pnlgrp c
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir cm."
 
+# CL command STMFSEU can be used only interactively
 stmfseu.cmd: stmfseu.cl-cmd cmhlp.pnlgrp
-	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') parm('PGM($(BIN_LIB)/$*) HLPPNLGRP($(BIN_LIB)/CMHLP) HLPID(''STMFSEU'')')"
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
+parm('PGM($(BIN_LIB)/$*) ALLOW(*INTERACT *IPGM *IREXX *IMOD) HLPPNLGRP($(BIN_LIB)/CMHLP) HLPID(''STMFSEU'')')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
 crtfrmstmf.cmd: crtfrmstmf.cl-cmd cmhlp.pnlgrp
-	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') parm('PGM($(BIN_LIB)/$*) HLPPNLGRP($(BIN_LIB)/CMHLP) HLPID(''CRTFRMSTMF'')')"
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
+parm('PGM($(BIN_LIB)/$*) HLPPNLGRP($(BIN_LIB)/CMHLP) HLPID(''CRTFRMSTMF'')')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
 clean:
