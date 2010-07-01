@@ -30,13 +30,13 @@ BIN_LIB=i5toolkit
 HOST_DIR=/home/ljl/chqs/qsh
 BUILD_SCRIPT=$(HOST_DIR)/build.sh
 BUILD_LOG=.build-log
-SRC_LIST=$(shell find . -cnewer last-upload -name '*.c') makefile build.sh ../rules.mk
+SRC_LIST=$(shell find . -cnewer last-upload -name '*.c') makefile ../build.sh ../rules.mk
 
 all: upload_src compile
 	@echo "end of compilation -- i5toolkit/qsh"
 
 upload_src:
-	lftp -e "bin; cd $(HOST_DIR); mput $(SRC_LIST); by" $(HOST)
+	lftp -e "cd $(HOST_DIR); mput $(SRC_LIST); by" $(HOST)
 	touch last-upload
 
 compile:

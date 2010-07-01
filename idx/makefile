@@ -19,58 +19,33 @@
 # makefile of mic
 #
 
-% : %.mi
-	$(MIC) $(MIFLAGS) -o$@ $<
+MIFLAGS=INCDIR('.')
 
-% : %.emi
-	$(MIC) $(MIFLAGS) -o$@ $<
+BIN_LIB=
+MAKERULES=rules.mk
+TARGETS=dspidxd rtvidxd insidx dspidxd.cmd insidx.cmd dspidxd.pnlgrp
 
-MIC=mic
-MIFLAGS=-v -q'*list' -q'*replace' -q'*xref' -I. -L$(OUTPUTDIR)
-
-ifeq ($(OS400), yes)
-	MAKE=gmake
-	CC=icc
-	CXX=icc -+v
-	RM=del
-else
-	MAKE=make
-	CC=gcc
-	CXX=g++
-	RM=rm
-endif
-
-export MAKE
-export CC
-export CXX
-export RM
-
-ifndef CC
-	CC=gcc
-endif
-
-ifndef CXX
-	CXX=g++
-endif
-
-CFLAGS=-g -I.
-CXXFLAGS=-g -I.
-
-TARGETS=dspidxd rtvidxd insidx
-
-ifeq ($(OS400), yes)
 all: $(TARGETS)
-else
-all: $(TARGETS)
-endif
-	@echo "that's all!"
+	@echo "compilation done -- rpg"
+
+dspidxd.cmd: dspidxd.cl-cmd idxhlp.pnlgrp
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
+parm('PGM($(BIN_LIB)/$*) HLPPNLGRP($(BIN_LIB)/idxhlp) HLPID(''HLP/IDXD'')')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
+
+insidx.cmd: insidx.cl-cmd idxhlp.pnlgrp
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
+parm('PGM($(BIN_LIB)/$*) HLPPNLGRP($(BIN_LIB)/idxhlp) HLPID(''HLP/IDXD'')')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
 clean:
-	$(RM) $(TARGETS)
+	qsh -c "/usr/bin/rmflnk $(TARGETS)"
 
-cmd_pnlgrp:
-	@echo "attention: compiling CL command and panel-groups ..."
-	system "CRTPNLGRP PNLGRP(I5TOOLKIT/IDXHLP) SRCFILE(LS2008/UIM) SRCMBR(*PNLGRP) INCFILE(*SRCFILE) REPLACE(*YES)"
-	system "CRTPNLGRP PNLGRP(I5TOOLKIT/DSPIDXD) SRCFILE(LS2008/UIM) SRCMBR(*PNLGRP) INCFILE(*SRCFILE) REPLACE(*YES)"
-	system "CRTCMD CMD($(OUTPUTDIR)/DSPIDXD) PGM($(OUTPUTDIR)/DSPIDXD) SRCFILE(LS2008/DEC) SRCMBR(DSPIDXD) HLPPNLGRP($(OUTPUTDIR)/IDXHLP) HLPID('HLP/IDXD')"
-	system "CRTCMD CMD($(OUTPUTDIR)/INSIDX) PGM($(OUTPUTDIR)/INSIDX) SRCFILE(LS2008/DEC) SRCMBR(INSIDX) HLPPNLGRP($(OUTPUTDIR)/IDXHLP) HLPID('HLP/IDXD')"
+#
+#cmd_pnlgrp:
+#	@echo "attention: compiling CL command and panel-groups ..."
+#	system "CRTPNLGRP PNLGRP(I5TOOLKIT/IDXHLP) SRCFILE(LS2008/UIM) SRCMBR(*PNLGRP) INCFILE(*SRCFILE) REPLACE(*YES)"
+#	system "CRTPNLGRP PNLGRP(I5TOOLKIT/DSPIDXD) SRCFILE(LS2008/UIM) SRCMBR(*PNLGRP) INCFILE(*SRCFILE) REPLACE(*YES)"
+#	system "CRTCMD CMD($(OUTPUTDIR)/DSPIDXD) PGM($(OUTPUTDIR)/DSPIDXD) SRCFILE(LS2008/DEC) SRCMBR(DSPIDXD) HLPPNLGRP($(OUTPUTDIR)/IDXHLP) HLPID('HLP/IDXD')"
+#	system "CRTCMD CMD($(OUTPUTDIR)/INSIDX) PGM($(OUTPUTDIR)/INSIDX) SRCFILE(LS2008/DEC) SRCMBR(INSIDX) HLPPNLGRP($(OUTPUTDIR)/IDXHLP) HLPID('HLP/IDXD')"
+#

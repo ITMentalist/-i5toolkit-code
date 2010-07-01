@@ -25,7 +25,6 @@
 	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
 
 BIN_LIB=
-WHERE=$(shell pwd)
 
 # exobjtype.pgm, 记着找回来 exobjtype.c
 TARGETS=exobjtype miobjtype rlink

@@ -25,28 +25,24 @@
 #  - call RUNSH, pass the following parameters: CCSID, qshell command
 #
 
-HOST=i810
-RMAKER=RUNSH
-BINLIB=i5toolkit
+HOST=g525
+BIN_LIB=lsbin
 HOST_DIR=/home/ljl/chqs/idx
-TARF=idx.tar
-CMD_COMPILE=
-CMD_CLEAN=
+BUILD_SCRIPT=$(HOST_DIR)/build.sh
+BUILD_LOG=.build-log
+SRC_LIST=$(shell find . -type f -cnewer last-upload -a \( -name '*.cl-cmd' -o -name '*.emi' -o -name '*.uim' \) ) ../rules.mk makefile ../build.sh
 
-all: tar_src upload_src compile
-	@echo "END OF COMPILATION: src/idx"
-
-tar_src:
-	tar -cf $(TARF) *mi makefile
+all: upload_src compile
+	@echo "end of compilation -- i5toolkit/idx"
 
 upload_src:
-	lftp -e "cd $(HOST_DIR); put $(TARF); by" $(HOST)
+	lftp -e "cd $(HOST_DIR); mput $(SRC_LIST); by" $(HOST)
+	touch last-upload
 
 compile:
-	rexec $(HOST) "call pgm($(RMAKER)) parm('00037' 'cd $(HOST_DIR); tar -xf $(TARF); export OS400=yes OUTPUTDIR=$(BINLIB); gmake')"
-
-uim_cmd:
-	rexec $(HOST) "call pgm($(RMAKER)) parm('00037' 'cd $(HOST_DIR); tar -xf $(TARF); export OS400=yes OUTPUTDIR=$(BINLIB); gmake cmd_pnlgrp')"
+	rexec $(HOST) "CALL QP2SHELL PARM('$(BUILD_SCRIPT)' '$(HOST_DIR)/$(BUILD_LOG)' '-e BIN_LIB=$(BIN_LIB) -e MAKERULES=rules.mk')"
+	lftp -e "cd $(HOST_DIR); get $(BUILD_LOG); by" $(HOST)
+	cat $(BUILD_LOG)
 
 clean:
-	rexec $(HOST) "call pgm($(RMAKER)) parm('00037' 'cd $(HOST_DIR); export OS400=yes; gmake clean')"
+	rexec $(HOST) "CALL QP2SHELL PARM('$(BUILD_SCRIPT)' '$(HOST_DIR)/$(BUILD_LOG)' 'clean')"
