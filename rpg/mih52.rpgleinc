@@ -1722,8 +1722,17 @@
      d     agp_marks                  4a   dim(16380)
      d                                     overlay(buf : 13)
 
+     /* _RETTHCNT (Retrieve Thread Count) */
+     d retthcnt        pr            10u 0 extproc('_RETTHCNT')
+
      /* RETTHID, retrieve thread identifier */
      d retthid         pr             8a   extproc('_RETTHID')
+
+     /* _TSTINLTH (Test Initial Thread) */
+     d tstinlth        pr            10i 0 extproc('_TSTINLTH')
+
+     /* _TESTINTR (Test Pending Interrupts) */
+     d testintr        pr            10u 0 extproc('_TESTINTR')
 
      /* WAITTIME, wait on time */
      d waittime        pr                  extproc('_WAITTIME')
