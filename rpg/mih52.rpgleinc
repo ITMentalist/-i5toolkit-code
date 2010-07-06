@@ -1722,6 +1722,44 @@
      d     agp_marks                  4a   dim(16380)
      d                                     overlay(buf : 13)
 
+     /**
+      * Materialization template for MATPRATR when a scalar attribute
+      * is materialized.
+      */
+     d matpratr_tmpl_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+
+     /**
+      * Materialization template for MATPRATR when a pointer attribute
+      * is materialized.
+      */
+     d matpratr_ptr_tmpl_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                8a
+     d     ptr                         *
+
+     /* Process priority template */
+     d process_priority_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     priority                   1a
+
+     /* _MATPRATR1 (Materialize Process Attributes) */
+     d matpratr1       pr                  extproc('_MATPRATR1')
+     d     receiver                        likeds(matpratr_tmpl_t)
+     d     option                     1a
+
+     /* _MATPRATR2 (Materialize Process Attributes) */
+     d matpratr2       pr                  extproc('_MATPRATR2')
+     d     receiver                        likeds(matpratr_tmpl_t)
+     d     pcs                         *
+     d     option                     1a
+
      /* _RETTHCNT (Retrieve Thread Count) */
      d retthcnt        pr            10u 0 extproc('_RETTHCNT')
 
