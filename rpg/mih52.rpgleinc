@@ -517,6 +517,12 @@
 
      /* pointer resolution */
 
+     /* _CMPPTRA (Compare Pointer for Object Addressability) */
+      *    -           -             -     -
+     d cmpptra         pr            10i 0 extproc('_CMPPTRA')
+     d     ptr_op1                     *   value
+     d     ptr_op2                     *   value
+
      /* CMPPTRT, compare pointer type */
      d cmpptrt         pr            10i 0 extproc('_CMPPTRT')
      d     ptr_type                   1a   value
@@ -652,6 +658,13 @@
      d matptr          pr                  extproc('_MATPTR')
      d     receiver                    *   value
      d     ptr                         *
+
+     /* _MATPTRL (Materialize Pointer Locations) */
+     d matptrl         pr                  extproc('_MATPTRL')
+     d     receiver_ptr...
+     d                                 *   value
+     d     source                      *   value
+     d     length                    10i 0
 
      d rslvsp_tmpl     ds                  qualified
      d     obj_type                   2a
