@@ -666,6 +666,27 @@
      d     source                      *   value
      d     length                    10i 0
 
+     /**
+      * _RSLVDP1 (Resolve Data Pointer)
+      */
+     d rslvdp1         pr                  extproc('_RSLVDP1')
+     d     dta_ptr                     *
+
+     /**
+      * _RSLVDP2 (Resolve Data Pointer)
+      */
+     d rslvdp2         pr                  extproc('_RSLVDP2')
+     d     dta_ptr                     *
+     d     obj_name                  32a
+
+     /**
+      * _RSLVDP3 (Resolve Data Pointer)
+      */
+     d rslvdp3         pr                  extproc('_RSLVDP3')
+     d     dta_ptr                     *
+     d     obj_name                  32a
+     d     pgm_ptr                     *
+
      d rslvsp_tmpl     ds                  qualified
      d     obj_type                   2a
      d     obj_name                  30a
