@@ -33,6 +33,42 @@
 
      /* computation instructions */
 
+     /* _CMPSWP1 (Compare and Swap) */
+     d cmpswp1         pr            10i 0 extproc('_CMPSWP1')
+     d     cmp_op1                    1a
+     d     cmp_op2                    1a
+     d     swap_op                    1a   value
+      * Perform storage synchronization or not
+      *  0 = (Default) Storage synchronization is performed both
+      *      before and after a successful store of the swap operand.
+      *  1 = No storage synchronization is performed.
+     d     cntl                      10i 0 options(*nopass)
+     d                                     value
+
+     /* _CMPSWP2 (Compare and Swap) */
+     d cmpswp2         pr            10i 0 extproc('_CMPSWP2')
+     d     cmp_op1                    2a
+     d     cmp_op2                    2a
+     d     swap_op                    2a   value
+     d     cntl                      10i 0 options(*nopass)
+     d                                     value
+
+     /* _CMPSWP4 (Compare and Swap) */
+     d cmpswp4         pr            10i 0 extproc('_CMPSWP4')
+     d     cmp_op1                    4a
+     d     cmp_op2                    4a
+     d     swap_op                    4a   value
+     d     cntl                      10i 0 options(*nopass)
+     d                                     value
+
+     /* _CMPSWP8 (Compare and Swap) */
+     d cmpswp8         pr            10i 0 extproc('_CMPSWP8')
+     d     cmp_op1                    8a
+     d     cmp_op2                    8a
+     d     swap_op                    8a   value
+     d     cntl                      10i 0 options(*nopass)
+     d                                     value
+
      /* CPRDATA template */
      d cprdata_tmpl_t  ds                  qualified
      d                                     based(dummy_ptr)
@@ -700,6 +736,18 @@
      d testptr         pr            10i 0 extproc('_TESTPTR')
      d     ptr                         *   value
      d     type                       1a   value
+
+     /**
+      * _RETTSADR (Retrieve Teraspace Address From Space Pointer)
+      *
+      * @remark instruction may be specified in a program template
+      *         only when the (bound) program is to be created as
+      *         teraspace capable. So to use _RETTSADR in ILE RPG you
+      *         need to have a 7.1 machine. For an ILE C example,
+      *         refer to test/t084.c
+      */
+     d rettsadr        pr             8a   extproc('_RETTSADR')
+     d     spc_ptr                     *   value
 
      /**
       * SETSPPFP, set space pointer from pointer
