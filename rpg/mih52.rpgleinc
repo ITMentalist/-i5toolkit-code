@@ -1484,6 +1484,163 @@
 
      /* end -- queue management */
 
+     /* object lock management */
+
+     /**
+      * lock request template with extension.
+      *
+      * @remark This template is also used by _LOCKSL2 and _UNLOCKSL2,
+      *         _LOCKTSL, and _UNLOCKTSL.  When used by _LOCKSL2,
+      *         ext_opt is not used and should be set to binary
+      *         0. When used by _UNLOCKSL2, time_out, lock_opt, and
+      *         ext_opt are not used and should be set to binary 0.
+      */
+     d lock_request_tmpl_ext_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     num_requests...
+     d                               10i 0
+     d     offset_lock_state...
+     d                                5i 0
+      *
+      * @remark 20u 0 is more convenient to operate with in RPG
+      *         in contrast with 8a.
+      *
+     d     time_out                  20u 0
+     /*
+      * @remark Bits in lock_opt parameter have different meaning when
+      *         used to invoke _LOCK, _UNLOCK, _LOCKSL2, _UNLOCKSL2,
+      *         _LOCKTSL, or _UNLOCKTSL.  Refer to MI documentation in
+      *         i5/OS Information Cenetr for details.
+      */
+     d     lock_opt                   2a
+     d     lock_type                  1a   overlay(lock_opt:1)
+     d     lock_scope                 1a   overlay(lock_opt:2)
+      *
+      * 16-byte lock object template extension.
+      * @remark this 16-byte extension exists only when
+      *         bit 7 of lock_opt is set to 1.
+      *
+      * Bit 0, Modify thread event mask option.
+      *   0 = Do not modify thread event mask.
+      *   1 = Modify thread event mask
+      *
+      * Bits 1-7, Reserved (binary 0).
+      *
+     d     ext_opt                    1a
+     d     new_thread_event_mask...
+     d                                5u 0
+     d     previous_thread_event_mask...
+     d                                5u 0
+      * Reserved (binary 0)
+     d                               11a
+     /*
+      * Offset by now: 16 or 32 (if template extension exists).
+      *
+      * objects-to-lock: array of system pointers
+      */
+
+     /*
+      * Lock state selections, array of char(1);
+      * repeated for each pointer in the template.
+      *   Bits 0-4, Requested lock state.
+      *     Bit 0. LSRD lock.
+      *     Bit 1. LSRO lock.
+      *     Bit 2. LSUP lock.
+      *     Bit 3. LEAR lock.
+      *     Bit 4. LENR lock.
+      *
+      *   Bits 5-6, Reserved (binary 0).
+      *
+      *   Bit 7, Entry active indicator.
+      *     0 = Entry not active - This entry is not used.
+      *     1 = Entry active - Obtain this lock.
+      */
+
+     /**
+      * lock request template WITHOUT extension.
+      *
+      * This template can also be used by _UNLOCK.
+      */
+     d lock_request_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     num_requests...
+     d                               10i 0
+     d     offset_lock_state...
+     d                                5i 0
+     d     time_out                  20u 0
+     d     lock_opt                   2a
+     d     lock_type                  1a   overlay(lock_opt:1)
+     d     lock_scope                 1a   overlay(lock_opt:2)
+      * objects-to-lock: array of system pointers.
+      * Lock state selections: array of char(1).
+
+     /* _LOCK (Lock Object) */
+     d lock            pr                  extproc('_LOCK')
+     d     lock_request...
+     d                                     likeds(lock_request_tmpl_t)
+
+     /* _UNLOCK (Unlock Object) */
+     d unlockobj       pr                  extproc('_UNLOCK')
+     d     unlock_request...
+     d                                     likeds(lock_request_tmpl_t)
+
+     /**
+      * _LOCKSL1 (Lock Space Location)
+      *
+      * @remark _LOCKSL1 locks one space location.
+      */
+     d locksl1         pr                  extproc('_LOCKSL1')
+     d     space_location...
+     d                                 *
+     d     request                    1a
+
+     /**
+      * _LOCKSL2 (Lock Space Location)
+      *
+      * @param lock_request, pointer to DS lock_request_tmpl_ext_t.
+      * @remark _LOCKSL2 accepts address of spcptr rather than a
+      *         spcptr to instruction template as what _LOCKSL1
+      *         behaves.  So it's necessary to pass a pointer to
+      *         pointer to it.  This also applies to _UNLOCKSL2,
+      *         _LOCKTSL, and _UNLCKTSL.
+      */
+     d locksl2         pr                  extproc('_LOCKSL2')
+     d     lock_request...
+     d                                 *
+
+     /**
+      * _UNLOCKSL1 (Unlock Space Location)
+      *
+      * @remark _UNLOCKSL1 unlocks one space location.
+      */
+     d unlocksl1       pr                  extproc('_UNLOCKSL1')
+     d     space_location...
+     d                                 *
+     d     request                    1a
+
+     /**
+      * _UNLOCKSL2 (Unlock Space Location)
+      *
+      * @param lock_request, pointer to DS lock_request_tmpl_ext_t.
+      */
+     d unlocksl2       pr                  extproc('_UNLOCKSL2')
+     d     lock_request...
+     d                                 *
+
+     /* _LOCKTSL (Lock Teraspace Storage Location) */
+     d locktsl         pr                  extproc('_LOCKTSL')
+     d     lock_request...
+     d                                 *
+
+     /* _UNLCKTSL (Unlock Teraspace Storage Location) */
+     d unlcktsl        pr                  extproc('_UNLCKTSL')
+     d     lock_request...
+     d                                 *
+
+     /* end -- object lock management */
+
      /* mutex management */
      d mutex_t         ds                  qualified
       * synchronization pointer
