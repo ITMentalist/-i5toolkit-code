@@ -40,7 +40,7 @@
      d                                     dim(3)
      d status          s               *
 
-     d lock            s             20i 0 inz(0)
+     d lck             s             20i 0 inz(0)
      d rtn             s             10i 0
      d ind             s             10i 0
 
@@ -49,7 +49,7 @@
            rtn = pthread_create( thd(1)
                                : *null
                                : %paddr(thd_proc)
-                               : %addr(lock) );
+                               : %addr(lck) );
            if rtn <> 0;
                // error handling
                // e.g. rtn = EBUSY (3029)
@@ -58,12 +58,12 @@
            if pthread_create( thd(2)
                             : *null
                             : %paddr(thd_proc)
-                            : %addr(lock) ) <> 0
+                            : %addr(lck) ) <> 0
                or
               pthread_create( thd(3)
                             : *null
                             : %paddr(thd_proc)
-                            : %addr(lock) ) <> 0 ;
+                            : %addr(lck) ) <> 0 ;
                // error handling
            endif;
 

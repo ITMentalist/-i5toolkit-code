@@ -20,12 +20,12 @@
      /**
       * @file t070.rpgle
       *
-      * Test of recursive lock via CHKLKVAL/CLRLKVAL.
+      * Test of recursive locks via CHKLKVAL/CLRLKVAL.
       */
      h dftactgrp(*no)
 
       /copy mih54
-     d lock            s             20i 0
+     d lck             s             20i 0
      d f               pr
      d     old_val                   20i 0 value
      d     new_val                   20i 0 value
@@ -40,12 +40,12 @@
      d     old_val                   20i 0 value
      d     new_val                   20i 0 value
       /free
-           chklkval(lock : old_val : new_val);
+           chklkval(lck : old_val : new_val);
            if new_val > 5;                     // max recursion depth
                return;
            else;
                f(old_val + 1 : new_val + 1);
            endif;
-           clrlkval(lock : old_val);
+           clrlkval(lck : old_val);
       /end-free
      p f               e

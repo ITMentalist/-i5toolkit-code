@@ -23,7 +23,9 @@
       * Test of _LOCKTSL and _UNLCKTSL.
       */
 
+      /if defined (*crtbndrpg)
      h dftactgrp(*no)
+      /endif
 
       /copy mih52
       /copy ts

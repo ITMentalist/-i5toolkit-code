@@ -22,7 +22,9 @@
       *
       * Test of _RETTSADR.
       */
+      /if defined (*crtbndrpg)
      h dftactgrp(*no)
+      /endif
 
       /copy ts
       /copy mih52
@@ -30,11 +32,11 @@
      d ptr_val         s              8a
 
       /free
-      /if defined(*v7r1m0)
+
            tera_ptr = ts_malloc(1024);
            ptr_val  = rettsadr(tera_ptr);
 
            ts_free(tera_ptr);
-      /endif
+
            *inlr = *on;
       /end-free

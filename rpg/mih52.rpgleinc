@@ -1639,6 +1639,97 @@
      d     lock_request...
      d                                 *
 
+     /**
+      * Materailization template of _MATAOL.
+      */
+     d mataol_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     cur_lock_state...
+     d                                1a
+     d                                3a
+     d     num_lockd                  5i 0
+     d                                2a
+
+     /**
+      * Offset from the start of mataol_tmpl_t to lock description
+      * templates.
+      */
+     d mataol_lockd_offset...
+     d                 c                   16
+
+     /* Length of lock-description of MATAOL */
+     d mataol_lockd_length...
+     d                 c                   32
+
+     /**
+      * Lock description structure.
+      */
+     d mataol_lock_desc_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     lock_holder...
+     d                                 *
+     d     lock_type                  1a
+     d     lock_status...
+     d                                1a
+     d     lock_status_2...
+     d                                1a
+     d                                1a
+     d     unopend_thread_handle...
+     d                               10u 0
+     d     thread_id                  8a
+
+     /**
+      * _MATAOL (Materialize Allocated Object Locks)
+      */
+     d mataol          pr                  extproc('_MATAOL')
+     d     receiver                        likeds(mataol_tmpl_t)
+     d     syp_or_spp                  *
+
+     /* Materialization template of MATPRLK. */
+     d matprlk_tmpl_t  ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     num_lockd                  5i 0
+     d     expanded_num_lockd...
+     d                               10i 0
+     d                                2a
+
+     /* Lock description template of MATPRLK. */
+     d matprlk_lock_desc_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     syp_or_spp                  *
+     d     lock_type                  1a
+     d     process_lock_status...
+     d                                1a
+     d     lock_info                  1a
+     d                                1a
+     d     unopened_thread_handle...
+     d                               10u 0
+     d     thread_id                  8a
+
+     /**
+      * Offset from the start of matprlk_tmpl_t to
+      * lock description templates.
+      */
+     d matprlk_lockd_offset...
+     d                 c                   16
+
+     /**
+      * Length of lock description template for MATPRLK.
+      */
+     d matprlk_lockd_length...
+     d                 c                   16
+
+     /* _MATPRLK1 (Materialize Process Locks) */
+     d matprlk1        pr                  extproc('_MATPRLK1')
+     d     receiver                        likeds(matprlk_tmpl_t)
+
      /* end -- object lock management */
 
      /* mutex management */
