@@ -65,7 +65,7 @@
            lock_states(2) = x'11'; // LEAR lock on objs(2)
 
            // lock objs
-           lock(tmpl);
+           lockobj(tmpl);
 
            dsply 'objects locked.' '' an;
 

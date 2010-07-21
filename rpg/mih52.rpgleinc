@@ -690,6 +690,26 @@
      d min_synptr_info_len...
      d                 c                   13
 
+     /* suspend pointer attributes */
+     d matptr_suspend_info_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0                                      bytes provided
+     d     bytes_out                 10i 0                                      bytes available
+     d     ptr_type                   1a                                        returned pointer type
+     d     ptr_status                 1a                                        pointer status
+     d                                6a
+     d     module_num                10u 0                                      module number
+     d     proc_num                  10u 0                                      procecure number
+     d     num_stmts                 10u 0                                      number of statement IDs
+     d     internal_id...
+     d                                4a                                        internal identifier
+     d     containing_pgm...
+     d                                 *                                        containing program
+      * array of statement IDs, of type Ubin(4).
+
+     d min_suspend_info_len...
+     d                 c                   48
+
      /* MATPTR, materialize pointer attributes */
      d matptr          pr                  extproc('_MATPTR')
      d     receiver                    *   value
@@ -1577,7 +1597,7 @@
       * Lock state selections: array of char(1).
 
      /* _LOCK (Lock Object) */
-     d lock            pr                  extproc('_LOCK')
+     d lockobj         pr                  extproc('_LOCK')
      d     lock_request...
      d                                     likeds(lock_request_tmpl_t)
 
@@ -1689,6 +1709,62 @@
      d     receiver                        likeds(mataol_tmpl_t)
      d     syp_or_spp                  *
 
+     /**
+      * Materailization template of _MATOBJLK.
+      */
+     d matobjlk_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     cur_lock_state...
+     d                                1a
+     d                                3a
+     d     num_lockd                  5i 0
+     d                                2a
+
+     /**
+      * Offset from the start of matobjlk_tmpl_t to lock description
+      * templates.
+      */
+     d matobjlk_lockd_offset...
+     d                 c                   16
+
+     /* Length of lock-description of MATOBJLK */
+     d matobjlk_lockd_length...
+     d                 c                   32
+
+     /**
+      * Lock description structure.
+      */
+     d matobjlk_lock_desc_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     lock_holder...
+     d                                 *
+     d     lock_type                  1a
+     d     lock_status...
+     d                                1a
+     d     lock_status_2...
+     d                                1a
+     d                                1a
+     d     unopend_thread_handle...
+     d                               10u 0
+     d     thread_id                  8a
+
+     /**
+      * _MATOBJLK (Materialize Object Locks)
+      *
+      * @remark The key difference between MATAOL and MATOBJLK is that
+      *         MATAOL only materializes locks already allocated on a
+      *         lockable object, while MATOBJLK also materializes
+      *         locks being requested to allocate on a lockable
+      *         object, either synchronously or asynchronously.
+      */
+     d matobjlk        pr                  extproc('_MATOBJLK')
+     d     receiver                        likeds(matobjlk_tmpl_t)
+     d     syp_or_spp                  *
+
      /* Materialization template of MATPRLK. */
      d matprlk_tmpl_t  ds                  qualified
      d                                     based(dummy_ptr)
@@ -1724,11 +1800,86 @@
       * Length of lock description template for MATPRLK.
       */
      d matprlk_lockd_length...
-     d                 c                   16
+     d                 c                   32
 
      /* _MATPRLK1 (Materialize Process Locks) */
      d matprlk1        pr                  extproc('_MATPRLK1')
      d     receiver                        likeds(matprlk_tmpl_t)
+
+     /**
+      * _MATPRLK2 (Materialize Process Locks)
+      *
+      * _MARPRLK2 accept a system pointer to a PCS object
+      * as its second operand.
+      */
+     d matprlk2        pr                  extproc('_MATPRLK2')
+     d     receiver                        likeds(matprlk_tmpl_t)
+     d     pcs                         *
+
+     /* Materialization template of MATSELLK. */
+     d matsellk_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     cur_lock_states...
+     d                                1a
+     d                                3a
+     d     num_lockd                  5i 0
+      *
+      * Return format.
+      * @remark This is an output field!
+      *   Bits 0-3, reserved (Binary 0).
+      *   Bit 4, if expanded results are returned (this flag is set to
+      *          binary 1) 2-byte lock descriptions are returned;
+      *          otherwise 32-byte lock descriptions are returned.
+      *   Bit 5, do not return locks held by a transaction.
+      *   Bit 6, do not return locks held by a process.
+      *   Bit 7, do not return locks held or waited on by a thread.
+      *
+     d     return_fmt                 1a
+     d                                1a
+
+     /* Lock description template of MATSELLK. */
+     d matsellk_lock_desc_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     lock_type                  1a
+     d     lock_status...
+     d                                1a
+     d                               14a
+     d                                1a
+     d     suspend_ptr...
+     d                                 *
+
+     /**
+      * Offset from the start of matsellk_tmpl_t to
+      * lock description templates.
+      */
+     d matsellk_lockd_offset...
+     d                 c                   16
+
+     /**
+      * Lengths of lock description template for MATSELLK.
+      */
+     d matsellk_lockd_length...
+     d                 c                   2
+     d matsellk_lockd_length_exp...
+     d                 c                   32
+
+     /**
+      * _MATSELLK (Materialize Materialize Selected Locks)
+      *
+      * @remark In contrast with MATAOL, who materializes locks
+      *         currently allocated on a designated lockable object,
+      *         the locks materialized by MATSELLK are the thread
+      *         scoped locks held by the current thread and the
+      *         process scoped locks held by the process containing
+      *         the current thread.
+      */
+     d matsellk        pr                  extproc('_MATSELLK')
+     d     receiver                        likeds(matsellk_tmpl_t)
+     d     syp_or_spp                  *
 
      /* end -- object lock management */
 
@@ -2177,10 +2328,10 @@
      /* undocumented system builtins */
 
      /* jump buffer structure used by __setjmp, and libc procedure longjmp() */
-     d jmp_buf_t       ds                  qualified 
-     d     inv_ptr                     *             
-     d     lbl_ptr                     *             
-     d     num                       10i 0           
+     d jmp_buf_t       ds                  qualified
+     d     inv_ptr                     *
+     d     lbl_ptr                     *
+     d     num                       10i 0
 
      /* __setjmp */
      d setjmp          pr            10i 0 extproc('__setjmp')

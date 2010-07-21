@@ -18,9 +18,9 @@
       */
 
      /**
-      * @file t094.rpgle
+      * @file t095.rpgle
       *
-      * Test of _MATPRLK1 .
+      * Test of _MATPRLK2.
       */
 
      h dftactgrp(*no)
@@ -34,15 +34,24 @@
      d                                     based(pos)
      d TMPL_LEN        c                   4096
      d ind             s              5i 0
+     d pcs_tmpl        ds                  likeds(
+     d                                       matpratr_ptr_tmpl_t)
+     d matpratr_opt    s              1a
 
       /free
+
            // allocate materialization template
            tmpl_ptr = %alloc(TMPL_LEN);
            propb(tmpl_ptr : x'00' : TMPL_LEN);
            tmpl.bytes_in = TMPL_LEN;
 
+           // materialize PCS ptr
+           matpratr_opt = x'25';
+           pcs_tmpl.bytes_in = %size(matpratr_ptr_tmpl_t);
+           matpratr1(pcs_tmpl : matpratr_opt);
+
            // materialize process locks
-           matprlk1 (tmpl);
+           matprlk2 (tmpl : pcs_tmpl.ptr);
 
            // check process locks
            pos = tmpl_ptr + matprlk_lockd_offset;
