@@ -40,13 +40,14 @@
            tmpl_ptr = %alloc(80);
            propb(tmpl_ptr : x'00' : 80);
            tmpl.num_requests = 2;
-           tmpl.offset_lock_state = 16 + 16 * 2;
+           tmpl.offset_lock_state = min_lock_request_tmpl_length
+                                    + 16 * 2;
            tmpl.time_out = 20 * sysclock_one_second;
            tmpl.lock_opt = x'4000'; // 01000000,00000000
              // bit 7 of lock_opt = 0; no extension template
 
            // specify objects to lock
-           pos = tmpl_ptr + 16;
+           pos = tmpl_ptr + min_lock_request_tmpl_length;
            rslvsp_tmpl.obj_type = x'0201';
            rslvsp_tmpl.obj_name = 'T087';
            rslvsp2(objs(1) : rslvsp_tmpl);

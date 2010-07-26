@@ -1,0 +1,34 @@
+/**
+ * @file spr37.emi
+ *
+ * Co-operate with t100.rpgle.
+ *
+ * @pre *USRSPC *LIBL/SPR37
+ * CALL PGM(QUSCRTUS) PARM('SPR37     LSBIN     ' 'PCS' X'00000100' X'00' '*CHANGE' 'NOTHING')
+ */
+
+dcl sysptr space auto init (
+        "SPR37", type(spc, h'34')
+)                               ;
+
+dcl dd tmpl char(32) auto bdry(16) ;
+dcl spcptr tmpl-ptr auto init(tmpl) ;
+dcl spc * bas(tmpl-ptr)             ;
+        dcl dd bin bin(4) dir       ;
+        dcl dd bout bin(4) dir      ;
+        dcl dd * char(8) dir        ;
+        dcl sysptr pcs-ptr dir      ;
+
+        cpynv bin, 32           ;
+        matpratr tmpl-ptr, *, x'25' ;
+brk '1'                             ;
+
+dcl spcptr space-ptr auto       ;
+dcl spc pcs-t bas(space-ptr)    ;
+        dcl sysptr tgt-ptr dir  ;
+        rslvsp space, *, *, *   ;
+        setsppfp space-ptr, space ;
+        cpybwp tgt-ptr, pcs-ptr    ;
+brk 'END'                       ;
+        rtx *                   ;
+pend                            ;

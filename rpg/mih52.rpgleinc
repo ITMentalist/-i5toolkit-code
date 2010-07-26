@@ -1580,7 +1580,7 @@
      /**
       * lock request template WITHOUT extension.
       *
-      * This template can also be used by _UNLOCK.
+      * @remark This template can also be used by _UNLOCK.
       */
      d lock_request_tmpl_t...
      d                 ds                  qualified
@@ -1593,8 +1593,19 @@
      d     lock_opt                   2a
      d     lock_type                  1a   overlay(lock_opt:1)
      d     lock_scope                 1a   overlay(lock_opt:2)
+      *
       * objects-to-lock: array of system pointers.
+      *
       * Lock state selections: array of char(1).
+      *
+
+     /* minimal length of lock request template, WITHOUT extension */
+     d min_lock_request_tmpl_length...
+     d                 c                   16
+
+     /* minimal length of lock request template, WITH extension */
+     d min_lock_request_tmpl_length_ext...
+     d                 c                   32
 
      /* _LOCK (Lock Object) */
      d lockobj         pr                  extproc('_LOCK')
@@ -1880,6 +1891,162 @@
      d matsellk        pr                  extproc('_MATSELLK')
      d     receiver                        likeds(matsellk_tmpl_t)
      d     syp_or_spp                  *
+
+     /**
+      * Process selection template of MATPRECL.
+      */
+     d matprecl_process_tmpl_t...
+     d                 ds                  qualified
+     d     pcs                         *
+      *
+      * Lock selection
+      *
+      * Bit 0: Materialize held locks
+      *   0 = Do not materialize
+      *   1 = Materialize
+      *
+      * Bit 1: Materialize locks waited for
+      *   0 = Do not materialize
+      *   1 = Materialize
+      *
+      * Bits 2-7: Reserved
+      *
+     d     lock_sel                   1a
+      *
+      * Template options
+      *
+      * Bit 0: Format of number of locks
+      *   0 = Use Bin(4) for number of locks
+      *   1 = Use Bin(2) for number of locks
+      *
+      * Bits 1-7: Reserved
+      *
+     d     format_opt                 1a
+     d                               14a
+
+     /* Materialization template of MATPRECL. */
+     d mat_record_lock_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     nums                       8a
+     d     locks_held_4...
+     d                               10i 0 overlay(nums:1)
+     d     lcoks_waited_4...
+     d                               10i 0 overlay(nums:5)
+     d     locks_held_2...
+     d                                5i 0 overlay(nums:1)
+     d     lcoks_waited_2...
+     d                                5i 0 overlay(nums:3)
+      *
+      * Locks held descriptions.
+      * Repeated number of lock held descriptions times.
+      *
+      * Lock waited for descriptions.
+      * Repeated number of lock waited for descriptions times.
+      *
+
+     /* Minimal length of materialization template of MATPRECL and MATDRECL. */
+     d min_reclock_tmpl_length...
+     d                 c                   16
+
+     /* Length of a record lock description */
+     d record_lockd_length...
+     d                 c                   32
+
+     /* Lock description for record locks. */
+     d record_lock_desc_t...
+     d                 ds                  qualified
+      *
+      * When returned by instruction MATPRECL, obj
+      * refers to a data space object (hex 0B90). When returned
+      * by instruction MATDRECL, obj refers to a PCS object (hex 1AEF).
+      *
+     d     obj                         *
+      * Relative record number
+     d     rrn                       10u 0
+      *
+      * Lock state or lock state requested.
+      *
+      * Hex 30 = DLWK (Database lock weak) lock state.
+      * Hex C0 = DLRD (Database lock read) lock state.
+      * Hex F8 = DLUP (Database lock update) lock state.
+      *
+     d     lock_state                 1a
+      *
+      * Lock holder/waiter information
+      *
+      * Bit 0: Lock scope object type.
+      * 0 = Process control space.
+      * 1 = Transaction control structure.
+      *
+      * Bit 1: Lock scope.
+      * 0 = Lock is scoped to the lock scope object type.
+      * 1 = Lock is scoped to the thread.
+      *
+      * Bits 2-7: Reserved (binary 0).
+      *
+     d     lock_info                  1a
+     d     thread_id                  8a
+
+     /* _MATPRECL (Materialize Process Record Locks) */
+     d matprecl        pr                  extproc('_MATPRECL')
+     d     receiver                        likeds(mat_record_lock_tmpl_t)
+     d     process                         likeds(
+     d                                       matprecl_process_tmpl_t)
+
+     /**
+      * Process selection template of MATDRECL.
+      */
+     d matdrecl_record_tmpl_t...
+     d                 ds                  qualified
+      * System pointer to target data space
+     d     dds                         *
+      *
+      * The record number is a relative record number within that data
+      * space. If the record number is zero then all locks on the
+      * specified data space will be materialized.
+      *
+     d     rrn                       10i 0
+     d                                4a
+      *
+      * Lock selection
+      *
+      * Bit 0: Materialize data space locks held
+      *   0 = Do not materialize
+      *   1 = Materialize
+      *
+      * Bit 1: Materialize data space locks waited for
+      *   0 = Do not materialize
+      *   1 = Materialize
+      *
+      * Bits 2-7: Reserved
+      *
+     d     lock_sel                   1a
+      *
+      * Template options
+      *
+      * Bit 0: Format of number of locks
+      *   0 = Use Bin(4) for number of locks
+      *   1 = Use Bin(2) for number of locks
+      *
+      * Bits 1-7: Reserved
+      *
+     d     format_opt                 1a
+     d                               14a
+
+     /* _MATDRECL (Materialize Data Space Record Locks) */
+     d matdrecl        pr                  extproc('_MATDRECL')
+     d     receiver                        likeds(mat_record_lock_tmpl_t)
+     d     dds                             likeds(
+     d                                       matdrecl_record_tmpl_t)
+
+     /* _XFRLOCK (Transfer Object Lock) */
+     d xfrlock         pr                  extproc('_XFRLOCK')
+     d     pcs                         *
+     d     lock_request...
+     d                                     likeds(lock_request_tmpl_t)
 
      /* end -- object lock management */
 
