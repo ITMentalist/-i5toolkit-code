@@ -975,16 +975,16 @@
      d     pgm                         *
 
      /* _DEACTPG1, deactivate non-bound program */
-     d deactpg         pr                  extproc('_DEACTPG1')
+     d deactpg1        pr                  extproc('_DEACTPG1')
      d     pgm                         *
 
      /**
       * _DEACTPG2
       *
-      *  @todo when and how to use it??
+      * @remark _DEACTPG2 deactivate the activation entry of the
+      *         calling program itself.
       */
      d deactpg2        pr                  extproc('_DEACTPG2')
-     d     pgm                         *
 
      /* MATPGMNM, materialize program name */
      d matpgmnm        pr                  extproc('_MATPGMNM')

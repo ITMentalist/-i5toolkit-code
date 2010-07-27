@@ -68,9 +68,11 @@
       /endif
 
            // deactivate OPM program SPR1_A
-           deactpg (pgm);
+           deactpg1 (pgm);
              // pgm SPR1_A is deactivated;
              // see activation entries of AG x'00000002'
 
+           deactpg2(pgm);
+             // MCH4421: Invalid operation for program.
            *inlr = *on;
       /end-free

@@ -30,13 +30,17 @@ TARGETS=t001 t002 t003 t004 t005 t006 t007 t008 t009 t010 t011 t012 t013 t014 t0
 	t059 t060 t061 t063 t064 t065 t066 t067 t068 t069 t070 t071 t072 t073 t075.pnlgrp \
 	t074 t075 t076 t077 t078 t079 t080 t081 t082 t083_b t083 \
 	t084 t085 t086 t087 t088 t089 t090 t091 t092 t093 t094 \
-	t095 t096 t097 t098 t099 t099up
+	t095 t096 t097 t098 t099 t099up spr37 t100
 
 all: $(TARGETS)
 	@echo "compilation done -- rpg"
 
 clean:
 	qsh -c "/usr/bin/rmflnk $(TARGETS)"
+
+t072: t072.module
+	system "crtpgm pgm($@) module($@) alwrinz(*yes)"
+	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
 
 t084: t084.c
 	system "crtbndc $@ srcstmf($@.c) dbgview(*all) teraspace(*yes *notsifc)"

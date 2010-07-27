@@ -1,16 +1,23 @@
      /**
       * @file t100.rpgle
       *
+      * How T100 works?
       *  - Resolve system pointer to *USRSPC *LIBL/SPR37.
       *  - Load PCS ptr stored by program SPR37 (see spr37.emi).
       *  - Transfer object locks to MI process identified by PCS ptr.
       *
+      * @remark To check the content of user space SPR37, type the following commnad:
+      * @code
+      * DMPOBJ OBJ(SPR37) OBJTYPE(*USRSPC)
+      * @endcode
+      *
+      * @remark To check locks currently allocated on *USRQ THD0, use the WRKOBJLCK command.
       */
 
      h dftactgrp(*no)
 
       /copy mih52
-     d spr37_t         ds                  qualified
+     d spc_spr37       ds                  qualified
      d                                     based(spp)
      d      pcs                        *
      d spp             s               *
@@ -20,13 +27,14 @@
      d funny_ptr                       *   procptr
      d                                     overlay(spr37:1)
      d lock_req        ds                  likeds(lock_request_tmpl_t)
+     d                                     based(lock_req_ptr)
      d lock_req_ptr    s               *
      d TMPL_LEN        c                   128
      d pos             s               *
      d to_lock         s               *   based(pos)
      d lock_state      s              1a   based(pos)
 
-     d
+     d msg             s             24a
 
       /free
            rslvsp_tmpl.obj_type = x'1934';
@@ -49,11 +57,18 @@
            rslvsp2(to_lock : rslvsp_tmpl);
 
            pos += 16;
+           lock_state = x'11'; // LEAR
 
+           // acquire a LEAR lock on *USRQ THD0
+           lockobj(lock_req);
 
+           msg = 'WRKOBJLCK THD0 *USRQ';
+           dsply 'before XFRLOCK.' '' msg;
 
            // transfer locks to MI process identified by pcs
+           xfrlock(spc_spr37.pcs : lock_req);
 
+           dsply 'after XFRLOCK.' '' msg;
 
            *inlr = *on;
       /end-free
