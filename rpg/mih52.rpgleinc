@@ -1138,8 +1138,11 @@
      /* MATINVE, materialize invocation entry */
      /* @todo MCH4227! */
      d*matinve         pr                  extproc('_MATINVE')
-     d*    receiver                    *   value
+     d*    receiver                        likeds(matinve_dummy_t)
      d*    option                    10u 0 value
+
+     d*matinve_dummy_t...
+     d*                ds                  qualified
 
      /* invocation identification structure */
      d invocation_id_t...
@@ -1196,7 +1199,6 @@
      d matinvat_ag_mark_rcv_t...
      d                 ds            16    qualified
      d     ag_mark                   10u 0
-     d                               12a
 
      /* activation template for RINZSTAT */
      d rinzstat_tmpl_t...
@@ -1209,6 +1211,7 @@
      d                 ds                  qualified
      d     pgm                         *
      d     agp_mark                  20u 0
+     d                                8a
 
      /* RINZSTAT, reinitialize static storage */
      d rinzstat        pr                  extproc('_RINZSTAT')
@@ -1219,6 +1222,108 @@
      d rinzstat2       pr                  extproc('_RINZSTAT2')
      d     activation_tmpl...
      d                                     likeds(rinzstat_tmpl2_t)
+
+     /**
+      * _OPM_PARM_CNT (OPM Parameter Count)
+      * @todo has not been tested.
+      */
+     d opm_parm_cnt    pr            10u 0 extproc('_OPM_PARM_CNT')
+
+     /**
+      * _OPM_PARM_ADDR (OPM Parameter Address)
+      * @todo has not been tested.
+      */
+     d opm_parm_addr   pr              *   extproc('_OPM_PARM_ADDR')
+     d     ind                       10u 0 value
+
+     /* Materialization template for MATINVS */
+     d matinvs_tmpl_t  ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     entries                   10i 0
+      *
+      * Fields annotated with a plus sign (+) are not
+      * materailized when working with a process rather other the
+      * current process.
+      *
+      * (+)
+     d     thd_marker_cnt...
+     d                               10i 0
+      * offset = 16
+      *
+      * Call stack (invocation) entries in array of char(128)
+      *
+
+     /* Minimal length of matinvs_tmpl_t. */
+     d min_matinvs_tmpl_length...
+     d                 c                   16
+
+     /* Invocation entries materialized by MATINVS */
+     d invocation_entry_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d                               32a
+     d     pgm                         *
+     d     inv_num                    5i 0
+      *
+      * Invocation mechanism.
+      *
+      * hex 01 = Call external
+      * hex 02 = Transfer control
+      * hex 03 = Event handler
+      * hex 04 = External exception handler (for non-bound program)
+      * hex 05 = Initial program in process problem state
+      * hex 06 = Initial program in process initiation state
+      * hex 07 = Initial program in process initiation state
+      * hex 08 = Invocation exit (for non-bound program)
+      * hex 09 = Return or return/XCTL trap handler
+      * hex 0A = Call program
+      * hex 0B = Cancel handler (bound program only)
+      * hex 0C = Exception handler (bound program only)
+      * hex 0D = Call bound procedure/call with procedure pointer
+      * hex 0E = Process Default Exception Handler
+      *
+     d     inv_method                 1a
+      *
+      * Invocation type.
+      *
+      * hex 01 = Non-Bound Program
+      * hex 02 = Bound Program Entry Procedure (PEP)
+      * hex 03 = Bound Program Procedure
+      *
+     d     inv_type                   1a
+      * (+)
+     d     inv_mark                  10i 0
+     d     inst_id                   10i 0
+      * (+)
+     d     agp_mark                  10i 0
+     d     suspend_ptr...
+     d                                 *
+     d                               48a
+
+     /* Length of DS invocation_entry_t */
+     d invocation_entry_length...
+     d                 c                   128
+
+     /**
+      * _MATINVS1 (Materialize Invocation Stack)
+      *
+      * @remark _MATINVS1 accept a PCS ptr as its second operand and
+      *          meterialize the call stack of the initial thread of
+      *          another process
+      */
+     d matinvs1        pr                  extproc('_MATINVS1')
+     d     receiver                        likeds(matinvs_tmpl_t)
+     d     pcs                         *
+
+     /**
+      * _MATINVS2 (Materialize Invocation Stack)
+      *
+      * @remark _MATINVS2 materialize the call stack of current thread.
+      */
+     d matinvs2        pr                  extproc('_MATINVS2')
+     d     receiver                        likeds(matinvs_tmpl_t)
 
      /* end -- program execution */
 

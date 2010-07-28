@@ -20,9 +20,19 @@
      /**
       * @file t072.rpgle
       *
-      * test of _RINZSTAT
+      * test of _RINZSTAT.
       *
       * @remark _RINZSTAT only affects programs compiled with ALWRINZ(*YES).
+      *
+      * Output of T072:
+      * @code
+      * DSPLY      1             6
+      * DSPLY      2             7
+      * DSPLY      3             8
+      * DSPLY      4             9
+      * DSPLY      5            10
+      * DSPLY  After RINZSTAT:             5
+      * @endcode
       */
 
       /if defined(*crtbndrpg)
@@ -31,53 +41,37 @@
 
       /copy mih52
 
-     d inv_tmpl_ptr    s               *
-     d inv_tmpl        ds                  likeds(matinvat_selection_t)
-     d                                     based(inv_tmpl_ptr)
-     d ag_mark         ds                  likeds(matinvat_ag_mark_rcv_t)
-     d mat_tmpl_ptr    s               *
-     d mat_tmpl        ds                  likeds(mathsat_tmpl_t)
-     d                                     based(mat_tmpl_ptr)
-     d invid           ds                  likeds(invocation_id_t)
-     d inz_tmpl        ds                  likeds(rinzstat_tmpl_t)
-     d pgmptr          s               *
-     d i_static        s             16a   inz('tommy')
+     d ind             s              5i 0
+     d pgm             s               *
+     d act_dfn         ds                  likeds(actbpgm_dfn_t)
+     d rinz_tmpl       ds                  likeds(rinzstat_tmpl_t)
+      * output param of ILE C PGM T072B
+     d rtn             s             10i 0 inz(5)
 
-     d i_main          pr                  extpgm('T072')
-     d     inv_ptr                     *
-
-     d i_main          pi
-     d     inv_ptr                     *
+     d t072b           pr                  extpgm('T072B')
+     d     rtn                       10i 0
 
       /free
-           // get AG mark
-           inv_tmpl_ptr = modasa(matinvat_selection_length);
-           propb( inv_tmpl_ptr
-                 : x'00'
-                 : matinvat_selection_length );
-           inv_tmpl.num_attr   = 1;
-           inv_tmpl.flag1      = x'00';
-           inv_tmpl.ind_offset = 0;
-           inv_tmpl.ind_length = 0;
-           inv_tmpl.attr_id    = 14;  // materialize AG mark
-           inv_tmpl.flag2      = x'00';
-           inv_tmpl.rcv_offset = 0;
-           inv_tmpl.rcv_length = 4;
-           matinvat(%addr(ag_mark) : inv_tmpl_ptr);
+           // activate ILE C PGM t072b
+           rslvsp_tmpl.obj_type = x'0201';
+           rslvsp_tmpl.obj_name = 'T072B';
+           rslvsp2(pgm : rslvsp_tmpl);
+           actbpgm(act_dfn : pgm);
 
-           // retrieve SYP to the current program
-           inv_tmpl.attr_id = 6;   // system pointer to pgm
-           inv_tmpl.rcv_length = 16;
-           matinvat(%addr(pgmptr) : inv_tmpl_ptr);
+           // call t072b for 5 times
+           for ind = 1 to 5;
+               t072b(rtn);
+               dsply ind '' rtn;
+           endfor;
 
-           i_static = 'Julian';
-           dsply 'i_static' '' i_static;
+           // re-initialize static storage of t072b
+           rinz_tmpl.pgm = pgm;
+           rinz_tmpl.agp_mark = act_dfn.agp_mark;
+           rinzstat(rinz_tmpl);
 
-           // reinitialize static storage
-           inz_tmpl.agp_mark = ag_mark.ag_mark;
-           inz_tmpl.pgm      = pgmptr;
-           rinzstat(inz_tmpl);
-           dsply 'i_static' '' i_static;
+           // call t072b again
+           t072b(rtn);
+           dsply 'After RINZSTAT:' '' rtn;
 
            *inlr = *on;
       /end-free
