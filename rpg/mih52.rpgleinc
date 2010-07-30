@@ -722,6 +722,99 @@
      d     source                      *   value
      d     length                    10i 0
 
+     /* Description of a suspend pointer returned by MATPTRIF. */
+     d matptrif_susptr_desc_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d                                1a
+      *
+      * hex 00 = Non-bound program
+      * hex 01 = Bound program
+      * hex 03 = Bound service program
+      * hex 04 = Java program
+      *
+     d     pgm_type                   1a
+     d     pgm_ccsid                  5u 0
+     d     pgm_name                  30a
+     d     pgm_ctx                   30a
+     d                                4a
+     d     mod_name                  30a
+      * module qualification
+     d     mod_qual                  30a
+     d                                4a
+     d     proc_dict_id...
+     d                               10i 0
+      * this field is for input
+     d     proc_name_length_in...    
+     d                               10i 0
+     d     proc_name_length_out...    
+     d                               10i 0
+      * this field is for input
+     d     proc_name_ptr...
+     d                                 *
+     d                                8a
+      * this field is for input
+     d     stmt_ids_in...
+     d                               10i 0
+     d     stmt_ids_out...    
+     d                               10i 0
+      * this field is for input
+     d     stmt_ids_ptr...
+     d                                 *
+
+     /**
+      * Description of a system pointer or a space pointer returned by
+      * MATPTRIF.
+      */
+     d matptrif_sypspp_desc_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     asp_num                    5u 0
+
+     /* Template length when materaizing a suspend ptr by MATPTRIF. */
+     d matptrif_susptr_tmpl_length...
+     d                 c                   208
+
+     /* Template length when materaizing a SYP or a SPP by MATPTRIF. */
+     d matptrif_sypspp_tmpl_length...
+     d                 c                   18
+
+     /* Offset to pointer description from the start of matptrif_tmpl_t. */
+     d matptrif_ptrd_offset...
+     d                 c                   16
+
+     /* Materialization template for MATPTRIF */
+     d matptrif_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                7a
+      *
+      * Pointer type.
+      * hex 01 = System pointer
+      * hex 02 = Space pointer
+      * hex 03 = Suspend pointer
+      *
+     d     ptr_type                   1a
+      *
+      * Pointer description. matptrif_susptr_desc_t for a suspend
+      * pointer or matptrif_sypspp_desc_t for a system pointer or a
+      * space pointer.
+      *
+
+     /**
+      * _MATPTRIF (Materialize Pointer Information (MATPTRIF))
+      *
+      * MATPTRIF can be used to retrieve ASP number of a system pointer
+      * or space pointer. Addtionally, it can return details of
+      * a suspend pointer.
+      */
+     d matptrif        pr                  extproc('_MATPTRIF')
+     d     receiver                        likeds(matptrif_tmpl_t)
+     d     ptr                         *
+     d     selection                  4a
+
      /**
       * _RSLVDP1 (Resolve Data Pointer)
       */
@@ -1135,8 +1228,15 @@
      d       list_t    ds                  qualified based(dummy_ptr)
      d     argc                      10i 0
 
-     /* MATINVE, materialize invocation entry */
-     /* @todo MCH4227! */
+     /**
+      * MATINVE, materialize invocation entry.
+      *
+      * @todo MCH4227!
+      * The reason code is 8 and the operation code of the current instruction is X'00000061'.
+      * When opcode is hex 61??
+      *
+      * @remark 觉得这事还是得问 IBM!
+      */
      d*matinve         pr                  extproc('_MATINVE')
      d*    receiver                        likeds(matinve_dummy_t)
      d*    option                    10u 0 value
@@ -1324,6 +1424,190 @@
       */
      d matinvs2        pr                  extproc('_MATINVS2')
      d     receiver                        likeds(matinvs_tmpl_t)
+
+     /**
+      * Selection template for MATINV.
+      */
+     d matinv_selection_t...
+     d                 ds                  qualified
+      *
+      * Control information.
+      * Bit 0 (+).
+      *   Template extension.
+      *   0 = Template extension is not present.
+      *   1 = Template extension is present.
+      *
+      * Bits 1-15.
+      *   Invocation number
+      *
+     d     inv_num                    5i 0
+     d     offset_parms...
+     d                               10i 0
+     d     parm_odv_num...
+     d                                5u 0
+     d     offset_exception_descs...
+     d                               10i 0
+     d     excpd_odv_num...
+     d                                5u 0
+      *
+      * template extension
+      *
+     d     offset_mchspcs...
+     d                               10i 0
+     d     mchspc_num...
+     d                                5u 0
+     d                                8a
+
+     /* Materialization template for MATINVS */
+     d matinv_tmpl_t   ds
+
+     /**
+      * Materialization template for MATINVS when target
+      * invocation is for a bound program procedure.
+      */
+     d matinv_npm_tmpl_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+      *
+      * Object ID
+      *
+     d     obj_type                   2a
+     d     obj_name                  30a
+     d     trace_spec                 2a
+
+     /* Length of matinv_npm_tmpl_t. */
+     d matinv_npm_tmpl_length...
+     d                 c                   42
+
+     /**
+      * Materialization template for MATINVS when target
+      * invocation is for a non-bound program procedure.
+      */
+     d matinv_opm_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+      *
+      * Object ID
+      *
+     d     obj_type                   2a
+     d     obj_name                  30a
+     d     trace_spec                 2a
+      *
+      * Fields only for non-bound program invocations.
+      *
+     d     inst_num                   5u 0
+     d     offset_parm_data...
+     d                               10i 0
+     d     offset_excd_data...
+     d                               10i 0
+     d     offset_mchspc_data...
+     d                               10i 0
+      *
+      * Array of space pointer machine objects (
+      * matinv_mchspc_t).
+      *
+      * Array of SPCPTRs of parameters.
+      *
+      * Array of exception descriptions (matinv_expd_t).
+      *
+
+     /* Minimal length of matinv_opm_tmpl_t. */
+     d min_matinv_opm_tmpl_length...
+     d                 c                   56
+
+     /* matinv_mchspc_t */
+     d matinv_mchspc_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d                               15a
+      *
+      * Pointer value indicator.
+      *   00 = Addressability value is not valid.
+      *   01 = Addressability value is valid.
+      *
+     d     ptr_ind                    1a
+     d     mchspc_ptr                  *
+
+     /**
+      * Exception description materialized by MATINVS
+      */
+     d matinv_expd_t   ds                  qualified
+     d                                     based(dummy_ptr)
+      *
+      * Control flags.
+      * Bits 0-2, Exception handling action
+      *   000 = Ignore occurrence of exception and continue processing.
+      *   001 = Disabled exception description.
+      *   002 = Continue search for an exception description by
+      *         resignaling the exception to the immediately preceding
+      *         invocation.
+      *   003 = Defer handling.
+      *   004 = Pass control to the specified exception handler.
+      *
+      * Bits 3-15, reserved (binary 0).
+      *
+     d     control_flag...
+     d                                2a
+     d     cmp_value_len...
+     d                                5i 0
+     d     cmp_value                 32a
+
+     /**
+      * _MATINV (Materialize Invocation (MATINV))
+      */
+     d matinv          pr                  extproc('_MATINV')
+     d     receiver                        likeds(matinv_tmpl_t)
+     d     selection                       likeds(matinv_selection_t)
+
+     /**
+      * Search criterion structure for FNDRINVN.
+      */
+     d fndrinvn_criterion_t...
+     d                 ds                  qualified
+     d                                8a
+     d     search_type...
+     d                               10i 0
+     d     option                     1a
+     d                                3a
+     d     search_arg                16a
+
+     /**
+      * Search range structure for FNCRINVN.
+      */
+     d fndrinvn_search_range_t...
+     d                 ds                  qualified
+     d     start_inv_offset...
+     d                               10i 0
+     d                               10i 0
+     d     inv_range                 10i 0
+     d                                4a
+     d     start_invp                  *
+     d                               16a
+
+     /**
+      * _FNDINVN1 (Find Relative Invocation Number (FNDRINVN))
+      *
+      * @remark _FNDRINVN1 does NOT accept search-range operand.
+      */
+     d fndrinvn1       pr                  extproc('_FNDRINVN1')
+     d     relative_inv_num...
+     d                               10i 0
+     d*    range                           likeds(fndrinvn_search_range_t)
+     d     criterion                       likeds(fndrinvn_criterion_t)
+
+     /**
+      * _FNDINVN2 (Find Relative Invocation Number (FNDRINVN))
+      *
+      * @remark _FNDRINVN2 accept search-range operand as its second operand
+      */
+     d fndrinvn2       pr                  extproc('_FNDRINVN2')
+     d     relative_inv_num...
+     d                               10i 0
+     d     range                           likeds(fndrinvn_search_range_t)
+     d     criterion                       likeds(fndrinvn_criterion_t)
 
      /* end -- program execution */
 
