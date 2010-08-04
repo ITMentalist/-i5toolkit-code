@@ -18,7 +18,7 @@
       */
 
      /**
-      * @file t070.rpgle
+      * @file t087.rpgle
       *
       * Test of recursive locks via CHKLKVAL/CLRLKVAL.
       */
@@ -39,13 +39,30 @@
      d f               pi
      d     old_val                   20i 0 value
      d     new_val                   20i 0 value
+
+     d max_depth       c                   5
+
       /free
-           chklkval(lck : old_val : new_val);
-           if new_val > 5;                     // max recursion depth
+
+           // Try to acquire lock.
+           dow chklkval(lck : old_val : new_val) = 1;
+               // wait for a small time quantum.
+           enddo;
+
+           // Execute mutually exclusive program logics
+           // or access shared resources.
+           // ... ...
+
+           dsply 'Current recursion depth' '' new_val;
+
+           if new_val > max_depth;  // Check recursion depth.
+               clrlkval(lck : old_val);
                return;
            else;
                f(old_val + 1 : new_val + 1);
            endif;
+
+           // Release lock.
            clrlkval(lck : old_val);
       /end-free
      p f               e

@@ -2819,6 +2819,14 @@
      d     option                     2a
      d                                6a
 
+     /* 8 microseconds in system closk format */
+     d sysclock_eight_microsec...
+     d                 c                   x'0000000000008000'
+
+     /* 1 millisecond in system closk format */
+     d sysclock_one_millisec...
+     d                 c                   x'00000000003E8000'
+
      /* 1 second in format of system clock */
      d sysclock_one_second...
      d                 c                   x'00000000F4240000'
@@ -2832,6 +2840,13 @@
      d                 c                   x'0008CD0E3A000000'
 
      /* end -- process and thread management */
+
+     /* Storage and Resource Management */
+
+     /* _YIELD (Yield (YIELD)) */
+     d yield           pr                  extproc('_YIELD')
+
+     /* end -- Storage and Resource Management */
 
      /* Machine Observation */
 

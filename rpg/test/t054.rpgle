@@ -72,7 +72,7 @@
              // pgm SPR1_A is deactivated;
              // see activation entries of AG x'00000002'
 
-           deactpg2(pgm);
+           deactpg2();
              // MCH4421: Invalid operation for program.
            *inlr = *on;
       /end-free
