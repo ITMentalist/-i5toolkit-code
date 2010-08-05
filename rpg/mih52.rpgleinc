@@ -2701,6 +2701,165 @@
 
      /* authorization management */
 
+     /* Materialized authorization info of MATAU */
+     d matau_tmpl_t    ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+      *
+      * Private authorization (1 = authorized)
+      *   Bit 0  = Object control
+      *   Bit 1  = Object management
+      *   Bit 2  = Authorized pointer
+      *   Bit 3  = Space authority
+      *   Bit 4  = Retrieve
+      *   Bit 5  = Insert
+      *   Bit 6  = Delete
+      *   Bit 7  = Update
+      *   Bit 8  = Ownership (1 = yes)
+      *   Bit 9  = Excluded
+      *   Bit 10 = Authority list management
+      *   Bit 11 = Execute
+      *   Bit 12 = Alter
+      *   Bit 13 = Reference
+      *   Bit 14-15, reserved (binary 0)
+      *
+     d     private_auth...
+     d                                2a
+     d     public_auth...
+     d                                2a
+      *
+      * Private authorization source
+      *   0 =  Authority to object
+      *   1 =  Authority to authority list
+      *   2 =  Authority to object via primary group
+      *   3 =  Authority to authority list via primary group
+      *
+     d     pri_auth_source...
+     d                                5u 0
+      *
+      * Public authorization source
+      *   0 =  Authority to object
+      *   1 =  Authority to authority list
+      *
+     d     pub_auth_source...
+     d                                5u 0
+
+     /* Materialize option of MATAU */
+     d matau_option_t  ds                  qualified
+      *
+      * Bit 0, ignore all object special authority.
+      *   0 = No
+      *   1 = Yes
+      *
+     d     flag                       2a
+     d                               14a
+     d     usrprf                      *
+
+     /**
+      * _MATAU1 (Materialize Authority (MATAU))
+      *
+      * Materialize public and private authority of a permanent MI object.
+      */
+     d matau1          pr                  extproc('_MATAU1')
+     d     receiver                        likeds(matau_tmpl_t)
+     d     object                      *
+      * System pointer to a *USRPRF object or a matau_option_t DS.
+     d     usrprf_or_option...
+     d                                 *
+
+     /**
+      * _MATAU2 (Materialize Authority (MATAU))
+      *
+      * Materialize public authority of a permanent MI object.
+      *
+      * @remark _MATAU2 does not accept a user profile operand.
+      */
+     d matau2          pr                  extproc('_MATAU2')
+     d     receiver                        likeds(matau_tmpl_t)
+     d     object                      *
+
+     /* Materialization option of MATAL */
+     d matal_option_t  ds                  qualified
+      *
+      * Control flag.
+      *
+      * hex 12 = Materialize count of entries matching the criteria
+      * hex 22 = Materialize identification of entries matching
+      *          the criteria and return information using
+      *          short description format
+      * hex 32 = Materialize identification of entries matching
+      *          the criteria and return information using long
+      *          description format
+      *
+     d     flag                       1a
+      *
+      * Selection criteria.
+      *
+      * hex 00 = All authority list or authority list extension entries
+      * hex 01 = Select by object type code.
+      * hex 02 = Select by object type code and subtype code.
+      *
+     d     criteria                   1a
+     d                                2a
+     d     type_code                  1a
+     d     subtype_code...
+     d                                1a
+     d                               30a
+
+     /* Materialization template of MATAL */
+     d matal_tmpl_t    ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+      * *AUTL
+     d     obj_type                   2a
+     d     obj_name                  30a
+     d     crt_option                 4a
+     d                                4a
+     d     spc_size                  10i 0
+     d     init_spc_value...
+     d                                1a
+     d     performance_class...
+     d                                4a
+     d                                7a
+     d     contex                      *
+     d                               16a
+      *
+      * Bit 0, override specific object authority
+      * 0 = No
+      * 1 = Yes
+      *
+     d     attr                       4a
+     d                               28a
+     d     num_entries...
+     d                               10u 0
+     d                               12a
+
+     /* Short *AUTL entry description */
+     d autl_entry_short_desc_t...
+     d                 ds                  qualified
+     d     obj_type                   2a
+     d                               14a
+     d     object                      *
+
+     /* Long *AUTL entry description */
+     d autl_entry_long_desc_t...
+     d                 ds                  qualified
+     d     obj_type                   2a
+     d     obj_name                  30a
+     d                               16a
+     d     object                      *
+     d     obj_owner                   *
+     d     ctx_type                   2a
+     d     ctx_name                  30a
+     d     context                     *
+
+     /* _MATAL (Materialize Authority List (MATAL)) */
+     d matal           pr                  extproc('_MATAL')
+     d     receiver                        likeds(matal_tmpl_t)
+     d     autl                        *
+     d     option                          likeds(matal_option_t)
+
      /* MATAUU template */
      d matauu_tmpl_t   ds            16    qualified
      d                                     based(dummy_ptr)
@@ -2733,6 +2892,15 @@
      d matauu          pr                  extproc('_MATAUU')
      d     receiver                    *   value
      d     obj                         *
+     d     option                     1a
+
+     /* _MODINVAU (Modify Invocation Authority Attributes (MODINVAU)) */
+     d modinvau        pr                  extproc('_MODINVAU')
+      * 
+      * option
+      *   hex 00 = Do not suppress adopted user profile authority
+      *   hex 01 = Suppress adopted user profile authority
+      * 
      d     option                     1a
 
      /* end -- authorization management */
