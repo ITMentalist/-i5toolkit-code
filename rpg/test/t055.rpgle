@@ -89,6 +89,7 @@
       * attributes of a system pointer
      d syp_attr        ds                  likeds(matptr_sysptr_info_t)
      d msg             s             50a
+     d msg_ptr         s               *
      d MSG_LEN         c                   50
 
      d i               pi
@@ -114,7 +115,8 @@
            matagpat( agp_attr_ptr : agp_mark : agp_opt );
 
            // work with returned activation entry list
-           msg = 'Number  Library     Program';
+           msg_ptr = %addr(msg) + 32;
+           msg = 'Number  Library     Program     Act-mark';
            sendmsg(msg : MSG_LEN);
            acte_ptr = agp_attr_ptr + 16;
            act_attr.bytes_in = %size(act_basic_attr_t);
@@ -141,6 +143,7 @@
                // report program library and name
                %subst(msg:9) = syp_attr.ctx_name;
                %subst(msg:21) = syp_attr.obj_name;
+               cvthc(msg_ptr : %addr(act_attr.act_mark) : 8);
                sendmsg(msg : MSG_LEN);
 
                // offset acte_ptr to next activatio mark

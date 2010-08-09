@@ -2903,6 +2903,127 @@
       * 
      d     option                     1a
 
+     /* Object template for TESTAU */
+     d testau_object_tmpl_t...
+     d                 ds                  qualified
+     d     relative_invocation_number...
+     d                                5i 0
+      * reserved (binary 0)
+     d                               14a
+     d     object                      *
+
+     /**
+      * _TESTAU1 (Test Authority (TESTAU))
+      *
+      * Test the authority to an MI object of the current invocation
+      * or a previous invocation.
+      *
+      * @return 1 = authroized; 0 = NOT authorized.
+      *
+      * @remark _TESTAU1 accept 2 operands.
+      */
+     d testau1         pr            10i 0 extproc('_TESTAU1')
+      * System pointer to target MI object or space pointer to object
+      * template DS defined by testau_object_tmpl_t.
+     d     obj_or_tmpl...
+     d                                 *
+     d     auth_required...
+     d                                2a
+
+     /**
+      * _TESTAU2 (Test Authority (TESTAU))
+      *
+      * Test the authority to an MI object of the current invocation
+      * or a previous invocation.
+      *
+      * @return 1 = authroized; 0 = NOT authorized.
+      *
+      * @remark _TESTAU2 accept 3 operands including available
+      *         authorities returned in operand 1.
+      */
+     d testau2         pr            10i 0 extproc('_TESTAU2')
+     d     auth_available...
+     d                                2a
+      * System pointer to target MI object or space pointer to object
+      * template DS defined by testau_object_tmpl_t.
+     d     obj_or_tmpl...
+     d                                 *
+     d     auth_required...
+     d                                2a
+
+     /* Selection template of MATUPID. */
+     d matupid_select_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+      *
+      * Format option
+      *   hex 01 = return short template
+      *   hex 02 = return long template
+      *
+      * @remark The short format contains only a system pointer to
+      *         each materialized user profile object.
+      *
+     d     fmt_option                 1a
+      *
+      * Materialization type option
+      *   hex 00 = list provided
+      *   hex 41 = Return all gids starting with the specified gid
+      *   hex 80 = Return all uids then all gids
+      *   hex 81 = Return all uids then gids starting with the
+      *            specified uid
+      *
+     d     type_option...
+     d                                1a
+     d     num_uids                  10u 0
+     d     num_gids                  10u 0
+     d                               10a
+      * array of Ubin(4) uids or gids
+
+     /* Materialization template of MATUPID. */
+     d matupid_tmpl_t  ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+      * Number of uids returned
+     d     num_uids                  10u 0
+      * Number of gids returned
+     d     num_gids                  10u 0
+      *
+      * Bit 0, one or more USRPRF pointers are not set.
+      * Bits 1-7, reserved.
+      *
+     d     flag                       1a
+     d                               15a
+      * materialized user profile templates
+
+     /* Long format materialization template. */
+     d matupid_usrprf_long_t...
+     d                 ds                  qualified
+     d     prf_type                   2a
+     d     prf_name                  30a
+      * uid or gid
+     d     id                        10u 0
+      *
+      * type of id
+      *   hex 01 = user id
+      *   hex 02 = group id
+      *
+     d     id_type                    1a
+      *
+      * Bit 0, system pointer to USRPRF is not set.
+      * Bits 1-7, reserved.
+      *
+     d     flag                       1a
+     d                               10a
+     d     usrprf                      *
+
+     /**
+      * _MATUPID (Materialize User Profile Pointers from ID (MATUPID))
+      */
+     d matupid         pr                  extproc('_MATUPID')
+     d     output                          likeds(matupid_tmpl_t)
+     d     input                           likeds(matupid_select_tmpl_t)
+
      /* end -- authorization management */
 
      /* process and thread management */
