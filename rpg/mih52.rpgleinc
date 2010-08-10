@@ -2951,6 +2951,70 @@
      d     auth_required...
      d                                2a
 
+     /* Authorization template used by TESTEAU. */
+     d testeau_auth_tmpl_t...
+     d                 ds                  qualified
+      *
+      * Privileged instruction template
+      *   Bit  0 = Create Logical Unit Description
+      *   Bit  1 = Create Network Description
+      *   Bit  2 = Create Controller Description
+      *   Bit  3 = Create user profile
+      *   Bit  4 = Modify user profile
+      *   Bit  5 = Diagnose
+      *   Bit  6 = Terminate machine processing
+      *   Bit  7 = Initiate process
+      *   Bit  8 = Modify Resource Management Control
+      *   Bit  9 = Create Mode Description
+      *   Bit 10 = Create Class of Service Description
+      *   Bit 11-31, reserved (binary 0)
+      *
+     d     priv_inst_tmpl...
+     d                                4a
+      *
+      * Special authority template
+      *   Bit  0 = All object
+      *   Bit  1 = Load (unrestricted)
+      *   Bit  2 = Dump (unrestricted)
+      *   Bit  3 = Suspend (unrestricted)
+      *   Bit  4 = Load (restricted)
+      *   Bit  5 = Dump (restricted)
+      *   Bit  6 = Suspend (restricted)
+      *   Bit  7 = Process control
+      *   Bit  8 = Reserved (binary 0)
+      *   Bit  9 = Service
+      *   Bit 10 = Auditor authroity
+      *   Bit 11 = Spool control
+      *   Bit 12 = I/O system configuration
+      *   Bit 13-23, reserved (binary 0)
+      *   Bit 24-31, Modify machine attributes
+      *     Bit 24 = Group 2
+      *     Bit 25 = Group 3
+      *     Bit 26 = Group 4
+      *     Bit 27 = Group 5
+      *     Bit 28 = Group 6
+      *     Bit 29 = Group 7
+      *     Bit 30 = Group 8
+      *     Bit 31 = Group 9
+      *
+     d     spec_auth_tmpl...
+     d                                4a
+
+     /**
+      * _TESTEAU3 (Test Extended Authorities (TESTEAU))
+      */
+     d testeau3        pr            10i 0 extproc('_TESTEAU3')
+     d     avail_auth                      likeds(testeau_auth_tmpl_t)
+     d     required_auth...
+     d                                     likeds(testeau_auth_tmpl_t)
+
+     /**
+      * _TESTEAU4 (Test Extended Authorities (TESTEAU))
+      */
+     d testeau4        pr            10i 0 extproc('_TESTEAU4')
+     d     required_auth...
+     d                                     likeds(testeau_auth_tmpl_t)
+
      /* Selection template of MATUPID. */
      d matupid_select_tmpl_t...
      d                 ds                  qualified
@@ -3023,6 +3087,80 @@
      d matupid         pr                  extproc('_MATUPID')
      d     output                          likeds(matupid_tmpl_t)
      d     input                           likeds(matupid_select_tmpl_t)
+
+     /* Template of available authorizations returned by TESTULA. */
+     d testula_receiver_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     num_auth_returned...
+     d                                5i 0
+     d                                6a
+      * authroization templates returned as array of char(2)
+
+     /**
+      * Test option tempalte used by TESTULA.
+      *
+      * This template contains a governing user profile and optionally
+      * one or more group profiles as the sources of authorities to
+      * an MI object.
+      */
+     d testula_option_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     num_group_pfrs...
+     d                                5i 0
+      *
+      * Required authorities.
+      *   Bit  0 = Object control
+      *   Bit  1 = Object management
+      *   Bit  2 = Authorized pointer
+      *   Bit  3 = Space authority
+      *   Bit  4 = Retrieve
+      *   Bit  5 = Insert
+      *   Bit  6 = Delete
+      *   Bit  7 = Update
+      *   Bit  8 = Ownership (1 = yes)
+      *   Bit  9 = Excluded
+      *   Bit 10 = Authority list management
+      *   Bit 11 = Execute
+      *   Bit 12 = Alter
+      *   Bit 13 = Reference
+      *   Bit 14 = Reserved (binary 0)
+      *   Bit 15 = Test option
+      *            0 = All of the above authorities must be present
+      *            1 = Any one or more of the above authorities must be present
+      *
+     d     required_auth...
+     d                                2a
+      *
+      * indicator of profile format
+      *   hex 80 = Users are identified by system pointers
+      *   hex 40 = Profiles are identified by uid/gid
+      *
+     d     indicator                  1a
+      *
+      * Test flag
+      *   Bit 0 = Ignore pointer authority
+      *   Bit 1-7, reserved (binary 0)
+      *
+     d     test_flag                  1a
+     d                               10a
+      * one user profile identification
+      * zero or more group profile identifications
+
+     /**
+      * _TESTULA (Test User List Authority (TESTULA))
+      *
+      * @return 1 if authorized; otherwise 0.
+      */
+     d testula         pr            10i 0 extproc('_TESTULA')
+     d     auth_available...
+     d                                     likeds(testula_receiver_tmpl_t)
+     d     object                      *
+     d     test_option...
+     d                                     likeds(testula_option_tmpl_t)
 
      /* end -- authorization management */
 
