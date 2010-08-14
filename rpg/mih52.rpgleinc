@@ -3321,6 +3321,44 @@
      d     receiver                        likeds(matmatr_tmpl_t)
      d     mat_attr                   2a
 
+     /**
+      * _MATTOD (Materialize Machine Data (MATMDATA))
+      *
+      * _MATTOD materializes time-of-day clock as local time.
+      */
+     d mattod          pr                  extproc('_MATTOD')
+     d     now                       20u 0
+
+     /**
+      * _MATMDATA (Materialize Machine Data (MATMDATA))
+      *
+      * Valid values of operand option are:
+      * hex 0000 = Materialize time-of-day clock as local time.
+      *            Operand 1 points to a 8-byte scalar.
+      * hex 0001 = Materialize system parameter integrity validation
+      *            flag Operand 1 points to a 1-byte character scalar.
+      *            A value of hex 01 indicates this additional
+      *            checking is being performed. A value of hex 00 is
+      *            returned otherwise.
+      * hex 0002 = Materialize thread execution mode flag
+      *            Operand 1 points to a 1-byte character scalar.  A
+      *            returned value of hex 01 indicates that thread is
+      *            currently executing in kernel mode. A value of hex
+      *            00 is returned otherwise.
+      * hex 0003 = Materialize maximum size of a space object or
+      *            associated space when space alignment is chosen by
+      *            the machine Operand 1 points to a 4-byte unsigned
+      *            binary.
+      * hex 0004 = Materialize time-of-day clock as Coordinated
+      *            Universal Time (UTC) Operand 1 points to a 8-byte
+      *            scalar.
+      *
+      * @example test/t117.rpgle
+      */
+     d matmdata        pr                  extproc('_MATMDATA')
+     d     receiver                    *   value
+     d     option                     2a   value
+
      /* end -- Machine Interface Support Functions */
 
      /* undocumented system builtins */

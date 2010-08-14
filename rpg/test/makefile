@@ -32,7 +32,7 @@ TARGETS=t001 t002 t003 t004 t005 t006 t007 t008 t009 t010 t011 t012 t013 t014 t0
 	t084 t085 t086 t087 t088 t089 t090 t091 t092 t093 t094 \
 	t095 t096 t097 t098 t099 t099up spr37 t100 t101 t102 lk.file \
 	t103 t104 t105 t106 t107 t108 t109 t110 t111 t112 t113 \
-	t114 t115 t116
+	t114 t115 t116 t117
 
 all: $(TARGETS)
 	@echo "compilation done -- rpg"
