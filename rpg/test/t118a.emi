@@ -18,15 +18,13 @@
  */
 
 /**
- * @file t083_b.emi
+ * @file t118a.emi
  *
- * Export an character variable named VVV
+ * Used by t118.rpgle.
  */
 
-dcl dd vvv char(24) ext
-        init("family, spring, and fall");
-
-dcl dd pgms char(32) ext bdry(16) ;
-        /* 不要用这的存 pointer, 这东西是在 pgm act 过程中初始化的, ... */
-
-pend                                    ;
+/* Static variable val. */
+dcl dd val bin(2) stat init(7)  ;
+        addn(s) val, 1          ;
+        rtx *                   ;
+pend                            ;

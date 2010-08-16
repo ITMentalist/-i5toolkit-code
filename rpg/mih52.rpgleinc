@@ -3306,15 +3306,15 @@
      d     bytes_out                 10i 0
 
      /**
-      * structure matmatr_tmpl_0004_t. can be used to retrieve Machine
-      * serial identification info.
+      * MATMATR instruction template of option hex 0004.
+      *
+      * The 8-bytes machine serial number is returned.
       */
-     d matmatr_tmpl_0004_t...
+     d matmatr_machine_srlnbr_t...
      d                 ds                  qualified
      d     bytes_in                  10i 0
      d     bytes_out                 10i 0
-     d     machine_serial_number...
-     d                                8a
+     d     srlnbr                     8a
 
      /* MATMATR, materialize machine attributes. */
      d matmatr         pr                  extproc('_MATMATR1')
