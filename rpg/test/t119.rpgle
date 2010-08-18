@@ -20,8 +20,7 @@
      /**
       * @file t119.rpgle
       *
-      * Reinitialize static variables in ILE RPG program T119A by MI
-      * instruction ACTBPGM.
+      * ACTBPGM can NOT be used to reinitialize static variables in ILE RPG programs.
       *
       * @remark ILE RPG program T119A increase a subprocedure-local
       *         static variable val each time it is invoked.
@@ -51,7 +50,7 @@
            actbpgm(act_dfn : pgm);
 
            // call T119A again
-           t119a();  // val = 7
+           t119a();  // val = 10
 
            *inlr = *on;
       /end-free

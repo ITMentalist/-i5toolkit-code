@@ -1158,8 +1158,8 @@
      d     bytes_out                 10i 0
      d                                8a
      d     pgm                         *
-     d     act_mark                   4a
-     d     agp_mark                   4a
+     d     act_mark                  10u 0
+     d     agp_mark                  10u 0
      d     inv_cnt                   10u 0
      d     ssf_cnt                   10u 0
      d     pgm_type                   1a
@@ -1201,7 +1201,7 @@
      /* MATACTAT, materialize activation attributes */
      d matactat        pr                  extproc('_MATACTAT')
      d     receiver                    *   value
-     d     act_mark                   4a
+     d     act_mark                  10u 0
      d     attr_sel                   1a
 
      /* MODASA, modify automatic storage allocation */
@@ -1266,9 +1266,14 @@
      d                                     likeds(invocation_id_t)
      d     selection                   *   value
 
+     /* Materialization template of MATINVAT. */
+     d matinvat_tmpl_t...
+     d                 ds                  qualified
+
      /* materialize attributes of the current invocation */
      d matinvat        pr                  extproc('_MATINVAT1')
-     d     receiver                    *   value
+     d*    receiver                    *   value
+     d     receiver                        likeds(matinvat_tmpl_t)
      d     selection                   *   value
 
      /* receiver template when materializing ASF pointer */
@@ -1295,10 +1300,14 @@
      d                 ds                  qualified
      d     asf_ptr                     *
 
+     d matinvat_ptr_t...
+     d                 ds                  qualified
+     d     ptr                         *
+
      /* receiver template when materializing AG mark; option 14 */
-     d matinvat_ag_mark_rcv_t...
+     d matinvat_agp_mark_t...
      d                 ds            16    qualified
-     d     ag_mark                   10u 0
+     d     agp_mark                  10u 0
 
      /* activation template for RINZSTAT */
      d rinzstat_tmpl_t...
@@ -1675,7 +1684,7 @@
 
      /* MATHSAT's heap id template */
      d heap_id_t       ds            16    qualified
-     d    ag_mark                    10u 0
+     d    agp_mark                   10u 0
      d    heap_id                    10u 0
 
      /* SETHSSMK, set activation group-based heap space storage mark */

@@ -37,7 +37,7 @@
      d inv_tmpl        ds                  likeds(matinvat_selection_t)
      d                                     based(inv_tmpl_ptr)
 
-     d ag_mark         ds                  likeds(matinvat_ag_mark_rcv_t)
+     d agp             ds                  likeds(matinvat_agp_mark_t)
 
      d mat_tmpl_ptr    s               *
      d mat_tmpl        ds                  likeds(mathsat_tmpl_t)
@@ -76,14 +76,14 @@
            inv_tmpl.rcv_offset = 0;
            inv_tmpl.rcv_length = 4;
 
-           matinvat(%addr(ag_mark) : inv_tmpl_ptr);
+           matinvat(agp : inv_tmpl_ptr);
 
            // materialize AG based-heap attributes
            mat_tmpl_ptr = modasa(mathsat_tmpl_len);
            propb(mat_tmpl_ptr : x'00' : mathsat_tmpl_len);
            mat_tmpl.bytes_in = mathsat_tmpl_len;
 
-           hid.ag_mark = ag_mark.ag_mark;
+           hid.agp_mark = agp.agp_mark;
            hid.heap_id = heap_id;
            mat_sel = x'00'; // materialize basic heap attrs
            mathsat(mat_tmpl_ptr : %addr(hid) : mat_sel);
