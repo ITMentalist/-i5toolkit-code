@@ -33,7 +33,7 @@ TARGETS=t001 t002 t003 t004 t005 t006 t007 t008 t009 t010 t011 t012 t013 t014 t0
 	t095 t096 t097 t098 t099 t099up spr37 t100 t101 t102 lk.file \
 	t103 t104 t105 t106 t107 t108 t109 t110 t111 t112 t113 \
 	t114 t115 t116 t118a t118 t119 t119a t120 \
-	t121a t121 t121b t122 t122a
+	t121a t121 t121b t122 t122a t123
 
 all: $(TARGETS)
 	@echo "compilation done -- rpg"
@@ -42,8 +42,8 @@ clean:
 	qsh -c "/usr/bin/rmflnk $(TARGETS)"
 
 t122a: t122a.module
-	system "crtsrvpgm pgm($@) module($@) actgrp($@) alwrinz(*yes)"
-	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
+	system "crtsrvpgm $@ module($@) export(*all) actgrp($@) alwrinz(*yes)"
+	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.srvpgm $@
 
 t121a: t121a.module
 	system "crtpgm pgm($@) module($@) actgrp($@) alwrinz(*yes)"

@@ -1247,8 +1247,9 @@
      /* invocation identification structure */
      d invocation_id_t...
      d                 ds                  qualified
-     d     inv_offset                10i 0
-     d     originating_inv_offset...
+     d     src_inv_offset...
+     d                               10i 0
+     d     org_inv_offset...
      d                               10i 0
      d     inv_range                 10i 0
      d                                4a
@@ -1257,10 +1258,8 @@
 
      /**
       * MATINVAT, materialize invocation attributes.
-      *
-      * @todo 不好使呢 :p 成了对当前inv操作，值写在了invid上
       */
-     d matinvatX       pr                  extproc('_MATINVAT1')
+     d matinvat2       pr                  extproc('_MATINVAT2')
      d     receiver                    *   value
      d     invocation_id...
      d                                     likeds(invocation_id_t)
@@ -1276,7 +1275,7 @@
      d     receiver                        likeds(matinvat_tmpl_t)
      d     selection                   *   value
 
-     /* receiver template when materializing ASF pointer */
+     /* attribute selection template for MATINVAT */
      d matinvat_selection_t...
      d                 ds                  qualified
      d                                     based(dummy_ptr)

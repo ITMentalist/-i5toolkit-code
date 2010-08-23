@@ -1,5 +1,5 @@
      /**
-      * @file t121.rpgle
+      * @file t122.rpgle
       *
       *  - Activate *SRVPGM T122A
       *  - Locate static variable i_static in T122A
