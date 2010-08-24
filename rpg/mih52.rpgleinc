@@ -722,10 +722,51 @@
      d     source                      *   value
      d     length                    10i 0
 
-     /* Description of a suspend pointer returned by MATPTRIF. */
-     d matptrif_susptr_desc_t...
+     d matptrif_tmpl_t...
+     d                 ds                  qualified
+
+     /**
+      * Materialization template for MATPTRIF when materializing a
+      * system pointer or a space pointer.
+      */
+     d matptrif_sypspp_tmpl_t...
      d                 ds                  qualified
      d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                7a
+      *
+      * Pointer type.
+      * hex 01 = System pointer
+      * hex 02 = Space pointer
+      * hex 03 = Suspend pointer
+      *
+     d     ptr_type                   1a
+      * ASP number
+     d     asp_num                    5u 0
+
+     /**
+      * Materialization template for MATPTRIF when materializing a
+      * suspend pointer.
+      */
+     d matptrif_susptr_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                7a
+      *
+      * Pointer type.
+      * hex 01 = System pointer
+      * hex 02 = Space pointer
+      * hex 03 = Suspend pointer
+      *
+     d     ptr_type                   1a
+      *
+      * Pointer description. matptrif_susptr_desc_t for a suspend
+      * pointer or matptrif_sypspp_desc_t for a system pointer or a
+      * space pointer.
+      *
      d                                1a
       *
       * hex 00 = Non-bound program
@@ -747,7 +788,7 @@
       * this field is for input
      d     proc_name_length_in...    
      d                               10i 0
-     d     proc_name_length_out...    
+     d     proc_name_length_out ...    
      d                               10i 0
       * this field is for input
      d     proc_name_ptr...
@@ -761,47 +802,6 @@
       * this field is for input
      d     stmt_ids_ptr...
      d                                 *
-
-     /**
-      * Description of a system pointer or a space pointer returned by
-      * MATPTRIF.
-      */
-     d matptrif_sypspp_desc_t...
-     d                 ds                  qualified
-     d                                     based(dummy_ptr)
-     d     asp_num                    5u 0
-
-     /* Template length when materaizing a suspend ptr by MATPTRIF. */
-     d matptrif_susptr_tmpl_length...
-     d                 c                   208
-
-     /* Template length when materaizing a SYP or a SPP by MATPTRIF. */
-     d matptrif_sypspp_tmpl_length...
-     d                 c                   18
-
-     /* Offset to pointer description from the start of matptrif_tmpl_t. */
-     d matptrif_ptrd_offset...
-     d                 c                   16
-
-     /* Materialization template for MATPTRIF */
-     d matptrif_tmpl_t...
-     d                 ds                  qualified
-     d                                     based(dummy_ptr)
-     d     bytes_in                  10i 0
-     d     bytes_out                 10i 0
-     d                                7a
-      *
-      * Pointer type.
-      * hex 01 = System pointer
-      * hex 02 = Space pointer
-      * hex 03 = Suspend pointer
-      *
-     d     ptr_type                   1a
-      *
-      * Pointer description. matptrif_susptr_desc_t for a suspend
-      * pointer or matptrif_sypspp_desc_t for a system pointer or a
-      * space pointer.
-      *
 
      /**
       * _MATPTRIF (Materialize Pointer Information (MATPTRIF))
@@ -3366,6 +3366,181 @@
      d matmdata        pr                  extproc('_MATMDATA')
      d     receiver                    *   value
      d     option                     2a   value
+
+     d matmif_tmpl_t   ds                  qualified
+
+     /* Materialization template for MATMIF with option x'0001' */
+     d matmif_basic_tmpl_t...
+     d                 ds                  qualified
+     d     bytes_in                  10u 0
+     d     bytes_out                 10u 0
+      *
+      * Maximum memory.  The maximum amount of memory (in units of
+      * megabytes) that can be assigned to this partition.
+      *
+     d     max_mem                   20u 0
+      * Minimum memory
+     d     min_mem                   20u 0
+      * Dispatch wheel rotation period
+     d     dsp_whl_period...
+     d                               20u 0
+     d     partition_id...
+     d                               10u 0
+      *
+      * indicators
+      *   bit 0-29, reserved (binary 0)
+      *   bit 30, bound hardware thread indicator
+      *     0 = Hardware threads are not bound
+      *     1 = Hardware threads are bound
+      *   bit 31, Dedicated processors indicator
+      *     0 = Partition shares processors
+      *     1 = Partition has dedicated processors
+      *
+     d     indicator                  4a
+      * Maximum processors in the physical machine
+     d     max_prc_in_machine...
+     d                               10u 0
+      * Minimum virtual processors
+     d     min_vic_prcs...
+     d                               10u 0
+      * Maximum virtual processors
+     d     max_vic_prcs...
+     d                               10u 0
+      *
+      * Minimum processing capacity (in units of 1/100 of a physical
+      * processor)
+      *
+     d     min_prc_cap...
+     d                               10u 0
+      *
+      * Maximum processing capacity (in units of 1/100 of a physical
+      * processor)
+      *
+     d     max_prc_cap...
+     d                               10u 0
+      *
+      * Processing capacity delta. The delta (in units of 1/100 of a
+      * physical processor) can be added to or removed from this
+      * partition's processing capacity.
+      *
+     d     prc_cap_delta...
+     d                               10u 0
+      * Minimum interactive capacity percentage
+     d     min_int_cap_percent...
+     d                               10u 0
+      * Maximum interactive capacity percentage
+     d     max_int_cap_percent...
+     d                               10u 0
+      * Hardware threads per processor
+     d     hdw_thds_per_prc...
+     d                                5u 0
+     d     partition_name...
+     d                              256a
+     d                                6a
+     d     memory_delta...
+     d                               20u 0
+      * Configured virtual processors
+     d     cfg_vic_prcs...
+     d                               10u 0
+      *
+      * Configured processing capacity.  The processing capacity (in
+      * units of 1/100 of a physical processor) that is configured for
+      * this partition.
+      *
+     d     cfg_prc_cap...
+     d                               10u 0
+      * Configured interactive capacity percentage
+     d     cfg_int_cap_percent...
+     d                               10u 0
+      * Configured variable processing capacity weight
+     d     cfg_var_prc_cap...
+     d                               10u 0
+      * Configured memory
+     d     cfg_memory...
+     d                               20u 0
+
+     /* Materialization template for MATMIF with option x'0002' */
+     d matmif_prc_tmpl_t...
+     d                 ds                  qualified
+     d     bytes_in                  10u 0
+     d     bytes_out                 10u 0
+      * Usable memory
+     d     usable_memory...
+     d                               20u 0
+      * CPU time since IPL
+     d     cpu_time...
+     d                               20u 0
+      * Interactive time since IPL
+     d     int_time...
+     d                               20u 0
+      * Excess interactive time since IPL
+     d     exc_int_time...
+     d                               20u 0
+      * Shared processor pool idle time since IPL
+     d     shr_prc_pool_idl_time...
+     d                               20u 0
+      *
+      * indicators.
+      *   bits 0-27, reserved (binary 0)
+      *   bit 28, Service aggregation point indicator
+      *     0 = This partition has a service aggregation point
+      *     1 = Another partition or HMC has a service aggregation point
+      *   bit 29, Capped partition indicator
+      *     0 = Uncapped partition
+      *     1 = Capped partition
+      *   bit 30, Hardware multi-threading indicator
+      *     0 = Hardware multi-threading is not enabled
+      *     1 = Hardware multi-threading is enabled
+      *   bit 31, shared processor pool idle time since IPL indicator
+      *     0 = Shared processor pool idle time since IPL was not materialized
+      *     1 = Shared processor pool idle time since IPL was materialized
+      *
+     d     indicator                  4a
+      * Processors in the physical machine
+     d     physical_prcs...
+     d                               10u 0
+      * Usable virtual processors
+     d     usable_vic_prcs...
+     d                               10u 0
+      * Physical processors in the shared processor pool
+     d     phy_prcs_in_pool...
+     d                               10u 0
+      * Unallocated processing capacity in the partition group
+     d     una_prc_cap_in_pgp...
+     d                               10u 0
+      * Usable processing capacity
+     d     usable_prc_cap...
+     d                               10u 0
+      * Usable variable processing capacity weight
+     d     usable_var_prc_cap...
+     d                               10u 0
+      * Unallocated variable processing capacity weight -- @here
+     d     una_var_prc_cap...
+     d                               10u 0
+      * Minimum required processing capacity
+     d     min_req_prc_cap...
+     d                               10u 0
+      * Interactive capacity percentage
+     d     int_cap_perctent...
+     d                               10u 0
+      * Partition group ID
+     d     pgp_id                     5u 0
+      * Shared processor pool ID
+     d     shr_prc_pool_id...
+     d                                5u 0
+      * Interactive threshold
+     d     int_threshold...
+     d                                5u 0
+     d                                2a
+      * Unallocated interactive processor capacity in the partition group
+     d     una_int_prc_cap...
+     d                               10u 0
+     d                               12a
+
+     /* _MATMIF (Materialize Machine Information (MATMIF)) */
+     d matmif          pr                  extproc('_MATMIF')
+     d     receiver                        likeds(matmif_tmpl_t)
+     d     option                     5u 0 value
 
      /* end -- Machine Interface Support Functions */
 

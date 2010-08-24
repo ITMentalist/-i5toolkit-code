@@ -65,24 +65,15 @@
      d dsp_proc_name   pi
      d     susptr                      *
 
-     d tmpl            ds                  likeds(matptrif_tmpl_t)
-     d                                     based(ptr)
-     d ptr             s               *
-     d ptrd            ds                  likeds(matptrif_susptr_desc_t)
-     d                                     based(pos)
-     d pos             s               *
+     d ptrd            ds                  likeds(matptrif_susptr_tmpl_t)
      d mask            s              4a
      d proc_name       s             30a
 
       /free
 
-           ptr = %alloc(matptrif_susptr_tmpl_length);
-           propb( ptr : x'00'
-                : matptrif_susptr_tmpl_length);
-           tmpl.bytes_in = matptrif_susptr_tmpl_length;
-
            // init pointer description
-           pos = ptr + matptrif_ptrd_offset;
+           ptrd = *allx'00';
+           ptrd.bytes_in = %size(ptrd);
            ptrd.proc_name_length_in = 30;
            ptrd.proc_name_ptr = %addr(proc_name);
 
@@ -91,7 +82,7 @@
              // bit 3 = 1; program name
              // bit 6 = 1; module name
              // bit 10 = 1; procedure name
-           matptrif( tmpl : susptr : mask );
+           matptrif( ptrd : susptr : mask );
 
            // output pgm name, module name, and procedure name
            dsply '    Program name' '' ptrd.pgm_name;
