@@ -572,23 +572,17 @@
 
      /* MATPTR template header */
      d matptr_tmpl_t   ds                  qualified
-     d                                     based(dummy_ptr)
      d     bytes_in                  10i 0                                      bytes provided
      d     bytes_out                 10i 0                                      bytes available
      d     ptr_type                   1a                                        returned pointer type
 
-     /* length of MATPTR template header */
-     d matptr_header_...
-     d   length        c                   9
-
      /* length of SYSPTR information */
-     d matptr_sysptr_...
-     d   info_length   c                   80
+     d matptr_sysptr_info_length...
+     d                 c                   80
 
      /* SYSPTR info structure */
-     d matptr_sysptr_...
-     d   info_t        ds                  qualified
-     d                                     based(dummy_ptr)
+     d matptr_sysptr_info_t...
+     d                 ds                  qualified
      d     bytes_in                  10i 0                                      bytes provided
      d     bytes_out                 10i 0                                      bytes available
      d     ptr_type                   1a                                        returned pointer type
@@ -600,13 +594,12 @@
      d     ptr_target                 2a                                        PTR target info
 
      /* length of SPCPTR information */
-     d matptr_spcptr_...
-     d   info_length   c                   96
+     d matptr_spcptr_info_length...
+     d                 c                   96
 
      /* SPCPTR info structure */
-     d matptr_spcptr_...
-     d   info_t        ds                  qualified
-     d                                     based(dummy_ptr)
+     d matptr_spcptr_info_t...
+     d                 ds                  qualified
      d     bytes_in                  10i 0                                      bytes provided
      d     bytes_out                 10i 0                                      bytes available
      d     ptr_type                   1a                                        returned pointer type
@@ -619,16 +612,8 @@
      d                                1a                                        reserved
      d     ext_offset                 8a                                        teraspace offest
 
-     /* length of PROCPTR information */
-     d matptr_procptr_info_length...
-     d                 c                   80
-
-     /* DTAPTR attributes */
-     d matptr_dtaptr_info_length...
-     d                 c                   84
      d matptr_dtaptr_info_t...
      d                 ds                  qualified
-     d                                     based(dummy_ptr)
      d     bytes_in                  10i 0                                      bytes provided
      d     bytes_out                 10i 0                                      bytes available
      d     ptr_type                   1a                                        returned pointer type
@@ -640,11 +625,13 @@
      d     obj_type                   2a
      d     obj_name                  30a
      d     offset                    10i 0
+     /* DTAPTR attributes */
+     d matptr_dtaptr_info_length...
+     d                 c                   84
 
      /* PROCPTR info structure */
      d matptr_procptr_info_t...
      d                 ds                  qualified
-     d                                     based(dummy_ptr)
      d     bytes_in                  10i 0                                      bytes provided
      d     bytes_out                 10i 0                                      bytes available
      d     ptr_type                   1a                                        returned pointer type
@@ -658,6 +645,9 @@
      d     process                     *                                        containing process
      d     act_mark2                  8a                                        8-bytes activation mark
      d     ag_mark2                   8a                                        8-bytes activation group mark
+     /* length of PROCPTR information */
+     d matptr_procptr_info_length...
+     d                 c                   80
 
      /* label pointer attributes */
      d matptr_lblptr_info_t...
@@ -712,7 +702,7 @@
 
      /* MATPTR, materialize pointer attributes */
      d matptr          pr                  extproc('_MATPTR')
-     d     receiver                    *   value
+     d     receiver                        likeds(matptr_tmpl_t)
      d     ptr                         *
 
      /* _MATPTRL (Materialize Pointer Locations) */
@@ -788,7 +778,7 @@
       * this field is for input
      d     proc_name_length_in...    
      d                               10i 0
-     d     proc_name_length_out ...    
+     d     proc_name_length_out...    
      d                               10i 0
       * this field is for input
      d     proc_name_ptr...
@@ -3314,7 +3304,7 @@
      d     bytes_out                 10i 0
 
      /**
-      * MATMATR instruction template of option hex 0004.
+      * MATMATR instruction template for option hex 0004.
       *
       * The 8-bytes machine serial number is returned.
       */
@@ -3323,6 +3313,233 @@
      d     bytes_in                  10i 0
      d     bytes_out                 10i 0
      d     srlnbr                     8a
+
+     /**
+      * MATMATR instruction template for option hex 0101 (Time-of-day
+      * clock with clock-offset).
+      */
+     d matmatr_clock_offset_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     clock                      8a
+     d     offset                     8a
+
+     /**
+      * MATMATR instruction template for option hex 0130 (network attributes).
+      */
+     d matmatr_net_attr_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     sys_name                   8a
+     d     sys_name_len...
+     d                                5i 0
+     d     new_sys_name...
+     d                                8a
+     d     new_sys_name_len...
+     d                                5i 0
+     d     local_net_id...
+     d                                8a
+     d     local_net_id_len...
+     d                                5i 0
+      *
+      * The end node data compression field controls whether the
+      * machine will allow data compression when it's an end
+      * node. This value is used when the mode description is equal to
+      * *NETATR. If one of the values listed in the table below is not
+      * specified, then the value specified is equal to the maximum
+      * line speed that data should be compressed. Any configuration
+      * with a line speed slower than what is specified here will
+      * cause the data to be compressed. Valid values range from 1
+      * bits-per-second through 2,147,483,647.
+      *   0  = *NONE (default), no data compression will be done.
+      *   -1 = *REQUEST, data compression is requested on the session.
+      *   -2 = *ALLOW, data compression is allowed, but not requested for this session.
+      *   -3 =*REQUIRE, data compression is required on this session.
+      *
+     d     end_node_data_cpr...
+     d                               10i 0
+      *
+      * The intermediate node data compression field controls whether
+      * data compression will be requested by the machine when it's an
+      * intermediate node. This value is used when the mode
+      * description is equal to *NETATR. If one of the values listed
+      * in the table below is not specified, then the value specified
+      * is equal to the maximum line speed that data should be
+      * compressed. Any configuration with a line speed slower than
+      * what is specified here will cause the data to be
+      * compressed. Valid values range from 1 bits-per-second through
+      * 2,147,483,647.
+      *    0 = *NONE (default), no data compression will be done. 
+      *   -1 = *REQUEST, data compression is requested on the session.
+      *
+     d     int_node_data_cpr...
+     d                               10i 0
+     d                                2a
+      * Local system control point name
+     d     local_sys_ctrl_pnt_name...
+     d                                8a
+     d     local_sys_ctrl_pnt_name_len...
+     d                                5i 0
+      * Maximum APPN LUDs on virtual APPN CDs
+     d     max_appn_lud_on_vrt_appc_cd...
+     d                                5u 0
+      *
+      * The path switch timer - network priority traffic default is
+      * 1. The maximum is 10000.  The unit of measure is minutes.
+      *
+     d     path_switch_timer_net...
+     d                                5u 0
+      *
+      * The path switch timer - high priority traffic default is
+      * 2. The maximum is 10000.  The unit of measure is minutes.
+      *
+     d     path_switch_timer_high...
+     d                                5u 0
+      *
+      * The path switch timer - medium priority traffic default is
+      * 4. The maximum is 10000.  The unit of measure is minutes.
+      *
+     d     path_switch_timer_medium...
+     d                                5u 0
+      *
+      * The path switch timer - low priority traffic default is
+      * 4. The maximum is 10000.  The unit of measure is minutes.
+      *
+     d     path_switch_timer_low...
+     d                                5u 0
+      * Default local location name
+     d     dft_local_loc_name...
+     d                                8a
+     d     dft_local_loc_name_len...
+     d                                5i 0
+      *
+      * Default mode name. The mode name default is all blanks and the
+      * default mode length is eight.
+      *
+     d     dft_mode_name...
+     d                                8a
+     d     dft_mode_name_len...
+     d                                5i 0
+      * Maximum number of intermediate sessions
+     d     max_int_session...
+     d                                5i 0
+      * Maximum number of conversations per APPN LUD
+     d     max_conv_per_appn_lud...
+     d                                5i 0
+      * Local system node type. Default is hex 01
+     d     lcl_sys_node_type...
+     d                                1a
+     d                                1a
+      * Route addition resistance
+     d     rut_add_res...
+     d                                5i 0
+      * List of network server network ID's
+     d     network_ids...
+     d                                8a   dim(5)
+      * List of network server network ID lengths
+     d     network_id_lens...
+     d                                5u 0 dim(5)
+      * List of network server control point names
+     d     net_ctrl_pnt_names...
+     d                                8a   dim(5)
+      * List of network server control point name lengths
+     d     net_ctrl_pnt_name_lens...
+     d                                5u 0 dim(5)
+      *
+      * Alert flags.
+      *   bit 0 = 1, alert primary focal point
+      *   bit 1 = 1, alert default focal point
+      *   bits 2-7, reserved
+      *
+     d     alert_flags...
+     d                                1a
+      *
+      * Network attribute flags
+      *   bit 0 = 1, network attributes initialized
+      *   bit 1 = 1, pending system name made current system name
+      *   bit 2 = 1, allow ANYNET support over any transport protocol
+      *   bit 3 = 1, allow APPN traffic to use virtual APPN CDs
+      *   bit 4 = 1, allow HPR tower support to be used for APPN
+      *   bit 5 = 1, local system performs as a branch extender node
+      *   bits 6-7, reserved
+      *
+     d     net_attr_flags...
+     d                                1a
+
+     /**
+      * MATMATR instruction template for option hex 0168 (Panel
+      * status request).
+      */
+     d matmatr_ipl_req_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+      *
+      * The current IPL type is the state of the IPL type at the
+      * operations panel. Possible values are A, B, C, D.
+      *
+     d     cur_ipl_type...
+     d                                1a
+      *
+      * Panel status.
+      *
+      * bit 0, UPS installed indicates that an Uninterrupted Power
+      *        Supply is installed on the system and is available for
+      *        use should the power fail.
+      * bit 1, UPS power failed indicates that a utility failure has
+      *        occurred and the system is currently running on battery
+      *        power.
+      * bit 2, UPS bypass active indicates that the UPS has been
+      *        bypassed. If a utility power failure occurs, the UPS
+      *        will not supply power.
+      * bit 3, UPS battery low indicates that a UPS battery is
+      *        installed on the system and the battery is low.
+      * bit 4, auto key mode indicates that the key mode is currently
+      *        set to auto on the operation panel.
+      * bit 5, normal key mode indicates that the key mode is
+      *        currently set to normal on the operation panel.
+      * bit 6, manual key mode indicates that the key mode is
+      *        currently set to manual on the operation panel.
+      * bit 7, secure key mode indicates that the key mode is
+      *        currently set to secure on the operation panel.
+      * bits 8-15, reserved.
+      *
+     d        pnl_sts                 2a
+     d                                5a
+      * Most recent IPL type. Possible values are A, B, C, D.
+     d        most_recent_ipl_type...
+     d                                1a
+
+     /**
+      * MATMATR instruction template for option hex 01FC (Electronic
+      * licensing identifier).
+      *
+      * The electronic licensing identifier field is the value of
+      * version, release and modification level of the i5/OS to be
+      * installed during the next upgrade whose license is accepted by
+      * the customers. The format of the electronic licensing
+      * identifier is vrmnn where v is the version, r, the release, m,
+      * the modication level, and nn are operating system assigned
+      * values.
+      */
+     d matmatr_elic_id_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     elic_id                    5a
+
+     /**
+      * MATMATR instruction template for option hex 020C (Licensed
+      * Internal Code VRM).
+      */
+     d matmatr_lic_vrm_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     lic_vrm                    6a
+     d                                2a
 
      /* MATMATR, materialize machine attributes. */
      d matmatr         pr                  extproc('_MATMATR1')
@@ -3368,6 +3585,8 @@
      d     option                     2a   value
 
      d matmif_tmpl_t   ds                  qualified
+     d     bytes_in                  10u 0
+     d     bytes_out                 10u 0
 
      /* Materialization template for MATMIF with option x'0001' */
      d matmif_basic_tmpl_t...

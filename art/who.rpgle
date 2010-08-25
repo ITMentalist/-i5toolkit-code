@@ -5,13 +5,15 @@
       *
       * Output of WHO:
       * @code
-      * DSPLY  Program:         LSBIN/WHO 
+      * DSPLY  Program:         QGPL/WHO 
       * DSPLY  Module:          QTEMP/WHO 
       * DSPLY  Procedure:       WHO       
       * DSPLY  Statement ID:            81
+      * DSPLY  Job ID:          TEA       ABC       268988
+      * DSPLY  Thread ID:       0000000000000030          
       * @endcode
       */
-     h dftactgrp(*no)
+     h dftactgrp(*no) bnddir('QC2LE')
 
      /**
       * DS used by who_am_i() to represent program info.
@@ -43,6 +45,12 @@
      d     num                        5u 0
      d     stmt                      10i 0 dim(1024)
 
+     /* Job ID and thread ID. */
+     d job_id_thread_id_t...
+     d                 ds                  qualified
+     d     jid                       30a
+     d     tid                        8a
+
      /**
       * Who am I?
       *
@@ -50,6 +58,7 @@
       * @param [out] mod_info, returned module info.
       * @param [out] proc_name, returned procedure name.
       * @param [out] stmst, returned statement ID list.
+      * @param [out] MI process (job) id and thread id.
       * @param [in]  inv_offset, offset of target invocation.
       *              -1 if no passed, which means who_am_i()'s caller.
       *
@@ -65,7 +74,14 @@
      d     mod_info                        likeds(module_info_t)
      d     proc_name                       likeds(proc_name_t)
      d     stmts                           likeds(stmt_list_t)
+     d     job_thd_id                      likeds(job_id_thread_id_t)
+     d                                     options(*nopass)
      d     inv_offset                10i 0 value options(*nopass)
+
+     d cvthc           pr                  extproc('cvthc')
+     d     receiver                    *   value
+     d     source                      *   value
+     d     length                    10i 0 value
 
      d pgm_info        ds                  likeds(pgm_info_t)
      d mod_info        ds                  likeds(module_info_t)
@@ -75,6 +91,7 @@
      d stmts           ds                  likeds(stmt_list_t)
      d                                     based(stmts_ptr)
      d stmts_ptr       s               *
+     d thread          ds                  likeds(job_id_thread_id_t)
      d pgm_type        s              1a
      d msg             s             30a
 
@@ -89,7 +106,8 @@
            pgm_type = who_am_i( pgm_info
                               : mod_info
                               : proc_name
-                              : stmts );
+                              : stmts
+                              : thread );
 
            // check returned information
            // program info
@@ -111,6 +129,14 @@
                dsply 'Statement ID:' '' stmts.stmt(1);
            endif;
 
+           // job id and thread id
+           dsply 'Job ID:      ' '' thread.jid;
+           // thread.tid
+           cvthc(%addr(msg) : %addr(thread.tid) : 16);
+           dsply 'Thread ID:   ' '' msg;
+
+           dealloc proc_name_ptr;
+           dealloc stmts_ptr;
            *inlr = *on;
       /end-free
 
@@ -124,6 +150,8 @@
      d     mod_info                        likeds(module_info_t)
      d     proc_name                       likeds(proc_name_t)
      d     stmts                           likeds(stmt_list_t)
+     d     job_thd_id                      likeds(job_id_thread_id_t)
+     d                                     options(*nopass)
      d     inv_offset                10i 0 value options(*nopass)
 
      d inv_id          ds                  likeds(invocation_id_t)
@@ -131,11 +159,15 @@
      d sel             ds                  likeds(matinvat_selection_t)
      d ptrd            ds                  likeds(matptrif_susptr_tmpl_t)
      d mask            s              4a
+     d pcs_tmpl        ds                  likeds(matpratr_ptr_tmpl_t)
+      * option to materialize PCS pointer of an MI process
+     d matpratr_opt    s              1a   inz(x'25')
+     d syp_attr        ds                  likeds(matptr_sysptr_info_t)
 
       /free
            // initialize invocation id
            inv_id = *allx'00';
-           if %parms() > 4;
+           if %parms() > 5;
                if inv_offset > 0;
                    return x'FF';
                endif;
@@ -178,7 +210,28 @@
            proc_name.len      = ptrd.proc_name_length_out;
            stmts.num          = ptrd.stmt_ids_out;
 
+           // if job id and thread id is requested
+           if %parms() > 4;
+               exsr rtv_job_thd_id;
+           endif;
+
            // return materialized program type
            return ptrd.pgm_type;
+
+           // retrieve job id and thread id
+           begsr rtv_job_thd_id;
+
+               // retrieve the PCS pointer of the current MI process
+               pcs_tmpl.bytes_in = %size(pcs_tmpl);
+               matpratr1(pcs_tmpl : matpratr_opt);
+
+               // retrieve the name of the PCS ptr, aka job ID
+               syp_attr.bytes_in = %size(syp_attr);
+               matptr(syp_attr : pcs_tmpl.ptr);
+               job_thd_id.jid = syp_attr.obj_name;
+
+               job_thd_id.tid = retthid(); // thread id
+           endsr;
+
       /end-free
      p who_am_i        e

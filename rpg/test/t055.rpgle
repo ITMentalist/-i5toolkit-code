@@ -83,7 +83,7 @@
      d bytes_needed    s             10i 0
      d act_opt         s              1a   inz(x'00')
      d acte_ptr        s               *
-     d acte_mark       s              4a   based(acte_ptr)
+     d acte_mark       s             10u 0 based(acte_ptr)
      d ind             s              5u 0
      d act_attr        ds                  likeds(act_basic_attr_t)
       * attributes of a system pointer
@@ -132,7 +132,7 @@
                // materialize program name of a act entry
                syp_attr.bytes_in = %size(syp_attr);
                monitor;
-                   matptr( %addr(syp_attr) : act_attr.pgm);
+                   matptr(syp_attr : act_attr.pgm);
                on-error;  // MCH6801
                    %subst(msg:9) = 'System domain program';
                    sendmsg(msg : MSG_LEN);

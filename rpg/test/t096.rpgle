@@ -72,7 +72,7 @@
                //   LOCKD.LOCK_TYPE=x'10', x'08' (LEAR, LENR)
 
                if lockd_offset = matsellk_lockd_length_exp;
-                   matptr(%addr(ptr_info) : lockd.suspend_ptr);
+                   matptr(ptr_info : lockd.suspend_ptr);
                      // check ptr_info
                endif;
 

@@ -32,17 +32,14 @@
      d val             s             18a   inz('abcdefghijklmn')
      d ptr             s               *
 
-     d tmpl_ptr        s               *
      d tmpl            ds                  likeds(matptr_dtaptr_info_t)
-     d                                     based(tmpl_ptr)
 
       /free
 
            ptr = setdp(%addr(val) : attr);
              // PTR = DP :FC1A1FCD7201ED20
-           tmpl_ptr = modasa(matptr_dtaptr_info_length);
-           tmpl.bytes_in = matptr_dtaptr_info_length;
-           matptr (tmpl_ptr : ptr);
+           tmpl.bytes_in = %size(tmpl);
+           matptr (tmpl : ptr);
 
            // tmpl.dta_type   = hex 09, Open
            // tmpl.dta_length = hex 0007

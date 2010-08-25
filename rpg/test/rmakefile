@@ -42,7 +42,7 @@ upload_src:
 compile:
 	rexec $(HOST) "CALL QP2SHELL PARM('$(BUILD_SCRIPT)' '$(HOST_DIR)/$(BUILD_LOG)' '-e BIN_LIB=$(BIN_LIB) -e MAKERULES=rules.mk')"
 	lftp -e "cd $(HOST_DIR); get $(BUILD_LOG); by" $(HOST)
-	cat $(BUILD_LOG)
+#	cat $(BUILD_LOG)
 
 clean:
 	rexec $(HOST) "CALL QP2SHELL PARM('$(BUILD_SCRIPT)' '$(HOST_DIR)/$(BUILD_LOG)' 'clean')"

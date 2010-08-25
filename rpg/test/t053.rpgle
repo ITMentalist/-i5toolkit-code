@@ -56,7 +56,7 @@
 
            // materialize attrubtes of mtx (2)
            synptr_attr.bytes_in = min_synptr_info_len;
-           matptr(%addr(synptr_attr) : mtx.syn_ptr);
+           matptr(synptr_attr : mtx.syn_ptr);
              // SYNPTR_ATTR.SYN_OBJ_TYPE = hex 0001 (mutex)
 
            // lock mutex (3)

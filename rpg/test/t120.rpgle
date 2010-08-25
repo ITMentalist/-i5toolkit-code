@@ -2,6 +2,10 @@
       * @file t120.rpgle
       *
       * Test of _MATMATR1.
+      *  - machine serial number
+      *  - time-of-day clock with clock-offset
+      *  - MISR record
+      *  - NETA (network attributes)
       */
 
      h dftactgrp(*no)
@@ -10,13 +14,49 @@
       * machine serial number
      d srlnbr          ds                  likeds(
      d                                       matmatr_machine_srlnbr_t)
+     d clock           ds                  likeds(
+     d                                       matmatr_clock_offset_t)
+     d neta            ds                  likeds(matmatr_net_attr_t)
+     d ipl_req         ds                  likeds(matmatr_ipl_req_t)
+     d elic            ds                  likeds(matmatr_elic_id_t)
+     d vrm             ds                  likeds(matmatr_lic_vrm_t)
      d opt             s              2a
+     d len             s              5u 0
 
       /free
            opt = x'0004';  // machine serial number
-           matmatr(srlnbr : opt);
            srlnbr.bytes_in = %size(srlnbr);
+           matmatr(srlnbr : opt);
            dsply 'machine serial number' '' srlnbr.srlnbr;
+
+           // time-of-day clock with clock-offset
+           opt = x'0101';
+           clock.bytes_in = %size(clock);
+           matmatr(clock : opt);
+
+           // network attributes, 0130
+           len = %size(matmatr_net_attr_t); // 198
+           opt = x'0130';
+           neta.bytes_in = len;
+           matmatr(neta : opt);
+
+           // electronic license id
+           opt = x'01FC';
+           elic.bytes_in = %size(elic);
+           matmatr(elic : opt);
+           dsply 'Electronic license ID' '' elic.elic_id;
+
+           // lic vrm
+           opt = x'020C';
+           vrm.bytes_in = %size(vrm);
+           matmatr(vrm : opt);
+           dsply 'LIC VRM' '' vrm.lic_vrm;
+
+           // ipl request status
+           opt = x'0168';
+           ipl_req.bytes_in = %size(ipl_req);
+           matmatr(ipl_req : opt);
+           dsply 'Current IPL type' '' ipl_req.cur_ipl_type;
 
            *inlr = *on;
       /end-free

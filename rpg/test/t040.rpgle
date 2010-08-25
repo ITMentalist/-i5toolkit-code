@@ -38,9 +38,7 @@
      d asf_rcv         ds                  likeds(matinvat_asf_receiver_t)
      d asf_rcv_ptr     s               *   inz(%addr(asf_rcv))
 
-     d spp_info_ptr    s               *
      d spcptr_info     ds                  likeds(matptr_spcptr_info_t)
-     d                                     based(spp_info_ptr)
      d ptr             s               *
      d buf             ds         32767    based(ptr)
      d str12           ds            12    based(ptr)
@@ -67,9 +65,8 @@
            matinvat(asf_rcv : asf_tmpl_ptr);
 
            // retrieve current offset into ASF SPCPTR
-           spp_info_ptr = modasa(matptr_spcptr_info_length);
-           spcptr_info.bytes_in = matptr_spcptr_info_length;
-           matptr(spp_info_ptr : asf_rcv.asf_ptr);
+           spcptr_info.bytes_in = %size(spcptr_info);
+           matptr(spcptr_info : asf_rcv.asf_ptr);
 
            // offset to the start of ASF SPCPTR
            ptr = asf_rcv.asf_ptr;

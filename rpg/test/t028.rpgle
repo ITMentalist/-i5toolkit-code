@@ -43,10 +43,9 @@
            rslvsp2(ptr : rslvsp_tmpl);
 
            // allocate MATPTR template buffer
-           info_ptr = modasa(matptr_sysptr_info_length);
-           sysptr_info.bytes_in = matptr_sysptr_info_length;
+           sysptr_info.bytes_in = %size(sysptr_info);
 
-           matptr(info_ptr : ptr);
+           matptr(sysptr_info : ptr);
 
            // check structure sysptr_info for returned SYSPTR info
            dsply 'Library' '' sysptr_info.ctx_name;
