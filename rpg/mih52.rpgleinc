@@ -3268,6 +3268,10 @@
 
      /* Storage and Resource Management */
 
+     /* _ENSOBJ (Ensure Object (ENSOBJ)) */
+     d ensobj          pr                  extproc('_ENSOBJ')
+     d     obj                         *
+
      /* _YIELD (Yield (YIELD)) */
      d yield           pr                  extproc('_YIELD')
 
