@@ -29,9 +29,9 @@
            sel.num_attr   = 1;
            sel.attr_id    = 24;  // suspend pointer
            sel.rcv_length = 16;
-           matinvat2( %addr(susptr_info)
+           matinvat2( susptr_info
                     : inv_id
-                    : %addr(sel) );
+                    : sel );
 
            // materialize suspend ptr
            ptrd = *allx'00';

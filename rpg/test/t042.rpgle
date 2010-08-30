@@ -76,7 +76,7 @@
            inv_tmpl.rcv_offset = 0;
            inv_tmpl.rcv_length = 4;
 
-           matinvat(agp : inv_tmpl_ptr);
+           matinvat(agp : inv_tmpl);
 
            // materialize AG based-heap attributes
            mat_tmpl_ptr = modasa(mathsat_tmpl_len);

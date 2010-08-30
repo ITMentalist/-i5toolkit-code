@@ -23,7 +23,7 @@ BIN_LIB=
 MAKERULES=rules.mk
 RPGLEFLAGS=dbgview(*all) replace(*yes) incdir('/usr/local/include/rpg')
 
-TARGETS=who
+TARGETS=who u
 
 all: $(TARGETS)
 	@echo "compilation done -- art"

@@ -62,7 +62,7 @@
            asf_tmpl.rcv_length = 16;
 
            // locate space pointer to ASF
-           matinvat(asf_rcv : asf_tmpl_ptr);
+           matinvat(asf_rcv : asf_tmpl);
 
            // retrieve current offset into ASF SPCPTR
            spcptr_info.bytes_in = %size(spcptr_info);

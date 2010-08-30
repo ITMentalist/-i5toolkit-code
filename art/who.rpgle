@@ -13,7 +13,9 @@
       * DSPLY  Thread ID:       0000000000000030          
       * @endcode
       */
+      /if defined(*crtbndrpg)
      h dftactgrp(*no) bnddir('QC2LE')
+      /endif
 
      /**
       * DS used by who_am_i() to represent program info.
@@ -141,7 +143,7 @@
       /end-free
 
      /* implementation of who_am_i */
-     p who_am_i        b
+     p who_am_i        b                   export
 
       /copy mih52
 
@@ -160,7 +162,6 @@
      d ptrd            ds                  likeds(matptrif_susptr_tmpl_t)
      d mask            s              4a
      d pcs_tmpl        ds                  likeds(matpratr_ptr_tmpl_t)
-      * option to materialize PCS pointer of an MI process
      d matpratr_opt    s              1a   inz(x'25')
      d syp_attr        ds                  likeds(matptr_sysptr_info_t)
 
@@ -181,9 +182,9 @@
            sel.num_attr   = 1;
            sel.attr_id    = 24;  // suspend pointer
            sel.rcv_length = 16;
-           matinvat2( %addr(susptr)
+           matinvat2( susptr
                     : inv_id
-                    : %addr(sel) );
+                    : sel );
 
            // materialize suspend ptr
            ptrd = *allx'00';

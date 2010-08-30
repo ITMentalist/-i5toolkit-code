@@ -570,7 +570,7 @@
      d     source                      *   value
      d     length                    10u 0 value
 
-     /* MATPTR template header */
+     /* Materialization template for MATPTR */
      d matptr_tmpl_t   ds                  qualified
      d     bytes_in                  10i 0                                      bytes provided
      d     bytes_out                 10i 0                                      bytes available
@@ -580,7 +580,7 @@
      d matptr_sysptr_info_length...
      d                 c                   80
 
-     /* SYSPTR info structure */
+     /* Materialization template for MATPTR when materializing a SYSPTR */
      d matptr_sysptr_info_t...
      d                 ds                  qualified
      d     bytes_in                  10i 0                                      bytes provided
@@ -700,7 +700,7 @@
      d min_suspend_info_len...
      d                 c                   48
 
-     /* MATPTR, materialize pointer attributes */
+     /* _MATPTR (Materialize Pointer (MATPTR)) */
      d matptr          pr                  extproc('_MATPTR')
      d     receiver                        likeds(matptr_tmpl_t)
      d     ptr                         *
@@ -712,6 +712,7 @@
      d     source                      *   value
      d     length                    10i 0
 
+     /* Materialization template for MATPTRIF. */
      d matptrif_tmpl_t...
      d                 ds                  qualified
 
@@ -797,7 +798,7 @@
       * _MATPTRIF (Materialize Pointer Information (MATPTRIF))
       *
       * MATPTRIF can be used to retrieve ASP number of a system pointer
-      * or space pointer. Addtionally, it can return details of
+      * or space pointer. Addtionally, it can return detailed attributes of
       * a suspend pointer.
       */
      d matptrif        pr                  extproc('_MATPTRIF')
@@ -1246,24 +1247,21 @@
      d     inv_ptr                     *
      d                               16a
 
-     /**
-      * MATINVAT, materialize invocation attributes.
-      */
+     /* _MATINVAT2 (Materialize Invocation Attributes (MATINVAT)) */
      d matinvat2       pr                  extproc('_MATINVAT2')
-     d     receiver                    *   value
+     d     receiver                        likeds(matinvat_tmpl_t)
      d     invocation_id...
      d                                     likeds(invocation_id_t)
-     d     selection                   *   value
+     d     selection                       likeds(matinvat_selection_t)
 
      /* Materialization template of MATINVAT. */
      d matinvat_tmpl_t...
      d                 ds                  qualified
 
-     /* materialize attributes of the current invocation */
+     /* _MATINVAT (Materialize Invocation Attributes (MATINVAT)) */
      d matinvat        pr                  extproc('_MATINVAT1')
-     d*    receiver                    *   value
      d     receiver                        likeds(matinvat_tmpl_t)
-     d     selection                   *   value
+     d     selection                       likeds(matinvat_selection_t)
 
      /* attribute selection template for MATINVAT */
      d matinvat_selection_t...
@@ -1289,6 +1287,7 @@
      d                 ds                  qualified
      d     asf_ptr                     *
 
+     /* Materialization template of MATINVAT when a pointer is returned. */
      d matinvat_ptr_t...
      d                 ds                  qualified
      d     ptr                         *
@@ -3271,6 +3270,30 @@
      /* _ENSOBJ (Ensure Object (ENSOBJ)) */
      d ensobj          pr                  extproc('_ENSOBJ')
      d     obj                         *
+
+     /* Selection option for MATRMD */
+     d matrmf_option_t...
+     d                 ds                  qualified
+     d     val                        1a
+     d                                7a
+
+     /* Materialization template for MATRMD */
+     d matrmd_tmpl_t   ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                8a
+      * Resource management data
+
+     /* Materialization template for MATRMD with option hex 04 */
+     d matrmd_tmpl_t   ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d                                8a
+
+     /* _MATRMD (Materialize Resource Management Data (MATRMD)) */
+     d matrmd          pr                  extproc('_MATRMD')
+     d     receiver                        likeds(matrmd_tmpl_t)
+     d     opt                             likeds(matrmf_option_t)
 
      /* _YIELD (Yield (YIELD)) */
      d yield           pr                  extproc('_YIELD')
