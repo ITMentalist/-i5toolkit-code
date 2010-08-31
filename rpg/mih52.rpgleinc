@@ -762,7 +762,7 @@
       *
       * hex 00 = Non-bound program
       * hex 01 = Bound program
-      * hex 03 = Bound service program
+      * hex 02 = Bound service program
       * hex 04 = Java program
       *
      d     pgm_type                   1a
