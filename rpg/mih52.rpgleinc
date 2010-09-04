@@ -3272,7 +3272,7 @@
      d     obj                         *
 
      /* Selection option for MATRMD */
-     d matrmf_option_t...
+     d matrmd_option_t...
      d                 ds                  qualified
      d     val                        1a
      d                                7a
@@ -3281,19 +3281,163 @@
      d matrmd_tmpl_t   ds                  qualified
      d     bytes_in                  10i 0
      d     bytes_out                 10i 0
-     d                                8a
+     d     time_of_day...
+     d                               20u 0
       * Resource management data
-
-     /* Materialization template for MATRMD with option hex 04 */
-     d matrmd_tmpl_t   ds                  qualified
-     d     bytes_in                  10i 0
-     d     bytes_out                 10i 0
-     d                                8a
 
      /* _MATRMD (Materialize Resource Management Data (MATRMD)) */
      d matrmd          pr                  extproc('_MATRMD')
      d     receiver                        likeds(matrmd_tmpl_t)
-     d     opt                             likeds(matrmf_option_t)
+     d     opt                             likeds(matrmd_option_t)
+
+     /**
+      * Materialization template for MATRMD with option hex 01 --
+      * Materialize original processor utilization data (option hex 26
+      * is preferred).
+      */
+     d matrmd_tmpl01_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     time_of_day...
+     d                               20u 0
+      * processor time since IPL
+     d     prc_time                  20u 0
+      * secondary workload processor time since IPL
+     d     sec_prc_time...
+     d                               20u 0
+      * Database processor time since IPL
+     d     db_prc_time...
+     d                               20u 0
+      * Database threshold
+     d     db_threshold...
+     d                                5u 0
+      * Database limit
+     d     db_limit                   5u 0
+     d                                4a
+      * Interactive processor time since IPL
+     d     int_prc_time...
+     d                               20u 0
+      * Interactive threshold
+     d     int_threshold...
+     d                                5u 0
+      * Interactive limit
+     d     int_limit                  5u 0
+     d                                4a
+
+     /**
+      * Materialization template for MATRMD with option hex 03 --
+      * storage management counters
+      */
+     d matrmd_tmpl03_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     time_of_day...
+     d                               20u 0
+     d     access_pending...
+     d                                5i 0
+     d     stg_pool_delays...
+     d                                5i 0
+     d     dir_loopup_ops...
+     d                               10i 0
+     d     dir_page_faults...
+     d                               10i 0
+      * access group member page faults
+     d     ag_mbr_page_faults...
+     d                               10i 0
+      * microcode page faults
+     d     mc_page_faults...
+     d                               10i 0
+      * microtask read operations
+     d     mt_read_ops...
+     d                               10i 0
+      * microtask write operations
+     d     mt_write_ops...
+     d                               10i 0
+     d                                4a
+
+     /**
+      * Materialization template for MATRMD with option hex 04 --
+      * Storage Transient Pool Information.
+      */
+     d matrmd_tmpl04_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     time_of_day...
+     d                               20u 0
+      *
+      * The pool number materialized is the number of the main storage
+      * pool, which is being used as the transient storage pool. A
+      * value of 0 indicates that the transient pool attribute is
+      * being ignored.
+      *
+     d     msp_num                    5i 0
+
+     /**
+      * Materialization template for MATRMD with option hex 08 --
+      * Machine Address Threshold Data.
+      */
+     d matrmd_tmpl08_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     time_of_day...
+     d                               20u 0
+     d total_permanent_addresses_possible...
+     d                               20u 0
+     d total_temporary_addresses_possible...
+     d                               20u 0
+     d permanent_addresses_remaining...
+     d                               20u 0
+     d temporary_addresses_remaining...
+     d                               20u 0
+     d permanent_addresses_remaining_threshold...
+     d                               20u 0
+     d temporary_addresses_remaining_threshold...
+     d                               20u 0
+     d total_permanent_4gb_addresses_possible...
+     d                               20u 0
+     d total_permanent_256mb_addresses_possible...
+     d                               20u 0
+     d total_temporary_4gb_addresses_possible...
+     d                               20u 0
+     d total_temporary_256mb_addresses_possible...
+     d                               20u 0
+     d permanent_4gb_addresses_remaining...
+     d                               20u 0
+     d permanent_256mb_addresses_remaining...
+     d                               20u 0
+     d temporary_4gb_addresses_remaining...
+     d                               20u 0
+     d temporary_256mb_addresses_remaining...
+     d                               20u 0
+     d permanent_4gb_addresses_remaining_threshold...
+     d                               20u 0
+     d permanent_256mb_addresses_remaining_threshold...
+     d                               20u 0
+     d temporary_4gb_addresses_remaining_threshold...
+     d                               20u 0
+     d temporary_256mb_addresses_remaining_threshold...
+     d                               20u 0
+
+     /**
+      * Materialization template for MATRMD with option hex 09 --
+      * Materialize main storage pool information (option hex 2D is
+      * preferred).
+      *
+      * @remark Option "Main Storage Pool Information (Hex 2D)" is the
+      * preferred method of materializing main storage pool
+      * information because some of the fields for this option may
+      * overflow without any indication of error.
+      */
+     d matrmd_tmpl09_t...
+     d                 ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     time_of_day...
+     d                               20u 0
 
      /* _YIELD (Yield (YIELD)) */
      d yield           pr                  extproc('_YIELD')
