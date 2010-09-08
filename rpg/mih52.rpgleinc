@@ -3554,7 +3554,7 @@
       * MPL classes)
       *
 
-     /* MPL class information */
+     /* 2-byte template of MPL class information */
      d mpl_class_info_t...
      d                 ds                  qualified
      d     mpl_max...
@@ -3573,6 +3573,60 @@
      d                                5i 0
      d     number_of_mi_wait_to_ineligible_transitions...
      d                                5i 0
+
+     /**
+      * Materialization template for MATRMD with option hex 17 --
+      * Allocation and De-allocation counts per task and thread.
+      */
+     d matrmd_tmpl17_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     time_of_day...
+     d                               20u 0
+      *
+      * Requested function. Valid values:
+      *   1 = Sorted by storage allocation
+      *   2 = Sorted by storage de-allocation
+      *   3 = Sorted by delta storage (allocated minus de-allocated)
+      *
+     d     req_func                   5u 0
+     d     total_number_of_tasks_and_threads...
+     d                               10u 0
+     d     number_of_entries_returned...
+     d                               10u 0
+     d                                6a
+      *
+      * Task and thread information of type stg_alloc_info_t (Repeated
+      * once for each task or thread. Located immediately after the
+      * control information above.)
+      *
+
+     /* Allocation and De-allocation of auxiliary storage per task or thread */
+     d stg_alloc_info_t...
+     d                 ds                  qualified
+      *
+      * Task and thread control information
+      * Bits 0-1, task and thread indicator
+      *   00 = Secondary thread
+      *   01 = Initial thread
+      *   10 = Task
+      *   11 = Reserved
+      * Bits 2-15, reserved (binary 0)
+      *
+     d     flag                       2a
+     d                                2a
+     d     task_name                 32a
+     d     task_id                    4a
+     d     thd_id                     8a
+     d     allocated_pages...
+     d                               10u 0
+     d     deallocated_pages...
+     d                               10u 0
+     d     delta_pages...
+     d                               10u 0
+     d                               20a
 
      /* _YIELD (Yield (YIELD)) */
      d yield           pr                  extproc('_YIELD')
