@@ -1022,6 +1022,27 @@
 
      /* end -- space management */
 
+     /* program management */
+
+     /* MATPGMNM, materialize program name */
+     d matpgmnm        pr                  extproc('_MATPGMNM')
+     d     rcv_tmpl                        likeds(matpgmnm_tmpl_t)
+
+     d matpgmnm_tmpl_t...
+     d                 ds            80    qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     format                    10i 0
+     d                                4a
+     d     ctx_type                   2a
+     d     ctx_name                  30a
+     d     bpgm_type                  2a
+     d     bpgm_name                 30a
+     d matpgmnm_tmpl_len...
+     d                 c                   80
+
+     /* end -- program management */
+
      /* program execution */
 
      /* bound program activation definition template */
@@ -1069,23 +1090,6 @@
       *         calling program itself.
       */
      d deactpg2        pr                  extproc('_DEACTPG2')
-
-     /* MATPGMNM, materialize program name */
-     d matpgmnm        pr                  extproc('_MATPGMNM')
-     d     rcv_tmpl                        likeds(matpgmnm_tmpl_t)
-
-     d matpgmnm_tmpl_t...
-     d                 ds            80    qualified
-     d     bytes_in                  10i 0
-     d     bytes_out                 10i 0
-     d     format                    10i 0
-     d                                4a
-     d     ctx_type                   2a
-     d     ctx_name                  30a
-     d     bpgm_type                  2a
-     d     bpgm_name                 30a
-     d matpgmnm_tmpl_len...
-     d                 c                   80
 
      /* INVP, returns invocation pointer */
      d invp            pr              *   extproc('_INVP')
@@ -3573,6 +3577,49 @@
      d                                5i 0
      d     number_of_mi_wait_to_ineligible_transitions...
      d                                5i 0
+
+     /**
+      * Materialization template for MATRMD with option hex 0C --
+      * Machine Reserved Storage Pool Information.
+      */
+     d matrmd_tmpl0c_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     time_of_day...
+     d                               20u 0
+      * Current number of pools
+     d     cur_pools                  5i 0
+     d                                6a
+      *
+      * Individual main storage pool information of type
+      * msp_mch_reserved_t (repeated once for each pool, up to the
+      * current number of pools)
+      *
+
+     d msp_mch_reserved_t...
+     d                 ds                  qualified
+      *
+      * Pool size is the amount of main storage assigned to the pool
+      * (including the machine reserved portion). The units of measure
+      * is the machine minimum transfer size. Note that on overflow,
+      * the machine returns 2,147,483,647 in the pool size field
+      * without any indication of error. The main storage pool size
+      * field will return the correct value.
+      *
+     d     pool_size...
+     d                               10u 0
+      *
+      * Machine portion of the pool specifies the amount of storage
+      * from the pool that is dedicated to machine functions. The
+      * units of measure is the machine minimum transfer size.
+      *
+     d     mch_reserved_size...
+     d                               10u 0
+      * 8-byte pool size
+     d     pool_size8...
+     d                               10u 0
 
      /**
       * Materialization template for MATRMD with option hex 17 --

@@ -13,9 +13,13 @@
      d addr            ds                  likeds(matrmd_tmpl08_t)
      d msp             ds                  likeds(matrmd_tmpl09_t)
      d                                     based(buf_ptr)
+     d msp_rsv         ds                  likeds(matrmd_tmpl0c_t)
+     d                                     based(buf_ptr)
      d opt             ds                  likeds(matrmd_option_t)
      d buf_ptr         s               *
      d msp_info        ds                  likeds(msp_info_t)
+     d                                     based(pos)
+     d rsv_pool        ds                  likeds(msp_mch_reserved_t)
      d                                     based(pos)
      d pos             s               *
      d hours           s             20u 0
@@ -79,6 +83,25 @@
                endif;
 
                pos += %size(msp_info_t);
+           endfor;
+
+           // Machine Reserved Storage Pool Information (opt hex 0C)
+           len = %size(msp_rsv);
+           buf_ptr = modasa(len);
+           msp_rsv.bytes_in = len;
+           opt.val = x'0C';
+           matrmd(msp_rsv : opt);
+
+           len = msp_rsv.bytes_out;
+           buf_ptr = modasa(len);
+           msp_rsv.bytes_out = len;
+           matrmd(msp_rsv : opt);
+
+           pos = buf_ptr + %size(matrmd_tmpl0c_t);
+           for i = 1 to msp_rsv.cur_pools;
+               // check rsv_pool
+
+               pos += %size(rsv_pool);
            endfor;
 
            *inlr = *on;
