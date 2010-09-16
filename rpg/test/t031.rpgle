@@ -29,7 +29,7 @@
 
       * SPCPTR to receiver
      d rcv_ptr         s               *
-     d rcv_info        ds                  likeds(matctx_receiver1_t)
+     d rcv_info        ds                  likeds(matctx_receiver_t)
      d                                     based(rcv_ptr)
 
      d obj_info        ds                  qualified
@@ -57,7 +57,7 @@
            rcv_info.bytes_in = BUF_LEN;
 
            // mertialize the machine context for *USRPRFs
-           matctx1 (rcv_ptr : option);
+           matctx1 (rcv_info : option);
 
            // display returned *USRPRFs
            num = (rcv_info.bytes_out - matctx_offset1) / %size(obj_info);
