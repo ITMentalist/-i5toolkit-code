@@ -1,0 +1,16 @@
+             /*                                                      */
+             /* @file dsppnl.cl-cmd                                  */
+             /*                                                      */
+             /* Display a panel in a PNLGRP object.                  */
+             /*                                                      */
+
+             CMD        PROMPT('Dispaly Panel')
+             PARM       KWD(PNLGRP) TYPE(OBJLIB) MIN(1) +
+                          PROMPT('Pangel group')
+             PARM       KWD(PANEL) TYPE(*NAME) LEN(10) MIN(1) +
+                          PROMPT('Panel name')
+
+ OBJLIB:     QUAL       TYPE(*NAME) LEN(10) MIN(1) /* Object name */
+             QUAL       TYPE(*NAME) LEN(10) DFT(*LIBL) +
+                          SPCVAL((*LIBL)) PROMPT('Library') /* +
+                          Library name */

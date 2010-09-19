@@ -3759,6 +3759,40 @@
      d                               10u 0
      d                               20a
 
+     /**
+      * Access state template for SETACST
+      */
+     d access_state_tmpl_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     num_objs                  10i 0
+     d                               12a
+      * access state specifications of type access_state_spec_t
+     d     spec                            likeds(access_state_spec_t)
+     d                                     dim(128)
+
+     /**
+      * Access state specification
+      */
+     d access_state_spec_t...
+     d                 ds                  qualified
+     d     obj                         *
+     d     state_code                 1a
+     d                                3a
+      * access state parameters (output fields)
+     d     access_pool_id...
+     d                                4a
+     d     spc_length                10i 0
+      * in units of minimum machine transfer size
+     d     operational_object_size...
+     d                               10i 0
+
+     /**
+      * _SETACST (Set Access State (SETACST))
+      */
+     d setacst         pr                  extproc('_SETACST')
+     d     tmpl                            likeds(access_state_tmpl_t)
+
      /* _YIELD (Yield (YIELD)) */
      d yield           pr                  extproc('_YIELD')
 

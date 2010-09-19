@@ -1,0 +1,89 @@
+/**
+ * @file chgusvcp.emi
+ *
+ * VCP of CL command chgusrspc.
+ *
+ * @remark As a VCP, this program test against empty SYSOBJ parameter and empty OBJTYPE parameter.
+ *
+ * @todo Still not sure, whether the DTALEN parameter should be
+ *       reserved? The first 2 bytes of DTA already shows the length of
+ *       the DTA paramter.
+ */
+
+dcl spcptr usrspc-ptr parm         ;
+dcl spcptr spc-offset-ptr parm     ;
+dcl spcptr dta-type-ptr parm       ;
+dcl spcptr dta-ptr parm            ;
+dcl spcptr dta-len-ptr parm        ;
+dcl spcptr ptr-type-ptr parm       ;
+dcl spcptr sys-obj-ptr parm        ;
+dcl spcptr sys-obj-type-ptr parm   ;
+dcl spcptr sys-obj-spc-offset-ptr parm ;
+
+dcl ol pl-main (
+        usrspc-ptr,
+        spc-offset-ptr,
+        dta-type-ptr,
+        dta-ptr,
+        dta-len-ptr,
+        ptr-type-ptr,
+        sys-obj-ptr,
+        sys-obj-type-ptr,
+        sys-obj-spc-offset-ptr
+) parm ext                      ;
+entry i-main(pl-main) ext       ;
+
+dcl dd usrspc char(20) bas(usrspc-ptr) ;
+        dcl dd usrspc-name char(10) def(usrspc) ;
+        dcl dd usrspc-lib  char(10) def(usrspc) pos(11) ;
+
+dcl dd spc-offset bin(4) bas(spc-offset-ptr) ;
+
+dcl dd dta-type char(10) bas(dta-type-ptr) ;
+dcl dd dta char(3) bas(dta-ptr)            ;
+        dcl dd dta-parm-len bin(2) unsgnd def(dta) ;
+dcl spcptr dta-parm-val-ptr auto                   ;
+
+dcl dd dta-len bin(4) bas(dta-len-ptr) ;
+
+dcl dd ptr-type char(10) bas(ptr-type-ptr) ;
+
+dcl dd sys-obj char(20) bas(sys-obj-ptr) ;
+        dcl dd sys-obj-name char(10) def(sys-obj) ;
+        dcl dd sys-obj-lib  char(10) def(sys-obj) pos(11) ;
+
+dcl dd sys-obj-type char(10) bas(sys-obj-type-ptr) ;
+
+dcl dd sys-obj-spc-offset bin(4) bas(sys-obj-spc-offset-ptr) ;
+
+brk "ACCINPUT"                  ;
+        /* check SYSOBJ, OBJTYPE */
+dcl con c-dtatype-ptr char(10) init("*PTR") ;
+dcl con c-dtatype-scalar char(10) init("*SCALAR") ;
+        cmpbla(b) dta-type, c-dtatype-ptr / neq(input-check) ;
+
+        cmpbla(b) sys-obj-name, "          " / neq(check-sysobj) ;
+        /* empty SYSOBJ parm */
+        cpyblap msg, "Empty SYSOBJ parameter.", ' ' ;
+        triml   len, msg, ' '                       ;
+        %sendmsg(msg, len)                          ;
+        b see-you                                   ;
+check-sysobj:   
+        cmpbla(b) sys-obj-type, "          " / neq(input-check) ;
+        /* empty OBJTYPE parm */
+        cpyblap msg, "Empty OBJTYPE parameter.", ' ' ;
+        triml   len, msg, ' '                       ;
+        %sendmsg(msg, len)                          ;
+        b see-you                                   ;
+
+input-check: 
+brk "CHKINPUT"                  ;
+        /* any more parameter to check? ... */
+see-you:        
+        rtx *                   ;
+
+/* globals */
+dcl dd msg char(128) auto       ;
+dcl dd len bin(4) auto          ;
+
+pend                            ;
