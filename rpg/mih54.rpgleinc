@@ -129,6 +129,22 @@
      d     op1                       20u 0
      d     mask                      20u 0 value
 
+     /* pointer resolution */
+
+     /**
+      * _RETTSADR (Retrieve Teraspace Address From Space Pointer)
+      *
+      * @remark instruction may be specified in a program template
+      *         only when the (bound) program is to be created as
+      *         teraspace capable. So to use _RETTSADR in ILE RPG you
+      *         need to have a 7.1 machine. For an ILE C example,
+      *         refer to test/t084.c
+      */
+     d rettsadr        pr             8a   extproc('_RETTSADR')
+     d     spc_ptr                     *   value
+
+     /* end -- pointer resolution */
+
      /**
       * CHKLKVAL, check lock value
       *

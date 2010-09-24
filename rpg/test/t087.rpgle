@@ -43,6 +43,7 @@
      d max_depth       c                   5
 
       /free
+      /if not defined(*v5r2m0)
 
            // Try to acquire lock.
            dow chklkval(lck : old_val : new_val) = 1;
@@ -64,5 +65,7 @@
 
            // Release lock.
            clrlkval(lck : old_val);
+
+      /endif
       /end-free
      p f               e

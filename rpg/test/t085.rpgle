@@ -27,14 +27,16 @@
       /endif
 
       /copy ts
-      /copy mih52
+      /copy mih54
      d tera_ptr        s               *
      d ptr_val         s              8a
 
       /free
 
            tera_ptr = ts_malloc(1024);
+      /if not defined(*v5r2m0)
            ptr_val  = rettsadr(tera_ptr);
+      /endif
 
            ts_free(tera_ptr);
 
