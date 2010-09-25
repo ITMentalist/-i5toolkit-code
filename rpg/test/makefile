@@ -42,6 +42,8 @@ all: $(TARGETS)
 clean:
 	qsh -c "/usr/bin/rmflnk $(TARGETS)"
 
+t099up: pfa.file
+
 t122a: t122a.module
 	system "crtsrvpgm $@ module($@) export(*all) actgrp($@) alwrinz(*yes)"
 	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.srvpgm $@

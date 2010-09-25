@@ -44,6 +44,7 @@
      d w               ds                  likeds(wait_tmpl_t)
 
       /free
+      /if not defined(*v5r2m0)
 
            // locate bin(8) scalar stored in space object LK
            rslvsp_tmpl.obj_type = x'1934';
@@ -70,5 +71,6 @@
                clrlkval(lock : 0);
            enddo;
 
+      /endif
            *inlr = *on;
       /end-free

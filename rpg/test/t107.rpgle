@@ -49,6 +49,7 @@
      d end_time        s               z
 
       /free
+      /if not defined(*v5r2m0)
            // log start time
            JID = 'START';
            ETIM = %timestamp();
@@ -86,5 +87,6 @@
            ETIM = end_time;
            write REC;
 
+      /endif
            *inlr = *on;
       /end-free

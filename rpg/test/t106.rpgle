@@ -101,10 +101,12 @@
      d     wait_tmpl                       likeds(wait_tmpl_t)
 
       /free
+      /if not defined(*v5r2m0)
            // Acquire lock.
            dow chklkval(lock : old_value : new_value) = 1;
                waittime(wait_tmpl);
            enddo;
+      /endif
 
            // Increase old_value and new_value by 1.
            old_value += 1;
@@ -126,8 +128,10 @@
            old_value -= 1;
            new_value -= 1;
 
+      /if not defined(*v5r2m0)
            // Release lock.
            clrlkval(lock : old_value);
+      /endif
       /end-free
      p recursive_unlock...
      p                 e
