@@ -110,10 +110,12 @@ brk "ENDRSLV"                   ;
 dcl insptr write-scalar-data-ptr auto ;
 entry write-scalar-data int           ;
 
+dcl con c-calculate bin(2) init(0) ;
         /* make sure dta-len is less than or equal to dta-parm-len */
-        cmpnv(b) dta-len, dta-parm-len / nhi(=+2) ;
+        cmpnv(b) dta-len, c-calculate / neq(decide-dta-len) ;
+        cmpnv(b) dta-len, dta-parm-len / nhi(decide-dta-len) ;
         cpynv dta-len, dta-parm-len               ;
-:
+decide-dta-len:
         /* copy dta into target user space */
         setsppfp usrspc-pos, usrspc-start ;
         addspp usrspc-pos, usrspc-pos, spc-offset ;
@@ -145,6 +147,7 @@ entry write-pointer-data int           ;
 
         /* round spc-offset to multiple of 16 bytes */
         div(s) spc-offset, 16   ;
+        addn(s) spc-offset, 1   ;
         mult(s) spc-offset, 16  ;
 
         /* set usrspc-pos */

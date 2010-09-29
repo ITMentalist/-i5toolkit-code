@@ -23,10 +23,16 @@
 
 BIN_LIB=i5toolkit
 MAKERULES=../rules.mk
-TARGETS=chgusrspc.cmd chgusrspc chgusvcp dsppnl.cmd dsppnl
+TARGETS=chgusrspc chgusvcp chgusrspc.cmd dsppnl.cmd dsppnl
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir spc."
+
+# @todo HLPPNLGRP($(BIN_LIB)/spchlp) HLPID(''HLP/CHG'')')
+chgusrspc.cmd: chgusrspc.cl-cmd chgusrspc chgusvcp
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
+parm('PGM($(BIN_LIB)/$*) VLDCKR($(BIN_LIB)/CHGUSVCP)')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
 clean:
 	qsh -c "/usr/bin/rmflnk $(TARGETS)"

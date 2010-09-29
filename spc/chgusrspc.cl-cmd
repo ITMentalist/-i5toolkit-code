@@ -17,8 +17,9 @@
              PARM       KWD(DTA) TYPE(*CHAR) LEN(5000) DFT('') +
                           VARY(*YES *INT2) CASE(*MIXED) +
                           PMTCTL(SCALAR) INLPMTLEN(50) PROMPT(DATA)
-             PARM       KWD(DTALEN) TYPE(*INT2) DFT(1) +
-                          PMTCTL(SCALAR) PROMPT('Data length')
+             PARM       KWD(DTALEN) TYPE(*INT2) DFT(*CALC) +
+                          SPCVAL((*CALC 0)) PMTCTL(SCALAR) +
+                          PROMPT('Data length')
 
              /* IF DTATYPE == *PTR    */
              PARM       KWD(PTRTYPE) TYPE(*CHAR) LEN(10) RSTD(*YES) +
