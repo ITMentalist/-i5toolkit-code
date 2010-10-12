@@ -30,6 +30,7 @@
                       : inlen
                       : outbufptr
                       : outlen );
+           dsply 'EBCDIC string' '' str;
 
            rtn = iconv_close(cd);
            *inlr = *on;

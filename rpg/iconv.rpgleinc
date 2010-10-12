@@ -19,7 +19,7 @@
       * corresponding error code.
       *
      d     rtn                       10i 0
-     d     cd                        12a
+     d     cd                        10i 0 dim(12)
 
      /**
       * toccsid parameter of iconv_open().
