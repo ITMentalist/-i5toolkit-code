@@ -4,7 +4,6 @@
       * Test of _MATMATR1.
       *  - machine serial number
       *  - time-of-day clock with clock-offset
-      *  - MISR record
       *  - NETA (network attributes)
       */
 

@@ -3843,6 +3843,259 @@
      d     offset                     8a
 
      /**
+      * Load/Dump tape device information DS in MISR information.
+      */
+     d tape_dev_info_t...
+     d                 ds                  qualified
+      * resource name
+     d     rsc_name                  10a
+     d                               38a
+
+     /**
+      * Recovery object DS which is used to represent elements in
+      * the recovery object list in materialized MISR information.
+      */
+     d recovery_obj_t  ds                  qualified
+     d     obj                         *
+     d     obj_type                   1a
+     d     obj_status                15a
+
+     /**
+      * Instruction template for option hex 0108 (MISR) of MATMATR.
+      *
+      * @remark MISR stands for Machine initialization status record.
+      */
+     d matmatr_misr_t  ds                  qualified
+     d                                     based(dummy_ptr)
+      *
+      * MISR status.
+      * Bit 0. Restart IMPL
+      *   0 = IMPL was not initiated by the Terminate instruction
+      *   1 = IMPL was initiated by the Terminate instruction
+      * Bit 1. Manual power on
+      *   0 = Power on NOT due to Manual power on
+      *   1 = Manual power on occurred
+      * Bit 2. Timed power on
+      *   0 = Power on not due to Timed power on
+      *   1 = Timed power on occurred
+      * Bit 3. Remote power on
+      *   0 = Power on not due to remote power on
+      *   1 = Remote power on occurred
+      * Bit 4. Auto-power restart power on
+      *   0 = Power on not due to Auto-power restart power on
+      *   1 = Auto-power restart power on occurred
+      * Bit 5. Uninterrupted power supply (UPS) battery low
+      *   0 = UPS battery not low
+      *   1 = UPS battery low
+      * Bit 6. Uninterrupted power supply (UPS) bypass active
+      *   0 = UPS bypass not active
+      *   1 = UPS bypass active
+      * Bit 7. Utility power failed, running on UPS
+      *   0 = Running on utility power
+      *   1 = Running on UPS
+      * Bit 8. Uninterrupted power supply installed 
+      *   0 = UPS not installed
+      *   1 = UPS installed, ready for use
+      * Bit 9. Operation panel battery failed
+      *   0 = Operation panel battery good
+      *   1 = Operation panel battery failed
+      * Bit 10. Operation panel self test failed
+      *   0 = Operation panel self test successful
+      *   1 = Operation panel self test failed
+      * Bit 11. Console status
+      *   0 = Console is operative
+      *   1 = Console is inoperative
+      * Bit 12. Console state
+      *   0 = Machine and OS version levels match
+      *   1 = Machine and OS version levels mismatch
+      * Bit 14. Reserved
+      * Bit 15. Primary console status
+      *   0 = Not using primary console
+      *   1 = Using primary console
+      * Bit 16. Reserved
+      * Bit 17. ASCII console status
+      *   0 = Not using ASCII console
+      *   1 = Using ASCII console
+      * Bit 18. Termination status 
+      *   0 = Normal (TERMMPR)
+      *   1 = Abnormal
+      * Bit 19. Duplicate user profile (AIPL only)
+      *   0 = Not duplicate, new user profile created
+      *   1 = Duplicate found and used by AIPL
+      * Bit 20. Damaged user profile (AIPL only)
+      *   0 = Not damaged, user profile used
+      *   1 = Damaged user profile, profile deleted and re-created
+      * Bit 21. Damaged machine context
+      *   0 = Not damaged
+      *   1 = Machine context damaged
+      * Bit 22. Object recovery list status
+      *   0 = Complete
+      *   1 = Incomplete
+      * Bit 23. Recovery phase completion
+      *   0 = Complete
+      *   1 = Incomplete
+      * Bit 24. Most recent machine termination
+      *   0 = Objects ensured
+      *   1 = Object(s) not ensured at most recent machine termination
+      * Bit 25. Last MISR reset
+      *   0 = Object(s) ensured on every machine termination
+      *   1 = Object(s) not ensured on every machine termination since last MISR reset
+      * Bit 26-27. Reserved
+      * Bit 28-29. IPL mode
+      *   00 = DST and BOSS in unattended mode
+      *   10 = DST and BOSS is attended mode
+      * Bit 30. Service processor power on 
+      *   0 = Not first service processor power on
+      *   1 = First service processor power on
+      * Bit 31. MISR damage
+      *   0 = MISR not damaged
+      *   1 = MISR damaged, information reset to default values
+      * Bit 32. Auto key mode
+      *   0 = Key mode is not auto
+      *   1 = Key mode is auto
+      * Bit 33. Normal key mode
+      *   0 = Key mode is not normal
+      *   1 = Key mode is normal 
+      * Bit 34. Manual key mode
+      *   0 = Key mode is not manual
+      *   1 = Key mode is manual
+      * Bit 35. Secure key mode
+      *   0 = Key mode is not secure
+      *   1 = Key mode is secure
+      * Bit 36. Tower two presence on 9404 system unit
+      *   0 = Tower two not present
+      *   1 = Tower two present
+      * Bit 37. Battery status for tower one on 9404 system unit
+      *   0 = Battery good for tower one
+      *   1 = Battery low for tower one
+      * Bit 38. Battery status for tower two on 9404
+      *   0 = Battery good for tower two
+      *   1 = Battery low for tower two
+      * Bit 39. Termination due to utility power failure and user specified delay time exceeded
+      *   0 = Delay time not exceeded
+      *   1 = Utility failure and delay time exceeded
+      * Bit 40. Termination due to utility power failure and battery low
+      *   0 = Battery not low
+      *   1 = Utility failure and battery low
+      * Bit 41. Termination due to forced microcode completion
+      *   0 = Not forced microcode completion
+      *   1 = Termination due to forced microcode completion
+      * Bit 42. Auto power restart disabled due to utility failure
+      *   0 = Auto power restart not disabled
+      *   1 = Auto power restart disabled
+      * Bit 43. Reserved
+      * Bit 44. Spread the operating system
+      *   0 = Do not spread the operating system
+      *   1 = Spread the operating system
+      * Bit 45. Install from disk/tape
+      *   0 = Install from tape
+      *   1 = Install from disk
+      * Bit 46. Use primary/alternate PDT
+      *   0 = Use primary process definition template
+      *   1 = Use alternate process definition template
+      * Bit 47. Time/Date source 
+      *   0 = Time/Date is accurate
+      *   1 = Time/Date default value used
+      *
+     d     misr_status...
+     d                                6a
+     d     install_type...
+     d                                5i 0
+     d     number_of_damaged_main_storage_units...
+     d                                5i 0
+     d     national_language_index...
+     d                                5i 0
+     d     number_of_entries_in_object_recovery_list...
+     d                               10i 0
+     d     tape_sequence_number_for_an_aipl...
+     d                               10i 0
+     d     tape_volume_number_for_an_aipl...
+     d                               10i 0
+      * Address of object recovery list
+     d     recovery_list_ptr...
+     d                                 *
+      * Process control space created as the result of IPL or AIPL
+     d     pcs_ipl                     *
+      * Queue space object created as the result of an IPL or AIPL
+     d     qspc_ipl                    *
+      *
+      * Additional MISR status information
+      * Bit 0. Automatic main storage dump IPL occurred
+      *   0 = No
+      *   1 = Yes
+      * Bit 1-2. Power failure (CPM continuous powered mainstore) recovery
+      *   00 = Not set
+      *   01 = Recovery failed after CPM shutdown
+      *   10 = Recovery successful after CPM shutdown
+      *   11 = Reserved
+      * Bit 3. Automatic main storage dump IPL requested
+      *   0 = No
+      *   1 = Yes
+      * Bit 4-5. Power failure (On internal battery).
+      *   00 = Not set
+      *   01 = Shutdown did not complete, not all changed pages written
+      *   10 = Shutdown did complete, all changed pages written
+      *   11 = Reserved
+      * Bit 6. Require full main storage dump copy
+      *   0 = No. When copying a current main storage dump, the system
+      *       is allowed to copy only the subset of the dump data
+      *       deemed necessary for service to solve the problem.
+      *   1 = Yes. When copying a current main storage dump, the
+      *       system must copy all dump data.
+      * Bit 7. Prefer full main storage dump copy
+      *   0 = No. When copying a current main storage dump, the system
+      *       should try to copy only the subset of the dump data
+      *       deemed necessary for service to solve the problem.
+      *   1 = Yes. When copying a current main storage dump, the
+      *       system should copy all the dump data if there is enough
+      *       room for it. Otherwise, the system should try to copy
+      *       only the subset of the dump deemed necessary for service
+      *       to solve the problem.
+      * Bits 8-31. Reserved
+      *
+     d     ex_misr_info...
+     d                                4a
+      * Main storage dump data -- timestamp and SRC
+     d     mstg_dmp                  76a
+     d     mstg_dmp_ts...
+     d                                8a   overlay(mstg_dmp)
+      * SRC words
+     d     mstg_dmp_src_words...
+     d                                4a   overlay(mstg_dmp:9)
+     d                                     dim(9)
+      * Extended SRC word 1
+     d     mstg_dmp_ex_src_word...
+     d                               32a   overlay(mstg_dmp:45)
+     d                              280a
+      * Start of IPL timestamp (local time)
+     d     ipl_start_timestamp...
+     d                                8a
+      * Optical media volume information
+     d     optical_volume_id...
+     d                               32a
+     d     optical_volume_sequence...
+     d                                5i 0
+     d                               13a
+      *
+      * Licensed Internal Code install status
+      * Bit 0. MRI level
+      *   0 = Release level MRI
+      *   1 = Post-release level MRI
+      * Bit 1. Licensed Internal Code PTF install
+      *   0 = Licensed Internal Code normal install
+      *   1 = Licensed Internal Code PTF install
+      * Bits 2-7. Reserved
+      *
+     d     lic_install_status...
+     d                                1a
+      * Load/Dump tape device information list. (1st=LUD information, 2nd=CD information) 
+     d     tape_dev_info_list...
+     d                                     likeds(tape_dev_info_t)
+     d                                     dim(2)
+      * Recovery object list (located by recovery object list pointer).
+      * Elements in this list are of type recovery_obj_t
+
+     /**
       * MATMATR instruction template for option hex 0130 (network attributes).
       */
      d matmatr_net_attr_t...
