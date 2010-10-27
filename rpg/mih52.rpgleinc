@@ -3800,6 +3800,18 @@
      d testtobj        pr            10i 0 extproc('_TESTTOBJ')
      d     syp                         *
 
+     /**
+      * _TESTPDC (Test Performance Data Collection (TESTPDC))
+      *
+      * A test is performed to determine whether or not the thread is
+      * in an active Performance Data Collector (PDC) trace
+      * collection.
+      *
+      * @return 1 if the thread is in an active Performance Data
+      * Collector (PDC) trace collection, otherwise 0.
+      */
+     d testpdc         pr            10i 0 extproc('_TESTPDC')
+
      /* end -- Machine Observation */
 
      /* Machine Interface Support Functions */
