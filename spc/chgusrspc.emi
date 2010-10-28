@@ -63,7 +63,7 @@ brk "ACCINPUT"                  ;
 :
         cmpbla(b) dta-type, c-dtatype-ptr / neq(=+2) ;
         calli write-pointer-data, *, write-pointer-data-ptr ;
-see-you:        
+see-you:
         rtx *                   ;
 
 /**
@@ -111,8 +111,11 @@ dcl insptr write-scalar-data-ptr auto ;
 entry write-scalar-data int           ;
 
 dcl con c-calculate bin(2) init(0) ;
+        cmpnv(b) dta-len, c-calculate / neq(=+3) ;
+        cpynv dta-len, dta-parm-len               ;
+        b decide-dta-len                          ;
+:       
         /* make sure dta-len is less than or equal to dta-parm-len */
-        cmpnv(b) dta-len, c-calculate / neq(decide-dta-len) ;
         cmpnv(b) dta-len, dta-parm-len / nhi(decide-dta-len) ;
         cpynv dta-len, dta-parm-len               ;
 decide-dta-len:
@@ -147,7 +150,6 @@ entry write-pointer-data int           ;
 
         /* round spc-offset to multiple of 16 bytes */
         div(s) spc-offset, 16   ;
-        addn(s) spc-offset, 1   ;
         mult(s) spc-offset, 16  ;
 
         /* set usrspc-pos */
