@@ -1008,6 +1008,145 @@
      d dess            pr                  extproc('_DESS')
      d     spcobj                      *
 
+     /* Materialization template for MATS */
+     d mats_tmpl_t     ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     obj                       32a
+     d     obj_type                   2a   overlay(obj)
+     d     obj_name                  30a   overlay(obj:3)
+      *
+      * Object creation options
+      *
+      * Bit 0, existence attribute.
+      *   0 = Temporary
+      *   1 = Permanent
+      * Bit 1, space attribute
+      *   0 = Fixed-length
+      *   1 = Variable-length
+      * Bit 2, Context
+      *   0 = Addressability not in context
+      *   1 = Addressability in context
+      * Bit 3, Access group
+      *   0 = Not member of access group
+      *   1 = Member of access group
+      * Bits 4-12, Reserved (binary 0)
+      * Bit 14, Automatically extend space
+      *   0 = No
+      *   1 = Yes
+      * Bits 15-16, Hardware storage protection level
+      *   00 = Reference and modify allowed for user state programs
+      *   01 = Only reference allowed for user state programs
+      *   10 = Invalid (undefined)
+      *   11 = No reference or modify allowed for user state programs
+      * Bits 17-20, Reserved (binary 0)
+      * Bit 21, Always enforce hardware storage protection of this space
+      *   0 = Enforce hardware storage protection of this space only
+      *       when hardware storage protection is enforced for all
+      *       storage.
+      *   1 = Enforce hardware storage protection of this space at all times.
+      * Bits 22-31, Reserved (binary 0)
+      *
+     d     crt_option                 4a
+     d                                2a
+     d     asp_num                    5u 0
+     d     spc_size                  10i 0
+     d     init_val                   1a
+      *
+      * Performance class
+      *
+      * Bit 0, Space alignment
+      *   0 = The space associated with the object is allocated to
+      *       allow proper alignment of pointers at 16-byte alignments
+      *       within the space.
+      *   1 = The space associated with the object is allocated to
+      *       allow proper alignment of pointers at 16-byte alignments
+      *       within the space as well as to allow proper alignment of
+      *       input/output buffers at 512-byte alignments within the
+      *       space.
+      *       @remark Ignore the value of this field when the machine
+      *       chooses space alignment field has a value of 1.
+      * Bit 1, Reserved (binary 0)
+      * Bit 2, Spread the space object
+      *   0 = The space object may be on one storage device.
+      *   1 = The space object may be spread across multiple storage devices.
+      * Bit 3, Machine chooses space alignment
+      *   0 = The space alignment indicated by the space alignment field is in effect.
+      *   1 = The machine chose the space alignment most beneficial to
+      *       performance, which may have reduced maximum space
+      *       capacity. The alignment chosen is a multiple of
+      *       512. Check the maximum size of space field value. Ignore
+      *       the value of the space alignment field.
+      * Bit 4, Reserved (binary 0)
+      * Bit 5, Main storage pool selection
+      *   0 = Process default main storage pool is used for object.
+      *   1 = Machine default main storage pool is used for object.
+      * Bit 6, Transient storage pool selection
+      *   0 = Default main storage pool (process default or machine
+      *       default as specified for main storage pool selection) is
+      *       used for object.
+      *   1 = Transient storage pool is used for object.
+      * Bit 7, Obsolete
+      * Bits 8-15, Unit number
+      * Bits 16-23, Reserved (binary 0)
+      * Bits 24-31, Expanded transfer size advisory
+      *
+     d     perf_cls                   4a
+     d     unit_num                   1a   overlay(perf_cls:2)
+     d     expanded_transfer_size_advisory...
+     d                                1a   overlay(perf_cls:4)
+     d                                7a
+      * context
+     d     ctx                         *
+      * access group
+     d     ag                          *
+     d                               16a
+     d     max_spc_size...
+     d                               10i 0
+
+     /* _MATS (Materialize Space Attributes (MATS)) */
+     d mats            pr                  extproc('_MATS')
+     d     tmpl                            likeds(mats_tmpl_t)
+     d     spc                         *
+
+     /* _MODS1 (Modify Space Attributes (MODS)) */
+     d mods1           pr                  extproc('_MODS1')
+     d     spc                         *
+     d     spc_size                   5i 0
+
+     /* Modification template for MODS */
+     d mods_tmpl_t     ds                  qualified
+     d     selection                  4a
+     d     attr                       4a
+      *
+      * Maximum size of secondary associated space
+      *
+      * @remark This field is ignored when create secondary associated
+      * space is 0.
+      *
+     d     max_2nd_spc_size...
+     d                               10i 0
+     d     spc_size                  10i 0
+     d     init_val                   1a
+     d     perf_cls                   4a
+     d                                1a
+      *
+      * Secondary associated space number
+      *
+      * @remark If the thread execution state is user state, this
+      * field must be 0. Otherwise an invalid space modification (hex
+      * 3602) exception is signaled. This restriction applies at all
+      * system security levels.
+      *
+     d     num_2nd_spc...
+     d                                5u 0
+     d                                4a
+
+     /* _MODS2 (Modify Space Attributes (MODS)) */
+     d mods2           pr                  extproc('_MODS2')
+     d     spc                         *
+     d     tmpl                            likeds(mods_tmpl_t)
+
      /* end -- space management */
 
      /* program management */
