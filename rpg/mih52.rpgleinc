@@ -33,7 +33,9 @@
 
      /* computation instructions */
 
-     /* _CMPSWP1 (Compare and Swap) */
+     /**
+      * @BIF _CMPSWP1 (Compare and Swap)
+      */
      d cmpswp1         pr            10i 0 extproc('_CMPSWP1')
      d     cmp_op1                    1a
      d     cmp_op2                    1a
@@ -45,7 +47,9 @@
      d     cntl                      10i 0 options(*nopass)
      d                                     value
 
-     /* _CMPSWP2 (Compare and Swap) */
+     /**
+      * @BIF _CMPSWP2 (Compare and Swap)
+      */
      d cmpswp2         pr            10i 0 extproc('_CMPSWP2')
      d     cmp_op1                    2a
      d     cmp_op2                    2a
@@ -53,7 +57,9 @@
      d     cntl                      10i 0 options(*nopass)
      d                                     value
 
-     /* _CMPSWP4 (Compare and Swap) */
+     /**
+      * @BIF _CMPSWP4 (Compare and Swap)
+      */
      d cmpswp4         pr            10i 0 extproc('_CMPSWP4')
      d     cmp_op1                    4a
      d     cmp_op2                    4a
@@ -61,7 +67,9 @@
      d     cntl                      10i 0 options(*nopass)
      d                                     value
 
-     /* _CMPSWP8 (Compare and Swap) */
+     /**
+      * @BIF _CMPSWP8 (Compare and Swap)
+      */
      d cmpswp8         pr            10i 0 extproc('_CMPSWP8')
      d     cmp_op1                    8a
      d     cmp_op2                    8a
@@ -69,7 +77,9 @@
      d     cntl                      10i 0 options(*nopass)
      d                                     value
 
-     /* CPRDATA template */
+     /**
+      * CPRDATA template
+      */
      d cprdata_tmpl_t  ds                  qualified
      d                                     based(dummy_ptr)
      d     source_len                10i 0
@@ -85,7 +95,9 @@
      d CPRDATA_TMPL_LENGTH...
      d                 c                   64
 
-     /* CPRDATA, compress data */
+     /**
+      * @BIF _CPRDATA (Compress Data (CPRDATA))
+      */
      d cprdata         pr                  extproc('_CPRDATA')
      d    tmpl                         *   value
 
@@ -104,27 +116,38 @@
      d DCPDATA_TMPL_LENGTH...
      d                 c                   64
 
-     /* DCPDATA, decompress data */
+     /**
+      * @BIF _DCPDATA (Decompress Data (DCPDATA))
+      */
      d dcpdata         pr                  extproc('_DCPDATA')
      d    tmpl                         *   value
 
-     /* TSTBTS, test bit in string                         */
-     /* @return 1 if bit is set, otherwise 0               */
+     /**
+      * @BIF _TSTBTS (Test Bit in String (TSTBTS))
+      *
+      * @return 1 if bit is set, otherwise 0.
+      */
      d tstbts          pr            10i 0 extproc('_TSTBTS')
      d     str                         *   value
      d     offset                    10u 0 value
 
-     /* CLRBTS, clear bit in string */
+     /**
+      * @BIF _CLRBTS (Clear Bit in String (CLRBTS))
+      */
      d clrbts          pr                  extproc('_CLRBTS')
      d     str                         *   value
      d     offset                    10u 0 value
 
-     /* SETBTS, set bit in string */
+     /**
+      * @BIF _SETBTS (Set Bit in String (SETBTS))
+      */
      d setbts          pr                  extproc('_SETBTS')
      d     str                         *   value
      d     offset                    10u 0 value
 
-     /* CVTEFN, convert external form to numeric value */
+     /**
+      * @BIF _CVTEFN (Convert External Form to Numeric Value (CVTEFN))
+      */
      d cvtefn          pr                  extproc('_CVTEFN')
      d     receiver                    *   value
      d     rcv_attr                   7a
@@ -139,13 +162,17 @@
      d     double_byte_pad_value...
      d                                2a
 
-     /* CPYECLAP, copy extended characters left-adjusted with pad */
+     /**
+      * @BIF _CPYECLAP (Copy Extended Characters Left-Adjusted With Pad (CPYECLAP))
+      */
      d cpyeclap        pr                  extproc('_CPYECLAP')
      d     receiver                    *
      d     source                      *
      d     pad                             likeds(cpyeclap_pad_t)
 
-     /* CPYNV, copy numeric value */
+     /**
+      * @BIF _LBCPYNV (Copy Numeric Value (CPYNV))
+      */
      d lbcpynv         pr                  extproc('_LBCPYNV')
      d     receiver                    *   value
      d     receiver_attr...
@@ -154,7 +181,11 @@
      d     source_attr...
      d                                7a
 
-     /* CPYNV, copy numeric value and round the result half adjusted. */
+     /**
+      * @BIF _LBCPYNVR (Copy Numeric Value (CPYNV))
+      *
+      * @remark _LBCPYNVR copy numeric value and round the result half adjusted.
+      */
      d lbcpynvr        pr                  extproc('_LBCPYNVR')
      d     receiver                    *   value
      d     receiver_attr...
@@ -167,197 +198,271 @@
 
      /* bound program calculation builtins */
 
-     /* ACOS */
+     /**
+      * @BIF _ACOS (Arc Cosine (ACOS))
+      */
      d acos            pr             8f   extproc('_ACOS')
      d     x                          8f   value
 
-     /* ANDCSTR: And Complemented String */
+     /**
+      * @BIF _ANDCSTR (And Complemented String (ANDCSTR))
+      */
      d andcstr         pr                  extproc('_ANDCSTR')
      d     receiver                   1a   options(*varsize)
      d     str1                       1a   options(*varsize)
      d     str2                       1a   options(*varsize)
      d     length                    10u 0 value
 
-     /* ANDSTR: and string */
+     /**
+      * @BIF _ANDCSTR (AND String (ANDSTR))
+      */
      d andstr          pr                  extproc('_ANDSTR')
      d     receiver                   1a   options(*varsize)
      d     str1                       1a   options(*varsize)
      d     str2                       1a   options(*varsize)
      d     length                    10u 0 value
 
-     /* ASIN */
+     /**
+      * @BIF _ASIN (Arc Sine (ASIN))
+      */
      d asin            pr             8f   extproc('_ASIN')
      d     x                          8f   value
 
-     /* ATAN */
+     /**
+      * @BIF _ATAN (Arc Tangent (ATAN))
+      */
      d atan            pr             8f   extproc('_ATAN')
      d     x                          8f   value
 
-     /* ATANH, arc tangent hyperbolic */
+     /**
+      * @BIF _ATANH (Arc Tangent Hyperbolic (ATANH))
+      */
      d atanh           pr             8f   extproc('_ATANH')
      d     x                          8f   value
 
-     /* STRLENNULL, compute length of null-terminated string */
+     /**
+      * @BIF _STRLENNULL (Compute Length of Null-Terminated String (STRLENNULL))
+      */
      d strlennull      pr            10u 0 extproc('__strlen')
      d     str                        1a   options(*varsize)
 
-     /* STRCMPNULL, compare null-terminated strings */
+     /**
+      * @BIF _STRCMPNULL (Compare Null-Terminated Strings (STRCMPNULL))
+      */
      d strcmpnull      pr            10i 0 extproc('__strcmp')
      d     str1                       1a   options(*varsize)
      d     str2                       1a   options(*varsize)
 
-     /* STRNCMPNULL, compare null-terminated strings constrained */
+     /**
+      * @BIF _STRNCMPNULL (Compare Null-Terminated Strings Constrained (SRNCMPNULL))
+      */
      d strncmpnull     pr            10i 0 extproc('_STRNCMPNULL')
      d     str1                       1a   options(*varsize)
      d     str2                       1a   options(*varsize)
      d     length                    10u 0 value
 
-     /* CMPTOPAD, compare to pad */
+     /**
+      * @BIF _CMPTOPAD (Compare To Pad (CMPTOPAD))
+      */
      d cmptopad        pr            10i 0 extproc('_CMPTOPAD')
      d     str                        1a   options(*varsize)
      d     pad                        1a   value
      d     length                    10u 0 value
 
-     /* COMSTR, complement string */
+     /**
+      * @BIF _COMSTR (Complement String (COMSTR))
+      */
      d comstr          pr                  extproc('_COMSTR')
      d     receiver                   1a   options(*varsize)
      d     source                     1a   options(*varsize)
      d     length                    10u 0 value
 
-     /* COS, cosine */
+     /**
+      * @BIF _COS (Cosine (COS))
+      */
      d cos             pr             8f   extproc('_COS')
      d     x                          8f   value
 
-     /* COSH, cosine hyperbolic */
+     /**
+      * @BIF _COSH (Cosine Hyperbolic (COSH))
+      */
      d cosh            pr             8f   extproc('_COSH')
      d     x                          8f   value
 
-     /* COT, cotangent */
+     /**
+      * @BIF _COT (Cotangent (COT))
+      */
      d cot             pr             8f   extproc('_COT')
      d     x                          8f   value
 
-     /* CPYBYTES, copy bytes */
+     /**
+      * @BIF _CPYBYTES (Copy Bytes (CPYBYTES))
+      */
      d cpybytes        pr                  extproc('_CPYBYTES')
      d     target                      *   value
      d     source                      *   value
      d     length                    10u 0 value
 
-     /* CPYBO, copy bytes overlapping */
+     /**
+      * @BIF _CPYBO (Copy Bytes Overlapping (CPYBO))
+      */
      d cpybo           pr                  extproc('_CPYBO')
      d     target                      *   value
      d     source                      *   value
      d     length                    10u 0 value
 
-     /* STRCPYNULL, copy null-terminated string */
+     /**
+      * @BIF _STRCPYNULL (Copy Null-Terminated String (STRCPYNULL))
+      */
      d strcpynull      pr              *   extproc('__strcpy')
      d     target                     1a   options(*varsize)
      d     source                     1a   options(*varsize)
 
-     /* STRNCPYNULL, copy null-terminated string constrained */
+     /**
+      * @BIF _STRNCPYNULL (Copy Null-Terminated String Constrained (STRNCPYNULL))
+      */
      d strncpynull     pr              *   extproc('_STRNCPYNULL')
      d     target                     1a   options(*varsize)
      d     source                     1a   options(*varsize)
      d     length                    10u 0 value
 
-     /* STRNCPYNULLPAD, copy null-terminated string constrained, null padded */
+     /**
+      * @BIF _STRNCPYNULLPAD (Copy Null-Terminated String Constrained, Null Padded (STRNCPYNULLPAD))
+      */
      d strncpynullpad  pr              *   extproc('_STRNCPYNULLPAD')
      d     target                     1a   options(*varsize)
      d     source                     1a   options(*varsize)
      d     length                    10u 0 value
 
-     /* EEXP, exponential function of e */
+     /**
+      * @BIF _EEXP (Exponential Function of E (EEXP))
+      */
      d exp             pr             8f   extproc('_EEXP')
      d     x                          8f   value
 
-     /* FINDBYTE, find byte */
+     /**
+      * @BIF _FINDBYTE (Find Byte (FINDBYTE))
+      */
      d findbyte        pr              *   extproc('_FINDBYTE')
      d     source                      *   value
      d     to_search                  1a   value
 
-     /* MEMCHR, find character constrained */
+     /**
+      * @BIF _MEMCHR (Find Character Constrained (MEMCHR))
+      */
      d memchr          pr              *   extproc('_MEMCHR')
      d     source                      *   value
      d     to_search                  1a   value
      d     length                    10u 0 value
 
-     /* STRCHRNULL, find character in null-terminated string */
+     /**
+      * @BIF _STRCHRNULL (Find Character in Null-Terminated String (STRCHRNULL))
+      */
      d strchrnull      pr              *   extproc('_STRCHRNULL')
      d     source                      *   value
      d     to_search                  1a   value
 
-     /* LN, logarithm base e (natural logarithm) */
+     /**
+      * @BIF _LN (Logarithm Base E (Natural Logarithm) (LN)) */
      d log             pr             8f   extproc('_LN')
      d     x                          8f   value
 
-     /* MEMCMP, memory compare  */
+     /**
+      * @BIF _MEMCMP (Memory Compare (MEMCMP))  */
      d memcmp          pr            10i 0 extproc('__memcmp')
      d     addr1                       *   value
      d     addr2                       *   value
      d     length                    10u 0 value
 
-     /* MEMCPY, memory copy  */
+     /**
+      * @BIF _MEMCPY (Memory Copy (MEMCPY))
+      */
      d memcpy          pr              *   extproc('__memcpy')
      d     target                      *   value
      d     source                      *   value
      d     length                    10u 0 value
 
-     /* MEMMOVE, memory move  */
+     /**
+      * @BIF _MEMMOVE (Memory Move (MEMMOVE))
+      */
      d memmove         pr              *   extproc('_MEMMOVE')
      d     target                      *   value
      d     source                      *   value
      d     length                    10u 0 value
 
-     /* ORSTR: or string */
+     /**
+      * @BIF _ORSTR (OR String (ORSTR))
+      */
      d orstr           pr                  extproc('_ORSTR')
      d     receiver                   1a   options(*varsize)
      d     str1                       1a   options(*varsize)
      d     str2                       1a   options(*varsize)
      d     length                    10u 0 value
 
-     /* POWER, x to the y power */
+     /**
+      * @BIF _POWER (X To The Y Power (POWER))
+      */
      d power           pr             8f   extproc('_POWER')
      d     x                          8f   value
      d     x                          8f   value
 
-     /* PROPB, propogate byte */
+     /**
+      * @BIF _PROPB (Propagate Byte (PROPB))
+      */
      d propb           pr              *   extproc('__memset')
      d     target                      *   value
      d     src_byte                   1a   value
      d     length                    10u 0 value
 
-     /* RETCA, retrieve computational attributes */
+     /**
+      * @BIF _RETCA (Retrieve Computational Attributes (RETCA))
+      */
      d retca           pr            10u 0 extproc('_RETCA')
      d     selector                   1a   value
 
-     /* SETCA, set computational attributes */
+     /**
+      * @BIF _SETCA (Set Computational Attributes (SETCA))
+      */
      d setca           pr                  extproc('_SETCA')
      d     new_ca                    10u 0 value
      d     selector                  10u 0 value
 
-     /* SCANX, scan extended.  @todo usage */
+     /**
+      * @BIF _SCANX (Scan Extended (SCANX))
+      */
      d scanx           pr            10i 0 extproc('_SCANX')
      d     base_...
      d       locator                   *
      d     controls                    *   value
      d     options                    4a   value
 
-     /* SIN, sine */
+     /**
+      * @BIF _SIN (Sine (SIN))
+      */
      d sin             pr             8f   extproc('_SIN')
      d     x                          8f   value
 
-     /* SINH, sine hyperbolic */
+     /**
+      * @BIF _SINH (Sine Hyperbolic (SINH))
+      */
      d sinh            pr             8f   extproc('_SINH')
      d     x                          8f   value
 
-     /* TAN, tangent */
+     /**
+      * @BIF _TAN (Tangent (TAN))
+      */
      d tan             pr             8f   extproc('_TAN')
      d     x                          8f   value
 
-     /* TANH, tangent hyperbolic */
+     /**
+      * @BIF _TANH (Tangent Hyperbolic (TANH))
+      */
      d tanh            pr             8f   extproc('_TANH')
      d     x                          8f   value
 
-     /* TESTRPL, test and replace bytes */
+     /**
+      * @BIF _TESTRPL (Test and Replace Bytes (TESTRPL))
+      */
      d testrpl         pr                  extproc('_TESTRPL')
      d     source                      *   value
      d     src_len                   10u 0 value
@@ -365,26 +470,34 @@
      d     rpl_str                     *   value
      d     other_len                 10u 0 value
 
-     /* TESTSUBSET, test subset */
+     /**
+      * @BIF _TESTSUBSET (Test Subset (TESTSUBSET))
+      */
      d testsubset      pr            10u 0 extproc('_TESTSUBSET')
      d     src1                        *   value
      d     src2                        *   value
      d     length                    10u 0 value
 
-     /* XLATEB, translate bytes */
+     /**
+      * @BIF _XLATEB (Translate Bytes (XLATEB))
+      */
      d xlateb          pr                  extproc('_XLATEB')
      d     source                      *   value
      d     table                       *   value
      d     length                    10u 0 value
 
-     /* XLATEB1, translate bytes one byte at a time */
+     /**
+      * @BIF _XLATEB1 (Translate Bytes One Byte at a Time (XLATEB1))
+      */
      d xlateb1         pr                  extproc('_XLATEB1')
      d     receiver                    *   value
      d     source                      *   value
      d     table                       *   value
      d     length                    10u 0 value
 
-     /* XORSTR, XOR string */
+     /**
+      * @BIF _XORSTR (XOR (Exclusive Or) String (XORSTR))
+      */
      d xorstr          pr                  extproc('_XORSTR')
      d     receiver                   1a   options(*varsize)
      d     str1                       1a   options(*varsize)
@@ -509,7 +622,9 @@
      d datetime_ddat_list_offset...
      d                 c                   42
 
-     /* CDD, compute date duration */
+     /**
+      * @BIF _CDD (Compute Date Duration (CDD))
+      */
      d cdd             pr                  extproc('_CDD')
       * address of a pkd(8,0) scalar
      d     date_duration...
@@ -522,7 +637,8 @@
      d     inst_tmpl                       likeds(
      d                                       dt_compute_duration_tmpl_t)
 
-     /* CTD, compute time duration */
+     /**
+      * @BIF _CTD (Compute Time Duration (CTD)) */
      d ctd             pr                  extproc('_CTD')
       * address of a pkd(8,0) scalar
      d     time_duration...
@@ -553,18 +669,23 @@
 
      /* pointer resolution */
 
-     /* _CMPPTRA (Compare Pointer for Object Addressability) */
-      *    -           -             -     -
+     /**
+      * @BIF _CMPPTRA (Compare Pointer for Object Addressability)
+      */
      d cmpptra         pr            10i 0 extproc('_CMPPTRA')
      d     ptr_op1                     *   value
      d     ptr_op2                     *   value
 
-     /* CMPPTRT, compare pointer type */
+     /**
+      * @BIF _CMPPTRT (Compare Pointer Type (CMPPTRT))
+      */
      d cmpptrt         pr            10i 0 extproc('_CMPPTRT')
      d     ptr_type                   1a   value
      d     ptr                         *   value
 
-     /* CPYBWP, copy bytes with pointers */
+     /**
+      * @BIF _CPYBWP (Copy Bytes with Pointers (CPYBWP))
+      */
      d cpybwp          pr                  extproc('_CPYBWP')
      d     receiver                    *   value
      d     source                      *   value
@@ -700,12 +821,16 @@
      d min_suspend_info_len...
      d                 c                   48
 
-     /* _MATPTR (Materialize Pointer (MATPTR)) */
+     /**
+      * @BIF _MATPTR (Materialize Pointer (MATPTR))
+      */
      d matptr          pr                  extproc('_MATPTR')
      d     receiver                        likeds(matptr_tmpl_t)
      d     ptr                         *
 
-     /* _MATPTRL (Materialize Pointer Locations) */
+     /**
+      * @BIF _MATPTRL (Materialize Pointer Locations)
+      */
      d matptrl         pr                  extproc('_MATPTRL')
      d     receiver_ptr...
      d                                 *   value
@@ -795,7 +920,7 @@
      d                                 *
 
      /**
-      * _MATPTRIF (Materialize Pointer Information (MATPTRIF))
+      * @BIF _MATPTRIF (Materialize Pointer Information (MATPTRIF))
       *
       * MATPTRIF can be used to retrieve ASP number of a system pointer
       * or space pointer. Addtionally, it can return detailed attributes of
@@ -807,20 +932,20 @@
      d     selection                  4a
 
      /**
-      * _RSLVDP1 (Resolve Data Pointer)
+      * @BIF _RSLVDP1 (Resolve Data Pointer)
       */
      d rslvdp1         pr                  extproc('_RSLVDP1')
      d     dta_ptr                     *
 
      /**
-      * _RSLVDP2 (Resolve Data Pointer)
+      * @BIF _RSLVDP2 (Resolve Data Pointer)
       */
      d rslvdp2         pr                  extproc('_RSLVDP2')
      d     dta_ptr                     *
      d     obj_name                  32a
 
      /**
-      * _RSLVDP3 (Resolve Data Pointer)
+      * @BIF _RSLVDP3 (Resolve Data Pointer)
       */
      d rslvdp3         pr                  extproc('_RSLVDP3')
      d     dta_ptr                     *
@@ -832,17 +957,30 @@
      d     obj_name                  30a
      d     auth                       2a   inz(x'0000')
 
+     /**
+      * @BIF _RSLVSP2 (Resolve System Pointer (RSLVSP))
+      */
      d rslvsp2         pr                  extproc('_RSLVSP2')
      d     obj                         *
      d     opt                       34a
 
-     /* TESTPTR, test pointer */
+     /**
+      * @BIF _RSLVSP4 (Resolve System Pointer (RSLVSP))
+      */
+     d rslvsp4         pr                  extproc('_RSLVSP4')
+     d     obj                         *
+     d     opt                       34a
+     d     ctx                         *
+
+     /**
+      * @BIF TESTPTR, test pointer
+      */
      d testptr         pr            10i 0 extproc('_TESTPTR')
      d     ptr                         *   value
      d     type                       1a   value
 
      /**
-      * SETSPPFP, set space pointer from pointer
+      * @BIF _SETSPPFP (Set Space Pointer from Pointer (SETSPPFP))
       * @attention this prototype does NOT work on a SYSPTR
       *            unless src_ptr is declared as a procptr?!
       * @todo      why?
@@ -850,7 +988,9 @@
      d setsppfp        pr              *   extproc('_SETSPPFP')
      d     src_ptr                     *   value procptr
 
-     /* SETSPFP, set system pointer from pointer */
+     /**
+      * @BIF _SETSPFP (Set System Pointer from Pointer (SETSPFP))
+      */
      d setspfp         pr              *   extproc('_SETSPFP')
      d     src_ptr                     *   value
 
@@ -858,12 +998,16 @@
 
      /* space addressing */
 
-     /* SETDP, set data pointer */
+     /**
+      * @BIF _SETDP (Set Data Pointer (SETDP))
+      */
      d setdp           pr              *   extproc('_SETDP')
      d     addr                        *   value
      d     attr                       7a   value
 
-     /* SETDPADR, set data pointer addressability */
+     /**
+      * @BIF _SETDPADR (Set Data Pointer Addressability (SETDPADR))
+      */
      d setdpadr        pr              *   extproc('_SETDPADR')
      d     dtaptr                      *   value
      d     addr                        *   value
@@ -999,12 +1143,15 @@
      d     domain                     2a
      d                               42a
 
-     /* CRTS, create space */
+     /**
+      * @BIF _CRTS (Create Space (CRTS))
+      */
      d crts            pr                  extproc('_CRTS')
      d     spcobj                      *
      d     crt_tmpl                    *   value
 
-     /* DESS, create space */
+     /**
+      * @BIF _DESS (Destroy Space (DESS)) */
      d dess            pr                  extproc('_DESS')
      d     spcobj                      *
 
@@ -1104,12 +1251,16 @@
      d     max_spc_size...
      d                               10i 0
 
-     /* _MATS (Materialize Space Attributes (MATS)) */
+     /**
+      * @BIF _MATS (Materialize Space Attributes (MATS))
+      */
      d mats            pr                  extproc('_MATS')
      d     tmpl                            likeds(mats_tmpl_t)
      d     spc                         *
 
-     /* _MODS1 (Modify Space Attributes (MODS)) */
+     /**
+      * @BIF _MODS1 (Modify Space Attributes (MODS))
+      */
      d mods1           pr                  extproc('_MODS1')
      d     spc                         *
      d     spc_size                   5i 0
@@ -1142,7 +1293,9 @@
      d                                5u 0
      d                                4a
 
-     /* _MODS2 (Modify Space Attributes (MODS)) */
+     /**
+      * @BIF _MODS2 (Modify Space Attributes (MODS))
+      */
      d mods2           pr                  extproc('_MODS2')
      d     spc                         *
      d     tmpl                            likeds(mods_tmpl_t)
@@ -1151,7 +1304,8 @@
 
      /* program management */
 
-     /* MATPGMNM, materialize program name */
+     /**
+      * @BIF _MATPGMNM (Materialize Program Name (MATPGMNM)) */
      d matpgmnm        pr                  extproc('_MATPGMNM')
      d     rcv_tmpl                        likeds(matpgmnm_tmpl_t)
 
@@ -1180,12 +1334,15 @@
      d     indicator                  1a
      d                               16a
 
-     /* ACTBPGM, activate bound program */
+     /**
+      * @BIF _ACTBPGM (Activate Bound Program (ACTBPGM))
+      */
      d actbpgm         pr                  extproc('_ACTBPGM')
      d     act_dfn                         likeds(actbpgm_dfn_t)
      d     pgm                         *
 
-     /* MATACTEX, materialize activation export */
+     /**
+      * @BIF _MATACTEX (Materialize Activation Export (MATACTEX)) */
      d matactex        pr                  extproc('_MATACTEX')
      d     act_mark                  10u 0 value
       * 1=by export ID, 2=by name
