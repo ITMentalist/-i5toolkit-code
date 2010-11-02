@@ -363,12 +363,14 @@
      d     to_search                  1a   value
 
      /**
-      * @BIF _LN (Logarithm Base E (Natural Logarithm) (LN)) */
+      * @BIF _LN (Logarithm Base E (Natural Logarithm) (LN))
+      */
      d log             pr             8f   extproc('_LN')
      d     x                          8f   value
 
      /**
-      * @BIF _MEMCMP (Memory Compare (MEMCMP))  */
+      * @BIF _MEMCMP (Memory Compare (MEMCMP))
+      */
      d memcmp          pr            10i 0 extproc('__memcmp')
      d     addr1                       *   value
      d     addr2                       *   value
@@ -638,7 +640,8 @@
      d                                       dt_compute_duration_tmpl_t)
 
      /**
-      * @BIF _CTD (Compute Time Duration (CTD)) */
+      * @BIF _CTD (Compute Time Duration (CTD))
+      */
      d ctd             pr                  extproc('_CTD')
       * address of a pkd(8,0) scalar
      d     time_duration...
@@ -1151,7 +1154,8 @@
      d     crt_tmpl                    *   value
 
      /**
-      * @BIF _DESS (Destroy Space (DESS)) */
+      * @BIF _DESS (Destroy Space (DESS))
+      */
      d dess            pr                  extproc('_DESS')
      d     spcobj                      *
 
@@ -1305,7 +1309,8 @@
      /* program management */
 
      /**
-      * @BIF _MATPGMNM (Materialize Program Name (MATPGMNM)) */
+      * @BIF _MATPGMNM (Materialize Program Name (MATPGMNM))
+      */
      d matpgmnm        pr                  extproc('_MATPGMNM')
      d     rcv_tmpl                        likeds(matpgmnm_tmpl_t)
 
@@ -1342,7 +1347,8 @@
      d     pgm                         *
 
      /**
-      * @BIF _MATACTEX (Materialize Activation Export (MATACTEX)) */
+      * @BIF _MATACTEX (Materialize Activation Export (MATACTEX))
+      */
      d matactex        pr                  extproc('_MATACTEX')
      d     act_mark                  10u 0 value
       * 1=by export ID, 2=by name
@@ -1358,24 +1364,30 @@
       * 3=inaccessible data export
      d     ext_type                  10u 0
 
-     /* ACTPG, activate non-bound program */
+     /**
+      * @BIF _ACTPG (Activate Program (ACTPG))
+      */
      d actpg           pr                  extproc('_ACTPG')
      d     ssf                         *
      d     pgm                         *
 
-     /* _DEACTPG1, deactivate non-bound program */
+     /**
+      * @BIF _DEACTPG1 (Deactivate Program (DEACTPG))
+      */
      d deactpg1        pr                  extproc('_DEACTPG1')
      d     pgm                         *
 
      /**
-      * _DEACTPG2
+      * @BIF _DEACTPG2 (Deactivate Program (DEACTPG))
       *
       * @remark _DEACTPG2 deactivate the activation entry of the
       *         calling program itself.
       */
      d deactpg2        pr                  extproc('_DEACTPG2')
 
-     /* INVP, returns invocation pointer */
+     /**
+      * @BIF _INVP (Invocation Pointer (INVP))
+      */
      d invp            pr              *   extproc('_INVP')
       * relative invocation number; now must be 0
      d     relative_invocation_number...
@@ -1424,7 +1436,9 @@
      d                                8a
      d     act_ent                    4a   dim(1)
 
-     /* MATAGPAT, materialize activation group attributes */
+     /**
+      * @BIF _MATAGPAT (Materialize Activation Group Attributes (MATAGPAT))
+      */
      d matagpat        pr                  extproc('_MATAGPAT')
      d     receiver                    *   value
      d     agp_mark                   4a
@@ -1477,20 +1491,25 @@
      d                                8a
      d     dep_act                    4a   dim(1)
 
-     /* MATACTAT, materialize activation attributes */
+     /**
+      * @BIF _MATACTAT (Materialize Activation Attributes (MATACTAT))
+      */
      d matactat        pr                  extproc('_MATACTAT')
      d     receiver                    *   value
      d     act_mark                  10u 0
      d     attr_sel                   1a
 
-     /* MODASA, modify automatic storage allocation */
-     /* Note that unlike MI instruction MODASA, builtin _MODASA */
-     /* cannot be used to truncate ASF */
+     /**
+      * @BIF _MODASA (Modify Automatic Storage Allocation (MODASA))
+      *
+      * @remark Note that unlike MI instruction MODASA, builtin
+      *         _MODASA cannot be used to truncate ASF.
+      */
      d modasa          pr              *   extproc('_MODASA')
      d     mod_size                  10u 0 value
 
      /**
-      * NPM_PARMLIST_ADDR, npm procedure parameter list address.
+      * @BIF _NPMPARMLISTADDR (NPM Procedure Parameter List Address (NPM_PARMLIST_ADDR))
       *
       * @return space pointer to a npm_plist_t structure
       */
@@ -1535,7 +1554,9 @@
      d     inv_ptr                     *
      d                               16a
 
-     /* _MATINVAT2 (Materialize Invocation Attributes (MATINVAT)) */
+     /**
+      * @BIF _MATINVAT2 (Materialize Invocation Attributes (MATINVAT))
+      */
      d matinvat2       pr                  extproc('_MATINVAT2')
      d     receiver                        likeds(matinvat_tmpl_t)
      d     invocation_id...
@@ -1546,7 +1567,9 @@
      d matinvat_tmpl_t...
      d                 ds                  qualified
 
-     /* _MATINVAT (Materialize Invocation Attributes (MATINVAT)) */
+     /**
+      * @BIF _MATINVAT (Materialize Invocation Attributes (MATINVAT))
+      */
      d matinvat        pr                  extproc('_MATINVAT1')
      d     receiver                        likeds(matinvat_tmpl_t)
      d     selection                       likeds(matinvat_selection_t)
@@ -1598,24 +1621,28 @@
      d     agp_mark                  20u 0
      d                                8a
 
-     /* RINZSTAT, reinitialize static storage */
+     /**
+      * @BIF _RINZSTAT (Reinitialize Static Storage (RINZSTAT))
+      */
      d rinzstat        pr                  extproc('_RINZSTAT')
      d     activation_tmpl...
      d                                     likeds(rinzstat_tmpl_t)
 
-     /* RINZSTAT2, reinitialize static storage */
+     /**
+      * @BIF _RINZSTAT2 (Reinitialize Static Storage (RINZSTAT))
+      */
      d rinzstat2       pr                  extproc('_RINZSTAT2')
      d     activation_tmpl...
      d                                     likeds(rinzstat_tmpl2_t)
 
      /**
-      * _OPM_PARM_CNT (OPM Parameter Count)
+      * @BIF _OPM_PARM_CNT (OPM Parameter Count (OPM_PARM_CNT))
       * @todo has not been tested.
       */
      d opm_parm_cnt    pr            10u 0 extproc('_OPM_PARM_CNT')
 
      /**
-      * _OPM_PARM_ADDR (OPM Parameter Address)
+      * @BIF _OPM_PARM_ADDR (OPM Parameter Address (OPM_PARM_ADDR))
       * @todo has not been tested.
       */
      d opm_parm_addr   pr              *   extproc('_OPM_PARM_ADDR')
@@ -1692,7 +1719,7 @@
      d                 c                   128
 
      /**
-      * _MATINVS1 (Materialize Invocation Stack)
+      * @BIF _MATINVS1 (Materialize Invocation Stack (MATINVS))
       *
       * @remark _MATINVS1 accept a PCS ptr as its second operand and
       *          meterialize the call stack of the initial thread of
@@ -1703,7 +1730,7 @@
      d     pcs                         *
 
      /**
-      * _MATINVS2 (Materialize Invocation Stack)
+      * @BIF _MATINVS2 (Materialize Invocation Stack (MATINVS))
       *
       * @remark _MATINVS2 materialize the call stack of current thread.
       */
@@ -1841,7 +1868,7 @@
      d     cmp_value                 32a
 
      /**
-      * _MATINV (Materialize Invocation (MATINV))
+      * @BIF _MATINV (Materialize Invocation (MATINV))
       */
      d matinv          pr                  extproc('_MATINV')
      d     receiver                        likeds(matinv_tmpl_t)
@@ -1873,7 +1900,7 @@
      d                               16a
 
      /**
-      * _FNDINVN1 (Find Relative Invocation Number (FNDRINVN))
+      * @BIF _FNDINVN1 (Find Relative Invocation Number (FNDRINVN))
       *
       * @remark _FNDRINVN1 does NOT accept search-range operand.
       */
@@ -1884,7 +1911,7 @@
      d     criterion                       likeds(fndrinvn_criterion_t)
 
      /**
-      * _FNDINVN2 (Find Relative Invocation Number (FNDRINVN))
+      * @BIF _FNDINVN2 (Find Relative Invocation Number (FNDRINVN))
       *
       * @remark _FNDRINVN2 accept search-range operand as its second operand
       */
@@ -1898,12 +1925,16 @@
 
      /* heap management */
 
-     /* ALCHSS, allocate activation group-based heap space storage */
+     /**
+      * @BIF _ALCHSS (Allocate Activation Group-Based Heap Space Storage (ALCHSS))
+      */
      d alchss          pr              *   extproc('_ALCHSS')
      d     heap_id                   10i 0 value
      d     size                      10i 0 value
 
-     /* FREHSS, free activation group-based heap space storage */
+     /**
+      * @BIF _FREHSS (Free Activation Group-Based Heap Space Storage (FREHSS))
+      */
      d frehss          pr                  extproc('_FREHSS')
      d     ptr                         *   value
 
@@ -1920,12 +1951,16 @@
      d     crt_option                 6a
      d                               64a
 
-     /* CRTHS, create AG-based heap space */
+     /**
+      * @BIF _CRTHS (Create Activation Group-Based Heap Space (CRTHS))
+      */
      d crths           pr                  extproc('_CRTHS')
      d     heap_id                   10i 0
      d     crt_tmpl                        likeds(crths_tmpl_t)
 
-     /* MATHSAT, materialize activation group-based heap space attributes */
+     /**
+      * @BIF _MATHSAT (Materialize Activation Group-Based Heap Space Attributes (MATHSAT))
+      */
      d mathsat         pr                  extproc('_MATHSAT')
      d     tmpl                        *   value
      d     head_id_tmpl...
@@ -1963,16 +1998,22 @@
      d    agp_mark                   10u 0
      d    heap_id                    10u 0
 
-     /* SETHSSMK, set activation group-based heap space storage mark */
+     /**
+      * @BIF _SETHSSMK (Set Activation Group-Based Heap Space Storage Mark (SETHSSMK))
+      */
      d sethssmk        pr                  extproc('_SETHSSMK')
      d     mark                        *
      d     heap_id                   10i 0
 
-     /* FREHSSMK, free activation group-based heap space storage from mark */
+     /**
+      * @BIF _FREHSSMK (Free Activation Group-Based Heap Space Storage From Mark (FREHSSMK))
+      */
      d frehssmk        pr                  extproc('_FREHSSMK')
      d     mark                        *
 
-     /* DESHS, destroy AG-based heap space */
+     /**
+      * @BIF _DESHS (Destroy Activation Group-Based Heap Space (DESHS))
+      */
      d deshs           pr                  extproc('_DESHS')
      d     heap_id                   10i 0
 
@@ -2063,17 +2104,23 @@
      d     find_operations...
      d                               10u 0
 
-     /* CRTINX, create independent index */
+     /**
+      * @BIF _CRTINX (Create Independent Index (CRTINX))
+      */
      d crtinx          pr                  extproc('_CRTINX')
      d     index                       *
      d     tmpl                        *   value
      d
 
-     /* DESINX, destroy independent index */
+     /**
+      * @BIF _DESINX (Destroy Independent Index (DESINX))
+      */
      d desinx          pr                  extproc('_DESINX')
      d     index                       *
 
-     /* MATINXAT, materialize independent index attributes */
+     /**
+      * @BIF _MATINXAT (Materialize Independent Index Attributes (MATINXAT))
+      */
      d matinxat        pr                  extproc('_MATINXAT')
      d     attr                        *   value
      d     index                       *
@@ -2096,20 +2143,26 @@
      d     length                     5u 0
      d     offset                     5i 0
 
-     /* INSINXEN, insert independent index entry */
+     /**
+      * @BIF _INSINXEN (Insert Independent Index Entry (INSINXEN))
+      */
      d insinxen        pr                  extproc('_INSINXEN')
      d     index                       *
      d     argument                    *   value
      d     opt_list                    *   value
 
-     /* FNDINXEN, find independent index entry */
+     /**
+      * @BIF _FNDINXEN (Find Independent Index Entry (FNDINXEN))
+      */
      d fndinxen        pr                  extproc('_FNDINXEN')
      d     receiver                    *   value
      d     index                       *
      d     opt_list                    *   value
      d     argument                    *   value
 
-     /* RMVINXEN, remove independent index entry */
+     /**
+      * @BIF _RMVINXEN1 (Remove Independent Index Entry (RMVINXEN))
+      */
      d rmvinxen        pr                  extproc('_RMVINXEN1')
      d     receiver                    *   value
      d     index                       *
@@ -2134,7 +2187,9 @@
      d     new_attr                   1a
      d     reserved                   2a
 
-     /* MODINX, modify independent index */
+     /**
+      * @BIF _MODINX (Modify Independent Index (MODINX))
+      */
      d modinx          pr                  extproc('_MODINX')
      d     index                       *
      d     opt                         *   value
@@ -2149,7 +2204,9 @@
       * for keyed queue objects
      d     msg_key                  256a
 
-     /* enqueue to a queue object */
+     /**
+      * @BIF _ENQ (Enqueue (ENQ))
+      */
      d enq             pr                  extproc('_ENQ')
      d     queue                       *
      d     msg_prefix                  *   value
@@ -2164,13 +2221,17 @@
       * for keyed queue objects; input key, output key
      d     msg_keys                 512a
 
-     /* dequeue from a queue object without waiting */
+     /**
+      * @BIF _DEQI (Dequeue from a queue object without waiting (DEQ))
+      */
      d deqi            pr            10i 0 extproc('_DEQI')
      d     msg_prefix                  *   value
      d     msg                         *   value
      d     queue                       *
 
-     /* dequeue from or wait on a queue object */
+     /**
+      * @BIF _DEQWAIT (Dequeue from or wait on a queue object (DEQ))
+      */
      d deqwait         pr                  extproc('_DEQWAIT')
      d     msg_prefix                  *   value
      d     msg                         *   value
@@ -2281,18 +2342,22 @@
      d min_lock_request_tmpl_length_ext...
      d                 c                   32
 
-     /* _LOCK (Lock Object) */
+     /**
+      * @BIF _LOCK (Lock Object (LOCK))
+      */
      d lockobj         pr                  extproc('_LOCK')
      d     lock_request...
      d                                     likeds(lock_request_tmpl_t)
 
-     /* _UNLOCK (Unlock Object) */
+     /**
+      * @BIF _UNLOCK (Unlock Object (UNLOCK))
+      */
      d unlockobj       pr                  extproc('_UNLOCK')
      d     unlock_request...
      d                                     likeds(lock_request_tmpl_t)
 
      /**
-      * _LOCKSL1 (Lock Space Location)
+      * @BIF _LOCKSL1 (Lock Space Location (LOCKSL))
       *
       * @remark _LOCKSL1 locks one space location.
       */
@@ -2302,7 +2367,7 @@
      d     request                    1a
 
      /**
-      * _LOCKSL2 (Lock Space Location)
+      * @BIF _LOCKSL2 (Lock Space Location (LOCKSL))
       *
       * @param lock_request, pointer to DS lock_request_tmpl_ext_t.
       * @remark _LOCKSL2 accepts address of spcptr rather than a
@@ -2316,7 +2381,7 @@
      d                                 *
 
      /**
-      * _UNLOCKSL1 (Unlock Space Location)
+      * @BIF _UNLOCKSL1 (Unlock Space Location (UNLOCKSL))
       *
       * @remark _UNLOCKSL1 unlocks one space location.
       */
@@ -2326,7 +2391,7 @@
      d     request                    1a
 
      /**
-      * _UNLOCKSL2 (Unlock Space Location)
+      * @BIF _UNLOCKSL2 (Unlock Space Location (UNLOCKSL))
       *
       * @param lock_request, pointer to DS lock_request_tmpl_ext_t.
       */
@@ -2334,12 +2399,16 @@
      d     lock_request...
      d                                 *
 
-     /* _LOCKTSL (Lock Teraspace Storage Location) */
+     /**
+      * @BIF _LOCKTSL (Lock Teraspace Storage Location (LOCKTSL))
+      */
      d locktsl         pr                  extproc('_LOCKTSL')
      d     lock_request...
      d                                 *
 
-     /* _UNLCKTSL (Unlock Teraspace Storage Location) */
+     /**
+      * @BIF _UNLCKTSL (Unlock Teraspace Storage Location (UNLCKTSL))
+      */
      d unlcktsl        pr                  extproc('_UNLCKTSL')
      d     lock_request...
      d                                 *
@@ -2388,7 +2457,7 @@
      d     thread_id                  8a
 
      /**
-      * _MATAOL (Materialize Allocated Object Locks)
+      * @BIF _MATAOL (Materialize Allocated Object Locks (MATAOL))
       */
      d mataol          pr                  extproc('_MATAOL')
      d     receiver                        likeds(mataol_tmpl_t)
@@ -2438,7 +2507,7 @@
      d     thread_id                  8a
 
      /**
-      * _MATOBJLK (Materialize Object Locks)
+      * @BIF _MATOBJLK (Materialize Object Locks (MATOBJLK))
       *
       * @remark The key difference between MATAOL and MATOBJLK is that
       *         MATAOL only materializes locks already allocated on a
@@ -2487,12 +2556,14 @@
      d matprlk_lockd_length...
      d                 c                   32
 
-     /* _MATPRLK1 (Materialize Process Locks) */
+     /**
+      * @BIF _MATPRLK1 (Materialize Process Locks (MATPRLK))
+      */
      d matprlk1        pr                  extproc('_MATPRLK1')
      d     receiver                        likeds(matprlk_tmpl_t)
 
      /**
-      * _MATPRLK2 (Materialize Process Locks)
+      * @BIF _MATPRLK2 (Materialize Process Locks (MATPRLK))
       *
       * _MARPRLK2 accept a system pointer to a PCS object
       * as its second operand.
@@ -2553,7 +2624,7 @@
      d                 c                   32
 
      /**
-      * _MATSELLK (Materialize Materialize Selected Locks)
+      * @BIF _MATSELLK (Materialize Materialize Selected Locks (MATSELLK))
       *
       * @remark In contrast with MATAOL, who materializes locks
       *         currently allocated on a designated lockable object,
@@ -2664,7 +2735,9 @@
      d     lock_info                  1a
      d     thread_id                  8a
 
-     /* _MATPRECL (Materialize Process Record Locks) */
+     /**
+      * @BIF _MATPRECL (Materialize Process Record Locks (MATPRECL))
+      */
      d matprecl        pr                  extproc('_MATPRECL')
      d     receiver                        likeds(mat_record_lock_tmpl_t)
      d     process                         likeds(
@@ -2710,13 +2783,17 @@
      d     format_opt                 1a
      d                               14a
 
-     /* _MATDRECL (Materialize Data Space Record Locks) */
+     /**
+      * @BIF _MATDRECL (Materialize Data Space Record Locks (MATDRECL))
+      */
      d matdrecl        pr                  extproc('_MATDRECL')
      d     receiver                        likeds(mat_record_lock_tmpl_t)
      d     dds                             likeds(
      d                                       matdrecl_record_tmpl_t)
 
-     /* _XFRLOCK (Transfer Object Lock) */
+     /**
+      * @BIF _XFRLOCK (Transfer Object Lock (XFRLOCK))
+      */
      d xfrlock         pr                  extproc('_XFRLOCK')
      d     pcs                         *
      d     lock_request...
@@ -2742,7 +2819,7 @@
      d                               28a
 
      /**
-      * CRTMTX (create pointer-based mutex)
+      * @BIF _CRTMTX (Create Pointer-Based Mutex (CRTMTX))
       *
       * @return 0 if the mutex is created; otherwise an error number.
       */
@@ -2751,7 +2828,7 @@
      d     crt_opt                     *   value
 
      /**
-      * DESMTX (destroy pointer-based mutex)
+      * @BIF _DESMTX (Destroy Pointer-Based Mutex (DESMTX))
       *
       * @return 0 if the mutex is created; otherwise an error number.
       */
@@ -2796,16 +2873,22 @@
      d                                6a
      d     timeout                    8a
 
-     /* LOCKMTX, lock pointer-based mutex */
+     /**
+      * @BIF _LOCKMTX (Lock Pointer-Based Mutex (LOCKMTX))
+      */
      d lockmtx         pr            10i 0 extproc('_LOCKMTX')
      d     mtx                             likeds(mutex_t)
      d     request                     *   value
 
-     /* UNLKMTX, unlock ponter-based mutex */
+     /**
+      * @BIF _UNLKMTX (Unlock Pointer-Based Mutex (UNLKMTX))
+      */
      d unlkmtx         pr            10i 0 extproc('_UNLKMTX')
      d     mtx                             likeds(mutex_t)
 
-     /* MATMTX, materialize mutex */
+     /**
+      * @BIF _MATMTX (Materialize Mutex (MATMTX))
+      */
      d matmtx          pr                  extproc('_MATMTX')
      d     reciever                    *   value
      d     mtx                             likeds(mutex_t)
@@ -3025,7 +3108,7 @@
      d                 c                   96
 
      /**
-      * _MATCTX1 (Materialize Context (MATCTX))
+      * @BIF _MATCTX1 (Materialize Context (MATCTX))
       *
       * @example test/t031.rpgle
       */
@@ -3034,7 +3117,7 @@
      d     option                    46a
 
      /**
-      * _MATCTX2 (Materialize Context (MATCTX)).
+      * @BIF _MATCTX2 (Materialize Context (MATCTX)).
       *
       * Different from _MATCTX1, _MATCTX2 accepts an additional ctx
       * operand which is a system pointer to the context object whose
@@ -3123,7 +3206,7 @@
      d     usrprf                      *
 
      /**
-      * _MATAU1 (Materialize Authority (MATAU))
+      * @BIF _MATAU1 (Materialize Authority (MATAU))
       *
       * Materialize public and private authority of a permanent MI object.
       */
@@ -3135,7 +3218,7 @@
      d                                 *
 
      /**
-      * _MATAU2 (Materialize Authority (MATAU))
+      * @BIF _MATAU2 (Materialize Authority (MATAU))
       *
       * Materialize public authority of a permanent MI object.
       *
@@ -3221,7 +3304,9 @@
      d     ctx_name                  30a
      d     context                     *
 
-     /* _MATAL (Materialize Authority List (MATAL)) */
+     /**
+      * @BIF _MATAL (Materialize Authority List (MATAL))
+      */
      d matal           pr                  extproc('_MATAL')
      d     receiver                        likeds(matal_tmpl_t)
      d     autl                        *
@@ -3255,13 +3340,17 @@
      d AUTH_DESC_LONG_LENGTH...
      d                 c                   64
 
-     /* MATAUU, materialize authorized users */
+     /**
+      * @BIF MATAUU (Materialize Authorized Users (MATAUU))
+      */
      d matauu          pr                  extproc('_MATAUU')
      d     receiver                    *   value
      d     obj                         *
      d     option                     1a
 
-     /* _MODINVAU (Modify Invocation Authority Attributes (MODINVAU)) */
+     /**
+      * @BIF _MODINVAU (Modify Invocation Authority Attributes (MODINVAU))
+      */
      d modinvau        pr                  extproc('_MODINVAU')
       * 
       * option
@@ -3280,7 +3369,7 @@
      d     object                      *
 
      /**
-      * _TESTAU1 (Test Authority (TESTAU))
+      * @BIF _TESTAU1 (Test Authority (TESTAU))
       *
       * Test the authority to an MI object of the current invocation
       * or a previous invocation.
@@ -3298,7 +3387,7 @@
      d                                2a
 
      /**
-      * _TESTAU2 (Test Authority (TESTAU))
+      * @BIF _TESTAU2 (Test Authority (TESTAU))
       *
       * Test the authority to an MI object of the current invocation
       * or a previous invocation.
@@ -3368,7 +3457,7 @@
      d                                4a
 
      /**
-      * _TESTEAU3 (Test Extended Authorities (TESTEAU))
+      * @BIF _TESTEAU3 (Test Extended Authorities (TESTEAU))
       */
      d testeau3        pr            10i 0 extproc('_TESTEAU3')
      d     avail_auth                      likeds(testeau_auth_tmpl_t)
@@ -3376,7 +3465,7 @@
      d                                     likeds(testeau_auth_tmpl_t)
 
      /**
-      * _TESTEAU4 (Test Extended Authorities (TESTEAU))
+      * @BIF _TESTEAU4 (Test Extended Authorities (TESTEAU))
       */
      d testeau4        pr            10i 0 extproc('_TESTEAU4')
      d     required_auth...
@@ -3449,7 +3538,7 @@
      d     usrprf                      *
 
      /**
-      * _MATUPID (Materialize User Profile Pointers from ID (MATUPID))
+      * @BIF _MATUPID (Materialize User Profile Pointers from ID (MATUPID))
       */
      d matupid         pr                  extproc('_MATUPID')
      d     output                          likeds(matupid_tmpl_t)
@@ -3518,7 +3607,7 @@
       * zero or more group profile identifications
 
      /**
-      * _TESTULA (Test User List Authority (TESTULA))
+      * @BIF _TESTULA (Test User List Authority (TESTULA))
       *
       * @return 1 if authorized; otherwise 0.
       */
@@ -3533,13 +3622,30 @@
 
      /* process and thread management */
 
-     /* PCOPTR, returns a SPCPTR to the PCO (process communication object) object */
+     /**
+      * @BIF _PCOPTR (PCO Pointer (PCOPTR))
+      *
+      * A space pointer is returned, which points to the first byte of
+      * the PCO (process communication object) for the process which
+      * owns the program activation associated with the current
+      * invocation. If the current invocation is a client executing in
+      * a shared activation group then the pointer returned refers to
+      * an object owned by a process other than the current process.
+      */
      d pcoptr          pr              *   extproc('_PCOPTR')
 
-     /* PCOPTR2, returns a SPCPTR to the PCO (process communication object) object */
+     /**
+      * @BIF _PCOPTR2 (Return PCO Pointer (PCOPTR2))
+      *
+      * Return PCO Pointer (PCOPTR2) obtains addressability to a
+      * process' PCO (process communication object) and returns it in
+      * a space pointer.
+      */
      d pcoptr2         pr              *   extproc('_PCOPTR2')
 
-     /* MATPRAGP, materialize process activation groups */
+     /**
+      * @BIF _MATPRAGP (Materialize Process Activation Groups (MATPRAGP))
+      */
      d matpragp        pr                  extproc('_MATPRAGP')
      d     receiver                    *   value
 
@@ -3580,30 +3686,44 @@
      d     bytes_out                 10i 0
      d     priority                   1a
 
-     /* _MATPRATR1 (Materialize Process Attributes) */
+     /**
+      * @BIF _MATPRATR1 (Materialize Process Attributes (MATPRATR))
+      */
      d matpratr1       pr                  extproc('_MATPRATR1')
      d     receiver                        likeds(matpratr_tmpl_t)
      d     option                     1a
 
-     /* _MATPRATR2 (Materialize Process Attributes) */
+     /**
+      * @BIF _MATPRATR2 (Materialize Process Attributes (MATPRATR))
+      */
      d matpratr2       pr                  extproc('_MATPRATR2')
      d     receiver                        likeds(matpratr_tmpl_t)
      d     pcs                         *
      d     option                     1a
 
-     /* _RETTHCNT (Retrieve Thread Count) */
+     /**
+      * @BIF _RETTHCNT (Retrive Thread Count (RETTHCNT))
+      */
      d retthcnt        pr            10u 0 extproc('_RETTHCNT')
 
-     /* RETTHID, retrieve thread identifier */
+     /**
+      * @BIF _RETTHID (Retrieve Thread Identifier (RETTHID))
+      */
      d retthid         pr             8a   extproc('_RETTHID')
 
-     /* _TSTINLTH (Test Initial Thread) */
+     /**
+      * @BIF _TSTINLTH (Test Initial Thread (TSTINLTH))
+      */
      d tstinlth        pr            10i 0 extproc('_TSTINLTH')
 
-     /* _TESTINTR (Test Pending Interrupts) */
+     /**
+      * @BIF _TESTINTR (Test Pending Interrupts (TESTINTR))
+      */
      d testintr        pr            10u 0 extproc('_TESTINTR')
 
-     /* WAITTIME, wait on time */
+     /**
+      * @BIF _WAITTIME (Wait On Time (WAITTIME))
+      */
      d waittime        pr                  extproc('_WAITTIME')
      d     wait_tmpl                 16a
 
@@ -3637,7 +3757,9 @@
 
      /* Storage and Resource Management */
 
-     /* _ENSOBJ (Ensure Object (ENSOBJ)) */
+     /**
+      * @BIF _ENSOBJ (Ensure Object (ENSOBJ))
+      */
      d ensobj          pr                  extproc('_ENSOBJ')
      d     obj                         *
 
@@ -3655,7 +3777,9 @@
      d                               20u 0
       * Resource management data
 
-     /* _MATRMD (Materialize Resource Management Data (MATRMD)) */
+     /**
+      * @BIF _MATRMD (Materialize Resource Management Data (MATRMD))
+      */
      d matrmd          pr                  extproc('_MATRMD')
      d     receiver                        likeds(matrmd_tmpl_t)
      d     opt                             likeds(matrmd_option_t)
@@ -4072,12 +4196,14 @@
      d                               10i 0
 
      /**
-      * _SETACST (Set Access State (SETACST))
+      * @BIF _SETACST (Set Access State (SETACST))
       */
      d setacst         pr                  extproc('_SETACST')
      d     tmpl                            likeds(access_state_tmpl_t)
 
-     /* _YIELD (Yield (YIELD)) */
+     /**
+      * @BIF _YIELD (Yield (YIELD))
+      */
      d yield           pr                  extproc('_YIELD')
 
      /* end -- Storage and Resource Management */
@@ -4089,7 +4215,7 @@
      /* Machine Observation */
 
      /**
-      * TESTTOBJ, test temporary object
+      * @BIF _TESTTOBJ (Test Temporary Object (TESTTOBJ))
       *
       * @return 1 if syp points to a temporary object, otherwise 0.
       */
@@ -4097,7 +4223,7 @@
      d     syp                         *
 
      /**
-      * _TESTPDC (Test Performance Data Collection (TESTPDC))
+      * @BIF _TESTPDC (Test Performance Data Collection (TESTPDC))
       *
       * A test is performed to determine whether or not the thread is
       * in an active Performance Data Collector (PDC) trace
@@ -4119,7 +4245,9 @@
      d                                8a
      d     rtn_uuid                  16a
 
-     /* GENUUID, generate universal unique identifier. */
+     /**
+      * @BIF _GENUUID (Generate Universal Unique Identifier (GENUUID))
+      */
      d genuuid         pr                  extproc('_GENUUID')
      d     uuid                            likeds(uuid_t)
 
@@ -4619,13 +4747,15 @@
      d     lic_vrm                    6a
      d                                2a
 
-     /* MATMATR, materialize machine attributes. */
+     /**
+      * @BIF _MATMATR (Materialize Machine Attributes (MATMATR))
+      */
      d matmatr         pr                  extproc('_MATMATR1')
      d     receiver                        likeds(matmatr_tmpl_t)
      d     mat_attr                   2a
 
      /**
-      * _MATTOD (Materialize Machine Data (MATMDATA))
+      * @BIF _MATTOD (Materialize Machine Data (MATMDATA))
       *
       * _MATTOD materializes time-of-day clock as local time.
       */
@@ -4633,7 +4763,7 @@
      d     now                       20u 0
 
      /**
-      * _MATMDATA (Materialize Machine Data (MATMDATA))
+      * @BIF _MATMDATA (Materialize Machine Data (MATMDATA))
       *
       * Valid values of operand option are:
       * hex 0000 = Materialize time-of-day clock as local time.
@@ -4672,18 +4802,28 @@
      d     lbl_ptr                     *
      d     num                       10i 0
 
-     /* __setjmp */
+     /**
+      * @BIF __setjmp
+      */
      d setjmp          pr            10i 0 extproc('__setjmp')
      d     jmpbuf                          likeds(jmp_buf_t)
 
-     /* __setjmp2 */
+     /**
+      * @BIF __setjmp2
+      */
      d setjmp2         pr                  extproc('__setjmp2')
      d     lbl_ptr                     *
 
-     /* returns a space pointer to the SEPT */
+     /**
+      * @BIF _SYSEPT
+      * returns a space pointer to the SEPT
+      */
      d sysept          pr              *   extproc('_SYSEPT')
 
-     /* returna a system pointer to current process' QTEMP */
+     /**
+      * @BIF _QTEMPPTR
+      * returna a system pointer to current process' QTEMP
+      */
      d qtempptr        pr              *   extproc('_QTEMPPTR')
 
      /* end -- undocumented system builtins */
