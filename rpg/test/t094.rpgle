@@ -20,7 +20,7 @@
      /**
       * @file t094.rpgle
       *
-      * Test of _MATPRLK1 .
+      * Test of _MATPRLK1.
       */
 
      h dftactgrp(*no)

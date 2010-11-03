@@ -34,7 +34,7 @@
      /* computation instructions */
 
      /**
-      * @BIF _CMPSWP1 (Compare and Swap)
+      * @BIF _CMPSWP1 (Compare and Swap (CMPSW))
       */
      d cmpswp1         pr            10i 0 extproc('_CMPSWP1')
      d     cmp_op1                    1a
@@ -48,7 +48,7 @@
      d                                     value
 
      /**
-      * @BIF _CMPSWP2 (Compare and Swap)
+      * @BIF _CMPSWP2 (Compare and Swap (CMPSWP))
       */
      d cmpswp2         pr            10i 0 extproc('_CMPSWP2')
      d     cmp_op1                    2a
@@ -58,7 +58,7 @@
      d                                     value
 
      /**
-      * @BIF _CMPSWP4 (Compare and Swap)
+      * @BIF _CMPSWP4 (Compare and Swap (CMPSWP))
       */
      d cmpswp4         pr            10i 0 extproc('_CMPSWP4')
      d     cmp_op1                    4a
@@ -68,7 +68,7 @@
      d                                     value
 
      /**
-      * @BIF _CMPSWP8 (Compare and Swap)
+      * @BIF _CMPSWP8 (Compare and Swap (CMPSWP))
       */
      d cmpswp8         pr            10i 0 extproc('_CMPSWP8')
      d     cmp_op1                    8a
@@ -673,7 +673,7 @@
      /* pointer resolution */
 
      /**
-      * @BIF _CMPPTRA (Compare Pointer for Object Addressability)
+      * @BIF _CMPPTRA (Compare Pointer for Object Addressability (CMPPTRA))
       */
      d cmpptra         pr            10i 0 extproc('_CMPPTRA')
      d     ptr_op1                     *   value
@@ -832,7 +832,7 @@
      d     ptr                         *
 
      /**
-      * @BIF _MATPTRL (Materialize Pointer Locations)
+      * @BIF _MATPTRL (Materialize Pointer Locations (MATPTRL))
       */
      d matptrl         pr                  extproc('_MATPTRL')
      d     receiver_ptr...
@@ -935,20 +935,20 @@
      d     selection                  4a
 
      /**
-      * @BIF _RSLVDP1 (Resolve Data Pointer)
+      * @BIF _RSLVDP1 (Resolve Data Pointer (RSLVDP))
       */
      d rslvdp1         pr                  extproc('_RSLVDP1')
      d     dta_ptr                     *
 
      /**
-      * @BIF _RSLVDP2 (Resolve Data Pointer)
+      * @BIF _RSLVDP2 (Resolve Data Pointer (RSLVDP))
       */
      d rslvdp2         pr                  extproc('_RSLVDP2')
      d     dta_ptr                     *
      d     obj_name                  32a
 
      /**
-      * @BIF _RSLVDP3 (Resolve Data Pointer)
+      * @BIF _RSLVDP3 (Resolve Data Pointer (RSLVDP))
       */
      d rslvdp3         pr                  extproc('_RSLVDP3')
      d     dta_ptr                     *
@@ -976,7 +976,7 @@
      d     ctx                         *
 
      /**
-      * @BIF TESTPTR, test pointer
+      * @BIF _TESTPTR (Test Pointer (TESTPTR))
       */
      d testptr         pr            10i 0 extproc('_TESTPTR')
      d     ptr                         *   value
@@ -1900,7 +1900,7 @@
      d                               16a
 
      /**
-      * @BIF _FNDINVN1 (Find Relative Invocation Number (FNDRINVN))
+      * @BIF _FNDRINVN1 (Find Relative Invocation Number (FNDRINVN))
       *
       * @remark _FNDRINVN1 does NOT accept search-range operand.
       */
@@ -1911,7 +1911,7 @@
      d     criterion                       likeds(fndrinvn_criterion_t)
 
      /**
-      * @BIF _FNDINVN2 (Find Relative Invocation Number (FNDRINVN))
+      * @BIF _FNDRINVN2 (Find Relative Invocation Number (FNDRINVN))
       *
       * @remark _FNDRINVN2 accept search-range operand as its second operand
       */
@@ -2378,7 +2378,8 @@
       */
      d locksl2         pr                  extproc('_LOCKSL2')
      d     lock_request...
-     d                                 *
+     d                                     likeds(
+     d                                       lock_request_tmpl_ext_t)
 
      /**
       * @BIF _UNLOCKSL1 (Unlock Space Location (UNLOCKSL))

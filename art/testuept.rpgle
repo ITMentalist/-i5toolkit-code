@@ -41,9 +41,11 @@
            uept_ptr = setsppfp(uept_fellow);
 
            // ...
+      /if not defined(*v5r2m0)
            callpgmv( uepts(1)
                    : argv
                    : 0 );
+      /endif
 
            *inlr = *on;
       /end-free

@@ -24,6 +24,8 @@
       *  - machine serial number
       *  - time-of-day clock with clock-offset
       *  - NETA (network attributes)
+      *  - IPL request status
+      *  - LIC VRM
       */
 
      h dftactgrp(*no)

@@ -20,7 +20,7 @@
      /**
       * @file t135.rpgle
       *
-      * Test of MATS
+      * Test of MATS and MODS.
       */
 
      h dftactgrp(*no)

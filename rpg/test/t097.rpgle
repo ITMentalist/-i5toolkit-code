@@ -20,7 +20,7 @@
      /**
       * @file t097.rpgle
       *
-      * Test of _MATAOL.
+      * Test of _MATOBJLK.
       *
       * To test T097, first you can allocate a LSRO lock on *USRQ THD0
       * like the following:

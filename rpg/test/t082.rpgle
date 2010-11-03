@@ -20,7 +20,8 @@
      /**
       * @file t082.rpgle
       *
-      * Test of _MATPTRL.
+      * Test of _MATPTRL. This test program finds out the locations of
+      * pointers within a data structure.
       */
      h dftactgrp(*no)
 

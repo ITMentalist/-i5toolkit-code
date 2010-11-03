@@ -61,7 +61,7 @@
            lock_states(1) = x'09'; // LENR lock on locs(1)
            lock_states(2) = x'11'; // LEAR lock on locs(2)
 
-           locksl2(tmpl_ptr);
+           locksl2(tmpl);
 
            dsply 'space locations locked.' '' an;
 
