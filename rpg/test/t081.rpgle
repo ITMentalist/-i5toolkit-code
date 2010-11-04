@@ -38,6 +38,9 @@
      d     funny_ptr                   *   procptr
      d                                     overlay(pgm)
      d r               s             10i 0
+     d                 ds
+     d pgm2                            *
+     d funny_ptr2                      *   procptr overlay(pgm2)
 
      d set_auto_ptr    pr
      d     ptr                         *
@@ -58,6 +61,13 @@
                // r = 0; auto_ptr addresses the PCS object the current
                // MI process; while ass_spc_ptr addresses the primary
                // associated space of program object T081.
+
+           // compare 2 system pointers
+           rslvsp_tmpl.obj_type = x'0201';
+           rslvsp_tmpl.obj_name = 'T081' ;
+           rslvsp2(pgm2 : rslvsp_tmpl);
+           r = rpg_cmpptra(funny_ptr : funny_ptr2);
+             // r = 1
 
            *inlr = *on;
       /end-free

@@ -680,11 +680,36 @@
      d     ptr_op2                     *   value
 
      /**
+      * @BIF _CMPPTRA (Compare Pointer for Object Addressability (CMPPTRA))
+      *
+      * @remark When @var ptr_op1 and @var ptr_op2 are pointers other
+      *         than space pointers, use this prototype instead of
+      *         cmpptra(). When pointer data objects other than space
+      *         poniters are passed by value, the RPG compiler does
+      *         NOT passed them correctly. The same compromise is used
+      *         on the CMPPTRT, SETSPFP, TESTPTR
+      */
+     d rpg_cmpptra     pr            10i 0 extproc('_CMPPTRA')
+     d     ptr_op1                     *   value procptr
+     d     ptr_op2                     *   value procptr
+
+     /**
       * @BIF _CMPPTRT (Compare Pointer Type (CMPPTRT))
+      *
+      * @remark Use this prototype when @var ptr is a space pointer.
       */
      d cmpptrt         pr            10i 0 extproc('_CMPPTRT')
      d     ptr_type                   1a   value
      d     ptr                         *   value
+
+     /**
+      * @BIF _CMPPTRT (Compare Pointer Type (CMPPTRT))
+      *
+      * @remark Use this prototype when @var ptr is NOT a space pointer!
+      */
+     d rpg_cmpptrt     pr            10i 0 extproc('_CMPPTRT')
+     d     ptr_type                   1a   value
+     d     ptr                         *   value procptr
 
      /**
       * @BIF _CPYBWP (Copy Bytes with Pointers (CPYBWP))
@@ -977,14 +1002,25 @@
 
      /**
       * @BIF _TESTPTR (Test Pointer (TESTPTR))
+      *
+      * @remark Use testptr instead of rpg_testptr when @var is a space pointer.
       */
      d testptr         pr            10i 0 extproc('_TESTPTR')
      d     ptr                         *   value
      d     type                       1a   value
 
      /**
+      * @BIF _TESTPTR (Test Pointer (TESTPTR))
+      *
+      * @remark Use rpg_testptr instead of testptr when @var is a procedure pointer.
+      */
+     d rpg_testptr     pr            10i 0 extproc('_TESTPTR')
+     d     ptr                         *   value procptr
+     d     type                       1a   value
+
+     /**
       * @BIF _SETSPPFP (Set Space Pointer from Pointer (SETSPPFP))
-      * @attention this prototype does NOT work on a SYSPTR
+      * @attention this prototype does NOT work with a SYSPTR
       *            unless src_ptr is declared as a procptr?!
       * @todo      why?
       */
@@ -993,9 +1029,19 @@
 
      /**
       * @BIF _SETSPFP (Set System Pointer from Pointer (SETSPFP))
+      *
+      * @remark Use this prototype when @var src_ptr is a space pointer!
       */
      d setspfp         pr              *   extproc('_SETSPFP')
      d     src_ptr                     *   value
+
+     /**
+      * @BIF _SETSPFP (Set System Pointer from Pointer (SETSPFP))
+      *
+      * @remark Use this prototype when @var src_ptr is NOT a space pointer!
+      */
+     d rpg_setspfp     pr              *   extproc('_SETSPFP')
+     d     src_ptr                     *   value procptr
 
      /* end -- pointer resolution */
 
