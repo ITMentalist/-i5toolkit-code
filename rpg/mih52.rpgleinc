@@ -2927,6 +2927,159 @@
      d     mtx                             likeds(mutex_t)
      d     request                     *   value
 
+     d MATPRMTX_OPT_RETURN_MTX_REPLICAS...
+     d                 c                   x'80000000'
+     d MATPRMTX_OPT_MAT_MULT_THD...
+     d                 c                   x'40000000'
+     d MATPRMTX_OPT_RETURN_EXT_MTX_INFO...
+     d                 c                   x'20000000'
+     d MATPRMTX_OPT_MAT_ONLY_WAITERS...
+     d                 c                   x'08000000'
+
+     /**
+      * Materialization template for MATPRMTX.
+      *
+      * @remark For matprmtx_entry_1_t and matprmtx_entry_2_t
+      */
+     d matprmtx_tmpl_a_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+      * Number of mutex lock entries
+     d     num_entries...
+     d                               10i 0
+     d                                4a
+      * materialized entries
+
+     /**
+      * Materialization template for MATPRMTX.
+      *
+      * @remark For matprmtx_entry_3_t and matprmtx_entry_4_t
+      */
+     d matprmtx_tmpl_b_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+      * Number of threads in process
+     d     threads                   10u 0
+      * Number of thread mutex descriptors
+     d     descs                     10u 0
+      * materialized entries
+
+     /**
+      * Entries returned by MATPRMTX when:
+      *  - materialize threads option is set to materialize only specified thread
+      *  - mutex attributes option is set to do not return additional mutex attributes
+      */
+     d matprmtx_entry_1_t...
+     d                 ds                  qualified
+     d     mtx_ptr                     *
+      *
+      * Mutex state being described
+      *   Hex 00 = The mutex is held by the thread
+      *   Hex 01 = The thread is waiting to acquire the mutex
+      *
+     d     mtx_sts                    1a
+     d                               15a
+
+     /**
+      * Entries returned by MATPRMTX when:
+      *  - materialize threads option is set to materialize only specified thread
+      *  - mutex attributes option is set to return additional mutex attributes
+      */
+     d matprmtx_entry_2_t...
+     d                 ds                  qualified
+     d     mtx_ptr                     *
+     d     mtx_sts                    1a
+     d                               15a
+     d     mtx_name                  16a
+      * Holder process ID
+     d     holder_prc_id...
+     d                               30a
+     d                                2a
+      * Mutex holder thread ID
+     d     holder_thd_id...
+     d                                8a
+      * Mutex holder unique thread value
+     d     holder_thd_unique_val...
+     d                                8a
+     d     waiters                   10i 0
+     d                               12a
+
+     /**
+      * Entries returned by MATPRMTX when:
+      *  - materialize threads option is set to materialize multiple
+      *    threads in specified thread's process
+      *  - mutex attributes option is set to do not return additional
+      *    mutex attributes
+      */
+     d matprmtx_entry_3_t...
+     d                 ds                  qualified
+      * Identified thread ID
+     d     thd_id                     8a
+      * Number of descriptors for identified thread
+     d     descs                     10u 0
+      * Descriptor entry number for identified thread
+     d     desc_num                  10u 0
+     d     mtx                         *
+      *
+      * Mutex state being described
+      *  Hex 00 = The mutex is held by the thread
+      *  Hex 01 = The thread is waiting to acquire the mutex
+      *
+     d     mtx_sts                    1a
+     d                               15a
+
+     /**
+      * Entries returned by MATPRMTX when:
+      *  - materialize threads option is set to materialize multiple
+      *    threads in specified thread's process
+      *  - mutex attributes option is set to return additional
+      *    mutex attributes
+      */
+     d matprmtx_entry_4_t...
+     d                 ds                  qualified
+      * Identified thread ID
+     d     thd_id                     8a
+      * Number of descriptors for identified thread
+     d     descs                     10u 0
+      * Descriptor entry number for identified thread
+     d     desc_num                  10u 0
+     d     mtx                         *
+      *
+      * Mutex state being described
+      *  Hex 00 = The mutex is held by the thread
+      *  Hex 01 = The thread is waiting to acquire the mutex
+      *
+     d     mtx_sts                    1a
+     d                               15a
+     d     mtx_name                  16a
+      * Holder process ID
+     d     holder_prc_id...
+     d                               30a
+     d                                2a
+      * Mutex holder thread ID
+     d     holder_thd_id...
+     d                                8a
+      * Mutex holder unique thread value
+     d     holder_thd_unique_val...
+     d                                8a
+     d     waiters                   10i 0
+     d                               12a
+
+     d matprmtx_tmpl_t...
+     d                 ds                  qualified
+
+     /**
+      * @BIF _MATPRMTX (Materialize Process Mutex (MATPRMTX))
+      */
+     d matprmtx        pr                  extproc('_MATPRMTX')
+     d     receiver                        likeds(matprmtx_tmpl_t)
+     d     pcs                         *
+     d     opt                       10u 0
+
      /**
       * @BIF _UNLKMTX (Unlock Pointer-Based Mutex (UNLKMTX))
       */

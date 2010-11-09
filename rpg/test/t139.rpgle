@@ -18,38 +18,34 @@
       */
 
      /**
-      * @file t138.rpgle
+      * @file t139.rpgle
       *
-      * Test of _MATSOBJ.
+      * Test of _MATPRMTX.
       */
 
      h dftactgrp(*no)
 
       /copy mih52
+     d rcv             ds                  likeds(matprmtx_tmpl_a_t)
+     d                                     based(ptr)
+     d ptr             s               *
+     d ptr_tmpl        ds                  likeds(
+     d                                       matpratr_ptr_tmpl_t)
+     d pr_opt          s              1a   inz(x'25')
+     d opt             s             10u 0
      d len             s             10i 0
-     d tmpl            ds                  likeds(matsobj_tmpl_t)
-     d pgm_obj         s               *
-     d start           s               *   inz(%addr(tmpl))
-     d pos             s               *
 
       /free
-           len = %size(tmpl);
-           dsply 'DS MATSOBJ_TMPL_T' '' len;
+           ptr = %alloc(16);
+           rcv = *allx'00';
+           rcv.bytes_in = 16;
 
-           rslvsp_tmpl.obj_type = x'0201';
-           rslvsp_tmpl.obj_name = 'T137';
-           rslvsp2(pgm_obj : rslvsp_tmpl);
+           ptr_tmpl.bytes_in = %size(matpratr_ptr_tmpl_t);
+           matpratr1(ptr_tmpl : pr_opt);
 
-           tmpl.bytes_in = %size(tmpl);
-           matsobj(tmpl : pgm_obj);
+           opt = 0;
+           matprmtx(rcv : ptr_tmpl.ptr : opt);
 
-           pos = %addr(tmpl.domain);
-           len = pos - start;
-           dsply 'offset of domain' '' len;
-
-           pos = %addr(tmpl.obj_size2);
-           len = pos - start;
-           dsply 'offset of obj_size2' '' len;
-
+           dealloc ptr;
            *inlr = *on;
       /end-free
