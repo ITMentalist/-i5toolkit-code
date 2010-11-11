@@ -18,15 +18,31 @@
       */
 
      /**
-      * @file apiec.rpgleinc
+      * @file regex.rpgleinc
       *
-      * ILE RPG header for API error code structures. For details
-      * please refer to the project's web site,
-      * http://i5toolkit.sourceforge.net/
+      * This file provides prototypes for regular expression routines
+      * and definitions of related data structures and constants.  For
+      * more information about how to use regex routines in ILE RPG,
+      * please refer to documentations available at the projects's web
+      * site, http://i5toolkit.sourceforge.net/
       */
 
       /if not defined(i5toolkit_rpg_regex)
       /define i5toolkit_rpg_regex
+
+      * Constants
+
+     /* regcomp() cflags */
+     d REG_BASIC       c                   x'00'
+     d REG_EXTENDED    c                   x'01'
+     d REG_ICASE       c                   x'02'
+     d REG_NEWLINE     c                   x'04'
+     d REG_NOSUB       c                   x'08'
+     d REG_ALT_NL      c                   x'10'
+
+     /* regexec() eflags */
+     d REG_NOTBOL      c                   x'0100'
+     d REG_NOTEOL      c                   x'0200'
 
      /**
       * regex pattern buffer.
@@ -78,7 +94,7 @@
      d     re_map                   256a
      d     re_shift                  10i 0
      d     re_dbcs                    5i 0
-     d                               12a
+     d                               10a
 
      /**
       * Substring locations returned by regexec().
@@ -97,6 +113,16 @@
      d                                2a
 
      /**
+      * UCS-2 matcher.
+      */
+     d regmatch_ucs2_t...
+     d                 ds                  qualified
+     d     rm_so                     10i 0
+     d     rm_ss                     10i 0
+     d     rm_eo                     10i 0
+     d     rm_es                     10i 0
+
+     /**
       * @fn regcomp()
       *
       * The regcomp() function compiles the source regular expression
@@ -112,7 +138,7 @@
      d regcomp         pr            10i 0 extproc('regcomp')
      d     reg                             likeds(regex_t)
      d     pattern                    1a   options(*varsize)
-     d     flag                      10i 0 value
+     d     cflags                    10i 0 value
 
      /**
       * @fn regexec()
@@ -139,7 +165,7 @@
      d     match                           likeds(regmatch_t)
      d                                     options(*varsize)
      d                                     dim(128)
-     d     flag                      10i 0 value
+     d     eflags                    10i 0 value
 
      /**
       * @fn regfree()
