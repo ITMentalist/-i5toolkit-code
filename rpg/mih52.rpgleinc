@@ -1354,6 +1354,137 @@
 
      /* program management */
 
+     /* Materialization template for MATPG */
+     d matpg_tmpl_t    ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     pgm_id                    32a
+     d       pgm_type                 2a   overlay(pgm_id)
+     d       pgm_name                30a   overlay(pgm_id:3)
+      * Program creation options
+     d     crt_opt                    4a
+     d                                4a
+     d     spc_size                  10i 0
+     d     spc_init_val...
+     d                                1a
+      * Performance class
+     d     perf_cls                   4a
+     d                                7a
+      * Context
+     d     ctx                         *
+      * Access group
+     d     ag                          *
+      * Program attributes
+     d     pgm_attr                   2a
+      * Code generation options
+     d     gen_opt                    1a
+      *
+      * Observation attributes
+      *
+      * 
+      *
+     d     obsv_attr                  1a
+      * Size of static storage
+     d     ss_size                   10u 0
+      * Size of automatic storage
+     d     as_size                   10u 0
+      * Number of instructions (1)
+     d     num_inst1                  5u 0
+      *
+      * Number of ODV entries (1)
+      *
+      * For version number = hex 0000, this field indicates the number
+      * of instructions. For version number = hex 0001, this field is
+      * reserved (binary 0).
+      *
+     d     num_odv1                   5i 0
+     d     inst_stream_offset...
+     d                               10i 0
+     d     odv_offset                10i 0
+     d     oes_offset                10i 0
+      * Length of breakpoint offset mapping table entry
+     d     bom_ent_len...
+     d                               10i 0
+      * Length of breakpoint offset mapping table component 	
+     d     bom_len                   10i 0
+     d     bom_offset                10i 0
+      * length of symbol table entry
+     d     symtbl_ent_len...
+     d                               10i 0
+     d     symtbl_len                10i 0
+     d     symtbl_offset...
+     d                               10i 0
+      *
+      * Offset (in bytes) from beginning of template to the
+      * object mapping table (OMT) component
+      *
+     d     omt_offset                10i 0
+     d     num_inst2                 10i 0
+     d     num_odv2                  10i 0
+      *
+      * Template extension
+      *
+      * @remark This extension exists only when the template extension
+      *         existence bit (bit 10 of @var pgm_attr) is 1.
+      *
+     d     ext_pgm_attr...
+     d                                4a
+      *
+      * Language version, release, and modification level
+      *
+      * Bits 0-3. Reserved
+      * Bits 4-7. Version
+      * Bits 8-11. Release
+      * Bits 12-15. Mod level
+      *
+     d     lang_vrm                   2a
+      *
+      * BOM table flags
+      *
+      * Bit 0. Use new BOM table format
+      * Bit 1-7. User data5A
+      *
+      *
+     d     bom_flags                  1a
+     d     user_data5B...
+     d                                7a
+      *
+      * Version, release, and modification level this program
+      * is being created for.
+      *
+     d     pgm_vrm                    2a
+      *
+      * Data required for machine retranslation
+      *
+      * Bit 0. All data required for machine retranslation is present
+      *   0 = No
+      *   1 = Yes
+      * Bits 1-7. Reserved (binary 0)
+      *
+     d     data_required_for_machine_retranslation...
+     d                                1a
+      * Reserved (binary 0)
+     d                               47a
+      *
+      * Program data
+      *    Instruction stream component
+      *    ODV component
+      *    OES component
+      * BOM table
+      * Symbol table
+      * Object mapping table
+      *
+
+     /**
+      * @BIF _MATPG (Materialize Program (MATPG))
+      *
+      * @attention This instruction does not process teraspace addresses ...
+      */
+     d matpg           pr                  extproc('_MATPG')
+     d     receiver                        likeds(matpg_tmpl_t)
+     d     pgm                         *
+
      /**
       * @BIF _MATPGMNM (Materialize Program Name (MATPGMNM))
       */

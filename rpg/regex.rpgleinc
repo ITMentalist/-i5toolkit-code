@@ -71,32 +71,6 @@
      d                               12a
 
      /**
-      * regex pattern buffer for UCS-2
-      */
-     d regex_ucs2_t    ds                  qualified
-     d     re_nsub                   10u 0
-     d                               12a
-     d     re_comp                     *
-     d     re_cflags                 10i 0
-     d     re_erroff                 10u 0
-     d     re_len                    10u 0
-     d     re_ucoll                  10i 0 dim(2)
-     d                               12a
-     d     re_lsub                     *
-     d     lsub_ar                   10u 0 dim(16)
-     d     esub_ar                   10u 0 dim(16)
-     d     reserved1                   *
-     d     re_esub                     *
-     d     re_specchar...
-     d                                 *
-     d     re_phdl                     *
-     d     comp_spc                 112a
-     d     re_map                   256a
-     d     re_shift                  10i 0
-     d     re_dbcs                    5i 0
-     d                               10a
-
-     /**
       * Substring locations returned by regexec().
       *
       * A group in a regular expression can match a (posssibly empty)
@@ -111,16 +85,6 @@
      d     rm_eo                     10i 0
      d     rm_es                      5i 0
      d                                2a
-
-     /**
-      * UCS-2 matcher.
-      */
-     d regmatch_ucs2_t...
-     d                 ds                  qualified
-     d     rm_so                     10i 0
-     d     rm_ss                     10i 0
-     d     rm_eo                     10i 0
-     d     rm_es                     10i 0
 
      /**
       * @fn regcomp()
