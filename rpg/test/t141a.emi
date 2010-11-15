@@ -1,0 +1,15 @@
+/**
+ * @file t141a.emi
+ *
+ * Materialized by t141.rpgle
+ */
+
+dcl dd a pkd(7,5) auto init(p'15.67') ;
+dcl dd positive-flag char(1) auto init('0') ;
+dcl dd one-flag char(1) auto init('0') ;
+
+        cmpnv(i) a, 0 / hi(positive-flag) ;
+        cmpnv(i) a, 1 / eq(one-flag)      ;
+brk "SEE-YOU"                             ;
+        rtx *                   ;
+pend                            ;
