@@ -10,6 +10,17 @@ dcl dd one-flag char(1) auto init('0') ;
 
         cmpnv(i) a, 0 / hi(positive-flag) ;
         cmpnv(i) a, 1 / eq(one-flag)      ;
-brk "SEE-YOU"                             ;
+        subn(s) a, p'9.99'                ;
+brk "1"                             ;
+        cmpnv(i) a, p'0.67' / lo(positive-flag) ;
+        cmpnv(i) a, p'1.517' / eq(one-flag)      ;
+brk "2"                             ;
+        cmpnv(b) a, p'1.517' / eq(see-you) ;
+see-you:        
         rtx *                   ;
 pend                            ;
+/*
+00000     00000024 38461000 00012000 00021846
+00010     40000001 20010003 11470001 000402A1
+00020     00000260 
+*/
