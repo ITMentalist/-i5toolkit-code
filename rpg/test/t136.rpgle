@@ -20,10 +20,10 @@
      /**
       * @file t136.rpgle
       *
-      * Test of QusMaterializeContext.
+      * Test of QusMaterializeContext, listing objects in QSYS.
       */
 
-     h dftactgrp(*no)
+     h dftactgrp(*no) bnddir('QC2LE')
 
       /copy mih52
      d opt             ds                  likeds(matctx_option_t)
@@ -40,9 +40,24 @@
      d ctx                             *
      d ctx2                            *   procptr overlay(ctx)
 
+     d sendmsg         pr
+     d     text                       1a   options(*varsize)
+     d     len                       10i 0 value
+
+     d cvthc           pr                  extproc('cvthc')
+     d                                2a   options(*varsize)
+     d                                1a   options(*varsize)
+     d                               10i 0 value
+
+     d                 ds 
+     d msg                           40a
+     d type                           2a   overlay(msg)
+     d subtype                        2a   overlay(msg:4)
+     d obj_name                      30a   overlay(msg:7)
+
       /free
            rslvsp_tmpl.obj_type = x'0401';
-           rslvsp_tmpl.obj_name = 'LSBIN';
+           rslvsp_tmpl.obj_name = 'QSYS';
            rslvsp2(ctx : rslvsp_tmpl);
 
            opt = *allx'00';
@@ -63,13 +78,61 @@
            // check objd
            num = (rcv.bytes_out - 96) / %size(objd);
            for i = 1 to num;
-               dsply i '' objd.objid.name;
-               if objd.objid.name = 'q';
-                   leave;
-               endif;
+               cvthc(type : objd.objid.type_code : 2);
+               cvthc(subtype : objd.objid.subtype_code : 2);
+               obj_name = objd.objid.name;
 
+               sendmsg(msg : 40);
                pos += %size(objd);
            endfor;
 
            *inlr = *on;
       /end-free
+
+     p sendmsg         b
+     d                 pi
+     d     text                       1a   options(*varsize)
+     d     len                       10i 0 value
+
+      * error code structure used by i5/OS APIs
+     d qusec_t         ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     msg_id                     7a
+     d                                1a
+
+      * prototype of OPM API QMHSNDPM
+     d qmhsndpm        pr                  extpgm('QMHSNDPM')
+     d     msgid                      7a
+     d     msgf                      20a
+     d     msg_data                   1a   options(*varsize)
+     d     msg_data_len...
+     d                               10i 0
+     d     msg_type                  10a
+     d     stk_entry                 10a
+     d     stk_cnt                   10i 0
+     d     msg_key                    4a
+     d     ec                              likeds(qusec_t)
+
+     d msgid           s              7a   inz('CPF9898')
+     d msgf            s             20a   inz('QCPFMSG   QSYS')
+     d msg_type        s             10a   inz('*INFO')
+     d stk_entry       s             10a   inz('*PGMBDY')
+     d stk_cnt         s             10i 0 inz(1)
+     d msg_key         s              4a
+     d ec              ds                  likeds(qusec_t)
+
+      /free
+           ec.bytes_in = 16;
+           qmhsndpm ( msgid
+                    : msgf
+                    : text
+                    : len
+                    : msg_type
+                    : stk_entry
+                    : stk_cnt
+                    : msg_key
+                    : ec );
+
+      /end-free
+     p sendmsg         e
