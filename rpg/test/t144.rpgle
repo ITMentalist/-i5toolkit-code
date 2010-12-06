@@ -1,7 +1,7 @@
      /**
       * @file t144.rpgle
       *
-      * Test of _MATPG.
+      * Test of _MATPG. Materialize program attributes.
       *
       * @param[in] pgm-name, CHAR(10)
       */
@@ -28,7 +28,7 @@
      d     num                       10i 0
      d     arr                        5u 0 dim(2000)
      d msg             s             32a
-     d an              s              8a
+     d an              s             10a
      d yes             c                   '*YES'
      d no              c                   '*NO'
 
@@ -82,6 +82,21 @@
 
            msg = 'Suppress *DEC data exception';
            an = yes_or_no(rcv.pgm_attr:9:0);
+           dsply msg '' an;
+
+           msg = 'Template extension exists';
+           an = yes_or_no(rcv.pgm_attr:10:0);
+           dsply msg '' an;
+
+           msg = 'Suppress previously adopted USRPRF';
+           an = yes_or_no(rcv.pgm_attr:11:0);
+           dsply msg '' an;
+
+           msg = 'Template version';
+           an = 'Version 0';
+           if tstbts(%addr(rcv.pgm_attr) : 15) > 0;
+               an = 'Version 1';
+           endif;
            dsply msg '' an;
 
            // instruction stream component

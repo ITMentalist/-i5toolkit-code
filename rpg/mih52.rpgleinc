@@ -1379,11 +1379,7 @@
      d     pgm_attr                   2a
       * Code generation options
      d     gen_opt                    1a
-      *
       * Observation attributes
-      *
-      * 
-      *
      d     obsv_attr                  1a
       * Size of static storage
      d     ss_size                   10u 0

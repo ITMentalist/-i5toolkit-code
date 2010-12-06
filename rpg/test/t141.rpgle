@@ -1,7 +1,7 @@
      /**
       * @file t141.rpgle
       *
-      * Test of _MATPG.
+      * Test of _MATPG. Materialize the instruction stream of an OPM program.
       */
      h dftactgrp(*no)
 
