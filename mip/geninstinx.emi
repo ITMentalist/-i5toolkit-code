@@ -6,44 +6,42 @@
  * @pre an empty index object (key length = 2)
  * @pre the security level of your machine is currently under 40
  *
-CALL PGM(QUSCRTUI)
-     PARM('UPROCT    I5TOOLKIT'
-          'PROCTUI' 'F' X'0000000C'
-          '1'
-          X'00000002'
-          '0'
-          '0'
-          '*USE'
-          'Op-code/instruction-name mappings')
+ * CALL PGM(QUSCRTUI)
+ *      PARM('UPROCT54  I5TOOLKIT'
+ *           'PROCTUI' 'F' X'0000000C'
+ *           '1'
+ *           X'00000002'
+ *           '0'
+ *           '0'
+ *           '*USE'
+ *           'Op-code/instruction-name mappings')
  */
 
 dcl spcptr inx-name-ptr parm    ;
 dcl dd p-inx-name char(10) bas(inx-name-ptr) ;
+dcl spcptr spc-name-ptr parm                 ;
+dcl dd p-spc-name char(10) bas(spc-name-ptr) ;
+dcl spcptr spc-type-ptr parm                 ;
+dcl dd p-spc-type char(2) bas(spc-type-ptr)  ;
 
 dcl ol pl-main (
-        inx-name-ptr
-) parm ext min(0)               ;
+        inx-name-ptr,
+        spc-name-ptr,
+        spc-type-ptr
+) parm ext                      ;
 
 entry *(pl-main) ext            ;
 
-dcl dd num-parms bin(2) auto    ;
-        stpllen num-parms       ;
-
 /* resolve space qproct */
         cpybrep r-tmpl, x'00'   ;
-        cpybla r-tmpl(1:2), x'1934' ; /* 19DA */
-        cmpnv(b) num-parms, 1 / nlo(=+3) ;
-        cpybla r-tmpl(3:30), dft-inx-name ;
-        b rslv-inx                        ;
-:
-        cpyblap r-tmpl(3:30), p-inx-name, ' ' ;
-rslv-inx:
+        cpybla r-tmpl(1:2), p-spc-type    ; /* 19DA, 1934 */
+        cpyblap r-tmpl(3:30), p-spc-name, ' ' ;
         rslvsp spc-ct, r-tmpl, *, * ;
 
 /* resolve index uproct */
         cpybla r-tmpl(1:2), x'0E0A' ;
-        cpybla r-tmpl(3:30), dft-inx-name ;
-        rslvsp inx-ct, r-tmpl, *, *       ;
+        cpybla r-tmpl(3:30), p-inx-name ;
+        rslvsp inx-ct, r-tmpl, *, *     ;
 
 dcl spcptr pos auto             ;
 dcl spc ct-entry-t bas(pos)     ;
@@ -84,8 +82,8 @@ brk 'END'                       ;
 see-you:        
         rtx *                   ;
 
-dcl con dft-qproct-name char(30) init("UPROCT") ; /* QPROCT */
-dcl con dft-inx-name char(30) init("UPROCT")    ;
+dcl con dft-qproct-name char(30) init("UPROCT54") ; /* QPROCT */
+dcl con dft-inx-name char(30) init("UPROCT54")    ;
 dcl con CT-START-OFFSET bin(4) init(h'0466') ;
 dcl con CT-ENTRY-LENGTH bin(2) init(17)      ;
 
