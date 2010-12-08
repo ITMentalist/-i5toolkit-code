@@ -1473,6 +1473,39 @@
       *
 
      /**
+      * Old format BOM table entry
+      */
+     d bom_entry0_t    ds            12    qualified
+      *
+      * Bit 0. Format flag
+      *   0 = HLL statement number is in character format
+      *   1 = HLL statement number is in numeric format
+      *
+     d     mi_inst                    5u 0
+     d     hll_stmt_name...
+     d                               10a
+     d     hll_stmt_num...
+     d                                5i 0 overlay(
+     d                                       hll_stmt_name:1)
+
+     /**
+      * New format BOM table entry
+      */
+     d bom_entry1_t    ds            13    qualified
+     d     mi_inst                    5u 0
+      *
+      * Bit 0. Format flag
+      *   0 = HLL statement number is in character format
+      *   1 = HLL statement number is in numeric format
+      *
+     d     fmt_flag                   1a
+     d     hll_stmt_name...
+     d                               10a
+     d     hll_stmt_num...
+     d                                5i 0 overlay(
+     d                                       hll_stmt_name:1)
+
+     /**
       * @BIF _MATPG (Materialize Program (MATPG))
       *
       * @attention This instruction does not process teraspace addresses ...

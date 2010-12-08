@@ -33,22 +33,6 @@
      d                                     based(pos)
      d pos             s               *
 
-     /**
-      * Old format BOM table entry
-      */
-     d bom_entry0_t    ds            12    qualified
-      *
-      * Bit 0. Format flag
-      *   0 = HLL statement number is in character format
-      *   1 = HLL statement number is in numeric format
-      *
-     d     mi_inst                    5u 0
-     d     hll_stmt_name...
-     d                               10a
-     d     hll_stmt_num...
-     d                                5i 0 overlay(
-     d                                       hll_stmt_name:1)
-
      d i_t145          pi
      d     pgm_name                  10a
 
