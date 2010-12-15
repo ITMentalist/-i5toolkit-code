@@ -1473,6 +1473,135 @@
       *
 
      /**
+      * Layout of the symbol table component.
+      */
+     d symbol_table_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+      * Number of hash buckets
+     d     num_buckets...
+     d                               10i 0
+      *
+      * Hash bucket
+      *
+      * Each hash bucket contains an offset to the first symbol table
+      * base segment entry of the chain. This offset is from the
+      * beginning of the symbol table. The end of the chain has a -1
+      * value.
+      *
+      * @remark Maximum of 1000 hash buckets.
+      *
+     d     buckets                   10i 0 dim(1000)
+
+     /**
+      * Symbol table base segment
+      */
+     d symtbl_base_t...
+     d                 ds                  qualified
+      * -1 if it's the end of the chain
+     d     next_entry_offset...
+     d                               10i 0
+      * ODT index or MI instruction number
+     d     num                        5i 0
+      *
+      * Bit 0. Instruction or ODT number
+      *  0 = MI instruction number
+      *  1 = ODT number
+      * Bit 1. Symbol origin
+      *  0 = Compiler generated
+      *  1 = Source program
+      * Bit 2. Array specification
+      *  0 = Row major
+      *  1 = Column major
+      * Bit 3. Format segment present
+      *  0 = No
+      *  1 = Yes
+      * Bit 4. Array segment present
+      *  0 = No
+      *  1 = Yes
+      * Bit 5. Extension segment present
+      *  0 = No
+      *  1 = Yes
+      * Bits 6-7. Reserved (binary 0)
+      *
+     d     flag                       1a
+      * Length of symbol
+     d     len                        1a
+      * symbol
+     d     name                      16a
+
+     /**
+      * Symbol table format segment
+      */ 
+     d symtbl_format_t...
+     d                 ds            20    qualified
+      * Format program name
+     d     fmt_pgm_name...
+     d                               10a
+      * Format code
+     d     fmt_code                   4a
+      * Locator variable ODT#
+     d     loc_var_odt...
+     d                                5u 0
+      * Descriptor variable ODT#
+     d     desc_var_odt...
+     d                                5u 0
+      * Reserved (binary 0)
+     d                                2a
+
+     /**
+      * Symbol table array segment
+      *  - Number of array dimensions           Bin(2)
+      *  - Indexes (1 per array dimension)      [*] Char(8)
+      *    - Lower index                        Bin(4)
+      *    - upper index                        Bin(4)
+      */
+
+     /**
+      * Symbol table extended segment
+      */
+     d symtbl_ex_t     ds            26    qualified
+      * Extended segment length
+     d     seg_len                    5u 0
+      * Structure level
+     d     ds_level                   2a
+      *
+      * Data representation
+      *  hex 00 = See ODT
+      *  hex 01 = Binary
+      *  hex 02 = Zoned
+      *  hex 03 = Bit string
+      *
+     d     dta_rep                    1a
+      * Number of total digits
+     d     total_digits...
+     d                                5i 0
+      * Number of fractional digits
+     d     fractional_digits...
+     d                                5i 0
+      *
+      * Sign of number
+      *  hex 00 = Leading embedded
+      *  hex 01 = Leading separated
+      *  hex 02 = Trailing separate
+      *
+     d     sign                       1a
+      * Offset to base segment entry of parent. The end of the chain has a -1 value.
+     d     offset_to_base_segment_entry_of_parent...
+     d                               10i 0
+      * Offset to base segment entry of synonym. The end of the chain has a -1 value.
+     d     offset_to_base_segment_entry_of_synonym...
+     d                               10i 0
+      *
+      * Bit 0. Object is a HLL pointer
+      * Bit 1. Array segment is in multi-dimensioned array format
+      * Bits 2-7. Reserved (binary 0)
+      *
+     d     flag                       1a
+      * Reserved (binary 0)
+     d                                7a
+
+     /**
       * Old format BOM table entry
       */
      d bom_entry0_t    ds            12    qualified
