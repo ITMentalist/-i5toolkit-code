@@ -1,7 +1,7 @@
      /**
       * @file t147.rpgle
       *
-      * Test of _MATMATR1. Materialized HMC info.
+      * Test of _MATMATR1. Materialize HMC info.
       */
      h dftactgrp(*no)
 
@@ -21,7 +21,7 @@
            ptr = modasa(len);
            tmpl.bytes_in = len;
            matmatr(tmpl : opt);
-             // check returned HMC info
+             // check the returned HMC info
 
            *inlr = *on;
       /end-free
