@@ -5387,6 +5387,31 @@
      d                                2a
 
      /**
+      * MATMATR instruction template for option hex 0204.
+      *
+      * Hardware management console (HMC) information.
+      */
+     d matmatr_hmc_t   ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+      *
+      * The number of entries returned field returns the number of
+      * Hardware Management Console (HMC) information entries
+      * returned. One entry is returned for each HMC attached to the
+      * physical machine. On a non-HMC managed system, the value
+      * returned will be binary 0.
+      *
+     d     num_ent                   10i 0
+     d                                4a
+     d     hmc_info                        likeds(hmc_info_t)
+     d                                     dim(10)
+
+     d hmc_info_t      ds          1036    qualified
+     d     len                        5u 0
+     d     info                    1034
+
+     /**
       * @BIF _MATMATR (Materialize Machine Attributes (MATMATR))
       */
      d matmatr         pr                  extproc('_MATMATR1')
