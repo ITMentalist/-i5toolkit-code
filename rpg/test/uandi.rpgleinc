@@ -1,0 +1,28 @@
+     /**
+      *
+      */
+
+      /if not defined(i5toolkit_uandi)
+      /define i5toolkit_uandi
+
+     /**
+      * @fn cvt_bits2
+      */
+     d cvt_bits2       pr             5u 0 extproc('cvt_bits2')
+     d     src                        1a   options(*varsize)
+     d     num_bytes                 10u 0 value
+     d     offset                    10u 0 value
+     d     length                    10u 0 value
+
+     /**
+      * @fn cvt_bits4
+      */
+     d cvt_bits4       pr            10u 0 extproc('cvt_bits4')
+     d     src                        1a   options(*varsize)
+     d     num_bytes                 10u 0 value
+     d     offset                    10u 0 value
+     d     length                    10u 0 value
+
+      /endif
+
+

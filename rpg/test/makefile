@@ -21,7 +21,7 @@
 
 BIN_LIB=
 MAKERULES=rules.mk
-RPGLEFLAGS=dbgview(*all) replace(*yes) incdir('/usr/local/include/rpg')
+RPGLEFLAGS=dbgview(*all) replace(*yes) incdir('/usr/local/include/rpg' '.')
 RPGFLAGS=genopt(*list *atr)
 CLFLAGS=genopt(*list *xref)
 
@@ -37,13 +37,19 @@ TARGETS=t001 t002 t003 t004 t005 t006 t007 t008 t009 t010 t011 t012 t013 t014 t0
 	t114 t115 t116 t118a t118 t119 t119a t120 \
 	t121a t121 t121b t122 t122a t123 t124 t125 t126 t127 t128 \
 	t129 t130 t131 t132 t133 t134 t135 t136 t137 t138 t139 \
-	t140 t141 t141a t142cl t143rpg t144 t145 t146 t147 t148
+	t140 t141 t141a t142cl t143rpg t144 t145 t146 t147 t148 \
+	t149 uandi
 
 all: $(TARGETS)
 	@echo "compilation done -- rpg"
 
 clean:
 	qsh -c "/usr/bin/rmflnk $(TARGETS)"
+
+uandi: t150.module
+	- system "crtbnddir $@"
+	- system "addbnddire $@ obj((t150 *module))"
+	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.BNDDIR $@
 
 t099up: pfa.file
 
