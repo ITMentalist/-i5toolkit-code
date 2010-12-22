@@ -1635,6 +1635,15 @@
      d                                       hll_stmt_name:1)
 
      /**
+      * ODV entry
+      */
+     d odv_entry_t     ds             4
+     d     hi                         2a
+     d     lo                         2a
+     d     oes_offset                 5u 0 overlay(lo)
+     d     scalar_len                 5u 0 overlay(lo)
+
+     /**
       * @BIF _MATPG (Materialize Program (MATPG))
       *
       * @attention This instruction does not process teraspace addresses ...

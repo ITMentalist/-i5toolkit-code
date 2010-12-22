@@ -84,50 +84,14 @@
      d     odv_ptr                     *   value
 
      d odve            ds                  based(odv_ptr)
-     d                                     likeds(odve_scalar_t)
-
-     d odve_scalar_t   ds             4
-     d     hi                         2a
-     d     lo                         2a
-     d     oes_offset                 5u 0 overlay(lo)
-     d     scalar_len                 5u 0 overlay(lo)
-
-     d scalar_info_t   ds                  qualified
-     d     type                       5u 0
-     d     addr                       5u 0
-     d     bdry                       5u 0
-     d     opt                        1a
-      * use system initial value or not?
-     d     init_val                   1a
-      * ...
-      * ...
-      * ... scalar length 要给到 ubin(4)
-     d     name_len                   5u 0
-      * offset from the start of the OES component
-     d     name_off                  10u 0
-      * scalar length
-     d     length                    10u 0
-      * fractional part of scalar length
-     d     length_hi                  5u 0 overlay(length)
-      * total digits of scalar length
-     d     length_lo                  5u 0 overlay(length:3)
-      * number of array elements
-     d     arr_elem                  10u 0
-      * array element offset (AEO)
-     d     aeo                        5u 0
-      * lower bound of array
-     d     arr_lb                    10i 0
-      * upper bound of array
-     d     arr_ub                    10i 0
-      * position value, start from 1
-     d     pos_val                   10u 0
-     d*    .. @here init-val appendage
+     d                                     likeds(odv_entry_t)
 
      d flag2           s              5u 0
      d flag4           s             10u 0
      d grp_1           s               n   inz(*on)
 
       /free
+
            // type of the data object
            flag2 = cvt_bits2(odve.hi : 2 : 0 : 4);
            select;
