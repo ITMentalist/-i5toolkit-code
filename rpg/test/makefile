@@ -24,6 +24,7 @@ MAKERULES=rules.mk
 RPGLEFLAGS=dbgview(*all) replace(*yes) incdir('/usr/local/include/rpg' '.')
 RPGFLAGS=genopt(*list *atr)
 CLFLAGS=genopt(*list *xref)
+MIFLAGS=incdir('.')
 
 TARGETS=t001 t002 t003 t004 t005 t006 t007 t008 t009 t010 t011 t012 t013 t014 t015 \
 	t016 t017 t018 t019 t020 t021 t022 t023 t024 t025 \
@@ -49,6 +50,7 @@ clean:
 uandi: t150.module
 	- system "crtbnddir $@"
 	- system "addbnddire $@ obj((t150 *module))"
+	system "chgobjd $(BIN_LIB)/$@ objtype(*bnddir) text('You need a little change :p')" # change UANDI a litttle
 	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.BNDDIR $@
 
 t099up: pfa.file

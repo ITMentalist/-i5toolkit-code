@@ -11,5 +11,7 @@ dcl dd .scl-bin4 bin(4) unsgnd auto          ;
 dcl dd .001 char(1) auto        ;
 dcl dd .odt-002 char(1) auto    ;
 
+dcl dd longly-one char(55) ext  ;
+
         rtx *                   ;
 pend                            ;
