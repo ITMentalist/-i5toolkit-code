@@ -418,6 +418,9 @@
 
      /**
       * @BIF _RETCA (Retrieve Computational Attributes (RETCA))
+      *
+      * @remark the selector operand can be either a ubin(4) or an
+      *         char(1). Note that only the rightmost byte of it is used.
       */
      d retca           pr            10u 0 extproc('_RETCA')
      d     selector                   1a   value
