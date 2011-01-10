@@ -1,7 +1,7 @@
      /**
       * @file bldinf.rpgle
       *
-      *
+      * @todo desc
       */
 
      h dftactgrp(*no) bnddir('QC2LE')
@@ -27,7 +27,7 @@
              + x'00';
            rtn = regcomp( reg : pattern : REG_EXTENDED );
 
-           // walk throught the CONTACT table
+           // walk throught the BLDINF table
            dow '1';
                read REC;
                if %eof();

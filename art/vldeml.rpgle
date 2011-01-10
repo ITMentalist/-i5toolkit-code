@@ -1,7 +1,9 @@
      /**
       * @file vldeml.rpgle
       *
-      *
+      * Validate email address via RE.
+      * @remark If compiled from IFS stream source file (CCSID=819),
+      *         the RE functions won't work.
       */
 
      h dftactgrp(*no) bnddir('QC2LE')
@@ -20,7 +22,7 @@
       /free
            // compile regex pattern
            pattern =
-             '[[:alnum:]._-]+@[[:alnum:]._-]+\.(com|org|net)' + x'00';
+             '^[[:alnum:]._-]+@[[:alnum:]._-]+\.(com|org|net)' + x'00';
            rtn = regcomp( reg : pattern : REG_EXTENDED );
 
            // walk throught the CONTACT table
