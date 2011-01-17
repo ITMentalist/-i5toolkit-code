@@ -20,14 +20,14 @@
 
            ca = retca(x'01'); // retrieve round mode
            // set round mode to 'Round towards negative infinity'
-           setca(x'0020' : 1);
+           setca(x'0020' : x'01');
            ca = retca(x'01');
            a = 20;
            a /= b;
            a *= b; // A =   1.999999809265E+001
 
            // set round mode to 'Round towards positive infinity'
-           setca(0       : 1);
+           setca(0       : x'01');
            ca = retca(x'01');
            a = 20;
            a /= b;

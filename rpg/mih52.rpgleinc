@@ -430,7 +430,7 @@
       */
      d setca           pr                  extproc('_SETCA')
      d     new_ca                    10u 0 value
-     d     selector                  10u 0 value
+     d     selector                   1a   value
 
      /**
       * @BIF _SCANX (Scan Extended (SCANX))

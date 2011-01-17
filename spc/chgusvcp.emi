@@ -82,7 +82,7 @@ dcl con c-dtatype-scalar char(10) init("*SCALAR") ;
 
         /* check spc-offset */
         cmpnv(b) spc-offset, 0 / nlo(check-dtalen) ;
-        /* nemative value for OFFSET */
+        /* negative OFFSET value  */
         cpyblap msg, "0000Negative value parameter OFFSET.", ' ' ;
         calli report-err, *, report-err-ptr ;
         b see-you               ;
@@ -90,7 +90,7 @@ check-dtalen:
         /* for scalar object, check DTALEN */
         cmpbla(b) dta-type, c-dtatype-scalar / neq(check-ptr-parms) ;
         cmpnv(b) dta-len, 0 / nlo(check-ptr-parms)                  ;
-        /* nemative value for DTALEN */
+        /* negative DTALEN value */
         cpyblap msg, "0000Negative DTALEN parameter.", ' ' ;
         calli report-err, *, report-err-ptr ;
         b see-you               ;
@@ -115,7 +115,7 @@ check-spp-offset:
 dcl con c-ptrtype-spp char(10) init("*SPP") ;
         cmpbla(b) ptr-type, c-ptrtype-spp / neq(input-check) ;
         cmpnv(b) sys-obj-spc-offset, 0 / nlo(input-check)     ;
-        /* nemative value for SPCOFFSET */
+        /* negative SPCOFFSET value */
         cpyblap msg, "0000Negative value parameter SPCOFFSET.", ' ' ;
         calli report-err, *, report-err-ptr ;
         b see-you               ;

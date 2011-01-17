@@ -33,7 +33,7 @@
              /* IF DTATYPE == *SCALAR */
              PARM       KWD(DTA) TYPE(*CHAR) LEN(5000) DFT('') +
                           VARY(*YES *INT2) CASE(*MIXED) +
-                          PMTCTL(SCALAR) INLPMTLEN(50) PROMPT(DATA)
+                          PMTCTL(SCALAR) INLPMTLEN(50) PROMPT('Data')
              PARM       KWD(DTALEN) TYPE(*INT2) DFT(*CALC) +
                           SPCVAL((*CALC 0)) PMTCTL(SCALAR) +
                           PROMPT('Data length')
