@@ -23,7 +23,7 @@
 
 BIN_LIB=i5toolkit
 MAKERULES=../rules.mk
-TARGETS=geninstinx t_mip01
+TARGETS=tmip01
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir mip."

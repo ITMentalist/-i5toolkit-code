@@ -28,6 +28,7 @@
            setca(0 : x'08');
            b -= 3.0;
            a /= b;  // a = x'7F800000'
+           a = -a;  // a = x'FF800000'
 
            // [4] retrieve flt exception occurances
            ca = retca(x'02');

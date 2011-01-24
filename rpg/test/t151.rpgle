@@ -58,9 +58,8 @@
       /end-free
 
      p parse_odt       b
-     d parse_odt       pi
-     d     odv_ptr                     *   value
 
+      /copy mip
      d odve            ds                  based(odv_ptr)
      d                                     likeds(odv_entry_t)
      d sc_info         ds                  likeds(scalar_info_t)
@@ -80,6 +79,9 @@
      d oes_ext         s              1a
       * current offset into the OES (start from OES_START)
      d cur_oes_off     s             10u 0
+
+     d parse_odt       pi
+     d     odv_ptr                     *   value
 
       /free
            clear sc_info;

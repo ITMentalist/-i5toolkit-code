@@ -1,0 +1,23 @@
+/**
+ * @file tmip01.emi
+ *
+ * Test program of subproject MIP.
+ */
+
+dcl sysptr me auto init (
+        "TMIP01", type(pgm)
+)                               ;
+dcl dd tmpl char(256) auto bdry(16) ;
+dcl spcptr p auto init(tmpl)    ;
+
+        rslvsp me, *, *, *      ;
+
+        cpynv p->matpg.bytes-in, 256 ;
+        matpg p, me             ;
+brk '1'                         ;
+        %sendmsg(p->matpg.pgm-name, 30) ;
+
+brk 'END'                       ;
+        rtx *                   ;
+/include mip-h.emi              ;
+pend                            ;

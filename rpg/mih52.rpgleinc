@@ -1647,66 +1647,6 @@
      d     scalar_len                 2a   overlay(lo)
 
      /**
-      * Attributes of an ODT entry for a scalar data object.
-      */
-     d scalar_info_t   ds                  qualified
-      *
-      * scalar type
-      *  - h'0000', signed binary
-      *  - h'0001', floating-point
-      *  - h'0002', zoned decimal
-      *  - h'0003', packed decimal
-      *  - h'0004', character string
-      *  - h'0100', unsigned binary
-      *
-     d     type                       5u 0
-      * addressiblity attribute
-     d     addr                       5u 0
-     d     bdry                       5u 0
-     d     opt                        1a
-      * use system initial value or not?
-      *  - '1', use
-      *  - '0', NOT use
-     d     sys_init_val...
-     d                                 n
-      * name length (1-32)
-     d     name_len                   5u 0
-      * offset from the start of the OES component
-     d     name_off                  10u 0
-      * scalar length
-     d     length                    10u 0
-      * fractional part of scalar length
-     d     length_hi                  5u 0 overlay(length)
-      * total digits of scalar length
-     d     length_lo                  5u 0 overlay(length:3)
-      * array flag: '1'=yes, '0'=no
-     d     arr_flag                    n
-      * number of array elements
-     d     arr_elem                  10u 0
-      * array element offset (AEO)
-     d     aeo                        5u 0
-      * lower bound of array
-     d     arr_lb                    10i 0
-      * upper bound of array
-     d     arr_ub                    10i 0
-      * based on ODT reference
-     d     base_odt                   5u 0
-      * position value, start from 1
-     d     pos_val                   10u 0
-
-      * init-val appendages
-
-      * use replication format or not
-     d     rep_fmt_flag...
-     d                                 n
-      * offset to init-value "OR" rep-fmt-data
-     d     init_val_off...
-     d                               10u 0
-      * length of init-value "OR" rep-fmt-data
-     d     init_val_len...
-     d                               10u 0
-
-     /**
       * @BIF _MATPG (Materialize Program (MATPG))
       *
       * @attention This instruction does not process teraspace addresses ...

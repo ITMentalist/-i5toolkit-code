@@ -1,0 +1,85 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ *
+ * Copyright (C) 2010  Junlei Li.
+ *
+ * i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file mip-h.emi
+ *
+ * SPC objects for subproject MIP.
+ */
+
+/ifndef __mip_h__               ;
+/define __mip_h__               ;
+
+dcl spc matpg-t bas(*)                              ;
+        dcl dd matpg.bytes-in   bin(4)          dir ;
+        dcl dd matpg.bytes-out  bin(4)          dir ;
+        dcl dd matpg.pgm-id     char(32)        dir ;
+        dcl dd matpg.pgm-type           char(2) def(matpg.pgm-id) pos(1) ;
+        dcl dd matpg.pgm-name           char(30) def(matpg.pgm-id) pos(3) ;
+        dcl dd matpg.crt-opt    char(4)         dir ;
+        dcl dd *                char(4)         dir ;
+        dcl dd matpg.spc-size   bin(4)          dir ;
+        dcl dd matpg.spc-init-val char(1)       dir ;
+        dcl dd matpg.perf-cls   char(4)         dir ;
+        dcl dd *                char(7)         dir ;
+        dcl sysptr matpg.ctx                    dir ;
+        dcl sysptr matpg.ag                     dir ;
+        dcl dd matpg.pgm-attr   char(2)         dir ;
+        dcl dd matpg.gen_opt    char(1)         dir ;
+        dcl dd matpg.obsv_attr  char(1)         dir ;
+        dcl dd matpg.ss_size    bin(4) unsgnd   dir ; /* size of static storage */
+        dcl dd matpg.as_size    bin(4) unsgnd   dir ; /* size of automatic storage */
+        dcl dd matpg.num_inst1  bin(2) unsgnd   dir ; /* number of instructions (1). for version number x'0000' */
+        dcl dd matpg.num_odv1   bin(2)          dir ; /* number of ODV entries (1). for version number x'0000' */
+        dcl dd matpg.inss_off   bin(4)          dir ; /* offset (in bytes) from beginning of template to the instruction stream component */
+        dcl dd matpg.odv_off    bin(4)          dir ; /* odv offset */
+        dcl dd matpg.oes_off    bin(4)          dir ; /* oes offset */
+        dcl dd matpg.bome_len   bin(4)          dir ; /* length of BOM entry */
+        dcl dd matpg.bom_len    bin(4)          dir ; /* length of BOM component */
+        dcl dd matpg.bom_off    bin(4)          dir ; /* bom offset */
+        dcl dd matpg.symtble_len bin(4)         dir ; /* length of symbol table entry */
+        dcl dd matpg.symtbl_len bin(4)          dir ; /* length of symbol component */
+        dcl dd matpg.symtbl_off bin(4)          dir ; /* symbol table offset */
+        dcl dd matpg.omt_off    bin(4)          dir ; /* omt offset */
+        dcl dd matpg.num_inst2  bin(4)          dir ; /* number of instructions (2). for version number x'0001' */
+        dcl dd matpg.num_odv2   bin(4)          dir ; /* number of ODV entries (2). for version number x'0001' */
+        /* template extension */
+        dcl dd matpg.expgm-attr char(4)         dir ; /* extended program attributes */
+        dcl dd matpg.lang_vrm   char(2)         dir ; /* language VRM. V/R/M: bits 4-7/8-11/12-15 */
+        dcl dd matpg.bom_flags  char(1)         dir ; /* bit 0: BOM format. bits 1-7: user data5A. */
+        dcl dd matpg.udata5b    char(7)         dir ; /* user data5B */
+        dcl dd matpg.pgm_vrm    char(2)         dir ; /* program VRM. */
+        dcl dd matpg.retrns     char(1)         dir ; /* bit 0 = 1, All data required for machine retranslation is present. */
+        dcl dd *                char(47)        dir ; /* reserved (binary 0) */
+        /*
+         * Program data
+         *    Instruction stream component
+         *    ODV component
+         *    OES component
+         * BOM table
+         * Symbol table
+         * Object mapping table
+         */
+
+/endif                          ;
+/* !defined __mip_h__ */
+	
+/**
+ * Attribute receiver template for MATPG
+ */
