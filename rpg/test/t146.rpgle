@@ -13,6 +13,7 @@
 
      d i_t146          pr                  extpgm('T146')
      d    pgm_name                   10a
+     d    pgm_type                    2a
 
      d rcv             ds                  likeds(matpg_tmpl_t)
      d                                     based(bufptr)
@@ -38,9 +39,18 @@
 
      d i_t146          pi
      d     pgm_name                  10a
+     d     pgm_type                   2a
+
+     d obj_type        s              2a
 
       /free
-           rslvsp_tmpl.obj_type = x'0201';
+           if %parms() > 1;
+               obj_type = pgm_type;
+           else;
+               obj_type = x'0201';
+           endif;
+
+           rslvsp_tmpl.obj_type = obj_type;
            rslvsp_tmpl.obj_name = pgm_name;
            rslvsp2(pgmptr : rslvsp_tmpl);
 
