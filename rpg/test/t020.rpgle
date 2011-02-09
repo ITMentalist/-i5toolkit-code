@@ -50,7 +50,7 @@
                                    // bit 6 = 1, Floating-point invalid operand
 
            // clear exception masks to suppress all floating-point exceptions
-           setca(x'00000000' : x'00000008');
+           setca(x'00000000' : x'08');
            f1 /= f2;
            dsply 'after setca()';  // no floating-point exception detected!
 

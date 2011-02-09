@@ -4,6 +4,10 @@
       * Test of _MATPG. Materialize HLL symbol table.
       *
       * @param[in] pgm-name, CHAR(10)
+      * @param[in] pgm-type, CHAR(20. MI object type of pgm-name.
+      *            e.g. x'0201', x'0202', ...
+      *
+      * @attention Note that *SQLPKGs are in the system domain.
       */
      h dftactgrp(*no)
 

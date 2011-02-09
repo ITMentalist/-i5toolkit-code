@@ -26,6 +26,9 @@
 /ifndef __mip_h__               ;
 /define __mip_h__               ;
 
+/**
+ * Materialization template for instruction MATPG.
+ */
 dcl spc matpg-t bas(*)                              ;
         dcl dd matpg?bytes-in   bin(4)          dir ;
         dcl dd matpg?bytes-out  bin(4)          dir ;
@@ -79,7 +82,3 @@ dcl spc matpg-t bas(*)                              ;
 
 /endif                          ;
 /* !defined __mip_h__ */
-	
-/**
- * Attribute receiver template for MATPG
- */
