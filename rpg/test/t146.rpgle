@@ -4,7 +4,7 @@
       * Test of _MATPG. Materialize HLL symbol table.
       *
       * @param[in] pgm-name, CHAR(10)
-      * @param[in] pgm-type, CHAR(20. MI object type of pgm-name.
+      * @param[in] pgm-type, CHAR(2). MI object type of pgm-name.
       *            e.g. x'0201', x'0202', ...
       *
       * @attention Note that *SQLPKGs are in the system domain.
@@ -46,6 +46,8 @@
      d     pgm_type                   2a
 
      d obj_type        s              2a
+     d bptr            s               *
+     d b               s            256a   based(bptr)
 
       /free
            if %parms() > 1;
@@ -116,6 +118,11 @@
 
                except LSTREC;
 
+               if sym.next_entry_offset <> -1;
+                   bptr = sym_start + sym.next_entry_offset;
+                   // check b
+               endif;
+
                pos += 4; // next hash bucket
            endfor;
 
@@ -175,6 +182,7 @@
       * 74                  *YEAR           Source
       * 81                  M.UDAY          Source
       *           146       *TERM           Source
+      * 84                  M.*DATE         Source
       * 
       * > call t146 t142cl
       * HLL Symobl Table

@@ -93,7 +93,7 @@
            an = yes_or_no(rcv.obsv_attr:6:0);
            except OBVREC;
 
-           // Old format BOM
+           // is old format BOM?
            if tstbts(%addr(rcv.bom_flags):0) > 0;
                *inlr = *on;
                return;

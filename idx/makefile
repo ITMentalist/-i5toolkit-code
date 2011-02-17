@@ -1,6 +1,6 @@
 # This file is part of i5/OS Programmer's Toolkit.
 # 
-# Copyright (C) 2010  Junlei Li (李君磊).
+# Copyright (C) 2010, 2011  Junlei Li (李君磊).
 # 
 # i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,7 +16,7 @@
 # along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
 
 #
-# makefile of mic
+# makefile of index tools
 #
 
 MIFLAGS=INCDIR('.')
@@ -26,7 +26,7 @@ MAKERULES=rules.mk
 TARGETS=dspidxd rtvidxd insidx dspidxd.cmd insidx.cmd dspidxd.pnlgrp
 
 all: $(TARGETS)
-	@echo "compilation done -- rpg"
+	@echo "compilation done -- idx"
 
 dspidxd.cmd: dspidxd.cl-cmd idxhlp.pnlgrp
 	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \

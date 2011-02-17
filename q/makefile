@@ -1,6 +1,6 @@
 # This file is part of i5/OS Programmer's Toolkit.
 # 
-# Copyright (C) 2010  Junlei Li (李君磊).
+# Copyright (C) 2010, 2011  Junlei Li.
 # 
 # i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -16,43 +16,41 @@
 # along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
 
 #
-# makefile of q tools
-#
-# to make program object, type: make
-# to make panel groups and CL commands, type: make uim_cmd
-# to 
+# makefile of subproject queue tools
 #
 
-MAKER=LSBIN/RUNSH
-HOST=g525
-RP=/home/ljl/chqs/q
-HOSTCMD=rexec $(HOST)
-BINLIB=I5TOOLKIT
+MIFLAGS=INCDIR('.' '../ref')
+CRTPNLGRPFLAGS=INCFILE(QGPL/I5TOOLSRC)
 
-all: check-source upload compile
-	echo "end of compilation :o:"
+BIN_LIB=
+MAKERULES=rules.mk
+TARGETS=qattr qmsg enqk32 enqk5 dspusrqmsg dspdtaqmsg enqk64 qmdtl clrusrq \
+	enqusrq dequsrq \
+	dspqathlp.pnlgrp dspqat.pnlgrp dspqm.pnlgrp \
+	dspqd.cmd dspqmsg.cmd clrusrq.cmd enqusrq.cmd
 
-check-source:
-	bash check-tab.sh *.mi
+all: $(TARGETS)
+	@echo "compilation done -- q"
 
-upload:
-	ls *mi qmakefile | env WN_REMOTE_PATH=$(RP) WN_HOST=$(HOST) wn
+dspqd.cmd: dspqathlp.pnlgrp dspqat.pnlgrp
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
+parm('PGM($(BIN_LIB)/QATTR) HLPPNLGRP($(BIN_LIB)/dspqathlp) HLPID(''HLP/ABT'')')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
-compile:
-	$(HOSTCMD) "CALL PGM($(MAKER)) PARM('00037' 'cd $(RP); export OS400=yes OUTPUTDIR=$(BINLIB); gmake -fqmakefile')"
+dspqmsg.cmd: dspqathlp.pnlgrp dspqm.pnlgrp
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
+parm('PGM($(BIN_LIB)/QMSG) HLPPNLGRP($(BIN_LIB)/dspqathlp) HLPID(''HLP/ABTQM'')')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
+
+clrusrq.cmd: dspqathlp.pnlgrp
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
+parm('PGM($(BIN_LIB)/CLRUSRQ) HLPPNLGRP($(BIN_LIB)/dspqathlp) HLPID(''HLP/CLQ'')')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
+
+enqusrq.cmd: dspqathlp.pnlgrp
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
+parm('PGM($(BIN_LIB)/ENQUSRQ) HLPPNLGRP($(BIN_LIB)/dspqathlp) HLPID(''HLP/ENQ'')')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
 clean:
-	$(HOSTCMD) "CALL PGM($(MAKER)) PARM('00037' 'cd $(RP); export OS400=yes OUTPUTDIR=$(BINLIB); gmake -fqmakefile clean')"
-
-uim_cmd:
-	$(HOSTCMD) "CRTPNLGRP PNLGRP(I5TOOLKIT/DSPQATHLP) SRCFILE(LS2008/DEC) SRCMBR(*PNLGRP) INCFILE(*SRCFILE) REPLACE(*YES)"
-	$(HOSTCMD) "CRTPNLGRP PNLGRP(I5TOOLKIT/DSPQAT) SRCFILE(LS2008/DEC) SRCMBR(*PNLGRP) INCFILE(*SRCFILE) REPLACE(*YES)"
-	$(HOSTCMD) "CRTPNLGRP PNLGRP(I5TOOLKIT/DSPQM) SRCFILE(LS2008/DEC) SRCMBR(*PNLGRP) INCFILE(*SRCFILE) REPLACE(*YES)"
-	$(HOSTCMD) "CRTCMD CMD(I5TOOLKIT/DSPQD) PGM(I5TOOLKIT/QATTR) SRCFILE(LS2008/DEC) SRCMBR(*CMD) MODE(*ALL) ALLOW(*ALL) HLPPNLGRP(I5TOOLKIT/DSPQATHLP) HLPID('HELP/ABT')"
-	$(HOSTCMD) "CRTCMD CMD(I5TOOLKIT/DSPQMSG) PGM(I5TOOLKIT/QMSG) SRCFILE(LS2008/DEC) SRCMBR(*CMD) MODE(*ALL) ALLOW(*ALL) HLPPNLGRP(I5TOOLKIT/DSPQATHLP) HLPID('HELP/ABTQM')"
-	$(HOSTCMD) "CRTCMD CMD(I5TOOLKIT/CLRUSRQ) PGM(I5TOOLKIT/CLRUSRQ) SRCFILE(LS2008/DEC) SRCMBR(*CMD) MODE(*ALL) ALLOW(*ALL) HLPPNLGRP(I5TOOLKIT/DSPQATHLP) HLPID('HLP/CLQ')"
-	$(HOSTCMD) "CRTCMD CMD(I5TOOLKIT/ENQUSRQ) PGM(I5TOOLKIT/ENQUSRQ) SRCFILE(LS2008/DEC) SRCMBR(*CMD) MODE(*ALL) ALLOW(*ALL) HLPPNLGRP(I5TOOLKIT/DSPQATHLP) HLPID('HLP/ENQ')"
-
-pkg:
-	$(HOSTCMD) "STRQSH CMD('chown -R QDFTOWN /qsys.lib/i5toolkit.lib')"
-	@echo "Now, save library $(BINLIB) and download it."
+	qsh -c "/usr/bin/rmflnk $(TARGETS)"

@@ -1,7 +1,7 @@
 /**
  * This file is part of i5/OS Programmer's Toolkit.
  *
- * Copyright (C) 2010  Junlei Li.
+ * Copyright (C) 2010, 2011  Junlei Li.
  *
  * i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -65,7 +65,7 @@ dcl spc matpg-t bas(*)                              ;
         /* template extension */
         dcl dd matpg?expgm-attr char(4)         dir ; /* extended program attributes */
         dcl dd matpg?lang-vrm   char(2)         dir ; /* language VRM. V/R/M: bits 4-7/8-11/12-15 */
-        dcl dd matpg?bom-flags  char(1)         dir ; /* bit 0: BOM format. bits 1-7: user data5A. */
+        dcl dd matpg?bom-flag   char(1)         dir ; /* bit 0: BOM format. bits 1-7: user data5A. */
         dcl dd matpg?udata5b    char(7)         dir ; /* user data5B */
         dcl dd matpg?pgm-vrm    char(2)         dir ; /* program VRM. */
         dcl dd matpg?retrns     char(1)         dir ; /* bit 0 = 1, All data required for machine retranslation is present. */
@@ -79,6 +79,71 @@ dcl spc matpg-t bas(*)                              ;
          * Symbol table
          * Object mapping table
          */
+
+/**
+ * hashing table of a symbol table component
+ */
+dcl spc symtbl-hash-t bas(*)    ;
+        /* Number of hash buckets */
+        dcl dd symtbl-hash?num-buckets bin(4) dir ;
+        /*
+         * Each hash bucket contains an offset to the first symbol
+         * table base segment entry of the chain. This offset is from
+         * the beginning of the symbol table. The end of the chain has
+         * a -1 value.
+         */
+        dcl dd symtbl-hash?buckets(1000) bin(4) dir ;
+
+/**
+ * symbol table base segment
+ */
+dcl spc symtbl-base-t bas(*)    ;
+        /* Offset to next entry from beginning of the table. The end of the chain has a -1 value. */
+        dcl dd symtbl-base?next-entry-offset bin(4) dir ;
+        /* ODT or MI number */
+        dcl dd symtbl-base?num bin(2) dir ;
+        /*
+         * bit 0. Instruction or ODT number
+         *  0 = MI instruction number. This also means the symbol is the name of a LABEL in the program template.
+         *  1 = ODT number. The symbol is the name of an ODT object.
+         * bit 1. Symbol origin
+         *  0 = Compiler generated
+         *  1 = Source program
+         */ 
+        dcl dd symtbl-base?flag char(1) dir ;
+        dcl dd symtbl-base?len  char(1) dir ;
+        dcl dd symtbl-base?name char(15) dir ;
+
+/**
+ * Old BOM format
+ *
+ * @remark In the old BOM format, it 0 of field bome0?mi-inst is used
+ *         as the format flag that indicates whether the HLL statement
+ *         number is in character format or in numeric format.
+ */
+dcl spc bom-entry0-t bas(*)     ;
+        /*
+         * bit 0. Format flag.
+         *  0 = HLL statement number is in character format
+         *  1 = HLL statement number is in numeric format
+         */
+        dcl dd bome0?mi-inst bin(2) unsgnd dir ;
+        dcl dd bome0?hll-stmt-str char(10) dir ;
+        dcl dd bome0?hll-stmt-num bin(2) def(bome0?hll-stmt-str) ;
+
+/**
+ * New BOM format
+ */
+dcl spc bom-entry1-t bas(*)     ;
+        dcl dd bome1?mi-inst bin(2) unsgnd dir ;
+        /*
+         * bit 0. Format flag.
+         *  0 = HLL statement number is in character format
+         *  1 = HLL statement number is in numeric format
+         */
+        dcl dd bome1?fmt char(1) dir      ;
+        dcl dd bome1?hll-stmt-str char(10) dir ;
+        dcl dd bome1?hll-stmt-num bin(2) def(bome1?hll-stmt-str) ;
 
 /endif                          ;
 /* !defined __mip_h__ */
