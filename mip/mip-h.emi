@@ -127,23 +127,57 @@ dcl spc bom-entry0-t bas(*)     ;
          *  0 = HLL statement number is in character format
          *  1 = HLL statement number is in numeric format
          */
-        dcl dd bome0?mi-inst bin(2) unsgnd dir ;
-        dcl dd bome0?hll-stmt-str char(10) dir ;
-        dcl dd bome0?hll-stmt-num bin(2) def(bome0?hll-stmt-str) ;
+        dcl dd bom0?mi-inst bin(2) unsgnd dir ;
+        dcl dd bom0?hll-stmt-str char(10) dir ;
+        dcl dd bom0?hll-stmt-num bin(2) def(bom0?hll-stmt-str) ;
 
 /**
  * New BOM format
  */
 dcl spc bom-entry1-t bas(*)     ;
-        dcl dd bome1?mi-inst bin(2) unsgnd dir ;
+        dcl dd bom1?mi-inst bin(2) unsgnd dir ;
         /*
          * bit 0. Format flag.
          *  0 = HLL statement number is in character format
          *  1 = HLL statement number is in numeric format
          */
-        dcl dd bome1?fmt char(1) dir      ;
-        dcl dd bome1?hll-stmt-str char(10) dir ;
-        dcl dd bome1?hll-stmt-num bin(2) def(bome1?hll-stmt-str) ;
+        dcl dd bom1?fmt char(1) dir      ;
+        dcl dd bom1?hll-stmt-str char(10) dir ;
+        dcl dd bom1?hll-stmt-num bin(2) def(bom1?hll-stmt-str) ;
+
+/**
+ * OMT entry
+ */
+dcl spc omt-entry-t bas(*)      ;
+        /*
+         * base addressability type
+         *  hex 00 = based on an static storage area
+         *  hex 01 = based on an automatic storage area
+         *  hex 02 = based on a space pointer
+         *  hex 03 = based on a parameter
+         *  hex 04 = based on the PCO object
+         *  hex FF = base addressability not provided
+         */
+        dcl dd omt?addr-type char(1) dir ;
+        /*
+         * For types hex 00, hex 01, hex 02, hex 03, and hex 04, this
+         * is a 3-byte logical binary value representing the offset to
+         * the object from the base addressability. For type hex FF,
+         * the value is binary 0.
+         */
+        dcl dd omt?offset char(3) dir    ;
+        /*
+         * For types hex 02 and hex 03, this is a 2-byte binary field
+         * containing the number of the OMT entry for the space
+         * pointer or a parameter that provides base addressability
+         * for this object.
+         */
+        dcl dd omt?num-basee bin(2) dir  ;
+
+/**
+ * Length of an OMT entry is 6 bytes.
+ */
+dcl con omt-entry-len bin(2) init(6) ;
 
 /endif                          ;
 /* !defined __mip_h__ */

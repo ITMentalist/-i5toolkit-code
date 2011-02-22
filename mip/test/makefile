@@ -23,7 +23,7 @@
 
 BIN_LIB=i5toolkit
 MAKERULES=../rules.mk
-TARGETS=tmip01 tmip02 tmip03
+TARGETS=tmip01 tmip02 tmip03 tmip04
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir mip."

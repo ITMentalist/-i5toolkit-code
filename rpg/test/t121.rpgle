@@ -69,8 +69,7 @@
            if offset > 0;
                eoff = offset - 1;
                pos = ssf_ptr + offset - 1;
-               dsply 'export' '' nail_str;
-               dsply 'export' '' i_static;
+               dsply nail_str '' i_static;
            endif;
 
            // find lstr
@@ -78,8 +77,7 @@
            if offset > 0;
                loff = offset - 1;
                pos = ssf_ptr + offset - 1;
-               dsply 'local static' '' nail_str;
-               dsply 'local static' '' i_static;
+               dsply nail_str '' i_static;
            endif;
 
            // find good wishes
@@ -87,8 +85,7 @@
            if offset > 0;
                coff = offset - 1;
                pos = ssf_ptr + offset - 1;
-               dsply 'common' '' nail_str;
-               dsply 'common' '' i_static;
+               dsply nail_str '' i_static;
            endif;
 
            // RINZSTAT
@@ -97,18 +94,16 @@
            rinzstat(rinz_tmpl);
 
            pos = ssf_ptr + eoff;
-           dsply 'export' '' nail_str;
-           dsply 'export' '' i_static;
+           dsply nail_str '' i_static;
              // exported static vars are resetted by RINZSTAT
 
            pos = ssf_ptr + loff;
-           dsply 'local static' '' nail_str;
-           dsply 'local static' '' i_static;
+           dsply nail_str '' i_static;
              // local static vars can NOT be resetted by RINZSTAT
 
            pos = ssf_ptr + coff;
-           dsply 'common' '' nail_str;
-           dsply 'common' '' i_static;
+           dsply nail_str
+             '' i_static;
              // common static vars can NOT be resetted by RINZSTAT
 
            *inlr = *on;

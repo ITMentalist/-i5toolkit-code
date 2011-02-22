@@ -47,15 +47,15 @@ dcl dd new-bom-fmt char(1) auto ;
           / nzer(new-bom-fmt) ;
 
         /* determin length of a BOM entry */
-dcl dd bome-len bin(2) auto     ;
+dcl dd bom-len bin(2) auto     ;
         cmpbla(b) new-bom-fmt, '1'
           / eq(=+3) ;
-        addn(s) bome-len, 2     ;
+        addn(s) bom-len, 2     ;
         b =+2                   ;
 :
-        addn(s) bome-len, 3     ;
+        addn(s) bom-len, 3     ;
 :
-        addn(s) bome-len, p->matpg?bome-len ;
+        addn(s) bom-len, p->matpg?bom-len ;
 
         /* locate the BOM component */
 dcl spcptr pos auto             ;
@@ -68,20 +68,20 @@ bom-loop:
 dcl dd char-fmt char(1) auto    ;
         cmpbla(b) new-bom-fmt, '1'
           / eq(=+3)             ;
-        tstbts(i) pos->bome0?mi-inst, 0
+        tstbts(i) pos->bom0?mi-inst, 0
           / eq(char-fmt)      ; /* old BOM format */
         b =+2                   ;
 :
-        tstbts(i) pos->bome1?fmt, 0
+        tstbts(i) pos->bom1?fmt, 0
           / eq(char-fmt)        ;
 :
         /* print a BOM entry */
         calli print-bom-entry, *, print-bom-entry-ptr ;
 
-        addn(s) n, bome-len     ;
+        addn(s) n, bom-len     ;
         cmpnv(b) n, p->matpg?bom-len
           / nlo(end-bom-loop)   ;
-        addspp pos, pos, bome-len ;
+        addspp pos, pos, bom-len ;
         b bom-loop              ;
 end-bom-loop:       
 
@@ -97,7 +97,7 @@ dcl dd msg char(64) auto        ;
 /**
  * print-bom-entry
  *
- * @pre char-fmt, pos, p->matpg?bome-len
+ * @pre char-fmt, pos, p->matpg?bom-len
  */
 dcl insptr print-bom-entry-ptr auto ;
 entry print-bom-entry int           ;
@@ -110,13 +110,13 @@ dcl spcptr msg-bkp-ptr auto                  ;
 
         cmpbla(b) new-bom-fmt, '1'
           / eq(=+5)             ;
-        setspp hll-stmt-ptr, pos->bome0?hll-stmt-str ;
-        clrbts pos->bome0?mi-inst, 0                 ;
-        cpynv msg-inst, pos->bome0?mi-inst           ;
+        setspp hll-stmt-ptr, pos->bom0?hll-stmt-str ;
+        clrbts pos->bom0?mi-inst, 0                 ;
+        cpynv msg-inst, pos->bom0?mi-inst           ;
         b =+3                   ;
 :
-        setspp hll-stmt-ptr, pos->bome1?hll-stmt-str ;
-        cpynv msg-inst, pos->bome1?mi-inst           ;
+        setspp hll-stmt-ptr, pos->bom1?hll-stmt-str ;
+        cpynv msg-inst, pos->bom1?mi-inst           ;
 :
         /* breakpoint name or number */
         cmpbla(b) char-fmt, '1'
@@ -124,7 +124,7 @@ dcl spcptr msg-bkp-ptr auto                  ;
         setspp msg-bkp-ptr, msg-bkp ;
         %memcpy(msg-bkp-ptr,
                 hll-stmt-ptr,
-                p->matpg?bome-len) ;
+                p->matpg?bom-len) ;
         b end-bkp         ;
 numeric-bkp:
         cvthc msg-bkp, hll-stmt-num ;
