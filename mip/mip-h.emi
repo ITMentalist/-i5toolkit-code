@@ -179,5 +179,15 @@ dcl spc omt-entry-t bas(*)      ;
  */
 dcl con omt-entry-len bin(2) init(6) ;
 
+/**
+ * ODV entry
+ */
+dcl spc odv-entry-t bas(*)      ;
+        dcl dd odv?hi char(2) dir ;
+        dcl dd odv?lo char(2) dir ;
+        dcl dd odv?scalar-len bin(2) unsgnd def(odv?lo) pos(1) ;
+        dcl dd odv?inst-num bin(2) unsgnd def(odv?lo) pos(1)   ;
+        dcl dd odv?oes-off bin(2) unsgnd def(odv?lo) pos(1)    ;
+
 /endif                          ;
 /* !defined __mip_h__ */

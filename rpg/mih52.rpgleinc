@@ -1645,7 +1645,10 @@
      d     hi                         2a
      d     lo                         2a
      d     oes_offset                 5u 0 overlay(lo)
+      * scalar length
      d     scalar_len                 2a   overlay(lo)
+      * MI instruction number
+     d     inst_num                   5u 0 overlay(lo)
 
      /**
       * OMT entry
