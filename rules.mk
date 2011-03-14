@@ -17,7 +17,8 @@
 # 
 
 .SUFFIXES: .rpg .rpgle .c .cpp .clp .clle .cmd .cl-cmd .module .pf .lf .file \
-	.mi .emi .uim .pnlgrp
+	.mi .emi .uim .pnlgrp \
+	.cbl .cblle
 
 #PRESET VARIABLES
 MAKE=make
@@ -77,3 +78,13 @@ MAKE=make
 .uim.pnlgrp:
 	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTPNLGRP) srcstmf('$<') parm('$(CRTPNLGRPFLAGS)')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.pnlgrp" $*.pnlgrp
+
+.cblle:
+	system "crtbndcbl $(BIN_LIB)/$@ srcstmf('$<') $(CBLLEFLAGS)"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$@.pgm" $@
+.cblle.module:
+	system "crtcblmod $(BIN_LIB)/$* srcstmf('$<') $(CBLLEFLAGS)"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.module" $*.module
+.cbl:
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$@) cmd(CRTCBLPGM) srcstmf('$<') parm('$(CBLFLAGS)')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$@.pgm" $@

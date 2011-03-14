@@ -25,7 +25,10 @@
       */
 
      h dftactgrp(*no)
-      /copy mih52
+
+      /copy mih-comp
+      /copy mih-pgmexec
+      /copy mih-ctx
 
       * SPCPTR to receiver
      d rcv_ptr         s               *

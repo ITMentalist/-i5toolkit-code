@@ -30,6 +30,7 @@
      h dftactgrp(*no)
 
       /copy mih52
+
      d ptr             s               *
       * LENR lock
      d request         s              1a   inz(x'08')

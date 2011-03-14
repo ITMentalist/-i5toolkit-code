@@ -24,7 +24,10 @@
       */
 
      h dftactgrp(*no)
-      /copy mih52
+
+      /copy mih-comp
+      /copy mih-pgmexec
+      /copy mih-heap
 
      d heap_id         s             10i 0
      d ptr             s               *
@@ -49,9 +52,7 @@
 
            // create AG based-heap
            crt_tmpl_ptr = modasa(crths_tmpl_len);
-           propb(crt_tmpl_ptr : x'00' : 96);
-           crt_tmpl_ptr = modasa(96);
-           propb(crt_tmpl_ptr : x'00' : 96);
+           crt_tmpl = *allx'00';
            crt_tmpl.max_alloc  = x'FFF000';  // 16M - 1 page
            crt_tmpl.min_bdry   = 16;
            crt_tmpl.crt_size   = 0;

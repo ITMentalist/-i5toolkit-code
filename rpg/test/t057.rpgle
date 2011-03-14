@@ -27,7 +27,9 @@
      h  dftactgrp(*no)
       /endif
 
-      /copy mih52
+      /copy mih-comp
+      /copy mih-inx
+
      d tmpl            ds                  likeds(crtinx_tmpl_t)
      d                                     based(tmpl_ptr)
      d tmpl_ptr        s               *

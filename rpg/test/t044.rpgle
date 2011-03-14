@@ -27,7 +27,9 @@
      h dftactgrp(*no)
       /endif
 
-      /copy mih52
+      /copy mih-ptr
+      /copy mih-dtaptr
+
      d attr            s              7a   inz(x'09000700000000')
      d val             s             18a   inz('abcdefghijklmn')
      d ptr             s               *

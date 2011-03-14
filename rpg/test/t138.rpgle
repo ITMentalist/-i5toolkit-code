@@ -25,7 +25,9 @@
 
      h dftactgrp(*no)
 
-      /copy mih52
+      /copy mih-ptr
+      /copy mih-mchobs
+
      d len             s             10i 0
      d tmpl            ds                  likeds(matsobj_tmpl_t)
      d pgm_obj         s               *

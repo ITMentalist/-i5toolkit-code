@@ -1,4 +1,23 @@
      /**
+      * This file is part of i5/OS Programmer's Toolkit.
+      * 
+      * Copyright (C) 2010, 2011  Junlei Li.
+      * 
+      * i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+      * it under the terms of the GNU General Public License as published by
+      * the Free Software Foundation, either version 3 of the License, or
+      * (at your option) any later version.
+      * 
+      * i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+      * but WITHOUT ANY WARRANTY; without even the implied warranty of
+      * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      * GNU General Public License for more details.
+      * 
+      * You should have received a copy of the GNU General Public License
+      * along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+      */
+
+     /**
       * @file t146.rpgle
       *
       * Test of _MATPG. Materialize HLL symbol table.
@@ -40,14 +59,15 @@
      d                 ds
      d sym_len                        5u 0
      d sym_len_lo                     1a   overlay(sym_len:2)
+     d obj_type        s              2a
+
+      * @pre sym_ptr
+     d parse_symbol_entry...
+     d                 pr
 
      d i_t146          pi
      d     pgm_name                  10a
      d     pgm_type                   2a
-
-     d obj_type        s              2a
-     d bptr            s               *
-     d b               s            256a   based(bptr)
 
       /free
            if %parms() > 1;
@@ -97,6 +117,28 @@
                endif;
 
                sym_ptr = sym_start + bucket;
+               parse_symbol_entry();
+
+               pos += 4; // next hash bucket
+           endfor;
+
+           *inlr = *on;
+      /end-free
+
+     oQSYSPRT   e   nLR      OBVREC
+     o                       msg
+
+     oQSYSPRT   e   nLR      LSTREC
+     o                       lst_fld1
+     o                       lst_fld2
+     o                       lst_fld3
+     o                       lst_fld4
+
+     p parse_symbol_entry...
+     p                 b
+     d                 pi
+
+      /free
                if tstbts(%addr(sym.flag) : 0) = 0; // sym.num is an MI instruction number
                    lst_fld1 = *blanks;
                    lst_fld2 = %char(sym.num);
@@ -118,25 +160,16 @@
 
                except LSTREC;
 
+               // locate next entry in the current chain
                if sym.next_entry_offset <> -1;
-                   bptr = sym_start + sym.next_entry_offset;
-                   // check b
+                   sym_ptr = sym_start + sym.next_entry_offset;
+                   parse_symbol_entry();
                endif;
 
-               pos += 4; // next hash bucket
-           endfor;
-
-           *inlr = *on;
       /end-free
 
-     oQSYSPRT   e   nLR      OBVREC
-     o                       msg
-
-     oQSYSPRT   e   nLR      LSTREC
-     o                       lst_fld1
-     o                       lst_fld2
-     o                       lst_fld3
-     o                       lst_fld4
+     p parse_symbol_entry...
+     p                 e
 
      /**
       * examples:
@@ -183,7 +216,7 @@
       * 81                  M.UDAY          Source
       *           146       *TERM           Source
       * 84                  M.*DATE         Source
-      * 
+      *
       * > call t146 t142cl
       * HLL Symobl Table
       * Program name: T142CL
@@ -193,7 +226,7 @@
       * 24                  &PRM2           Source
       * 27                  &STR            Source
       * 26                  &MSGPTR         Source
-      * 
+      *
       * > call t146 spr77
       * HLL Symobl Table
       * Program name: SPR77

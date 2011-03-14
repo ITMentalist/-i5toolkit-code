@@ -25,7 +25,9 @@
 
      h dftactgrp(*no)
 
-      /copy mih52
+      /copy mih-comp
+      /copy mih-ptr
+      /copy mih-auth
 
      d tmpl            ds                  likeds(matau_tmpl_t)
      d opt             ds                  likeds(matau_option_t)

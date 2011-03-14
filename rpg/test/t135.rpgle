@@ -25,7 +25,10 @@
 
      h dftactgrp(*no)
 
-      /copy mih52
+      /copy mih-ptr
+      /copy mih-comp
+      /copy mih-spc
+
      d uept            s               *
      d tmpl            ds                  likeds(mats_tmpl_t)
      d mod_tmpl        ds                  likeds(mods_tmpl_t)

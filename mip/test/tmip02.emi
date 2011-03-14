@@ -1,4 +1,23 @@
 /**
+ * This file is part of i5/OS Programmer's Toolkit.
+ *
+ * Copyright (C) 2010, 2011  Junlei Li.
+ *
+ * i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+/**
  * @file tmip02.emi
  *
  * Test of SPC objects: symtbl-hash-t, and symtbl-base-t.
@@ -57,10 +76,12 @@ loop-sym:
         addspp sym, symtbl-start, hash->symtbl-hash?buckets(inx) ;
         calli dsp-symbol, *, dsp-symbol-ptr ;
 
-        /* has next entry? */
+is-end-of-chain:        
+        /* is the end of chain? */
         cmpnv(b) sym->symtbl-base?next-entry-offset, -1 / eq(next-bucket) ;
         addspp sym, symtbl-start, sym->symtbl-base?next-entry-offset ;
         calli dsp-symbol, *, dsp-symbol-ptr ;
+        b is-end-of-chain                   ; /* try to locate next entry in the current chain */
 next-bucket:       
 
 brk "WHERE"                     ;

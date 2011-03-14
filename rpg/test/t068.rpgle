@@ -24,7 +24,8 @@
       */
      h dftactgrp(*no)
 
-      /copy mih52
+      /copy mih-comp
+      /copy mih-dattim
 
       * user code
      d tmpl            ds                  likeds(

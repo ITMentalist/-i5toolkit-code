@@ -24,7 +24,8 @@
       */
 
      h dftactgrp(*no)
-      /copy mih52
+
+      /copy mih-prcthd
 
      d pco_ptr         s               *
      d pco             ds                  qualified

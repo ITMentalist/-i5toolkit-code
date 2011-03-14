@@ -28,7 +28,10 @@
       /endif
      h bnddir('QC2LE')
 
-      /copy mih52
+      /copy mih-comp
+      /copy mih-ptr
+      /copy mih-mutex
+
      d cvthc           pr                  extproc('cvthc')
      d     receiver                    *   value
      d     source                      *   value

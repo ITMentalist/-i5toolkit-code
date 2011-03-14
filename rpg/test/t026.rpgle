@@ -26,7 +26,9 @@
       */
 
      h dftactgrp(*no)
-      /copy mih52
+
+      /copy mih-ptr
+      /copy mih-q
 
      d q               s               *
      d prefix          ds                  likeds(deq_prefix_t)

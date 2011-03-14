@@ -24,7 +24,8 @@
       */
      h dftactgrp(*no)
 
-      /copy mih54
+      /copy mih-stgsync
+
      d a               s             10i 0 inz(7)
 
       /free

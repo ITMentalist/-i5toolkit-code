@@ -24,7 +24,8 @@
       */
 
      h dftactgrp(*no)
-      /copy mih54
+
+      /copy mih-comp
 
      d f               s              8f
 

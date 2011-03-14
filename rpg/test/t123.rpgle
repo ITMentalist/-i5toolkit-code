@@ -31,7 +31,10 @@
       /end-free
 
      p who_am_i        b
-      /copy mih52
+
+      /copy mih-pgmexec
+      /copy mih-ptr
+
      d inv_id          ds                  likeds(invocation_id_t)
      d susptr_info     ds                  likeds(matinvat_ptr_t)
      d sel             ds                  likeds(matinvat_selection_t)

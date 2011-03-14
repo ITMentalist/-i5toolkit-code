@@ -1,0 +1,18 @@
+     /**
+      * @file cbl001.cblle
+      */
+
+       ID DIVISION.
+       PROGRAM-ID. CBL001.
+
+       DATA DIVISION.
+       WORKING-STORAGE SECTION.
+       01 MSG PIC X(64).
+
+       PROCEDURE DIVISION.
+       MAIN-PGM.
+           MOVE "Subproject SYSBIF for COBOL launched."
+             TO MSG.
+           DISPLAY MSG.
+           STOP RUN.
+       END-PROGRAM.

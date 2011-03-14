@@ -27,7 +27,7 @@
      h dftactgrp(*no)
       /endif
 
-      /copy mih52
+      /copy mih-undoc
 
       * space pointer
      d ept_ptr         s               *

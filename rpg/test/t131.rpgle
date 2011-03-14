@@ -25,7 +25,10 @@
 
      h dftactgrp(*no)
 
-      /copy mih52
+      /copy mih-comp
+      /copy mih-ptr
+      /copy mih-stgrsc
+
      d tmpl            ds                  likeds(access_state_tmpl_t)
      d                                     based(ptr)
      d ptr             s               *
