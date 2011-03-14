@@ -26,6 +26,7 @@
       * http://i5toolkit.sourceforge.net/
       *
       * @attention This header is for i5/OS Release 5 Version 2.
+      * @attention Will be replaced by a symbolic link to mih.rpgleinc
       */
 
       /if not defined(i5toolkit_rpg_mih52)
