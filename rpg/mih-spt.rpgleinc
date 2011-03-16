@@ -28,8 +28,8 @@
 
      /* structure uuid_t */
      d uuid_t          ds                  qualified
-     d     bytes_in                  10i 0
-     d     bytes_out                 10i 0
+     d     bytes_in                  10u 0
+     d     bytes_out                 10u 0
      d                                8a
      d     rtn_uuid                  16a
 

@@ -14,5 +14,5 @@
            MOVE "Subproject SYSBIF for COBOL launched."
              TO MSG.
            DISPLAY MSG.
-           STOP RUN.
        END-PROGRAM.
+           STOP RUN.

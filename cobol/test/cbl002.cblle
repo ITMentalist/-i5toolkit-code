@@ -1,0 +1,39 @@
+     /**
+      * @file cbl002.cblle
+      *
+      * Test of _GENUUID.
+      */
+       process
+           NOMONOPRC.
+
+       id division.
+       program-id. cbl002.
+
+       environment division.
+       configuration section.
+       special-names.
+           copy mih-lnktyp.
+           linkage type is procedure for "cvthc".
+
+       data division.
+       working-storage section.
+           copy mih-spt.
+       01 result pic x(32).
+       01 tmpl   type uuid-t.
+       01 uuid-len pic 9(9) usage comp-4 value 32.
+
+       procedure division.
+       main-pgm.
+           move 32 to bytes-in of tmpl.
+           move x"0000000000000000" to reserved of tmpl.
+           call "_GENUUID" using
+               by reference tmpl.
+
+           call "cvthc" using
+               by value address of result
+               by value address of uuid of tmpl
+               by value            uuid-len.
+           display "UUID generated: " result.
+
+       see-you.
+           stop run.

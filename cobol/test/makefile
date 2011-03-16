@@ -21,15 +21,20 @@
 
 BIN_LIB=
 MAKERULES=rules.mk
-CBLLEFLAGS=dbgview(*all) replace(*yes) incdir('/usr/local/include/cobol' '.')
+CBLLEFLAGS=option(*nomonoprc) dbgview(*all) replace(*yes) incdir('/usr/local/include/cobol' '.')
 CBLFLAGS=genopt(*list *atr)
 CLFLAGS=genopt(*list *xref)
 MIFLAGS=incdir('.')
 
-TARGETS=cbl001
+TARGETS=cbl001 cbl002
 
 all: $(TARGETS)
 	@echo "compilation done -- cobol/test"
 
 clean:
 	qsh -c "/usr/bin/rmflnk $(TARGETS)"
+
+cbl002: cbl002.cblle
+	system "crtbndcbl pgm($@) srcstmf(cbl002.cblle) $(CBLLEFLAGS) bnddir(QC2LE)"
+	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
+
