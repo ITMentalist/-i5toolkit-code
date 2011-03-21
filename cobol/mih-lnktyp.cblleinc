@@ -28,5 +28,8 @@
 
       *A   B
 
+      * Compuation instructions.
+           linkage type is sys for "_SETBTS".
+
       * Machine Interface support instructions.
            linkage type is sys for "_GENUUID".

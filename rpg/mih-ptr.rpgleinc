@@ -336,10 +336,59 @@
      d     obj_name                  32a
      d     pgm_ptr                     *
 
+     /**
+      * Basic instruction template of RSLVSP, which is of length 34 bytes.
+      */
      d rslvsp_tmpl     ds                  qualified
      d     obj_type                   2a
      d     obj_name                  30a
+      * required authorization
      d     auth                       2a   inz(x'0000')
+
+     /**
+      * The extended version of instruction template of RSLVSP, of length 128 bytes.
+      *
+      * @remark To indicate the existence of the extended template,
+      *         set the bit 15 of field auth in the basic instruction
+      *         template.
+      */
+     d rslvsp_tmpl_ex  ds                  qualified
+     d     obj_type                   2a
+     d     obj_name                  30a
+      * required authorization
+     d     auth                       2a   inz(x'0000')
+      * start of the extended template
+      *
+      * version of the extended template, must by hex 00 (at least at V5R4)
+     d     tmpl_ver                   1a
+      *
+      * Search method
+      *  hex 00 = Search the thread's name space
+      *  hex 01 = Search only for objects residing on the specified independent ASP
+      *  hex 02 = Search only for objects residing on the ASP group containing the specified independent ASP
+      *  hex 03 = Search only the ASP group of the name space
+      *
+     d     search_method...
+     d                                1a
+      *
+      * Options
+      *  Bit 0. Ignore object specification and authorization fields.
+      *   0 = Use these values
+      *   1 = Ignore these values
+      *  Bit 1. Do not signal object not found exception (2201, aka. MCH3401)
+      *   0 = Signal object not found  (hex 2201) exception if the object is not found
+      *   1 = Do not signal object not found  (hex 2201) exception if the object is not found.
+      *
+     d     opt                        1a
+     d                                7a
+      * Independent ASP number to search
+     d     asp_num                    2a
+      * ASP number of context containing resolved object
+     d     asp_num_rtn...
+     d                                2a
+      * Context containing the resolved object
+     d     ctx_rtn                     *
+     d                               64a
 
      /**
       * @BIF _RSLVSP2 (Resolve System Pointer (RSLVSP))
