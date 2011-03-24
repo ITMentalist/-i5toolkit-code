@@ -18,23 +18,24 @@
       */
 
      /**
-      * @file mih-spt.cblleinc
+      * @file mih-comp.cblleinc
       *
-      * Machine interface support instructions.
+      * Computation instructions.
       */
 
       *A   B
 
      /**
-      * Instruction template of GENUUID.
+      * @BIF _SETBTS (Set Bit in String (SETBTS))
       */
-       01 uuid-t is typedef.
-          05 bytes-in  pic 9(9) usage comp-4.
-          05 bytes-out pic 9(9) usage comp-4.
-          05 reserved  pic x(8).
-          05 uuid      pic x(16).
+      *    call "_SETBTS" using
+      *        by value pointer
+      *        by value binary-4-offset.
 
      /**
-      * @BIF _GENUUID (Generate Universal Unique Identifier (GENUUID))
+      * @BIF _PROPB (Propagate Byte (PROPB))
       */
-      *    call "_GENUUID" using DS-of-type-uuid-t.
+      *    call "_PROPB" using
+      *        by value pointer
+      *        by value char-1-scalar
+      *        by value binary-4-length.

@@ -30,6 +30,7 @@
 
       * Compuation instructions.
            linkage type is sys for "_SETBTS".
+           linkage type is sys for "_PROPB".
 
       * Machine Interface support instructions.
            linkage type is sys for "_GENUUID".

@@ -1,7 +1,9 @@
      /**
       * @file cbl002.cblle
       *
-      * Test of _GENUUID.
+      * Test of:
+      *  - _GENUUID
+      *  - _PROPB
       */
        process
            NOMONOPRC.
@@ -21,11 +23,15 @@
        01 result pic x(32).
        01 tmpl   type uuid-t.
        01 uuid-len pic 9(9) usage comp-4 value 32.
+       01 zer    pic x value x"00".
 
        procedure division.
        main-pgm.
+           call "_PROPB" using
+               by reference tmpl
+               by value zer
+               by value uuid-len.
            move 32 to bytes-in of tmpl.
-           move x"0000000000000000" to reserved of tmpl.
            call "_GENUUID" using
                by reference tmpl.
 
