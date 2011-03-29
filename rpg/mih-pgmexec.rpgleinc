@@ -207,6 +207,7 @@
       * @BIF _NPMPARMLISTADDR (NPM Procedure Parameter List Address (NPM_PARMLIST_ADDR))
       *
       * @return space pointer to a npm_plist_t structure
+      * @example test/t012.rpgle
       */
      d npm_plist       pr              *   extproc('_NPMPARMLISTADDR')
 
@@ -215,7 +216,32 @@
      d       list                      *
      d     mch_wrk_...
      d       ara                     16a
-     d     argvs                       *   dim(400)
+      *
+      * <var>args</var> is a variable length field used to pass
+      * argument values to the current invocation. Even though the
+      * actual mechanism used by the machine to pass argument values
+      * is not visible at the Machine Interface, this field is large
+      * enough to accommodate all passed argument values, with each
+      * argument being aligned on its natural boundary. At most 400
+      * arguments may be passed.
+      *
+      * The rules for natural alignment are shown like the
+      * following. For packed decimal arguments, the length in bytes
+      * is derived from the number of digits, numberofDigits, using
+      * the following formula: ((numberofDigits/2) + 1). For zoned
+      * decimal separate leading sign and zoned decimal separate
+      * trailing sign arguments, the byte length is one greater than
+      * the length in digits.
+      *
+      * Length in Bytes         Alignment
+      * ---------------------   --------------
+      * length = 1              byte
+      * length = 2              halfword
+      * length = 3,4            word
+      * length = 5,6,7,8        doubleword
+      * other lengths           quadword
+      *
+     d     argvs                  32767a
 
      d parm_desc_...
      d       list_t    ds                  qualified based(dummy_ptr)
@@ -332,13 +358,13 @@
 
      /**
       * @BIF _OPM_PARM_CNT (OPM Parameter Count (OPM_PARM_CNT))
-      * @todo has not been tested.
+      * @todo can't get compiled (Mar. 2011).
       */
      d opm_parm_cnt    pr            10u 0 extproc('_OPM_PARM_CNT')
 
      /**
       * @BIF _OPM_PARM_ADDR (OPM Parameter Address (OPM_PARM_ADDR))
-      * @todo has not been tested.
+      * @todo can't get compiled (Mar. 2011).
       */
      d opm_parm_addr   pr              *   extproc('_OPM_PARM_ADDR')
      d     ind                       10u 0 value
@@ -465,11 +491,11 @@
      d                                5u 0
      d                                8a
 
-     /* Materialization template for MATINVS */
+     /* Materialization template for MATINV */
      d matinv_tmpl_t   ds
 
      /**
-      * Materialization template for MATINVS when target
+      * Materialization template for MATINV when target
       * invocation is for a bound program procedure.
       */
      d matinv_npm_tmpl_t...
@@ -488,7 +514,7 @@
      d                 c                   42
 
      /**
-      * Materialization template for MATINVS when target
+      * Materialization template for MATINV when target
       * invocation is for a non-bound program procedure.
       */
      d matinv_opm_tmpl_t...
@@ -539,7 +565,7 @@
      d     mchspc_ptr                  *
 
      /**
-      * Exception description materialized by MATINVS
+      * Exception description materialized by MATINV
       */
      d matinv_expd_t   ds                  qualified
      d                                     based(dummy_ptr)
