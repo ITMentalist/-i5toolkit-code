@@ -29,8 +29,11 @@
       *A   B
 
       * Compuation instructions.
-           linkage type is sys for "_SETBTS".
-           linkage type is sys for "_PROPB".
+           linkage type is sys for "_SETBTS"
+                                   "_PROPB".
 
       * Machine Interface support instructions.
            linkage type is sys for "_GENUUID".
+
+      * Program execution instructions.
+           linkage type is sys for "_NPMPARMLISTADDR".

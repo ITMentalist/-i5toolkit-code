@@ -1,0 +1,41 @@
+       id division.
+       program-id. cbl005.
+
+       environment division.
+       configuration section.
+       special-names.
+           copy mih-lnktyp.
+
+       data division.
+       working-storage section.
+       01 plist-ptr pointer.
+
+       linkage section.
+       77 str pic x(32).
+       77 pkd pic s999v99 usage comp-3.
+      *
+       01 plist-t.
+          05 opdesc-ptr pointer.
+          05 machine-work-area pic x(16).
+          05 parm-list-area    pic x(64).
+       01 opdesc-t.
+          05 argc pic 9(9) usage comp-4.
+
+       procedure division using
+           str
+           pkd.
+
+       main-pgm.
+      *    display str ", " pkd.
+
+           call "_NPMPARMLISTADDR"
+               returning into plist-ptr.
+           set address of plist-t
+               to plist-ptr.
+           set address of opdesc-t
+               to opdesc-ptr of plist-t.
+           display "Number of parameters passed: "
+               argc of opdesc-t.
+
+       see-you.
+           stop run.
