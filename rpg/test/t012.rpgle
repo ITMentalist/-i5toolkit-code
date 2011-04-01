@@ -92,8 +92,6 @@
 
            plist_ptr = npm_plist();
 
-           dsply 'sub-proc' ''  ;
-
            desclist_ptr = plist.parm_desc_list ;
            dsply 'num parms' '' desclist.argc ;
 
@@ -117,6 +115,10 @@
      d     pkd                        5p 2 value
 
      d parm_ptr        s               *
+     d desclist        ds                  likeds(parm_desc_list_t)
+     d                                     based(desclist_ptr)
+     d desclist_ptr    s               *
+
       *
       * parameters passed to procedure byval().
       * @remark Note that each parameter is aligned on its natural boundary.
@@ -135,6 +137,9 @@
       /free
            plist_ptr = npm_plist();
            parm_ptr = %addr(plist.argvs);
+
+           desclist_ptr = plist.parm_desc_list ;
+           dsply 'num parms' '' desclist.argc ;
 
            dsply 'str' '' my_parms.str;
            dsply 'znd' '' my_parms.znd;
