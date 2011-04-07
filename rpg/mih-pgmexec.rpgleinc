@@ -198,7 +198,9 @@
       * @BIF _MODASA (Modify Automatic Storage Allocation (MODASA))
       *
       * @remark Note that unlike MI instruction MODASA, builtin
-      *         _MODASA cannot be used to truncate ASF.
+      *         _MODASA cannot be used to truncate ASF. Passing a
+      *         negative value to _MODASA will raise a Scalar Value
+      *         Invalid exception (3203)
       */
      d modasa          pr              *   extproc('_MODASA')
      d     mod_size                  10u 0 value

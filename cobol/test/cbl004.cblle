@@ -50,6 +50,10 @@
            call "PROC-1" using
                msg
                num.
+           call "PROC-1" using
+               msg
+               num
+               msg.
            cancel "PROC-1".
        see-you.
            stop run.
@@ -64,16 +68,15 @@
        working-storage section.
        01 plist-ptr pointer.
 
+      * include mih-pgmexec
+           copy mih-pgmexec.
+
        linkage section.
        77 str pic x(32).
        77 pkd pic s999v99 usage comp-3.
-      *
-       01 plist-t.
-          05 opdesc-ptr pointer.
-          05 machine-work-area pic x(16).
-          05 parm-list-area    pic x(64).
-       01 opdesc-t.
-          05 argc pic 9(9) usage comp-4.
+
+       01 plist type npm-plist-t.
+       01 opdesc type op-desc-t.
 
        procedure division using
            str
@@ -83,12 +86,12 @@
 
            call "_NPMPARMLISTADDR"
                returning into plist-ptr.
-           set address of plist-t
+           set address of plist
                to plist-ptr.
-           set address of opdesc-t
-               to opdesc-ptr of plist-t.
+           set address of opdesc
+               to op-desc-ptr of plist.
            display "Number of parameters passed: "
-               argc of opdesc-t.
+               argc of opdesc.
 
        see-you.
            exit program.
@@ -100,3 +103,4 @@
       * Output:
       * Number of parameters passed: 000000001
       * Number of parameters passed: 000000002
+      * Number of parameters passed: 000000003
