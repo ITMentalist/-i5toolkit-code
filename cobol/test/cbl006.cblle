@@ -1,0 +1,35 @@
+       process
+           NOMONOPRC.
+
+       id division.
+       program-id. cbl006.
+
+       environment division.
+       configuration section.
+       special-names.
+           copy mih-lnktyp.
+
+       data division.
+       working-storage section.
+       01 msg pic x(32).
+       01 msg-len pic 9(9) usage comp-4.
+
+       linkage section.
+       77 p-msg pic x(32).
+
+       procedure division using p-msg.
+       main-pgm.
+
+           call "__strlen" using
+                by reference p-msg
+                returning into msg-len.
+
+           call "_CPYBYTES" using
+                by reference msg
+                by reference p-msg
+                by value msg-len.
+
+           display msg.
+
+           stop run.
+       end program cbl006.

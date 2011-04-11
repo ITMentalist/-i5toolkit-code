@@ -27,6 +27,8 @@
 
      /**
       * @BIF _SETBTS (Set Bit in String (SETBTS))
+      *
+      * @example test/cbl003.cblle
       */
       *    call "_SETBTS" using
       *        by value pointer
@@ -34,8 +36,30 @@
 
      /**
       * @BIF _PROPB (Propagate Byte (PROPB))
+      *
+      * @example test/cbl002.cblle
       */
       *    call "_PROPB" using
       *        by value pointer
       *        by value char-1-scalar
       *        by value binary-4-length.
+
+     /* bound program calculation builtins */
+
+     /**
+      * @BIF _CPYBYTES (Copy Bytes (CPYBYTES))
+      *
+      * @example test/cbl006.cblle
+      */
+
+     /**
+      * @BIF _CPYBYTES (Copy Bytes (CPYBYTES))
+      *
+      * @example test/cbl006.cblle
+      */
+
+     /**
+      * @BIF _STRLENNULL (Compute Length of Null-Terminated String (STRLENNULL))
+      *
+      * @example test/cbl006.cblle
+      */
