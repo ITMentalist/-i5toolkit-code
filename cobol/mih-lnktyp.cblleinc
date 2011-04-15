@@ -34,6 +34,11 @@
                                    "_CPYBYTES"
                                    "__strlen".
 
+      * Date/Time/Timestamp instructions.
+           linkage type is sys for "_CTD"
+                                   "_CDD"
+                                   "_CTSD".
+
       * Machine Interface support instructions.
            linkage type is sys for "_GENUUID".
 

@@ -21,6 +21,10 @@
       * @file mih-pgmexec.cblleinc
       *
       * Program execution instructions.
+      *
+      * @remark To use TYPEDEFs declared here, include this file
+      *         in the working-storage or linkage sections of
+      *         your ILE COBOL program.
       */
 
       *A   B

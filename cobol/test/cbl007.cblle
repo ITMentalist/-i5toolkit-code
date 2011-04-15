@@ -1,0 +1,75 @@
+       process
+           NOMONOPRC.
+
+       id division.
+       program-id. cbl007.
+
+       environment division.
+       configuration section.
+       special-names.
+           copy mih-lnktyp.
+
+       data division.
+       working-storage section.
+           copy mih-comp.
+           copy mih-dattim.
+       01 zer constant as x"00".
+       01 ddat type ddat-t.
+       01 len  pic 9(9).
+
+       01 tmpl type compute-dattim-t.
+       01 time-dur-ddat pic x(4) value x"00000015".
+       01 iso-time-ddat pic x(10) value
+           x"0000000400000018003C".
+       01 time-dur      pic 9(6) usage comp-3.
+
+       linkage section.
+       77 begin-time pic x(8).
+       77 end-time pic x(8).
+
+       procedure division using
+           begin-time
+           end-time.
+       main-pgm.
+           compute len = function length(ddat);
+           display "length of ddat-t = " len.
+
+           call "_PROPB" using
+                by reference tmpl
+                by value zer
+                by value 298.
+           move 298 to tmpl-size of tmpl.
+           move 1   to op1-ddat-num of tmpl.
+           move 2   to op2-ddat-num of tmpl.
+           move 2   to op3-ddat-num of tmpl.
+           move 8   to op2-len      of tmpl.
+           move 8   to op3-len      of tmpl.
+           move 256 to ddat-list-len of tmpl.
+           move 2   to ddats        of tmpl.
+           move 24  to off-ddat1    of tmpl.
+           move 140 to off-ddat2    of tmpl.
+
+           call "_CPYBYTES" using
+                by reference ddat1 of tmpl
+                by reference time-dur-ddat
+                by value 4.
+           call "_CPYBYTES" using
+                by reference ddat2 of tmpl
+                by reference iso-time-ddat
+                by value 10.
+
+           call "_CTD" using
+                by reference time-dur
+                by reference end-time
+                by reference begin-time
+                by reference tmpl.
+
+           display "Time duration: " time-dur.
+
+           stop run.
+       end program cbl007.
+
+      * output:
+      * call cbl007 ('15.15.15' '16.16.16')
+      * length of ddat-t = 000000116       
+      * Time duration: 010101              
