@@ -26,9 +26,7 @@
 
       /copy mih-dattim
 
-      * user code
      d tmpl            ds                  likeds(compute_dattim_t)
-     d len             s             10i 0
 
       * ISO time
      d morning         s             10a   inz('07.50.11')

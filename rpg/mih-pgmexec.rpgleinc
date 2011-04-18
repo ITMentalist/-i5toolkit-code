@@ -66,6 +66,18 @@
      d     ssf                         *
      d     pgm                         *
 
+      /if defined(*V5R4M0)
+     /**
+      * @BIF _CALLPGMV (Call Program with Variable Length Argument List (CALLPGMV))
+      *
+      * call program with variable length argument list
+      */
+     d callpgmv        pr                  extproc('_CALLPGMV')
+     d     pgm_ptr                     *
+     d     argv                        *   dim(1) options(*varsize)
+     d     argc                      10u 0 value
+      /endif
+
      /**
       * @BIF _DEACTPG1 (Deactivate Program (DEACTPG))
       */

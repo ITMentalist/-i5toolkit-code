@@ -25,12 +25,12 @@ RPGLEFLAGS=dbgview(*all) replace(*yes) incdir('/usr/local/include/rpg' '.')
 RPGFLAGS=genopt(*list *atr)
 CLFLAGS=genopt(*list *xref)
 MIFLAGS=incdir('.')
-
+# t068 is removed temporarily
 TARGETS=t001 t002 t003 t004 t005 t006 t007 t008 t009 t010 t011 t012 t013 t014 t015 \
 	t016 t017 t018 t019 t020 t021 t022 t023 t024 t025 t026 \
 	t028 t029 t030 t031 t032 t033 t034 t035 t036 t037 t038 t039 t040 t040a \
 	t041 t042 t044 t045 t046 t049 t050 t051 t052 t053 t054 t055 t056 t057 \
-	t059 t060 t061 t063 t064 t065 t066 t067 t068 t069 t070 t071 t072 t072b t073 t075.pnlgrp \
+	t059 t060 t061 t063 t064 t065 t066 t067 t069 t070 t071 t072 t072b t073 t075.pnlgrp \
 	t074 t075 t076 t077 t078 t079 t080 t081 t082 t083_b t083 \
 	t084 t085 t086 t087 t088 t089 t090 t091 t092 t093 t094 \
 	t095 t096 t097 t098 t099 t099up spr37 t100 t101 t102 lk.file \
@@ -39,7 +39,7 @@ TARGETS=t001 t002 t003 t004 t005 t006 t007 t008 t009 t010 t011 t012 t013 t014 t0
 	t121a t121 t121b t122 t122a t123 t124 t125 t126 t127 t128 \
 	t129 t130 t131 t132 t133 t134 t135 t136 t137 t138 t139 \
 	t140 t141 t141a t142cl t143rpg t144 t145 t146 t147 t148 \
-	t149 uandi t151 t152 t153 t154 t155 t156 t157
+	t149 uandi t151 t152 t153 t154 t155 t156 t157 t158
 
 all: $(TARGETS)
 	@echo "compilation done -- rpg"

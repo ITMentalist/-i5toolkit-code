@@ -48,7 +48,6 @@
      d ec              ds                  likeds(qusec_t)
 
       /free
-
            // resolove *PGM QMHSNDPM
            rslvsp_tmpl.obj_type = x'0201';
            rslvsp_tmpl.obj_name = 'QMHSNDPM';
