@@ -18,9 +18,9 @@
       */
 
      /**
-      * @file t158.rpgle
+      * @file t160.rpgle
       *
-      * Test of _CDD (Compute Date Duration).
+      * Test of _CTSD (Compute Timestamp Duration).
       */
 
      h dftactgrp(*no)
@@ -28,10 +28,10 @@
       /copy mih-dattim
      d tmpl            ds                  likeds(compute_dattim_t)
 
-      * ISO date
-     d children_day    s             10a   inz('2011-06-01')
-     d labor_day       s             10a   inz('2011-05-01')
-     d dur             s              8p 0
+      * SAA timestamps
+     d children_day    s             26a   inz('2011-06-01-00.00.00.000000')
+     d some_day        s             26a   inz('2011-05-29-23.59.59.555000')
+     d dur             s             20p 6
 
       * Dates in the system internal format
 
@@ -41,22 +41,22 @@
            tmpl.op1_ddat_num = 1;
            tmpl.op2_ddat_num = 2;
            tmpl.op3_ddat_num = 2;
-           tmpl.op2_len      = 10; // length os ISO date
-           tmpl.op3_len      = 10;
+           tmpl.op2_len      = 26; // length os ISO date
+           tmpl.op3_len      = 26;
            tmpl.ddat_list_len= 256;
            tmpl.ddats        = 2;
            tmpl.off_ddat1    = 24;
            tmpl.off_ddat2    = 140;
-           tmpl.ddat1        = date_duration_ddat_value;
-           tmpl.ddat2        = iso_date_ddat_value;
+           tmpl.ddat1        = timestamp_duration_ddat_value;
+           tmpl.ddat2        = saa_timestamp_ddat_value;
 
-           cdd( %addr(dur)
-              : children_day
-              : labor_day
-              : tmpl );
-           dsply 'date duration' '' dur;
-             // DSPLY  date duration         100
-             // aka. one month
+           ctsd( %addr(dur)
+               : children_day
+               : some_day
+               : tmpl );
+           dsply 'timestamp duration' '' dur;
+             // DSPLY  timestamp duration           2000000445000
+             // aka. 2 days and 445000 microseconds
 
            *inlr = *on;
       /end-free

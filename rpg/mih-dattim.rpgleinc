@@ -155,14 +155,14 @@
      d         month_def...
      d                                5u 0 overlay(duration:1)
      d         year_def...
-     d                                5u 0 overlay(duration:1)
+     d                                5u 0 overlay(duration:3)
       * century definition
      d     century_def...
      d                                8a
      d         cur_century...
      d                               10u 0 overlay(century_def:1)
      d         century_division...
-     d                               10u 0 overlay(century_def:1)
+     d                               10u 0 overlay(century_def:5)
       * calendar table offset
      d     cal_off                   10u 0
      d                                6a
@@ -171,7 +171,12 @@
       * calendar table
      d     cal_tbl                         likeds(saa_calendar_t)
 
-     /* Value of time duration DDAT. */
+     /**
+      * Value of time duration DDAT.
+      *
+      * @remark A time duration value should be represented by a
+      *         packed (6,0) numeric.
+      */
      d time_duration_ddat_value...
      d                 c                   x'00000015-
      d                                     00000000000000000000000000000000-
@@ -182,9 +187,30 @@
      d                                     00000000000000000000000000000000-
      d                                     00000000000000000000000000000000'
 
-     /* Value of time duration DDAT. */
+     /**
+      * Value of date duration DDAT.
+      *
+      * @remark A date duration value should be represented by a
+      *         packed (8,0) numeric.
+      */
      d date_duration_ddat_value...
      d                 c                   x'00000014-
+     d                                     00000000000000000000000000000000-
+     d                                     00000000000000000000000000000000-
+     d                                     00000000000000000000000000000000-
+     d                                     00000000000000000000000000000000-
+     d                                     00000000000000000000000000000000-
+     d                                     00000000000000000000000000000000-
+     d                                     00000000000000000000000000000000'
+
+     /**
+      * Value of timestamp duration DDAT.
+      *
+      * @remark A timestamp duration value should be represented by a
+      *         packed (20,6) numeric.
+      */
+     d timestamp_duration_ddat_value...
+     d                 c                   x'00000016-
      d                                     00000000000000000000000000000000-
      d                                     00000000000000000000000000000000-
      d                                     00000000000000000000000000000000-
@@ -340,6 +366,249 @@
      d     time2                      1a   options(*varsize)
       * instruction template
      d     inst_tmpl                       likeds(compute_dattim_t)
+
+     /**
+      * Instruction template of convert date/time/timestamp
+      * (CVTD, CVTT, CVTTS).
+      */
+     d convert_dattim_t...
+     d                 ds           298    qualified
+     d     size                      10u 0
+      * number of DDAT specified for operand 1 (duration)
+     d     op1_ddat_num...
+     d                                5u 0
+      * DDAT number for operand 2 (end date/time/timestamp)
+     d     op2_ddat_num...
+     d                                5u 0
+      * reserved (binary 0)
+      * @remark this field is DDAT number for operand 3 (begin date/time/timestamp)
+      *         in compute_dattim_t, op3_ddat_num
+     d                                5u 0
+      * length of operand 1
+     d     op1_len                    5u 0
+      * length of operand 2
+     d     op2_len                    5u 0
+      * reserved (binary 0)
+      * @remark this field is length of operand 3 (begin date/time/timestamp)
+      *         in compute_dattim_t, op3_len
+     d                                5u 0
+      * Preferred/Found date, time, or timestamp format
+      * @remark This field represents the preferred date/time/timestamp format
+      *         respectively for CVTD, CVTT, and CVTTS.
+     d     preferred_fmt...
+     d                                5u 0
+      * Preferred/Found date separator
+      * @remark This field should be set to binary 0 when converting a date value.
+     d     preferred_date_sep...
+     d                                1a
+      * Preferred/Found time separator
+      * @remark This field should be set to binary 0 when converting a time value.
+     d     preferred_time_sep...
+     d                                1a
+      * reserved (binary 0)
+     d                               22a
+      *
+      * start of DDAT list
+      *
+      * length of DDAT list
+     d     ddat_list_len...
+     d                               10u 0
+     d     ddats                      5u 0
+      * reserved (binary 0)
+     d                               10a
+     d     off_ddat1                 10u 0
+     d     off_ddat2                 10u 0
+     d     ddat1                           likeds(ddat_t)
+     d     ddat2                           likeds(ddat_t)
+
+     /**
+      * @BIF _CVTD (Convert Date (CVTD))
+      */
+     d cvtd            pr                  extproc('_CVTD')
+      * result date
+     d     tgt_date                    *   value
+      * source date
+     d     src_date                    *   value
+      * instruction template
+     d     inst_tmpl                       likeds(convert_dattim_t)
+
+     /**
+      * @BIF _CVTT (Convert Time (CVTT))
+      */
+     d cvtt            pr                  extproc('_CVTT')
+      * result time
+     d     tgt_time                   1a   options(*varsize)
+      * source time
+     d     src_time                   1a   options(*varsize)
+      * instruction template
+     d     inst_tmpl                       likeds(convert_dattim_t)
+
+     /**
+      * @BIF _CVTTS (Convert Timestamp (CVTTS))
+      */
+     d cvtts           pr                  extproc('_CVTTS')
+      * result timestamp
+     d     tgt_ts                     1a   options(*varsize)
+      * source timestamp
+     d     src_ts                     1a   options(*varsize)
+      * instruction template
+     d     inst_tmpl                       likeds(convert_dattim_t)
+
+     /**
+      * Instruction template of decrement/increment date/time/timestamp duration
+      * (CDD, CTD, CTSD).
+      *
+      * @remark The input indicator, end of month adjustment, is used
+      *         to allow or disallow the occurrence of an end of month
+      *         adjustment. The output indicator, end of month
+      *         adjustment, is used to indicate an end of month
+      *         adjustment, when end of month adjustments are
+      *         allowed. End of month adjustment is the following
+      *         concept. For SAA, the result of subtracting a 1 month
+      *         duration from the Gregorian date 03/31/1989 is
+      *         02/28/1989. The days portion is adjusted to fit the
+      *         month, 31 is changed to 28. When this happens, the end
+      *         of month adjustment output indicator is set to
+      *         adjustment. When end of month adjustments are not
+      *         allowed, the month and year definitions in the data
+      *         definition attribute template must have values greater
+      *         than zero, otherwise a template value invalid (hex
+      *         3801) exception will be signalled. The result of
+      *         subtracting a 1 month duration from the Gregorian date
+      *         03/31/1989 is 03/01/1989, when the definition of a
+      *         month is 30 days.
+      * @example test/t162.rpgle
+      */
+     d dec_inc_dattim_t...
+     d                 ds           298    qualified
+     d     size                      10u 0
+      * number of DDAT specified for operand 1 (duration)
+     d     op1_ddat_num...
+     d                                5u 0
+      * DDAT number for operand 2 (end date/time/timestamp)
+     d     op2_ddat_num...
+     d                                5u 0
+      * DDAT number for operand 3 (begin date/time/timestamp)
+     d     op3_ddat_num...
+     d                                5u 0
+      * length of operand 1
+     d     op1_len                    5u 0
+      * length of operand 2
+     d     op2_len                    5u 0
+      * length of operand 3
+     d     op3_len                    5u 0
+      * Fractional number of digits of operand 3
+     d     op3_len_hi                 1a   overlay(op3_len:1)
+      * Total number of digits of operand 3
+     d     op3_len_lo                 1a   overlay(op3_len:2)
+      * Input indicators
+      *  Bit 0, End of month adjustment.
+      *  @remark This bit should be set to binary 0 when using DECT or INCT.
+      *   0 = No adjustment
+      *   1 = Adjustment
+      *  Bit 1, Tolerate data decimal errors
+      *   0 = No toleration
+      *   1 = Tolerate
+     d     input_ind                  2a
+      * Output indicators
+      *  Bit 0, End of month adjustment.
+      *   0 = No adjustment
+      *   1 = Adjustment
+      * @remark This field should be set to binary 0 when using DECT or INCT.
+     d     output_ind                 2a
+      * reserved (binary 0)
+     d                               22a
+      *
+      * start of DDAT list
+      *
+      * length of DDAT list
+     d     ddat_list_len...
+     d                               10u 0
+     d     ddats                      5u 0
+      * reserved (binary 0)
+     d                               10a
+     d     off_ddat1                 10u 0
+     d     off_ddat2                 10u 0
+     d     ddat1                           likeds(ddat_t)
+     d     ddat2                           likeds(ddat_t)
+
+     /**
+      * @BIF _DECT (Decrement Time (DECT))
+      */
+     d dect            pr                  extproc('_DECT')
+      * result time
+     d     tgt_time                   1a   options(*varsize)
+      * source time
+     d     src_time                   1a   options(*varsize)
+      * time duration
+     d     duration                    *   value
+      * instruction template
+     d     inst_tmpl                       likeds(dec_inc_dattim_t)
+
+     /**
+      * @BIF _DECD (Decrement Date (DECD))
+      */
+     d decd            pr                  extproc('_DECD')
+      * result date
+     d     tgt_date                   1a   options(*varsize)
+      * source date
+     d     src_date                   1a   options(*varsize)
+      * date duration
+     d     duration                    *   value
+      * instruction template
+     d     inst_tmpl                       likeds(dec_inc_dattim_t)
+
+     /**
+      * @BIF _DECTS (Decrement Timestamp (DECTS))
+      */
+     d dects           pr                  extproc('_DECTS')
+      * result timestamp
+     d     tgt_ts                     1a   options(*varsize)
+      * source timestamp
+     d     src_ts                     1a   options(*varsize)
+      * timestamp duration
+     d     duration                    *   value
+      * instruction template
+     d     inst_tmpl                       likeds(dec_inc_dattim_t)
+
+     /**
+      * @BIF _INCT (Increment Time (INCT))
+      */
+     d inct            pr                  extproc('_INCT')
+      * result time
+     d     tgt_time                   1a   options(*varsize)
+      * source time
+     d     src_time                   1a   options(*varsize)
+      * time duration
+     d     duration                    *   value
+      * instruction template
+     d     inst_tmpl                       likeds(dec_inc_dattim_t)
+
+     /**
+      * @BIF _INCD (Increment Date (INCD))
+      */
+     d incd            pr                  extproc('_INCD')
+      * result date
+     d     tgt_date                   1a   options(*varsize)
+      * source date
+     d     src_date                   1a   options(*varsize)
+      * date duration
+     d     duration                    *   value
+      * instruction template
+     d     inst_tmpl                       likeds(dec_inc_dattim_t)
+
+     /**
+      * @BIF _INCTS (Increment Timestamp (INCTS))
+      */
+     d incts           pr                  extproc('_INCTS')
+      * result timestamp
+     d     tgt_ts                     1a   options(*varsize)
+      * source timestamp
+     d     src_ts                     1a   options(*varsize)
+      * timestamp duration
+     d     duration                    *   value
+      * instruction template
+     d     inst_tmpl                       likeds(dec_inc_dattim_t)
 
       /if defined(*V5R4M0)
      /* materialization template of UTC TOD clock for MATTODAT */

@@ -41,6 +41,7 @@
       /copy mih-q
       /copy mih-lock
       /copy mih-mutex
+      /copy mih-stgsync
       /copy mih-ctx
       /copy mih-auth
       /copy mih-prcthd

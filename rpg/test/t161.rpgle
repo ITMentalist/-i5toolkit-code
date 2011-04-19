@@ -18,45 +18,42 @@
       */
 
      /**
-      * @file t158.rpgle
+      * @file t161.rpgle
       *
-      * Test of _CDD (Compute Date Duration).
+      * Test of _CVTTS (Convert Timestamp). This example convert the
+      * current UTC time-of-day (TOD) clock to an SAA timestamp.
       */
 
      h dftactgrp(*no)
 
       /copy mih-dattim
-     d tmpl            ds                  likeds(compute_dattim_t)
-
-      * ISO date
-     d children_day    s             10a   inz('2011-06-01')
-     d labor_day       s             10a   inz('2011-05-01')
-     d dur             s              8p 0
-
-      * Dates in the system internal format
+      /copy mih-spt
+     d tmpl            ds                  likeds(convert_dattim_t)
+     d sys_clock       s              8a
+     d saa_ts          s             26a
 
       /free
+           // get current UTC TOD clock
+           matmdata(%addr(sys_clock) : x'0004');
+
            tmpl = *allx'00';
            tmpl.size = %size(tmpl);
            tmpl.op1_ddat_num = 1;
            tmpl.op2_ddat_num = 2;
-           tmpl.op3_ddat_num = 2;
-           tmpl.op2_len      = 10; // length os ISO date
-           tmpl.op3_len      = 10;
+           tmpl.op1_len      = 26; // SAA timestamp
+           tmpl.op2_len      = 8;  // system clock
            tmpl.ddat_list_len= 256;
            tmpl.ddats        = 2;
            tmpl.off_ddat1    = 24;
            tmpl.off_ddat2    = 140;
-           tmpl.ddat1        = date_duration_ddat_value;
-           tmpl.ddat2        = iso_date_ddat_value;
+           tmpl.ddat1        = saa_timestamp_ddat_value;
+           tmpl.ddat2        = system_clock_ddat_value;
 
-           cdd( %addr(dur)
-              : children_day
-              : labor_day
-              : tmpl );
-           dsply 'date duration' '' dur;
-             // DSPLY  date duration         100
-             // aka. one month
+           cvtts( saa_ts
+                : sys_clock
+                : tmpl );
+           dsply 'Current UTC time' '' saa_ts;
+               // DSPLY  Current UTC time    2011-04-19-14.31.31.478450
 
            *inlr = *on;
       /end-free
