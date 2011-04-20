@@ -18,11 +18,13 @@
       */
 
      /**
-      * @file t162.rpgle
+      * @file t163.rpgle
       *
       * Test of:
-      *  - _DECD (Decrement Date)
-      *  - _INCD (Increment Date)
+      *  - _DECTS (Decrement Timestamp)
+      *  - _INCTS (Increment Timestamp)
+      *
+      * Here a timestamp is decremented/incremented by a timestamp duration.
       */
 
      h dftactgrp(*no)
@@ -31,9 +33,9 @@
       /copy mih-spt
      d tmpl            ds                  likeds(dec_inc_dattim_t)
 
-      * ISO date, Mar 31, 2011
-     d march31         s             10a   inz('2008-03-31')
-     d one_month_ago   s             10a
+      * SAA timestamp, Mar 31, 2011
+     d march31         s             26a   inz('2008-03-31-00.00.00.000000')
+     d one_month_ago   s             26a
 
       * date duration, one month
      d one_month       s              8p 0 inz(00000100)
@@ -44,8 +46,8 @@
            tmpl.op1_ddat_num = 1;
            tmpl.op2_ddat_num = 1;
            tmpl.op3_ddat_num = 2;
-           tmpl.op1_len      = 10; // ISO date
-           tmpl.op2_len      = 10; // ISO date
+           tmpl.op1_len      = 26; // SAA timestamp
+           tmpl.op2_len      = 26; // SAA timestamp
            // length of date duration. The higher byte is the number
            // of fractional digits. The lower byte is the number of total
            // digits.
@@ -54,44 +56,44 @@
            tmpl.ddats        = 2;
            tmpl.off_ddat1    = 24;
            tmpl.off_ddat2    = 140;
-           tmpl.ddat1        = iso_date_ddat_value;
+           tmpl.ddat1        = saa_timestamp_ddat_value;
            tmpl.ddat2        = date_duration_ddat_value;
            tmpl.input_ind    = x'8000'; // enable "end of month adjustment"
 
-           decd ( one_month_ago
+           dects( one_month_ago
                 : march31
                 : %addr(one_month)
                 : tmpl );
-           dsply 'One month before Mar 31, 2008' '' one_month_ago;
-               // DSPLY  One month before Mar 31, 2008    2008-02-29
+           dsply '1 month before 08/03/31' '' one_month_ago;
+               // DSPLY  1 month before 08/03/31    2008-02-29-00.00.00.000000
                // tmpl.output_ind: x'8000'
 
            tmpl.input_ind    = x'0000'; // disable "end of month adjustment"
            tmpl.ddat2.month_def = 30;
            tmpl.ddat2.year_def  = 365;
-           decd ( one_month_ago
+           dects( one_month_ago
                 : march31
                 : %addr(one_month)
                 : tmpl );
-           dsply 'One month before Mar 31, 2008' '' one_month_ago;
-             // DSPLY  One month before Mar 31, 2008    2008-03-01
+           dsply '1 month before 08/03/31' '' one_month_ago;
+             // DSPLY  1 month before 08/03/31    2008-03-01-00.00.00.000000
 
-           incd ( march31
+           incts( march31
                 : one_month_ago
                 : %addr(one_month)
                 : tmpl );
            dsply 'march31' '' march31;
-             // the result is '2008-03-31', NOT '2008-04-01'
+             // DSPLY  march31    2008-03-31-00.00.00.000000
 
            tmpl.input_ind = x'8000'; // enable end-of-month-adjustment again
            tmpl.ddat2.month_def = 0;
            tmpl.ddat2.year_def  = 0;
-           incd ( march31
+           incts( march31
                 : one_month_ago
                 : %addr(one_month)
                 : tmpl );
            dsply 'march31' '' march31;
-             // DSPLY  march31    2008-04-01
+             // DSPLY  march31    2008-04-01-00.00.00.000000
 
            *inlr = *on;
       /end-free

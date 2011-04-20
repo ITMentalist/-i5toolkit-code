@@ -26,7 +26,6 @@
 
 BIN_LIB=
 
-# exobjtype.pgm, 记着找回来 exobjtype.c
 TARGETS=exobjtype miobjtype rlink
 
 all: $(TARGETS)

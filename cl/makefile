@@ -26,7 +26,7 @@ CBLFLAGS=genopt(*list *atr)
 CLFLAGS=genopt(*list *xref)
 MIFLAGS=incdir('.')
 
-TARGETS=cl001 cl002 cl003 cl004 cl005
+TARGETS=cl001 cl002 cl003 cl004 cl005 cl006
 
 all: $(TARGETS)
 	@echo "compilation done -- cl/test"

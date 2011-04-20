@@ -18,10 +18,10 @@
       */
 
      /**
-      * @file cbl007.cblle
+      * @file cbl008.cblle
       *
       * Test of:
-      *  - _CTD (Compute Time Duration)
+      *  - _CTSD (Compute Timestamp Duration)
       */
 
        process
@@ -29,7 +29,7 @@
            NOMONOPRC.
 
        id division.
-       program-id. cbl007.
+       program-id. cbl008.
 
        environment division.
        configuration section.
@@ -44,20 +44,18 @@
        01 len  pic 9(9).
 
        01 tmpl type compute-dattim-t.
-       01 time-dur-ddat type time-duration-ddat-value.
-       01 iso-time-ddat type iso-time-ddat-value.
-       01 time-dur      pic 9(6) usage comp-3.
+       01 ts-dur-ddat type timestamp-duration-ddat-value.
+       01 saa-ts-ddat type saa-timestamp-ddat-value.
+       01 duration    pic 9(14)v9(6) usage comp-3.
 
        linkage section.
-       77 begin-time pic x(8).
-       77 end-time   pic x(8).
+       77 begin-ts pic x(26).
+       77 end-ts   pic x(26).
 
        procedure division using
-           begin-time
-           end-time.
+           begin-ts
+           end-ts.
        main-pgm.
-           compute len = function length(ddat);
-           display "length of ddat-t = " len.
 
            call "_PROPB" using
                 by reference tmpl
@@ -67,28 +65,27 @@
            move 1   to op1-ddat-num of tmpl.
            move 2   to op2-ddat-num of tmpl.
            move 2   to op3-ddat-num of tmpl.
-           move 8   to op2-len      of tmpl.
-           move 8   to op3-len      of tmpl.
+           move 26  to op2-len      of tmpl.
+           move 26  to op3-len      of tmpl.
            move 256 to ddat-list-len of tmpl.
            move 2   to ddats        of tmpl.
            move 24  to off-ddat1    of tmpl.
            move 140 to off-ddat2    of tmpl.
 
-           move time-dur-ddat to ddat1 of tmpl.
-           move iso-time-ddat to ddat2 of tmpl.
+           move ts-dur-ddat to ddat1 of tmpl.
+           move saa-ts-ddat to ddat2 of tmpl.
 
-           call "_CTD" using
-                by reference time-dur
-                by reference end-time
-                by reference begin-time
+           call "_CTSD" using
+                by reference duration
+                by reference end-ts
+                by reference begin-ts
                 by reference tmpl.
 
-           display "Time duration: " time-dur.
+           display "Timestamp duration: " duration.
 
            stop run.
-       end program cbl007.
+       end program cbl008.
 
       * output:
-      * call cbl007 ('15.15.15' '16.16.16')
-      * length of ddat-t = 000000116       
-      * Time duration: 010101              
+      * call cbl008 ('2011-01-01-11.10.05.111000' '2011-01-06-12.15.15.879000')
+      * Timestamp duration: 00000005010510768000

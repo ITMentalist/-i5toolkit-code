@@ -25,10 +25,10 @@ MAKE=make
 
 #SINGLE SUFFIX RULES
 .c:
-	system "crtbndc $(BIN_LIB)/$@ srcstmf('$<') dbgview(*all) output(*print)"
+	system "crtbndc $(BIN_LIB)/$@ srcstmf('$<') $(CLEFLAGS)"
 	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
 .cpp:
-	system "crtbndcpp $(BIN_LIB)/$@ srcstmf('$<') dbgview(*all) output(*print)"
+	system "crtbndcpp $(BIN_LIB)/$@ srcstmf('$<') $(CPPLEFLAGS)"
 	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
 .mi:
 	system "i5toolkit/mic $(BIN_LIB)/$@ srcpath($<) option(*replace *list *xref *atr) $(MIFLAGS)"

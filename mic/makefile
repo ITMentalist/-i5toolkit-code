@@ -19,46 +19,30 @@
 # makefile of mic
 #
 
-ifeq ($(OS400), yes)
-	MAKE=gmake
-	CC=icc
-	CXX=icc -+v
-	RM=del
-else
-	MAKE=make
-	CC=gcc
-	CXX=g++
-	RM=rm
-endif
+MAKERULES=rules.mk
+CLEFLAGS=DBGVIEW(*ALL) INCDIR('.') OUTPUT(*PRINT)
+CPPLEFLAGS=DBGVIEW(*ALL) INCDIR('.') OUTPUT(*PRINT)
 
-export MAKE
-export CC
-export CXX
-export RM
+TARGETS=runmic mic crt-inx fill-inx inxat loadinx
 
-ifndef CC
-	CC=gcc
-endif
-
-ifndef CXX
-	CXX=g++
-endif
-
-CFLAGS=-g -I.
-CXXFLAGS=-g -I.
-
-TARGETS=mic.o mic-main.o runmic mic crt-inx fill-inx inxat loadinx
-
-ifeq ($(OS400), yes)
-all: $(TARGETS) cmd_pnlgrp
-else
 all: $(TARGETS)
-endif
-	@echo "that's all!"
+	@echo "compilation done -- mic"
 
-mic.o: stmt.hpp builtin.hpp
+mic.module: stmt.hpp builtin.hpp
 
-mic: mic.o mic-main.o
+mic-main.module: mic-main.cpp
+	system "crtcppmod $(BIN_LIB)/$* srcstmf('$<') $(CPPLEFLAGS)"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.module" $*.module
+
+crt-inx: crt-inx.cpp
+	system "crtbndcpp $(BIN_LIB)/$@ srcstmf('$<') dbgview(*all) $(CPPLEFLAGS)"
+	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
+
+fill-inx: fill-inx.cpp
+	system "crtbndcpp $(BIN_LIB)/$@ srcstmf('$<') $(CPPLEFLAGS)"
+	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
+
+mic: mic.module mic-main.module
 	$(CXX) -o $@ $^
 
 clean:
@@ -66,5 +50,5 @@ clean:
 
 cmd_pnlgrp:
 	@echo "attention: compiling CL command and panel-groups ..."
-	system "CRTPNLGRP PNLGRP($(OUTPUTDIR)/MICHLP) SRCFILE(LS2008/DEC) SRCMBR(*PNLGRP)"
-	system "CRTCMD CMD($(OUTPUTDIR)/MIC) PGM($(OUTPUTDIR)/MIC) SRCFILE(LS2008/DEC) SRCMBR(MIC) HLPPNLGRP($(OUTPUTDIR)/MICHLP) HLPID('HLP/MIC')"
+	system "CRTPNLGRP PNLGRP($(BIN_LIB)/MICHLP) SRCFILE(LS2008/DEC) SRCMBR(*PNLGRP)"
+	system "CRTCMD CMD($(BIN_LIB)/MIC) PGM($(BIN_LIB)/MIC) SRCFILE(LS2008/DEC) SRCMBR(MIC) HLPPNLGRP($(BIN_LIB)/MICHLP) HLPID('HLP/MIC')"
