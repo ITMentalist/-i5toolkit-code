@@ -32,7 +32,7 @@ all: $(TARGETS)
 	@echo "compilation done -- cl/test"
 
 clean:
-	qsh -c "/usr/bin/rmflnk $(TARGETS)"
+	rmflnk $(TARGETS)
 
 cl003: cl003.module cl003b.module
 	system "crtpgm $@ module($@ cl003b)"

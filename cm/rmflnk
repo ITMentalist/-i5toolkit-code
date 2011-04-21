@@ -1,3 +1,5 @@
+#! /bin/sh
+
 # This file is part of i5/OS Programmer's Toolkit.
 # 
 # Copyright (C) 2009, 2011  Junlei Li (李君磊).
@@ -16,23 +18,28 @@
 # along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
 
 #
-# makefile of subproject space tools (spc)
-#
-# @remark CL command CRTFRMSTMF must be compiled manually for the first time, since it is used to compile itself.
+# PASE shell script to remove symbolic links along with corresponding link targets.
 #
 
-BIN_LIB=i5toolkit
-MAKERULES=../rules.mk
-TARGETS=chgusrspc chgusvcp chgusrspc.cmd dsppnl.cmd dsppnl
+if [ $# -eq 0 ]
+    then
+    echo "Usage: rmflnk [symbolic-link, ...]"
+    exit
+fi
 
-all: $(TARGETS)
-	@echo "end of compilation: sub-dir spc."
+for LINK_NAME in $*
+do
+    if [ -L $LINK_NAME ]
+    then
+        TARGET=$(qsh -c "readlink $LINK_NAME")
+        if qsh -c "rm $TARGET"
+        then
+            echo "Target $TARGET removed."
+        fi
 
-# @todo HLPPNLGRP($(BIN_LIB)/spchlp) HLPID(''HLP/CHG'')')
-chgusrspc.cmd: chgusrspc.cl-cmd chgusrspc chgusvcp
-	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
-parm('PGM($(BIN_LIB)/$*) VLDCKR($(BIN_LIB)/CHGUSVCP)')"
-	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
-
-clean:
-	rmflnk $(TARGETS)
+        rm $LINK_NAME
+        echo "Symbolic link $LINK_NAME removed."
+    else
+        echo "$LINK_NAME is NOT a symbolic link."
+    fi
+done

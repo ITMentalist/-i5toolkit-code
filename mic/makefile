@@ -23,7 +23,7 @@ MAKERULES=rules.mk
 CLEFLAGS=DBGVIEW(*ALL) INCDIR('.') OUTPUT(*PRINT)
 CPPLEFLAGS=DBGVIEW(*ALL) INCDIR('.') OUTPUT(*PRINT)
 
-TARGETS=runmic mic crt-inx fill-inx inxat loadinx
+TARGETS=runmic mic crt-inx fill-inx inxat loadinx michlp.pnlgrp mic.cmd
 
 all: $(TARGETS)
 	@echo "compilation done -- mic"
@@ -31,24 +31,30 @@ all: $(TARGETS)
 mic.module: stmt.hpp builtin.hpp
 
 mic-main.module: mic-main.cpp
-	system "crtcppmod $(BIN_LIB)/$* srcstmf('$<') $(CPPLEFLAGS)"
-	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.module" $*.module
+	system "crtcppmod $(BIN_LIB)/mic_main srcstmf('$<') $(CPPLEFLAGS)"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/mic_main.module" $*.module
 
 crt-inx: crt-inx.cpp
-	system "crtbndcpp $(BIN_LIB)/$@ srcstmf('$<') dbgview(*all) $(CPPLEFLAGS)"
-	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
+	system "crtbndcpp $(BIN_LIB)/crt_inx srcstmf('crt-inx.cpp') $(CPPLEFLAGS)"
+	ln -fs /qsys.lib/$(BIN_LIB).lib/crt_inx.pgm $@
 
 fill-inx: fill-inx.cpp
-	system "crtbndcpp $(BIN_LIB)/$@ srcstmf('$<') $(CPPLEFLAGS)"
-	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
+	system "crtbndcpp $(BIN_LIB)/fill_inx srcstmf('fill-inx.cpp') $(CPPLEFLAGS)"
+	ln -fs /qsys.lib/$(BIN_LIB).lib/fill_inx.pgm $@
 
 mic: mic.module mic-main.module
-	$(CXX) -o $@ $^
+	system "crtpgm $(BIN_LIB)/$@ module($(BIN_LIB)/mic $(BIN_LIB)/mic_main)"
+	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
 
 clean:
-	$(RM) $(TARGETS)
+	rmflnk $(TARGETS) mic.module mic-main.module
 
 cmd_pnlgrp:
 	@echo "attention: compiling CL command and panel-groups ..."
 	system "CRTPNLGRP PNLGRP($(BIN_LIB)/MICHLP) SRCFILE(LS2008/DEC) SRCMBR(*PNLGRP)"
 	system "CRTCMD CMD($(BIN_LIB)/MIC) PGM($(BIN_LIB)/MIC) SRCFILE(LS2008/DEC) SRCMBR(MIC) HLPPNLGRP($(BIN_LIB)/MICHLP) HLPID('HLP/MIC')"
+
+mic.cmd: mic.cl-cmd michlp.pnlgrp
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
+parm('PGM($(BIN_LIB)/$*) HLPPNLGRP($(BIN_LIB)/michlp) HLPID(''HLP/MIC'')')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd

@@ -32,4 +32,4 @@ all: $(TARGETS)
 	@echo "end of compilation: sub-dir qsh."
 
 clean:
-	qsh -c "rmflnk $(TARGETS)"
+	rmflnk $(TARGETS)

@@ -46,7 +46,7 @@ all: $(TARGETS)
 	@echo "compilation done -- rpg"
 
 clean:
-	qsh -c "/usr/bin/rmflnk $(TARGETS)"
+	rmflnk $(TARGETS)
 
 uandi: t150.module
 	- system "crtbnddir $@"

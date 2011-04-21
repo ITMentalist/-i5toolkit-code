@@ -27,7 +27,7 @@
 
 HOST=g525
 # i5toolkit
-BIN_LIB=zzz
+BIN_LIB=i5toolkit
 HOST_DIR=/home/ljl/chqs/mic
 BUILD_SCRIPT=$(HOST_DIR)/build.sh
 BUILD_LOG=.build-log

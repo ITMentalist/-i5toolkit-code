@@ -30,4 +30,4 @@ all: $(TARGETS)
 	@echo "compilation done -- art"
 
 clean:
-	qsh -c "/usr/bin/rmflnk $(TARGETS)"
+	/usr/bin/rmflnk $(TARGETS)

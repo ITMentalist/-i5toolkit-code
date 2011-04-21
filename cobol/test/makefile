@@ -32,7 +32,7 @@ all: $(TARGETS)
 	@echo "compilation done -- cobol/test"
 
 clean:
-	qsh -c "/usr/bin/rmflnk $(TARGETS)"
+	rmflnk $(TARGETS)
 
 cbl002: cbl002.cblle
 	system "crtbndcbl pgm($@) srcstmf(cbl002.cblle) $(CBLLEFLAGS) bnddir(QC2LE)"

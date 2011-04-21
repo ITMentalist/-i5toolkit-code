@@ -18,12 +18,17 @@
 #
 # makefile of subproject SCM Tools (cm)
 #
-# @remark CL command CRTFRMSTMF must be compiled manually for the first time, since it is used to compile itself.
+# @remark CL command CRTFRMSTMF must be compiled manually for the
+#	  first time, since it is used to compile itself.
+#
+# @remark To utilize shell script rmflnk, you need to upload it to
+# 	  your stream file system and make sure it is visible through
+# 	  the PATH evironment.
 #
 
 BIN_LIB=i5toolkit
 MAKERULES=../rules.mk
-TARGETS=gendbfsrc stmfseu chstmfseu mtime touch unlink crtfrmstmf cmhlp.pnlgrp crtfrmstmf.cmd stmfseu.cmd rmflnk
+TARGETS=gendbfsrc stmfseu chstmfseu mtime touch unlink crtfrmstmf cmhlp.pnlgrp crtfrmstmf.cmd stmfseu.cmd
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir cm."
@@ -40,4 +45,4 @@ parm('PGM($(BIN_LIB)/$*) HLPPNLGRP($(BIN_LIB)/CMHLP) HLPID(''CRTFRMSTMF'')')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
 clean:
-	qsh -c "/usr/bin/rmflnk $(TARGETS)"
+	rmflnk $(TARGETS)

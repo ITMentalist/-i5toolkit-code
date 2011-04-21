@@ -29,4 +29,4 @@ all: $(TARGETS)
 	@echo "end of compilation: sub-dir mip."
 
 clean:
-	qsh -c "/usr/bin/rmflnk $(TARGETS)"
+	rmflnk $(TARGETS)

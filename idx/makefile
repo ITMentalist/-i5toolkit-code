@@ -39,7 +39,7 @@ parm('PGM($(BIN_LIB)/$*) HLPPNLGRP($(BIN_LIB)/idxhlp) HLPID(''HLP/IDXD'')')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
 clean:
-	qsh -c "/usr/bin/rmflnk $(TARGETS)"
+	rmflnk $(TARGETS)
 
 #
 #cmd_pnlgrp:

@@ -17,7 +17,7 @@
       * along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
       */
 
-     /**
+     /* *
       * @file cbl005.cblle
       *
       * Test of:

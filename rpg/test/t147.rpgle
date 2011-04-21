@@ -17,7 +17,7 @@
       * along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
       */
 
-     /**
+     /* *
       * @file t147.rpgle
       *
       * Test of _MATMATR1. Materialize HMC info.
@@ -47,8 +47,8 @@
            *inlr = *on;
       /end-free
 
-     /**
-      * The returned HMC info might like the following:
+     /* *
+      * The returned HMC info might be like the following:
       * @code
       * > EVAL TMPL.HMC_INFO.INFO(1):x 100                
       *      00000     486D6353 7461743D 313B4873 634E616D
@@ -61,6 +61,6 @@
       * @endcode
       *
       * Convert the above result into ASCII encoding, then the
-      * result should like the following:
+      * result should be like the following:
       * 'HmcStat=1;... ...'
       */

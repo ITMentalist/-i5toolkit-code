@@ -49,4 +49,4 @@ oneyear: experts.file
 experts.file: teamates.file
 
 clean:
-	-qsh -c "/usr/bin/rmflnk $(TARGETS) calculate.module calculator.module"
+	rmflnk $(TARGETS) calculate.module calculator.module

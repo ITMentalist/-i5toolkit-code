@@ -15,6 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
 
+#
+# @deprecated This makefile was written to work with gmake and is not in use now.
+#
+
 % : %.mi
 	$(MIC) $(MIFLAGS) -o$@ $<
 

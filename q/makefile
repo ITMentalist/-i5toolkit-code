@@ -53,4 +53,4 @@ parm('PGM($(BIN_LIB)/ENQUSRQ) HLPPNLGRP($(BIN_LIB)/dspqathlp) HLPID(''HLP/ENQ'')
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
 clean:
-	qsh -c "/usr/bin/rmflnk $(TARGETS)"
+	rmflnk $(TARGETS)
