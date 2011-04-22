@@ -22,7 +22,9 @@
       *
       * Test of _MATMATR1. Materialize HMC info.
       */
+      /if defined(*crtbndrpg)
      h dftactgrp(*no)
+      /endif
 
       /copy mih-pgmexec
       /copy mih-spt

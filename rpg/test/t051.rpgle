@@ -20,7 +20,7 @@
      /**
       * @file t051.rpgle
       *
-      * test of system builtin _LPCPYNV and _LPCPYNVR
+      * test of system builtin _LBCPYNV and _LBCPYNVR
       */
 
       /if defined(*crtbndrpg)

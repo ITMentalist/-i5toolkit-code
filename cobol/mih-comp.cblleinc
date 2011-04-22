@@ -26,6 +26,15 @@
       *A   B
 
      /**
+      * @BIF _CLRBTS (Set Bit in String (CLRBTS))
+      *
+      * @example test/cbl003.cblle
+      */
+      *    call "_CLRBTS" using
+      *        by value pointer
+      *        by value binary-4-offset.
+
+     /**
       * @BIF _SETBTS (Set Bit in String (SETBTS))
       *
       * @example test/cbl003.cblle

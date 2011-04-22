@@ -22,11 +22,13 @@
 /*                                                                            */
 /* Test of the following system builtins:                                     */
 /*  - _CTSD (Compute Timestamp Duration)                                      */
+/*  - _LBCPYNV (Copy Numeric Value)                                           */
 /*                                                                            */
 /* Call this program like the following:                                      */
-/*   CALL CL006 ('15.11.05' '11.10.03')                                       */
+/* CALL PGM(CL006)                                                            */
+/*      PARM('2011-05-02-19.15.15.000000' '2011-05-01-08.11.11.111000')       */
 /*                                                                            */
-/* The result should be: &DURATION = 040102.                                  */
+/* Output: 00000001110403889000                                               */
 /******************************************************************************/
 
              PGM        PARM(&EVENING &MORNING)
@@ -50,9 +52,20 @@
                           00') /* instruction template to compute +
                           ISO time duration */
              DCL        VAR(&DURATION) TYPE(*CHAR) LEN(11) /* pkd(20,6) */
+             DCL        VAR(&STRDUR) TYPE(*CHAR) LEN(20)
+             DCL        VAR(&DPATZND) TYPE(*CHAR) LEN(7) +
+                          VALUE(X'02001400000000')
+             DCL        VAR(&DPATPKD) TYPE(*CHAR) LEN(7) +
+                          VALUE(X'03001400000000')
 
              CALLPRC    PRC('_CTSD') PARM((&DURATION *BYREF) +
                           (&EVENING *BYREF) (&MORNING *BYREF) +
                           (&TSDURTMPL *BYREF))
-                        /* &DURATION: hex 000000005010510768000F */
+                        /* &DURATION: hex 000000001110403889000F */
+
+             CALLPRC    PRC('_LBCPYNV') PARM((&STRDUR *BYREF) +
+                          (&DPATZND *BYREF) (&DURATION *BYREF) +
+                          (&DPATPKD *BYREF)) /* Convert packed +
+                          timestatmp-duration to character format */
+             SNDPGMMSG  MSG(&STRDUR)
              ENDPGM

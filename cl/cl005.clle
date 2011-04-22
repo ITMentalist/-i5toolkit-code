@@ -1,33 +1,33 @@
-/******************************************************************************/
-/* This file is part of i5/OS Programmer's Toolkit.                           */
-/*                                                                            */
-/* Copyright (C) 2010, 2011  Junlei Li.                                       */
-/*                                                                            */
-/* i5/OS Programmer's Toolkit is free software: you can redistribute          */
-/* it and/or modify it under the terms of the GNU General Public              */
-/* License as published by the Free Software Foundation, either               */
-/* version 3 of the License, or (at your option) any later version.           */
-/* i5/OS Programmer's Toolkit is distributed in the hope that it will         */
-/* be useful, but WITHOUT ANY WARRANTY; without even the implied              */
-/* warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.           */
-/* See the GNU General Public License for more details.                       */
-/*                                                                            */
-/* You should have received a copy of the GNU General Public License          */
-/* along with i5/OS Programmer's Toolkit.  If not, see                        */
-/* <http://www.gnu.org/licenses/>.                                            */
-/******************************************************************************/
+/**                                                                            +
+ * This file is part of i5/OS Programmer's Toolkit.                            +
+ *                                                                             +
+ * Copyright (C) 2010, 2011  Junlei Li.                                        +
+ *                                                                             +
+ * i5/OS Programmer's Toolkit is free software: you can redistribute           +
+ * it and/or modify it under the terms of the GNU General Public               +
+ * License as published by the Free Software Foundation, either                +
+ * version 3 of the License, or (at your option) any later version.            +
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will          +
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied               +
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.            +
+ * See the GNU General Public License for more details.                        +
+ *                                                                             +
+ * You should have received a copy of the GNU General Public License           +
+ * along with i5/OS Programmer's Toolkit.  If not, see                         +
+ * <http://www.gnu.org/licenses/>.                                             +
+ */
 
-/******************************************************************************/
-/* @file cl005.clle                                                           */
-/*                                                                            */
-/* Test of the following system builtins:                                     */
-/*  - _CTD (Compute Time Duration)                                            */
-/*                                                                            */
-/* Call this program like the following:                                      */
-/*   CALL CL005 ('15.11.05' '11.10.03')                                       */
-/*                                                                            */
-/* The result should be: &DURATION = 040102.                                  */
-/******************************************************************************/
+/* *                                                                           +
+ * @file cl005.clle                                                            +
+ *                                                                             +
+ * Test of the following system builtins:                                      +
+ *  - _CTD (Compute Time Duration)                                             +
+ *                                                                             +
+ * Call this program like the following:                                       +
+ *   CALL CL005 ('15.11.05' '11.10.03')                                        +
+ *                                                                             +
+ * The result should be: &DURATION = 040102.                                   +
+ */
 
              PGM        PARM(&EVENING &MORNING)
              DCL        VAR(&EVENING) TYPE(*CHAR) LEN(8) /* end time */
