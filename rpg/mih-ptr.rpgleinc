@@ -21,8 +21,6 @@
       * @file mih-ptr.rpgleinc
       *
       * Pointer/Name resolution instructions.
-      *
-      * @todo _RSLVSP (rslvsp_tmpl2)
       */
 
       /if not defined(i5toolkit_rpg_mih_ptr)
@@ -441,7 +439,10 @@
       * @BIF _SETSPPFP (Set Space Pointer from Pointer (SETSPPFP))
       * @attention this prototype does NOT work with a SYSPTR
       *            unless src_ptr is declared as a procptr?!
-      * @todo      why?
+      * @remark When pointer data objects other than space
+      *         poniters are passed by value, the RPG compiler does
+      *         NOT passed them correctly. A PROCPTR keyword is needed
+      *         for the input source-pointer operand.
       */
      d setsppfp        pr              *   extproc('_SETSPPFP')
      d     src_ptr                     *   value procptr

@@ -95,6 +95,17 @@
                                    "_CDD"
                                    "_CTSD".
 
+      * Pointer/name resolution instructions.
+           linkage type is sys for "_CMPPTRA"
+                                   "_CMPPTRT".
+
+      * Space Management Instructions.
+           linkage type is sys for "_CRTS"
+                                   "_DESS"
+                                   "_MATS"
+                                   "_MODS1"
+                                   "_MODS2".
+
       * Machine Interface support instructions.
            linkage type is sys for "_GENUUID".
 
