@@ -18,33 +18,33 @@
       */
 
      /**
-      * @file mih-ptr.cblleinc
+      * @file mih-dtaptr.cblleinc
       *
-      * Pointer/name resolution instructions.
+      * Data pointer related instructions: _SETDP, _SETDPADR.
       */
 
       *A   B
 
      /**
-      * @BIF _CMPPTRA (Compare Pointer for Object Addressability (CMPPTRA))
+      * @BIF _SETDP (Set Data Pointer (SETDP))
+      *
+      * @remark In a sense, the _SETDP system-builtin compines the
+      * functionality of the SETDP and SETDPAT instructions in the OPM
+      * MI instructions set. It assigns both the scalar type and
+      * length attributes and the addressibility to the returned data
+      * pointer.
+      *
+      * @example cbl011.cblle
       */
+      *    call "_SETDP" using
+      *         by reference   scalar-data-object
+      *         by value       scalar-attr
+      *         returning into dta-ptr.
 
      /**
-      * @BIF _CMPPTRT (Compare Pointer Type (CMPPTRT))
-      *
-      * @return _CMPPTRT returns a 4-byte binary to indicate the test
-      * result. 1 if input-pointer is of specified type, 0 if not.
-      *
-      * @example test/cbl010.cblle
+      * @BIF _SETDPADR (Set Data Pointer Addressability (SETDPADR))
       */
-      *    call "_CMPPTRT" using
-      *         by value 1-byte-pointer-type
-      *         by value input-pointer
-      *         returning into test-result.
+      *setdpadr        pr              *   extproc('_SETDPADR')
+      *    dtaptr                      *   value
+      *    addr                        *   value
 
-     /**
-      * @BIF _SETSPPFP (Set Space Pointer from Pointer (SETSPPFP))
-      */
-      *    call "_SETSPPFP" using
-      *         by value data-ptr-or-system-ptr
-      *         returning into space-pointer.

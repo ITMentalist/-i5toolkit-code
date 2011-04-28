@@ -23,7 +23,7 @@
       * Test of:
       *  - _CMPPTRT (Compare Pointer Type)
       *
-      * This program
+      * This program uses _CMPPTRT to test for null pointers.
       */
 
        process

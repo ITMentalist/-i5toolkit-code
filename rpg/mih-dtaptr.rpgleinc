@@ -20,7 +20,7 @@
      /**
       * @file mih-dtaptr.rpgleinc
       *
-      * Data pointer instructions: _SETDP, _SETDPADR.
+      * Data pointer related instructions: _SETDP, _SETDPADR.
       */
 
       /if not defined(i5toolkit_rpg_mih_dtaptr)
@@ -28,6 +28,12 @@
 
      /**
       * @BIF _SETDP (Set Data Pointer (SETDP))
+      *
+      * @remark In a sense, the _SETDP system-builtin compines the
+      * functionality of the SETDP and SETDPAT instructions in the OPM
+      * MI instructions set. It assigns both the scalar type and
+      * length attributes and the addressibility to the returned data
+      * pointer.
       */
      d setdp           pr              *   extproc('_SETDP')
      d     addr                        *   value

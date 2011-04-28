@@ -97,7 +97,12 @@
 
       * Pointer/name resolution instructions.
            linkage type is sys for "_CMPPTRA"
-                                   "_CMPPTRT".
+                                   "_CMPPTRT"
+                                   "_SETSPPFP".
+
+      * Data pointer related instructions
+           linkage type is sys for "_SETDP"
+                                   "_SETDPADR".
 
       * Space Management Instructions.
            linkage type is sys for "_CRTS"

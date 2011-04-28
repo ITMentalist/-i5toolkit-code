@@ -53,13 +53,28 @@
       *        by value char-1-scalar
       *        by value binary-4-length.
 
-     /* bound program calculation builtins */
+     /**
+      * Pad operand of CPYECLAP
+      *
+      * @remark The default pad values are hex 40 for SBCS and hex 4040 for DBCS.
+      */
+       01 cpyeclap-pad-t is typedef.
+          05 sbcs-pad pic x value x"40".
+          05 dbcs-pad pic x(2) value x"4040".
 
      /**
-      * @BIF _CPYBYTES (Copy Bytes (CPYBYTES))
-      *
-      * @example test/cbl006.cblle
+      * @BIF _CPYECLAP (Copy Extended Characters Left-Adjusted With Pad (CPYECLAP))
       */
+      *    call "_CPYECLAP" using
+      *         by reference target-data-pointer
+      *         by reference source-data-pointer
+      *         by reference cpyeclap-pad-t.
+
+     /**
+      * @BIF _LBCPYNV (Copy Numeric Value (CPYNV))
+      */
+
+     /* bound program calculation builtins */
 
      /**
       * @BIF _CPYBYTES (Copy Bytes (CPYBYTES))

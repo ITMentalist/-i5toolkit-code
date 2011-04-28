@@ -36,5 +36,7 @@
 
      /**
       * @BIF _GENUUID (Generate Universal Unique Identifier (GENUUID))
+      *
+      * @example test/cbl002.cblle
       */
       *    call "_GENUUID" using DS-of-type-uuid-t.
