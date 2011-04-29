@@ -43,6 +43,37 @@
       *         returning into test-result.
 
      /**
+      * Basic instruction template of RSLVSP, which is of length 34 bytes.
+      */
+       01 rslvsp-tmpl-t is typedef.
+          05 obj-type      pic x(2).
+          05 obj-name      pic x(30).
+      * required authorization
+          05 req-auth      pic x(2).
+
+     /**
+      * The extended version of instruction template of RSLVSP, of length 128 bytes.
+      *
+      * @remark To indicate the existence of the extended template,
+      *         set the bit 15 of field auth in the basic instruction
+      *         template.
+      */
+       01 rslvsp-tmpl-ex-t is typedef.
+          05 obj-type      pic x(2).
+          05 obj-name      pic x(30).
+      * required authorization
+          05 req-auth      pic x(2).
+      * extended template
+          05 tmpl-ver      pic x.
+          05 search-method pic x.
+          05 opt           pic x.
+          05 filler        pic x(7).
+          05 asp-num       pic 9(4) usage comp-4.
+          05 asp-num-rtn   pic 9(4) usage comp-4.
+          05 ctx-rtn       usage pointer.
+          05 filler        pic x(64).
+
+     /**
       * @BIF _SETSPPFP (Set Space Pointer from Pointer (SETSPPFP))
       */
       *    call "_SETSPPFP" using

@@ -46,6 +46,7 @@
        01 scalar-attr pic x(7) value x"03020500000000".
        01 ptr-grp.
           05 dta-ptr usage pointer.
+       01 rtn pic 9(9) usage binary.
 
        procedure division.
        main-pgm.
@@ -73,6 +74,18 @@
       *  bits 4-7 of byte 0 = hex 9, the scalar data type attribute is open character
       *  byte 4-5: scalar length attribute
       *  lower 8-byte stores the addressibility of the data pointer
+
+      * am i a data pointer?
+           call "_CMPPTRT" using
+                by value       x"03"
+                by value       dta-ptr
+                returning into rtn.
+           if rtn equal to 1
+              then
+              display "i'm a data pointer :p"
+           else
+              display "Oops?!"
+           end-if.
 
            stop run.
        end program cbl011.

@@ -23,6 +23,7 @@
       * Test of:
       *  - _CRTS (Create Space)
       *  - _DESS (Destroy Space)
+      *  - _MODS (Modify Space)
       * This program creates a temporary space object whose
       * addressiblity is not in any context (library).
       */
@@ -55,7 +56,7 @@
        procedure division.
        main-pgm.
 
-           compute len = function length(crts-tmpl-t).
+           move length of crts-tmpl-t to len.
            call "_PROPB" using
                 by reference  tmpl
                 by value      x"00"
@@ -77,6 +78,17 @@
            call "_CRTS" using
                 by reference romio
                 by reference tmpl.
+
+           call program "CBL013" using
+                by reference romio.
+      * modify space size
+           compute len = spc-size of tmpl * 2.
+           call "_MODS1" using
+                by reference romio
+                by reference len.
+
+           call program "CBL013" using
+                by reference romio.
 
            call "_DESS" using
                 by reference romio.

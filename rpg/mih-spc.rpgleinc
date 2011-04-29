@@ -281,7 +281,7 @@
       */
      d mods1           pr                  extproc('_MODS1')
      d     spc                         *
-     d     spc_size                   5i 0
+     d     spc_size                  10u 0
 
      /* Modification template for MODS */
      d mods_tmpl_t     ds                  qualified

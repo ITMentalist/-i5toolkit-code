@@ -39,3 +39,6 @@ cbl002: cbl002.cblle
 	system "crtbndcbl pgm($@) srcstmf(cbl002.cblle) $(CBLLEFLAGS) bnddir(QC2LE)"
 	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
 
+cbl009: cbl009.module cbl013.module
+	system "crtpgm $@ module(cbl009 cbl013)"
+	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
