@@ -23,15 +23,20 @@
 
 BIN_LIB=i5toolkit
 MAKERULES=../rules.mk
-TARGETS=chgusrspc chgusvcp chgusrspc.cmd dsppnl.cmd dsppnl
+TARGETS=chgusrspc chgusvcp spchlp.pnlgrp chgusrspc.cmd dsppnl.cmd dspusrspcd.cmd
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir spc."
 
 # @todo HLPPNLGRP($(BIN_LIB)/spchlp) HLPID(''HLP/CHG'')')
-chgusrspc.cmd: chgusrspc.cl-cmd chgusrspc chgusvcp
+chgusrspc.cmd: chgusrspc.cl-cmd chgusrspc chgusvcp spchlp.pnlgrp
 	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
-parm('PGM($(BIN_LIB)/$*) VLDCKR($(BIN_LIB)/CHGUSVCP)')"
+parm('PGM($(BIN_LIB)/$*) VLDCKR($(BIN_LIB)/CHGUSVCP) HLPPNLGRP($(BIN_LIB)/spchlp) HLPID(''HLP/CHG'')')"
+	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
+
+dsppnl.cmd: dsppnl.cl-cmd spchlp.pnlgrp
+	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
+parm('PGM($(BIN_LIB)/$*) VLDCKR($(BIN_LIB)/CHGUSVCP) HLPPNLGRP($(BIN_LIB)/spchlp) HLPID(''HLP/DSPPNL'')')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
 clean:

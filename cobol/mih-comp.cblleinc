@@ -44,6 +44,17 @@
       *        by value binary-4-offset.
 
      /**
+      * @BIF _TSTBTS (Test Bit in String (TSTBTS))
+      *
+      * @return 1 if bit is set, otherwise 0.
+      * @example test/cbl014.cblle
+      */
+      *    call "_TSTBTS" using
+      *         by reference   character-or-numeric-scalar
+      *         by value       bin-4-bit-offset
+      *         returning into bin-4-result.
+
+     /**
       * @BIF _PROPB (Propagate Byte (PROPB))
       *
       * @example test/cbl002.cblle

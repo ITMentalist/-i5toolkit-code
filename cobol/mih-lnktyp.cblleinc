@@ -98,6 +98,8 @@
       * Pointer/name resolution instructions.
            linkage type is sys for "_CMPPTRA"
                                    "_CMPPTRT"
+                                   "_RSLVSP2"
+                                   "_RSLVSP4"
                                    "_SETSPPFP".
 
       * Data pointer related instructions

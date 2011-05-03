@@ -74,6 +74,23 @@
           05 filler        pic x(64).
 
      /**
+      * @BIF _RSLVSP2 (Resolve System Pointer (RSLVSP))
+      *
+      * @example test/cbl014.cblle
+      */
+      *    call "_RSLVSP2" using
+      *         by reference system-pointer-to-space-object
+      *         by reference instruction-template.
+
+     /**
+      * @BIF _RSLVSP4 (Resolve System Pointer (RSLVSP))
+      */
+      *    call "_RSLVSP4" using
+      *         by reference system-pointer-to-space-object
+      *         by reference instruction-template.
+      *         by reference system-pointer-to-context-object
+
+     /**
       * @BIF _SETSPPFP (Set Space Pointer from Pointer (SETSPPFP))
       */
       *    call "_SETSPPFP" using

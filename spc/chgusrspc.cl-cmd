@@ -25,7 +25,7 @@
              PARM       KWD(USRSPC) TYPE(OBJLIB) MIN(1) PROMPT('User +
                           space')
              PARM       KWD(OFFSET) TYPE(*INT4) DFT(0) +
-                          PROMPT('Offset in space')
+                          PROMPT('Offset into space')
              PARM       KWD(DTATYPE) TYPE(*CHAR) LEN(10) RSTD(*YES) +
                           DFT(*SCALAR) VALUES(*SCALAR *PTR) +
                           PROMPT('Data type')

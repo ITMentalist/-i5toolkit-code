@@ -23,7 +23,7 @@
       * Test of:
       *  - _CRTS (Create Space)
       *  - _DESS (Destroy Space)
-      *  - _MODS (Modify Space)
+      *  - _MODS1 (Modify Space)
       * This program creates a temporary space object whose
       * addressiblity is not in any context (library).
       */

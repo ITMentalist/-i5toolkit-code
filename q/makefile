@@ -34,12 +34,12 @@ all: $(TARGETS)
 
 dspqd.cmd: dspqathlp.pnlgrp dspqat.pnlgrp
 	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
-parm('PGM($(BIN_LIB)/QATTR) HLPPNLGRP($(BIN_LIB)/dspqathlp) HLPID(''HLP/ABT'')')"
+parm('PGM($(BIN_LIB)/QATTR) HLPPNLGRP($(BIN_LIB)/dspqathlp) HLPID(''HELP/ABT'')')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
 dspqmsg.cmd: dspqathlp.pnlgrp dspqm.pnlgrp
 	system "i5toolkit/crtfrmstmf obj($(BIN_LIB)/$*) cmd(CRTCMD) srcstmf('$<') \
-parm('PGM($(BIN_LIB)/QMSG) HLPPNLGRP($(BIN_LIB)/dspqathlp) HLPID(''HLP/ABTQM'')')"
+parm('PGM($(BIN_LIB)/QMSG) HLPPNLGRP($(BIN_LIB)/dspqathlp) HLPID(''HELP/ABTQM'')')"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.cmd" $*.cmd
 
 clrusrq.cmd: dspqathlp.pnlgrp
