@@ -177,7 +177,7 @@ primary associated space SYSOBJ.
 :p. The Display Panel (DSPPNL) command is one of the UIM Related Tools
 provided by i5/OS Programmer's Toolkit.
 
-:p. The Display Panel (DSPPNL) command display a panel in a compiled
+:p. The Display Panel (DSPPNL) command displays a panel in a compiled
 Panel Group (*PNLGRP) object.
 
 :p.  Refer to :hp2.http://i5toolkit.sourceforge.net:ehp2. for details
@@ -212,14 +212,6 @@ Junlei Li
 :p.
 :p. The UIM panel to be displayed
 :ehelp.
-
-.* =============================================================================
-.* Help info for the DSPUSRSPCD command
-.* =============================================================================
-
-.* =============================================================================
-.* Help info for the DSPUSRSPC command
-.* =============================================================================
 
 :epnlgrp.
 .* eof - spchlp.pnlgrp

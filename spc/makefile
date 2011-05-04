@@ -23,7 +23,7 @@
 
 BIN_LIB=i5toolkit
 MAKERULES=../rules.mk
-TARGETS=chgusrspc chgusvcp spchlp.pnlgrp chgusrspc.cmd dsppnl.cmd dspusrspcd.cmd
+TARGETS=chgusrspc chgusvcp spchlp.pnlgrp chgusrspc.cmd dsppnl.cmd
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir spc."

@@ -23,7 +23,7 @@ MAKERULES=rules.mk
 CLEFLAGS=DBGVIEW(*ALL) INCDIR('.') OUTPUT(*PRINT)
 CPPLEFLAGS=DBGVIEW(*ALL) INCDIR('.') OUTPUT(*PRINT)
 
-TARGETS=runmic mic crt-inx fill-inx inxat loadinx michlp.pnlgrp mic.cmd
+TARGETS=runmic mic crt-inx fill-inx inxat loadinx michlp.pnlgrp mic.cmd cvthc
 
 all: $(TARGETS)
 	@echo "compilation done -- mic"
