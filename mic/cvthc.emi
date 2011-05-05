@@ -72,4 +72,4 @@ cvt-lo:
 
 brk 'END'                       ;
         rtx *                   ;
-pend                            ;
+pend                            ; /* instruction number: hex 0012 */

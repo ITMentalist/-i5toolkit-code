@@ -27,7 +27,7 @@ CLFLAGS=genopt(*list *xref)
 MIFLAGS=incdir('.')
 
 TARGETS=cbl001 cbl002 cbl003 cbl004 cbl005 cbl006 cbl007 cbl008 cbl009 cbl010 \
-	cbl011 cbl012 cbl013 cbl014
+	cbl011 cbl012 cbl013 cbl014 cbl015
 
 all: $(TARGETS)
 	@echo "compilation done -- cobol/test"
@@ -35,9 +35,9 @@ all: $(TARGETS)
 clean:
 	rmflnk $(TARGETS)
 
-cbl002: cbl002.cblle
-	system "crtbndcbl pgm($@) srcstmf(cbl002.cblle) $(CBLLEFLAGS) bnddir(QC2LE)"
-	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
+#cbl002: cbl002.cblle
+#	system "crtbndcbl pgm($@) srcstmf(cbl002.cblle) $(CBLLEFLAGS) bnddir(QC2LE)"
+#	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
 
 cbl009: cbl009.module cbl013.module
 	system "crtpgm $@ module(cbl009 cbl013)"

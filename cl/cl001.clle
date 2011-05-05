@@ -23,6 +23,9 @@
 /* Test of the following MI instructions:                                     */
 /*  - PROPB                                                                   */
 /*  - GENUUID                                                                 */
+/*                                                                            */
+/* The output might like the following:                                       */
+/* CFAE000183EF1945AC820004AC117E94                                           */
 /******************************************************************************/
 
              PGM
@@ -34,12 +37,14 @@
                           LEN(4) DEFVAR(&TMPL 5)
              DCL        VAR(&UUID) TYPE(*CHAR) STG(*DEFINED) LEN(16) +
                           DEFVAR(&TMPL 17)
+             DCL        VAR(&MSG) TYPE(*CHAR) LEN(32)
+             DCL        VAR(&NIBLEN) TYPE(*UINT) LEN(4) VALUE(32)
 
              CALLPRC    PRC('_PROPB') PARM((&TMPL *BYREF) (X'00' +
                           *BYVAL) (&LEN *BYVAL))
              CHGVAR     VAR(&BYTESIN) VALUE(&LEN)
              CALLPRC    PRC('_GENUUID') PARM((&TMPL *BYREF))
-             /* now the hex value of &UUID is:                                */
-             /* 517EF001 565B1943 AC810004 AC117E94                           */
+             CALL       PGM(CVTHC) PARM(&MSG &UUID &NIBLEN)
 
+             SNDPGMMSG  MSG(&MSG)
              ENDPGM

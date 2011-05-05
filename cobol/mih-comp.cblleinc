@@ -88,6 +88,15 @@
      /* bound program calculation builtins */
 
      /**
+      * @BIF _ANDCSTR (AND String (ANDSTR))
+      */
+      *    call "_ANDSTR" using
+      *         by reference receiver-tring
+      *         by reference first-source-string
+      *         by reference second-source-string
+      *         by value     string-length.
+
+     /**
       * @BIF _CPYBYTES (Copy Bytes (CPYBYTES))
       *
       * @example test/cbl006.cblle

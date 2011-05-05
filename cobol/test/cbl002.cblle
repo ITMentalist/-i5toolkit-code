@@ -34,7 +34,6 @@
        configuration section.
        special-names.
            copy mih-lnktyp.
-           linkage type is procedure for "cvthc".
 
        data division.
        working-storage section.
@@ -54,11 +53,15 @@
            call "_GENUUID" using
                by reference tmpl.
 
-           call "cvthc" using
-               by value address of result
-               by value address of uuid of tmpl
-               by value            uuid-len.
+           call program "CVTHC" using
+               by reference result
+               by reference uuid of tmpl
+               by reference uuid-len.
            display "UUID generated: " result.
 
        see-you.
            stop run.
+      *
+      * Output of cbl002 might be the following:
+      * UUID generated: 8E47800184071945AC820004AC117E94
+      *
