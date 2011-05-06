@@ -38,14 +38,15 @@
 
        data division.
        working-storage section.
-           copy mih-comp.
-           copy mih-spc.
 
        01 len      pic 9(9) usage comp-4.
        01 rtn      pic 9(9) usage comp-4.
        01 tmpl-ptr usage pointer.
 
        linkage section.
+           copy mih-comp.
+           copy mih-spc.
+
        77 romio    usage pointer.
        77 tmpl     type mats-tmpl-t.
        77 str      pic x(116).

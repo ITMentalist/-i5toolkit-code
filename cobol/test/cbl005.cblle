@@ -41,10 +41,10 @@
        01 asf-size pic 9(9) usage comp-4.
        01 zer constant as x"00".
 
+       linkage section.
            copy mih-pgmexec.
            copy mih-pgmmng.
 
-       linkage section.
        01 pgm-info type matpgmnm-t.
 
        procedure division.

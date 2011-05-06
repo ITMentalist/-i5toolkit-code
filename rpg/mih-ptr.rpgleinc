@@ -211,11 +211,23 @@
      d     ptr                         *
 
      /**
+      * Instruction template of MATPTRL.
+      *
+      * @remark 8-byte bitmap can be used to test 1024 bytes storage.
+      *         To test larger range of storage, increase the length
+      *         of bitmap.
+      */
+     d matptrl_tmpl_t  ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10u 0
+     d     bytes_out                 10u 0
+     d     bitmap                     8a
+
+     /**
       * @BIF _MATPTRL (Materialize Pointer Locations (MATPTRL))
       */
      d matptrl         pr                  extproc('_MATPTRL')
-     d     receiver_ptr...
-     d                                 *   value
+     d     receiver                        likeds(matptrl_tmpl_t)
      d     source                      *   value
      d     length                    10i 0
 

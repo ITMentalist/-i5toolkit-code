@@ -68,10 +68,9 @@
        working-storage section.
        01 plist-ptr pointer.
 
-      * include mih-pgmexec
+       linkage section.
            copy mih-pgmexec.
 
-       linkage section.
        77 str pic x(32).
        77 pkd pic s999v99 usage comp-3.
 

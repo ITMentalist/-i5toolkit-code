@@ -42,9 +42,6 @@
 
        data division.
        working-storage section.
-           copy mih-comp.
-           copy mih-spc.
-
        01 tmpl     type crts-tmpl-t.
       * name of the space object to create
        01 spc-name pic x(30) value "Romio".
@@ -52,6 +49,8 @@
        01 romio    usage pointer.
 
        linkage section.
+           copy mih-comp.
+           copy mih-spc.
 
        procedure division.
        main-pgm.

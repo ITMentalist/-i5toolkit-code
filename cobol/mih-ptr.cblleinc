@@ -43,6 +43,28 @@
       *         returning into test-result.
 
      /**
+      * Instruction template of MATPTRL.
+      *
+      * @remark 8-byte bitmap can be used to test 1024 bytes storage.
+      *         To test larger range of storage, increase the length
+      *         of bitmap.
+      */
+       01 matptrl-tmpl-t is typedef.
+          05 bytes-in    pic 9(9) usage comp-4.
+          05 bytes-out   pic 9(9) usage comp-4.
+          05 bitmap      pic x(8).
+
+     /**
+      * @BIF _MATPTRL (Materialize Pointer Locations (MATPTRL))
+      *
+      * @example test/cbl016.cblle
+      */
+      *    call "_MATPTRL" using
+      *         by reference matptrl-tmpl-t
+      *         by value     space-pointer
+      *         by reference storage-length-in-bytes.
+
+     /**
       * Basic instruction template of RSLVSP, which is of length 34 bytes.
       */
        01 rslvsp-tmpl-t is typedef.

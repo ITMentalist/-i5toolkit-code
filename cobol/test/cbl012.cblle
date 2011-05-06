@@ -41,9 +41,6 @@
 
        data division.
        working-storage section.
-           copy mih-comp.
-           copy mih-dtaptr.
-
        01 str pic x(16).
        01 str-2 pic x(16).
       * scalar attributes of 16-byte open character data
@@ -57,6 +54,9 @@
        01 pad         type cpyeclap-pad-t.
 
        linkage section.
+           copy mih-comp.
+           copy mih-dtaptr.
+
        77 user-input pic x(256).
        77 input-len  pic 9(4) usage comp-4.
 

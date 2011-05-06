@@ -51,9 +51,6 @@
           05 attr-value pic x(50).
 
        working-storage section.
-           copy mih-comp.
-           copy mih-spc.
-           copy mih-ptr.
 
        01 r-tmpl type rslvsp-tmpl-t.
        01 usrspc usage pointer.
@@ -64,6 +61,10 @@
        01 str-flag pic x(4).
 
        linkage section.
+           copy mih-comp.
+           copy mih-spc.
+           copy mih-ptr.
+
        77 usrspc-name pic x(10).
 
        procedure division using usrspc-name.
@@ -86,6 +87,9 @@
            open output spcattr-report.
            move "Attribute Name" to attr-name.
            move "Attribute Value" to attr-value.
+           write report-rec.
+           move "---------------" to attr-name.
+           move "----------------" to attr-value.
            write report-rec.
 
            move 0 to offset.
@@ -158,7 +162,7 @@
            move "Automatically extend space" to attr-name.
            write report-rec.
 
-      * Bits 15-16
+       Bits_15-16.
            call "_ANDSTR" using
                 by reference str-flag
                 by reference crt-opt of spc-attr
@@ -205,7 +209,8 @@
       *   CALL CBL015 CBL014
       *
       * The output might like the following:
-      *   Attribute Name                Attribute Value                                 
+      *   Attribute Name                Attribute Value
+      *   ---------------               ----------------
       *   Existence attribute           Permanent                                       
       *   Space attribute               Variable-length                                 
       *   Context                       Addressability in context                       

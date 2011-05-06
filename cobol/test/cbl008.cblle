@@ -38,8 +38,6 @@
 
        data division.
        working-storage section.
-           copy mih-comp.
-           copy mih-dattim.
        01 ddat type ddat-t.
        01 len  pic 9(9).
 
@@ -49,6 +47,9 @@
        01 duration    pic 9(14)v9(6) usage comp-3.
 
        linkage section.
+           copy mih-comp.
+           copy mih-dattim.
+
        77 begin-ts pic x(26).
        77 end-ts   pic x(26).
 

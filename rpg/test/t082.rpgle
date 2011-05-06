@@ -33,13 +33,15 @@
      d     c                           *   inz(%addr(buf))
 
      d len             s             10i 0 inz(%size(buf))
-     d result          s              1a
+     d result          ds                  likeds(matptrl_tmpl_t)
 
       /free
-           matptrl( %addr(result)
+           propb(%addr(result) : x'00' : %size(result));
+           result.bytes_in = %size(result);
+           matptrl( result
                   : %addr(buf)
                   : len);
-              // result = x'40'
+              // result.bitmap = x'4000...'
 
            *inlr = *on;
       /end-free
