@@ -24,7 +24,7 @@ CRTPNLGRPFLAGS=INCFILE(QGPL/I5TOOLSRC)
 
 BIN_LIB=
 MAKERULES=rules.mk
-TARGETS=qattr qmsg enqk32 enqk5 dspusrqmsg dspdtaqmsg enqk64 qmdtl clrusrq \
+TARGETS=qattr qmsg dspusrqmsg dspdtaqmsg qmdtl clrusrq \
 	enqusrq dequsrq \
 	dspqathlp.pnlgrp dspqat.pnlgrp dspqm.pnlgrp \
 	dspqd.cmd dspqmsg.cmd clrusrq.cmd enqusrq.cmd
