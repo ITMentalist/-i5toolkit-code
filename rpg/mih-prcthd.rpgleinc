@@ -90,6 +90,13 @@
      d     bytes_out                 10i 0
      d     priority                   1a
 
+     /* NRL (Name Resolution List), aka. library list of an activate job. */
+     d nrl_t           ds                  qualified
+     d                                     based(dummy_ptr)
+     d     cnt                        5u 0
+     d                               12a
+     d     ctx_ptr                     *   dim(256)
+
      /**
       * @BIF _MATPRATR1 (Materialize Process Attributes (MATPRATR))
       */
