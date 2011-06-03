@@ -44,7 +44,9 @@ package {
             a2.writeByte(0xD3);
             a2.writeByte(0xE4);
             a2.writeByte(0xF5);
-            var a:ByteArray = ENC.logicalAdd(a1, a2, 8);
+
+            var enc:ENC = new ENC();
+            var a:ByteArray = enc.logicalAdd(a1, a2, 8);
             trace(a);
 
             for(var i:int = 0; i < 8; i++)
@@ -65,7 +67,8 @@ package {
             b8.writeByte(0x40);
             b8.writeByte(0x40);
 
-            var messed:ByteArray = ENC.messup8byte(b8);
+            var enc:ENC = new ENC();
+            var messed:ByteArray = enc.messup8byte(b8);
             for(var i:int = 0; i < 8; i++)
                 trace(i, messed.readByte());
         }

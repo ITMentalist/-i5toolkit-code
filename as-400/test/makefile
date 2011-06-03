@@ -8,7 +8,7 @@ MXFLAGS=-compiler.debug
 CFLAGS=-g
 
 INCDIR=as400/prototype
-TARGETS=test.swf misc.swf test2.swf
+TARGETS=misc.swf test.swf test2.swf
 
 all: $(TARGETS)
 	@echo "......"

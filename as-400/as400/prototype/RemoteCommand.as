@@ -388,8 +388,9 @@ package as400.prototype {
             while(pwd.length < 10) pwd += " ";
             var e_pwd:ByteArray = Conv37.to_ebcdic(pwd);
 
+            var enc:ENC = new ENC();
             enc_pwd_
-                = ENC.encrypt_password(e_user,
+                = enc.encrypt_password(e_user,
                                        user_.length,
                                        e_pwd,
                                        pwd_.length,

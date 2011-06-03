@@ -62,8 +62,9 @@ package {
             var sseed:ByteArray =  fillb8(new <int>[-63, -70, 117, -118, -122, -74, 50, -113]); trace("sseed", ENC.listb8(sseed));
 
             // @here
+            var enc:ENC = new ENC();
             var enc_pwd:ByteArray
-                = ENC.encrypt_password(e_user,
+                = enc.encrypt_password(e_user,
                                        user.length,
                                        e_pwd,
                                        pwd.length,

@@ -10,7 +10,6 @@ package {
     import flash.system.*;
     import flash.text.*;
     import flash.events.*;
-    import flash.utils.*; // ByteArray
 
     import as400.prototype.*;
 

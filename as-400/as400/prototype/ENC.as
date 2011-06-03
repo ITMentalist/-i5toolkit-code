@@ -20,13 +20,13 @@ package as400.prototype {
          *
          * @return 8-byte encrypted password
          */
-        public static function encrypt_password(e_usr:ByteArray,
-                                                usr_len:int,
-                                                e_pwd:ByteArray,
-                                                pwd_len:int,
-                                                client_seed:ByteArray,
-                                                server_seed:ByteArray
-                                                ) : ByteArray
+        public function encrypt_password(e_usr:ByteArray,
+                                         usr_len:int,
+                                         e_pwd:ByteArray,
+                                         pwd_len:int,
+                                         client_seed:ByteArray,
+                                         server_seed:ByteArray
+                                         ) : ByteArray
         {
             var r:ByteArray = new ByteArray();
             var i:int = 0;
@@ -157,9 +157,9 @@ package as400.prototype {
         /**
          * XOR 8 bytes
          */
-        public static function XORBytes(arr1:ByteArray,
-                                        arr2:ByteArray,
-                                        len:int) : ByteArray {
+        public function XORBytes(arr1:ByteArray,
+                                 arr2:ByteArray,
+                                 len:int) : ByteArray {
 
             len = (len <= arr1.length) ? len : arr1.length;
             len = (len <= arr2.length) ? len : arr2.length;
@@ -186,9 +186,9 @@ package as400.prototype {
          * in: 0x81, 0x82, 0x83, 0x95, 0xC2, 0xD3, 0xE4, 0xF5
          * out: 
          */
-        public static function logicalAdd(arr1:ByteArray,
-                                          arr2:ByteArray,
-                                          len:int) : ByteArray {
+        public function logicalAdd(arr1:ByteArray,
+                                   arr2:ByteArray,
+                                   len:int) : ByteArray {
 
             var i:int = 0;
             len = (len <= arr1.length) ? len : arr1.length;
@@ -227,7 +227,7 @@ package as400.prototype {
          * @remark this method is invoked when the length or user-ID > 8
          * @param [in/out] user, 10-byte EBCDIC user ID
          */
-        private static function fold_user_id(user:ByteArray) : ByteArray {
+        private function fold_user_id(user:ByteArray) : ByteArray {
             var v:Vector.<int> = new Vector.<int>(10);
             var len:int = user.length;
             if(len != 10) trace("Oops! len is NOT 10: ", len);
@@ -253,7 +253,7 @@ package as400.prototype {
         }
 
         /// @todo change this method to private
-        public static function messup8byte(b8:ByteArray) : ByteArray {
+        public function messup8byte(b8:ByteArray) : ByteArray {
 
             var b:int = 0;
             var i:int = 0;
