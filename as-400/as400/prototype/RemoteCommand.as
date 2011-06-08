@@ -46,8 +46,8 @@ package as400.prototype {
 
             security_policy_loaded_ = false;
             host_ = host;
-            user_ = user;
-            pwd_  = password;
+            user_ = user.toUpperCase();      // convert input user name to upper case
+            pwd_  = password.toUpperCase();  // convert input password to upper case
             lib_  = library;
             pgm_  = program;
 
@@ -69,7 +69,7 @@ package as400.prototype {
 
             // @todo the URL
             if(!security_policy_loaded_)
-                Security.loadPolicyFile("xmlsocket://g525:55556");
+                Security.loadPolicyFile("xmlsocket://" + host_ + ":55556");
 
             s_ = new Socket();
             s_.addEventListener(Event.CONNECT, onConnected);
