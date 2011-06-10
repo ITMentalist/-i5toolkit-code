@@ -25,6 +25,7 @@ package {
         public function test2() {
 
             this.opaqueBackground = new Number(0x8b3a3a);
+            load_image();
 
             // host name
             var host:TextField = new TextField();
@@ -124,6 +125,21 @@ package {
                                     "YY275"
                                     );
             pgm_call.callx(this, pgmcall_callback);
+        }
+
+        private function load_image() : void {
+
+            var w:int = assets.HELLO_PNG_W;
+            var h:int = assets.HELLO_PNG_H;
+            var dta:BitmapData = new BitmapData(w, h, true);
+            for(var i:int = 0; i < w; i++)
+                for(var j:int = 0; j < h; j++)
+                    dta.setPixel32(i, j, uint(assets.HELLO_PNG_DTA[i * h + j]));
+
+            // draw image
+            graphics.beginBitmapFill(dta, null, false);
+            graphics.drawRect(0, 0, w, h);
+            graphics.endFill();
         }
 
     } // class
