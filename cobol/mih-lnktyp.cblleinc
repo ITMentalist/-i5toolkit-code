@@ -115,7 +115,9 @@
                                    "_MODS2".
 
       * Machine Interface support instructions.
-           linkage type is sys for "_GENUUID".
+           linkage type is sys for "_GENUUID"
+                                   "_MATTOD"
+                                   "_MATMDATA".
 
       * Program Management instrucions.
            linkage type is sys for "_MATPGMNM".
@@ -123,3 +125,6 @@
       * Program execution instructions.
            linkage type is sys for "_NPMPARMLISTADDR"
                                    "_MODASA".
+
+      * Process/Thread management instructions.
+           linkage type is sys for "_WAITTIME".

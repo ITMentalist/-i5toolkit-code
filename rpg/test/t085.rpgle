@@ -21,6 +21,10 @@
       * @file t085.rpgle
       *
       * Test of _RETTSADR.
+      * @remark Since ILE RPG doesn't support 8-byte pointer (teraspace pointer),
+      *         this test will fail and after _RETTSADR is invoked, the value of
+      *         ptr_val becomes hex 000000..., aka. NULL.
+      *         See t084.c for a successful application of _RETTSADR.
       */
       /if defined (*crtbndrpg)
      h dftactgrp(*no)
@@ -34,8 +38,9 @@
       /free
 
            tera_ptr = ts_malloc(1024);
-      /if not defined(*v5r2m0)
+      /if defined(*v5r4m0)
            ptr_val  = rettsadr(tera_ptr);
+           // @remar Test failed, ptr_val: hex 00000...
       /endif
 
            ts_free(tera_ptr);

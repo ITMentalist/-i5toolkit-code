@@ -419,11 +419,9 @@
      /**
       * @BIF _RETTSADR (Retrieve Teraspace Address From Space Pointer (RETTSADR))
       *
-      * @remark instruction may be specified in a program template
-      *         only when the (bound) program is to be created as
-      *         teraspace capable. So to use _RETTSADR in ILE RPG you
-      *         need to have a 7.1 machine. For an ILE C example,
-      *         refer to test/t084.c
+      * @remark Since ILE RPG doesn't support 8-byte pointer (teraspace pointer),
+      *         using _RETTSADR in RPG is meaningless.
+      *         See test/t084.c for a successful application of _RETTSADR in ILE C.
       */
      d rettsadr        pr             8a   extproc('_RETTSADR')
      d     spc_ptr                     *   value

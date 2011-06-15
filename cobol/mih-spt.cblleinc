@@ -40,3 +40,13 @@
       * @example test/cbl002.cblle
       */
       *    call "_GENUUID" using DS-of-type-uuid-t.
+
+     /**
+      * @BIF _MATTOD (Materialize Machine Data (MATMDATA))
+      *
+      * _MATTOD materializes time-of-day clock as local time.
+      * @example test/t017.cblle
+      */
+      *A   B
+      *    call "_MATTOD" using
+      *         by reference eight-byte-binary-value.

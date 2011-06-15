@@ -1,0 +1,80 @@
+     /**
+      * This file is part of i5/OS Programmer's Toolkit.
+      *
+      * Copyright (C) 2010, 2011  Junlei Li.
+      *
+      * i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+      * it under the terms of the GNU General Public License as published by
+      * the Free Software Foundation, either version 3 of the License, or
+      * (at your option) any later version.
+      *
+      * i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+      * but WITHOUT ANY WARRANTY; without even the implied warranty of
+      * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      * GNU General Public License for more details.
+      *
+      * You should have received a copy of the GNU General Public License
+      * along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+      */
+
+     /**
+      * @file cbl017.cblle
+      *
+      * Test of:
+      *  - _WAITTIME (Wait time)
+      *  - _MATTOD (Materialize the time-of-day clock)
+      */
+
+       process
+           NOSTDTRUNC
+           NOMONOPRC.
+
+       id division.
+       program-id. cbl017.
+
+       environment division.
+       configuration section.
+       special-names.
+           copy mih-lnktyp.
+
+       data division.
+       working-storage section.
+       01 tmpl type waittime-t.
+       01 intervals type timeintervals-t.
+       01 clock-1 pic 9(18) usage comp-4.
+       01 clock-2 pic 9(18) usage comp-4.
+       01 duration pic 9(18) usage comp-4.
+
+       linkage section.
+           copy mih-prcthd.
+
+       procedure division.
+       main-pgm.
+           display "Length WAITTIME-T: "
+               length of waittime-t.
+      * length of waittime-t should be 16 bytes
+
+      *    wait for a few seconds
+           move all x"00" to tmpl.
+           compute interval of tmpl
+                   = one_second of intervals * 5.
+      * allow asynchronous signals processing during wait
+           move x"1000" to option of tmpl.
+
+           display "Before a 5-seconds wait.".
+           call "_MATTOD" using
+                by reference clock-1.
+           call "_WAITTIME" using
+                by reference tmpl.
+           call "_MATTOD" using
+                by reference clock-2.
+           display "After wait.".
+
+           compute duration
+                   = (clock-2 - clock-1) / one_millisec.
+           display "Time duration: "
+                   duration
+                   " milliseconds".
+
+           stop run.
+       end program cbl017.

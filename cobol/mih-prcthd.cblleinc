@@ -1,0 +1,69 @@
+     /**
+      * This file is part of i5/OS Programmer's Toolkit.
+      *
+      * Copyright (C) 2010, 2011  Junlei Li.
+      *
+      * i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+      * it under the terms of the GNU General Public License as published by
+      * the Free Software Foundation, either version 3 of the License, or
+      * (at your option) any later version.
+      *
+      * i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+      * but WITHOUT ANY WARRANTY; without even the implied warranty of
+      * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      * GNU General Public License for more details.
+      *
+      * You should have received a copy of the GNU General Public License
+      * along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+      */
+
+     /**
+      * @file mih-prcthd.cblleinc
+      *
+      * Process/Thread management instructions.
+      */
+
+      *A   B
+
+     /**
+      * @BIF _WAITTIME (Wait On Time (WAITTIME))
+      *
+      * @example test/cbl017.cblle
+      */
+      *    call "_WAITTIME" using
+      *         by reference waittime-t.
+
+     /* Wait template of WAITTIME */
+       01 waittime-t is typedef.
+          05 interval pic 9(18) usage comp-4.
+      *
+      * Wait options
+      *  Bit 0, access state control for entering wait
+      *   0 = Do not modify access state
+      *   1 = Modify access state
+      *  Bit 1, access state control for leaving wait
+      *   0 = Do not modify access state
+      *   1 = Modify access state
+      *  Bit 2, multiprogramming level (MPL) control during wait
+      *   0 = Do NOT remain in current MPL set
+      *   1 = Remain in current MPL set
+      *  Bit 3, asynchronous signals processing option
+      *   0 = Do NOT allow asynchronous signals processing during wait
+      *   1 = allow asynchronous signals processing during wait
+      *  Bits 4-15, reserved (binary 0)
+      *
+          05 option   pic x(2).
+          05 filler   pic x(6).
+
+     /* Constants of time intervals in system clock format  */
+       01 timeintervals-t is typedef.
+      * 8 microseconds, hex 0000000000008000
+          05 eight_microsec pic 9(18) usage comp-4 value 32768.
+      * 1 millisecond, hex 00000000003E8000
+          05 one_millisec   pic 9(18) usage comp-4 value 4096000.
+      * 1 second, hex 00000000F4240000
+          05 one_second     pic 9(18) usage comp-4 value 4096000000.
+      * 1 hour, hex 00000D693A400000
+          05 one_hour       pic 9(18) usage comp-4 value 14745600000000.
+      * 1 week, hex 0008CD0E3A000000
+          05 one_week       pic 9(18) usage comp-4 value 2477260800000000.
