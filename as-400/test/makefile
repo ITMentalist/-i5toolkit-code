@@ -8,10 +8,12 @@ MXFLAGS=-compiler.debug
 CFLAGS=-g
 
 INCDIR=as400/prototype
-TARGETS=misc.swf test.swf test2.swf
+TARGETS=misc.swf test.swf test2.swf t003.swf
 
 all: $(TARGETS)
 	@echo "......"
+
+t003.swf: $(INCDIR)/*.as
 
 test2.swf: test2.as $(INCDIR)/DES.as $(INCDIR)/RemoteCommand.as $(INCDIR)/AS400.as $(INCDIR)/ENC.as UButton.as
 

@@ -59,8 +59,7 @@ package as400.prototype {
          * call target AS/400 program
          *
          *  - passing input parameters
-         *  - returning output parameters
-         * @here 问题是, 如果在 ctor 里面连的话, 这里怎么知道连好没?
+         *  - returning output parameters to the caller
          */
         public function callx(caller:*, notifier:Function) : void {
 
