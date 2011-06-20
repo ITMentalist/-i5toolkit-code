@@ -23,7 +23,7 @@ package {
                 = new Vector.<ProgramArgument>();
 
             // input argument, bin(4)
-            var b:ProgramArgument = new ProgramArgument(AS400DataType.BIN2, 11);
+            var b:ProgramArgument = new ProgramArgument(new Bin2(), 11);
             b.name_ = "num_employee";  // name property is just for clarity
             b.value_ = 95;
             argv.push(b);
@@ -33,7 +33,7 @@ package {
 
             // output argument, float(4)
             var f:ProgramArgument
-                = new ProgramArgument(AS400DataType.FLOAT4,
+                = new ProgramArgument(new Float4(),
                                       ProgramArgument.OUTPUT);
             f.name_ = "float";
             argv.push(f);

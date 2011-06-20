@@ -111,8 +111,13 @@ package {
             test_call();
         }
 
-        private function pgmcall_callback(outp:String) : void {
-            ts_.text = outp;
+        private function pgmcall_callback(rc:int,
+                                          argl:Vector.<ProgramArgument>,
+                                          msg:String = null) : void {
+            if(rc != 0)
+                ts_.text = msg;
+            else
+                ts_.text = String(argl[0].value_);
         }
 
         private function test_call() : void {
@@ -124,7 +129,14 @@ package {
                                     "QGPL",
                                     "YY275"
                                     );
-            pgm_call.callx(this, pgmcall_callback);
+
+            // compose the argument list
+            var argl:Vector.<ProgramArgument>
+                = new <ProgramArgument>[new ProgramArgument(new EBCDIC(26),
+                                                            ProgramArgument.OUTPUT)];
+
+            // call target program on host server
+            pgm_call.callx(this, pgmcall_callback, argl);
         }
 
         private function load_image() : void {

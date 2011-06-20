@@ -32,6 +32,7 @@ package as400.prototype {
         // 通知谁?
         private var caller_:*;
         private var notifier_:Function;
+        private var argl_:Vector.<ProgramArgument>;
 
         /**
          * ctor
@@ -61,10 +62,13 @@ package as400.prototype {
          *  - passing input parameters
          *  - returning output parameters to the caller
          */
-        public function callx(caller:*, notifier:Function) : void {
+        public function callx(caller:*,
+                              notifier:Function,
+                              argl:Vector.<ProgramArgument> = null) : void {
 
-            caller_ = caller;
+            caller_   = caller;
             notifier_ = notifier;
+            argl_     = argl;
 
             // @todo the URL
             if(!security_policy_loaded_)
@@ -130,7 +134,8 @@ package as400.prototype {
             s_.close();
         }
 
-        private function call_program_rpy() : void {
+        /// @deprecated this method is going to be removed
+        private function call_program_rpy_dpr() : void {
 
             trace("<<<<<<<<<<<< call_program_rpy() >>>>>>>>>");
 
@@ -158,7 +163,7 @@ package as400.prototype {
                 var msg:String = Conv37.from_ebcdic(rpy, 24);
                 trace("Error message:", msg);
             } else {
-                // notify caller @here
+                // notify caller
                 trace(" ... parsing output parameter ...");
                 
                 rpy.position = 24;
@@ -184,14 +189,104 @@ package as400.prototype {
             jobq_.shift().call(this);
         }
 
+        // ******************************
+        // @here
+        // ******************************
+        private function call_program_rpy() : void {
+
+            trace("<<<<<<<<<<<< call_program_rpy() >>>>>>>>>");
+
+            var i:int = 0, len:int = 0;
+            // recieve 20-byte header
+            var rpy:ByteArray = new ByteArray();
+            s_.readBytes(rpy, 0, 20);
+            trace("Header of PGM-CALL reply, rpy.length:", rpy.length);
+            trace("Header of PGM-CALL reply, rpy:", ENC.listbarr(rpy));
+            // total length of server's reply
+            rpy.position = 0;
+            len = rpy.readInt();
+            len -= 20;
+            // receiver the remainder of server's reply
+            s_.readBytes(rpy, 20, len);
+            // the whole reply is recieved now!
+            trace("PGM-CALL, rpy.length:", rpy.length);
+            trace("PGM-CALL, rpy:", ENC.listbarr(rpy));
+
+            // deal with the 2-byte return-code in server's reply
+            var rc:int = rpy.readShort();
+            trace("call_program_rpy(), rc:", rc);
+            // @todo what's this, number of parameters?
+            var last_2bytes:int = rpy.readShort();
+            trace("call_program_rpy(), last_2bytes:", last_2bytes);
+
+            // output args or returned message
+            var msg:String = "@todo implement me!";
+            if(rc != 0) {
+                // @todo retrieve message text from the reply package
+            } else { // retrieve inout/output args
+
+                rpy.position = 20 + 2 + 2; // offset of returned arg-list
+                for(i = 0; i < argl_.length; i++) {
+                    var arg:ProgramArgument = argl_[i];
+                    if(arg.argType_ == ProgramArgument.INPUT)
+                        continue; // skip INPUT args
+
+                    // 12-byte arg-header
+                    len = rpy.readInt(); // total length
+                    if(len != (12 + arg.as400Dta_.length)) {
+                        // @todo what if the caller has set a wrong arg-length value
+                        trace("total length of arg[", i, "]:", 12 + arg.as400Dta_.length, ", which should be:", len);
+                    }
+                    var cp:int = rpy.readShort();
+                    trace("arg[", i, "], cp:", cp);
+                    // data length of the arg
+                    len = rpy.readInt();
+                    if(len != arg.as400Dta_.length) {
+                        // @todo
+                        trace("data length of arg[", i, "]:", arg.as400Dta_.length, ", which should be:", len);
+                    }
+                    var usage:int = rpy.readShort();
+                    if(usage != arg.argType_) {
+                        // @todo
+                        trace("usage of arg[", i, "] is",
+                              arg.argType_,
+                              ", which should be:",
+                              usage);
+                    }
+                    arg.value_ = arg.as400Dta_.read(rpy);
+                    trace("value of arg[", i, "]:", arg.value_);
+                }
+            }
+
+            // ------------------------------
+            // notify the caller: rc, argl, msg
+            // ------------------------------
+            notifier_.call(caller_, rc, argl_, msg);
+
+            // start next request
+            jobq_.shift().call(this);
+        }
+
         private function call_program_rqs() : void {
 
             trace("<<<<<<<<<<<< call_program_rqs() >>>>>>>>>");
 
-            var i:int = 0;
+            var i:int = 0, len:int = 0;
             // compose request package of PGM-CALL request
             var rqs:ByteArray = new ByteArray();
-            rqs.writeInt(43 + 12);     // pakage length
+
+            // calculate total length of request pkg
+            len = 43; // basic PKG-SIZE that do NOT including arg-list
+            for(i = 0; i < argl_.length; i++) {
+                var arg:ProgramArgument = argl_[i];
+                len += 12 + ((arg.argType_ == ProgramArgument.OUTPUT) ? 0 : arg.as400Dta_.length);
+                trace("MAYA: i=", i, "arg.argType_=", arg.argType_,"; call_program_rqs, size of request-package:",
+                  len);
+            }
+            trace("call_program_rqs, size of request-package:",
+                  len);
+
+            rqs.writeInt(len);     // pakage length
             rqs.writeByte(0x00);  // client-attr, 0x00
             rqs.writeByte(0x00);  // server-attr
             // server ID of as-rmtcmd, 0xE008
@@ -216,16 +311,34 @@ package as400.prototype {
             rqs.writeBytes(e_lib, 0, 10);
             rqs.writeByte(0x00);  // message count
             // Number of arguemnts passed
-            rqs.writeShort(1);
+            len = 0;
+            if(argl_ != null)
+                len = argl_.length;
+            rqs.writeShort(len);
             // END of the fixed portion of PGM-CALL request package
             // the following is the list of arguments
             // in this example, the pgm we called has 1 OUTPUT parameter
-            rqs.writeInt(12 + 0); // total length
-            rqs.writeShort(0x1103); // ??
-            rqs.writeInt(26);     // length of the only OUTPUT parameter of the called pgm
-            rqs.writeShort(12);   // usage of the arg is OUTPUT only
-            trace("PGM-CALL, rqs.length:", rqs.length);
-            trace("PGM-CALL, rqs:", ENC.listbarr(rqs));
+
+            // argument list
+            if(argl_ != null) {
+
+                // calculate the total length of the arg-list
+                for(i = 0; i < argl_.length; i++) {
+
+                    arg = argl_[i];
+                    len = 12 + ((arg.argType_ == ProgramArgument.OUTPUT) ? 0 : arg.as400Dta_.length);
+                    rqs.writeInt(len); // total length
+                    rqs.writeShort(0x1103); // ??
+                    rqs.writeInt(arg.as400Dta_.length); // arg length
+                    rqs.writeShort(arg.argType_);       // usage
+                    // arg-data for INPUT/INOUT argument
+                    if(arg.argType_ != ProgramArgument.OUTPUT)
+                        arg.as400Dta_.write(rqs, arg.value_);
+
+                    trace("PGM-CALL, rqs.length:", rqs.length);
+                    trace("PGM-CALL, rqs:", ENC.listbarr(rqs));
+                } // for-loop
+            }
 
             // send PGM-CALL request
             s_.writeBytes(rqs);

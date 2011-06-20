@@ -6,7 +6,10 @@ package as400.prototype {
 
     import flash.utils.ByteArray;
 
-    public class Float8 extends AS400Data implements IAS400Data {
+    public class Float8 implements IAS400Data {
+
+        public function get length() : uint { return 8; }
+        public function set length(len:uint) : void {}
 
         public function read(from:ByteArray) : Object {
 

@@ -10,6 +10,8 @@ package as400.prototype {
 
         function read(from:ByteArray) : Object;
         function write(to:ByteArray, val:Object) : void;
+        function get length() : uint;
+        function set length(len:uint) : void;
     }
 
 }

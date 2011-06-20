@@ -52,7 +52,7 @@ package as400.prototype {
         }
 
         /// Content of *TBL QSYS/QASCII
-        public static var _qascii:Vector.<int>
+        public static const _qascii:Vector.<int>
             = new <int>[
                         0x00, 0x01, 0x02, 0x03, 0x9C, 0x09, 0x86, 0x7F,
                         0x97, 0x8D, 0x8E, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
@@ -89,7 +89,7 @@ package as400.prototype {
                         ];
 
         /// Content of *TBL QSYS/QEBCDIC
-        public static var _qebcdic:Vector.<int>
+        public static const _qebcdic:Vector.<int>
             = new <int>[
                         0x00, 0x01, 0x02, 0x03, 0x37, 0x2D, 0x2E, 0x2F, 
                         0x16, 0x05, 0x25, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F, 
