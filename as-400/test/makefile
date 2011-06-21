@@ -2,16 +2,20 @@
 
 %.swf : %.as
 	$(MXMLC) $(MXFLAGS) $<
+%.class : %.java
+	javac -g $<
 
 MXMLC=mxmlc
 MXFLAGS=-compiler.debug
 CFLAGS=-g
 
 INCDIR=as400/prototype
-TARGETS=misc.swf test.swf test2.swf t003.swf t004.swf
+TARGETS=misc.swf test.swf test2.swf t003.swf t004.swf pixels.class t005.swf
 
 all: $(TARGETS)
 	@echo "......"
+
+t005.swf: $(INCDIR)/*.as
 
 t003.swf: $(INCDIR)/*.as
 

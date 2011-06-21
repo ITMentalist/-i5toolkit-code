@@ -24,8 +24,8 @@ package {
 
             // input argument, bin(4)
             var b:ProgramArgument = new ProgramArgument(new Bin2(), 11);
-            b.name_ = "num_employee";  // name property is just for clarity
-            b.value_ = 95;
+            b.name = "num_employee";  // name property is just for clarity
+            b.value = 95;
             argv.push(b);
 
             // @todo 输出时, 是给 output/inout, 还是给全部
@@ -35,7 +35,7 @@ package {
             var f:ProgramArgument
                 = new ProgramArgument(new Float4(),
                                       ProgramArgument.OUTPUT);
-            f.name_ = "float";
+            f.name = "float";
             argv.push(f);
 
             // call program
@@ -47,7 +47,7 @@ package {
             //         而 i 的观点是, 逻辑集中在一个类型中, 是最有益于软件的维护的!
 
             // get output arg in argv @todo 当然, 这要放到被通知的 function 里
-            var val:Object = argv[1].value_;
+            var val:Object = argv[1].value;
             trace("value:", Number(val));
 
             trace("--------------------------------------------------");

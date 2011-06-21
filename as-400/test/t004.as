@@ -1,7 +1,8 @@
 /**
- * @file test2.as
+ * @file t004.as
  *
  * Test of class RemoteCommand.
+ * This test program calls RPG program YY282, which accepts an INPUT bin(2) arg and OUTPUT arg of type bin(4), packed(8,2), zoned(16,5) respectively.
  */
 
 package {
@@ -10,10 +11,11 @@ package {
     import flash.system.*;
     import flash.text.*;
     import flash.events.*;
+    import flash.net.URLRequest;
 
     import as400.prototype.*;
 
-    public class test2 extends Sprite {
+    public class t004 extends Sprite {
 
         private var host_:TextField;
         private var user_:TextField;
@@ -22,25 +24,31 @@ package {
         private var btn_:UButton;
 
         /// ctor
-        public function test2() {
+        public function t004() {
 
-            this.opaqueBackground = new Number(0x8b3a3a);
             load_image();
 
+            var fmt:TextFormat = new TextFormat("Courier");
+            fmt.bold = true;
+            fmt.size = 14;
             // host name
             var host:TextField = new TextField();
+            host.x = 50;
+            host.y = 230;
             host.width = 200;
             host.alpha     = 0.85;
             host.textColor = 0xff4500;  // orange red
             host.autoSize  = TextFieldAutoSize.RIGHT;
             host.text = "Name of your IBM i server";
+            host.setTextFormat(fmt);
             addChild(host);
 
             host_ = new TextField();
-            host_.x = 220;
+            host_.x = 220 + 50;
+            host_.y = 230;
             host_.width = 200;
             host_.height = 20;
-            host_.alpha  = 0.85;
+            host_.alpha  = 0.65;
             host_.border = true;
             host_.background = true;
             host_.type   = TextFieldType.INPUT;
@@ -49,19 +57,20 @@ package {
             // user name
             var user:TextField = new TextField();
             user.width = 200;
-            user.y     = 30
+            user.y     = 30 + 230;
             user.alpha     = 0.85;
             user.textColor = 0xff4500;  // orange red
             user.autoSize  = TextFieldAutoSize.RIGHT;
             user.text = "User name";
+            user.setTextFormat(fmt);
             addChild(user);
 
             user_ = new TextField();
-            user_.x = 220;
-            user_.y     = 30
+            user_.x = 220 + 50;
+            user_.y     = 30 + 230;
             user_.width = 200;
             user_.height = 20;
-            user_.alpha  = 0.85;
+            user_.alpha  = 0.65;
             user_.border = true;
             user_.background = true;
             user_.type   = TextFieldType.INPUT;
@@ -70,19 +79,20 @@ package {
             // password: pwd_.displayAsPassword = true;
             var pwd:TextField = new TextField();
             pwd.width = 200;
-            pwd.y     = 60
+            pwd.y     = 60 + 230;
             pwd.alpha     = 0.85;
             pwd.textColor = 0xff4500;  // orange red
             pwd.autoSize  = TextFieldAutoSize.RIGHT;
             pwd.text = "Password";
+            pwd.setTextFormat(fmt);
             addChild(pwd);
 
             pwd_ = new TextField();
-            pwd_.x = 220;
-            pwd_.y     = 60
+            pwd_.x = 220 + 50;
+            pwd_.y     = 60 + 230;
             pwd_.width = 200;
             pwd_.height = 20;
-            pwd_.alpha  = 0.85;
+            pwd_.alpha  = 0.65;
             pwd_.border = true;
             pwd_.background = true;
             pwd_.type   = TextFieldType.INPUT;
@@ -90,20 +100,22 @@ package {
             addChild(pwd_);
 
             ts_ = new TextField();
-            ts_.x = 100;
-            ts_.y = 100;
+            ts_.x = 100 + 50;
+            ts_.y = 100 + 230;
             ts_.width = 300;
             ts_.height = 20;
             ts_.textColor = 0xadff2f; // green yellow
-            ts_.alpha     = 0.8;
+            ts_.alpha     = 0.9;
             // ts_.autoSize = TextFieldAutoSize.LEFT;
             ts_.antiAliasType = AntiAliasType.ADVANCED;
-            ts_.text = "Current timestamp on your IBM i server";
+            ts_.text = "OUTPUT arguments of *PGM YY282";
+            ts_.setTextFormat(fmt);
             addChild(ts_);
 
             btn_ = new UButton();
             btn_.addEventListener(MouseEvent.CLICK, onBtnClick);
-            btn_.y = 100;
+            btn_.x = 50;
+            btn_.y = 100 + 230;
             addChild(btn_);
         }
 
@@ -117,7 +129,12 @@ package {
             if(rc != 0)
                 ts_.text = msg;
             else
-                ts_.text = String(argl[0].value);
+                ts_.text = "OUTPUT arguments of *PGM YY282: "
+                    + argl[1].value.toString()
+                    + ", "
+                    + argl[2].value.toString()
+                    + ", "
+                    + argl[3].value.toString();
         }
 
         private function test_call() : void {
@@ -127,12 +144,19 @@ package {
                                     user_.text,
                                     pwd_.text,
                                     "QGPL",
-                                    "YY275"
+                                    "YY282"
                                     );
 
             // compose the argument list
             var argl:Vector.<ProgramArgument>
-                = new <ProgramArgument>[new ProgramArgument(new EBCDIC(26),
+                = new <ProgramArgument>[new ProgramArgument(new Bin2(),
+                                                            ProgramArgument.INPUT,
+                                                            95),
+                                        new ProgramArgument(new Bin4(),
+                                                            ProgramArgument.OUTPUT),
+                                        new ProgramArgument(new Packed(8, 2),
+                                                            ProgramArgument.OUTPUT),
+                                        new ProgramArgument(new Zoned(16, 5),
                                                             ProgramArgument.OUTPUT)];
 
             // call target program on host server
@@ -141,17 +165,9 @@ package {
 
         private function load_image() : void {
 
-            var w:int = assets.HELLO_PNG_W;
-            var h:int = assets.HELLO_PNG_H;
-            var dta:BitmapData = new BitmapData(w, h, true);
-            for(var i:int = 0; i < w; i++)
-                for(var j:int = 0; j < h; j++)
-                    dta.setPixel32(i, j, uint(assets.HELLO_PNG_DTA[i * h + j]));
-
-            // draw image
-            graphics.beginBitmapFill(dta, null, false);
-            graphics.drawRect(0, 0, w, h);
-            graphics.endFill();
+            var l:Loader = new Loader();
+            l.load(new URLRequest("./yy282.png"));
+            addChild(l);
         }
 
     } // class

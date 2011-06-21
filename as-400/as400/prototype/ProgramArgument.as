@@ -10,21 +10,30 @@ package as400.prototype {
         public static const OUTPUT:int = 12;
         public static const INOUT:int  = 13;
 
-        public var name_:*;
-        public var value_:*;
-        public var as400Dta_:IAS400Data;
-        public var argType_:int;
+        private var name_:String;
+        public function get name() : String { return name_; }
+        public function set name(n:String) : void { name_ = n; }
+
+        private var value_:*;
+        public function get value() : * { return value_; }
+        public function set value(v:*) : void { value_ = v; }
+
+        private var as400Dta_:IAS400Data;
+        public function get as400Dta() : IAS400Data { return as400Dta_; }
+
+        private var argType_:int;
+        public function get argType() : int { return argType_; }
 
         /// ctor
-        public function ProgramArgument(as400Dta:IAS400Data,
-                                        argType:int  = INPUT,  // ProgramArgumentType.INPUT
-                                        value:Object = null,
-                                        name:Object  = null)
+        public function ProgramArgument(dta:IAS400Data,
+                                        type:int  = INPUT,  // ProgramArgumentType.INPUT
+                                        val:Object = null,
+                                        n:String  = null)
         {
-            as400Dta_ = as400Dta;
-            argType_  = argType;
-            value_    = value;
-            name_     = name;
+            as400Dta_ = dta;
+            argType_  = type;
+            value_    = val;
+            name_     = n;
         } // ctor
 
     }

@@ -3,6 +3,7 @@
  *
  * @todo 不理解ing, request 里的 server-id 开始被自己错填成了
  *       hex 0E08, 但 XCHG-SEED, START-PJ 都成功了 ?!
+ * @todo reuse a program-call object
  */
 
 package as400.prototype {
@@ -20,8 +21,19 @@ package as400.prototype {
         private var host_:String;
         private var user_:String;
         private var pwd_:String;
+
         private var lib_:String;
+        public function get lib() : String { return lib_; }
+        public function set lib(l:String) : void { lib_ = l; }
+
         private var pgm_:String;
+        public function get pgm() : String { return pgm_; }
+        public function set pgm(l:String) : void { pgm_ = l; }
+
+        // reuse this program-call object
+        private var reuse_:Boolean;
+        public function get reuse() : Boolean { return reuse_; }
+
         // client-side seed
         private var cseed_:ByteArray;
         // server-side seed
@@ -34,6 +46,14 @@ package as400.prototype {
         private var notifier_:Function;
         private var argl_:Vector.<ProgramArgument>;
 
+        // server-side information
+        /**
+         * CCSID used by server job
+         * @remark this is critical to converting returned EBCDIC-character data into Unicode strings.
+         */
+        private var ccsid_:uint;
+        public function get ccsid() : uint { return ccsid_; }
+
         /**
          * ctor
          *
@@ -43,7 +63,8 @@ package as400.prototype {
                                       user:String,
                                       password:String,
                                       library:String,
-                                      program:String) {
+                                      program:String,
+                                      reuse:Boolean = false) {
 
             security_policy_loaded_ = false;
             host_ = host;
@@ -51,10 +72,15 @@ package as400.prototype {
             pwd_  = password.toUpperCase();  // convert input password to upper case
             lib_  = library;
             pgm_  = program;
+            reuse_ = reuse;
 
             // what i should do
             jobq_ = new Vector.<Function>();
+            initiated_ = false;
         }
+
+        /// @todo is there a better way?
+        private var initiated_:Boolean;
 
         /**
          * call target AS/400 program
@@ -70,27 +96,38 @@ package as400.prototype {
             notifier_ = notifier;
             argl_     = argl;
 
-            // @todo the URL
-            if(!security_policy_loaded_)
-                Security.loadPolicyFile("xmlsocket://" + host_ + ":55556");
+            if(!initiated_) {
+                // @todo the URL and port
+                if(!security_policy_loaded_)
+                    Security.loadPolicyFile("xmlsocket://" + host_ + ":55556");
 
-            s_ = new Socket();
-            s_.addEventListener(Event.CONNECT, onConnected);
-            s_.addEventListener(ProgressEvent.SOCKET_DATA, onData);
-            s_.addEventListener(Event.CLOSE, onClose);
+                s_ = new Socket();
+                s_.addEventListener(Event.CONNECT, onConnected);
+                s_.addEventListener(ProgressEvent.SOCKET_DATA, onData);
+                s_.addEventListener(Event.CLOSE, onClose);
 
-            jobq_.push(xchg_seeds_rqs);
-            jobq_.push(xchg_seeds_rpy);
-            jobq_.push(start_pj_rqs);
-            jobq_.push(start_pj_rpy);
-            jobq_.push(xchg_attr_rqs);
-            jobq_.push(xchg_attr_rpy);
+                jobq_.push(xchg_seeds_rqs);
+                jobq_.push(xchg_seeds_rpy);
+                jobq_.push(start_pj_rqs);
+                jobq_.push(start_pj_rpy);
+                jobq_.push(xchg_attr_rqs);
+                jobq_.push(xchg_attr_rpy);
+            }
+
             jobq_.push(call_program_rqs);
             jobq_.push(call_program_rpy);
-            jobq_.push(say_farewell);
+            if(!reuse)
+                jobq_.push(say_farewell);
 
-            // "as-rmtcmd"
-            s_.connect(host_, AS400.get_server_port(AS400.RMTCMD));
+            // connect to "as-rmtcmd" server
+            if(!initiated_) {         
+                s_.connect(host_, AS400.get_server_port(AS400.RMTCMD));
+                initiated_ = true;
+            }
+        }
+
+        public function close() : void {
+            say_farewell();
         }
 
         private function onConnected(evt:Event) : void {
@@ -134,64 +171,9 @@ package as400.prototype {
             s_.close();
         }
 
-        /// @deprecated this method is going to be removed
-        private function call_program_rpy_dpr() : void {
-
-            trace("<<<<<<<<<<<< call_program_rpy() >>>>>>>>>");
-
-            var rpy:ByteArray = new ByteArray();
-            s_.readBytes(rpy, 0, 20);
-            trace("Header of PGM-CALL reply, rpy.length:", rpy.length);
-            trace("Header of PGM-CALL reply, rpy:", ENC.listbarr(rpy));
-            rpy.position = 0;
-            var len:int = rpy.readInt();
-            len -= 20;
-            s_.readBytes(rpy, 20, len);
-            trace("PGM-CALL, rpy.length:", rpy.length);
-            trace("PGM-CALL, rpy:", ENC.listbarr(rpy));
-
-            rpy.position = 20;
-            // @remark 2-byte return code
-            var rc:int = rpy.readShort();
-            trace("rc of PGM-CALL reply:", rc);
-            var last_two_bytes:ByteArray = new ByteArray();
-            rpy.readBytes(last_two_bytes, 0, 2);
-            trace("The last two bytes of PGM-CALL reply:",
-                  ENC.listbarr(last_two_bytes));
-            if(rc != 0) {
-                // @todo 看一下取 message 的逻辑
-                var msg:String = Conv37.from_ebcdic(rpy, 24);
-                trace("Error message:", msg);
-            } else {
-                // notify caller
-                trace(" ... parsing output parameter ...");
-                
-                rpy.position = 24;
-                var parm_pkg_len:int = rpy.readInt();
-                trace("parm_pkg_len:", parm_pkg_len);
-                var parm_cp:ByteArray = new ByteArray();
-                rpy.readBytes(parm_cp, 0, 2);
-                trace("parm_cp:", ENC.listbarr(parm_cp));
-                var parm_len:int = rpy.readInt();
-                trace("parm_len:", parm_len);
-                var parm_usage:int = rpy.readShort();
-                trace("parm_usage:", parm_usage);
-
-                var parm_dta:ByteArray = new ByteArray();
-                rpy.readBytes(parm_dta, 0, parm_len);
-                trace("parm_dta", ENC.listbarr(parm_dta));
-                var out_arg:String = Conv37.from_ebcdic(parm_dta);
-                trace("parm data:", out_arg);
-                notifier_.call(caller_, out_arg);
-            }
-
-            // start next request
-            jobq_.shift().call(this);
-        }
-
-        // ******************************
-        // @here
-        // ******************************
+        /**
+         * work with reply of program-call request
+         */
         private function call_program_rpy() : void {
 
             trace("<<<<<<<<<<<< call_program_rpy() >>>>>>>>>");
@@ -215,9 +197,9 @@ package as400.prototype {
             // deal with the 2-byte return-code in server's reply
             var rc:int = rpy.readShort();
             trace("call_program_rpy(), rc:", rc);
-            // @todo what's this, number of parameters?
-            var last_2bytes:int = rpy.readShort();
-            trace("call_program_rpy(), last_2bytes:", last_2bytes);
+            // @remark server ID of as-rmtcmd, hex E008
+            var server_id:int = rpy.readShort();
+            trace("call_program_rpy(), server ID:", server_id);
 
             // output args or returned message
             var msg:String = "@todo implement me!";
@@ -228,33 +210,33 @@ package as400.prototype {
                 rpy.position = 20 + 2 + 2; // offset of returned arg-list
                 for(i = 0; i < argl_.length; i++) {
                     var arg:ProgramArgument = argl_[i];
-                    if(arg.argType_ == ProgramArgument.INPUT)
+                    if(arg.argType == ProgramArgument.INPUT)
                         continue; // skip INPUT args
 
                     // 12-byte arg-header
                     len = rpy.readInt(); // total length
-                    if(len != (12 + arg.as400Dta_.length)) {
+                    if(len != (12 + arg.as400Dta.length)) {
                         // @todo what if the caller has set a wrong arg-length value
-                        trace("total length of arg[", i, "]:", 12 + arg.as400Dta_.length, ", which should be:", len);
+                        trace("total length of arg[", i, "]:", 12 + arg.as400Dta.length, ", which should be:", len);
                     }
                     var cp:int = rpy.readShort();
                     trace("arg[", i, "], cp:", cp);
                     // data length of the arg
                     len = rpy.readInt();
-                    if(len != arg.as400Dta_.length) {
+                    if(len != arg.as400Dta.length) {
                         // @todo
-                        trace("data length of arg[", i, "]:", arg.as400Dta_.length, ", which should be:", len);
+                        trace("data length of arg[", i, "]:", arg.as400Dta.length, ", which should be:", len);
                     }
                     var usage:int = rpy.readShort();
-                    if(usage != arg.argType_) {
+                    if(usage != arg.argType) {
                         // @todo
                         trace("usage of arg[", i, "] is",
-                              arg.argType_,
+                              arg.argType,
                               ", which should be:",
                               usage);
                     }
-                    arg.value_ = arg.as400Dta_.read(rpy);
-                    trace("value of arg[", i, "]:", arg.value_);
+                    arg.value = arg.as400Dta.read(rpy);
+                    trace("value of arg[", i, "]:", arg.value);
                 }
             }
 
@@ -279,9 +261,7 @@ package as400.prototype {
             len = 43; // basic PKG-SIZE that do NOT including arg-list
             for(i = 0; i < argl_.length; i++) {
                 var arg:ProgramArgument = argl_[i];
-                len += 12 + ((arg.argType_ == ProgramArgument.OUTPUT) ? 0 : arg.as400Dta_.length);
-                trace("MAYA: i=", i, "arg.argType_=", arg.argType_,"; call_program_rqs, size of request-package:",
-                  len);
+                len += 12 + ((arg.argType == ProgramArgument.OUTPUT) ? 0 : arg.as400Dta.length);
             }
             trace("call_program_rqs, size of request-package:",
                   len);
@@ -326,14 +306,14 @@ package as400.prototype {
                 for(i = 0; i < argl_.length; i++) {
 
                     arg = argl_[i];
-                    len = 12 + ((arg.argType_ == ProgramArgument.OUTPUT) ? 0 : arg.as400Dta_.length);
+                    len = 12 + ((arg.argType == ProgramArgument.OUTPUT) ? 0 : arg.as400Dta.length);
                     rqs.writeInt(len); // total length
                     rqs.writeShort(0x1103); // ??
-                    rqs.writeInt(arg.as400Dta_.length); // arg length
-                    rqs.writeShort(arg.argType_);       // usage
+                    rqs.writeInt(arg.as400Dta.length); // arg length
+                    rqs.writeShort(arg.argType);       // usage
                     // arg-data for INPUT/INOUT argument
-                    if(arg.argType_ != ProgramArgument.OUTPUT)
-                        arg.as400Dta_.write(rqs, arg.value_);
+                    if(arg.argType != ProgramArgument.OUTPUT)
+                        arg.as400Dta.write(rqs, arg.value);
 
                     trace("PGM-CALL, rqs.length:", rqs.length);
                     trace("PGM-CALL, rqs:", ENC.listbarr(rqs));
@@ -365,8 +345,8 @@ package as400.prototype {
             // @remark 2-byte return-code
             var rc:int = rpy.readShort();
             trace("rc of XCHG-ATTR reply:", rc);
-            var ccsid:int = rpy.readInt();
-            trace("XCHG-ATTR, reply, server side CCSID:", ccsid);
+            ccsid_ = rpy.readInt();
+            trace("XCHG-ATTR, reply, server side CCSID:", ccsid_);
             rpy.position += 8;
             // 2-byte datastream level
             var ds_level:int = rpy.readShort();

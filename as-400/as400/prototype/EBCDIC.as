@@ -47,6 +47,9 @@ package as400.prototype {
         public function write(to:ByteArray, val:Object) : void {
 
             var str:String = String(val);
+            // pad str with white spaces
+            while(str.length < length_) str += " ";
+
             for(var i:int = 0; i < length_; i++) {
 
                 var ch:int = int(str.charCodeAt(i));
