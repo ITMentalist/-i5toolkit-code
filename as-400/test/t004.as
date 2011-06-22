@@ -23,6 +23,9 @@ package {
         private var ts_:TextField;   // current timestamp on the remote server
         private var btn_:UButton;
 
+        private var pgm_call:RemoteCommand;
+        private var argl:Vector.<ProgramArgument>;
+
         /// ctor
         public function t004() {
 
@@ -117,6 +120,7 @@ package {
             btn_.x = 50;
             btn_.y = 100 + 230;
             addChild(btn_);
+
         }
 
         private function onBtnClick(evt:MouseEvent) : void {
@@ -139,25 +143,29 @@ package {
 
         private function test_call() : void {
 
-            var pgm_call:RemoteCommand
-                = new RemoteCommand(host_.text,
-                                    user_.text,
-                                    pwd_.text,
-                                    "QGPL",
-                                    "YY282"
-                                    );
+            if(pgm_call == null) {
+                pgm_call
+                    = new RemoteCommand(host_.text,
+                                        user_.text,
+                                        pwd_.text,
+                                        "QGPL",
+                                        "YY282",
+                                        true        // reuse the pgm-call object
+                                        );
 
-            // compose the argument list
-            var argl:Vector.<ProgramArgument>
-                = new <ProgramArgument>[new ProgramArgument(new Bin2(),
-                                                            ProgramArgument.INPUT,
-                                                            95),
-                                        new ProgramArgument(new Bin4(),
-                                                            ProgramArgument.OUTPUT),
-                                        new ProgramArgument(new Packed(8, 2),
-                                                            ProgramArgument.OUTPUT),
-                                        new ProgramArgument(new Zoned(16, 5),
-                                                            ProgramArgument.OUTPUT)];
+                // compose the argument list
+                argl
+                    = new <ProgramArgument>[new ProgramArgument(new Bin2(),
+                                                                ProgramArgument.INPUT,
+                                                                95),
+                                            new ProgramArgument(new Bin4(),
+                                                                ProgramArgument.OUTPUT),
+                                            new ProgramArgument(new Packed(8, 2),
+                                                                ProgramArgument.OUTPUT),
+                                            new ProgramArgument(new Zoned(16, 5),
+                                                                ProgramArgument.OUTPUT)];
+
+            }
 
             // call target program on host server
             pgm_call.callx(this, pgmcall_callback, argl);

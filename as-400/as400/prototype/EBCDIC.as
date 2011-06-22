@@ -30,10 +30,15 @@ package as400.prototype {
         }
 
         /// @return a String object
-        public function read(from:ByteArray) : Object {
+        public function read(from:ByteArray,
+                             actualLength:uint = 0) : Object {
+
+            var len:uint = length_;
+            if(actualLength != 0)   // read number of bytes as what is explicitly specified!
+                len = actualLength;
 
             var r:String = "";
-            for(var i:int = 0; i < length_; i++) {
+            for(var i:int = 0; i < len; i++) {
 
                 var ch:int = from.readByte();
                 if(ch < 0)

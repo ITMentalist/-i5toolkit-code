@@ -3,7 +3,6 @@
  *
  * @todo 不理解ing, request 里的 server-id 开始被自己错填成了
  *       hex 0E08, 但 XCHG-SEED, START-PJ 都成功了 ?!
- * @todo reuse a program-call object
  */
 
 package as400.prototype {
@@ -50,6 +49,7 @@ package as400.prototype {
         /**
          * CCSID used by server job
          * @remark this is critical to converting returned EBCDIC-character data into Unicode strings.
+         * @remark To reuse the server job, set <var>reuse</var> to true.
          */
         private var ccsid_:uint;
         public function get ccsid() : uint { return ccsid_; }
@@ -114,7 +114,8 @@ package as400.prototype {
                 jobq_.push(xchg_attr_rpy);
             }
 
-            jobq_.push(call_program_rqs);
+            // @here 解决复用时的同步问题!
+            jobq_.push(call_program_rqs); trace("++++++++++++++++++++++++++++++ JOB enqueued: ", lib_ + "/" + pgm_);
             jobq_.push(call_program_rpy);
             if(!reuse)
                 jobq_.push(say_farewell);
@@ -123,7 +124,7 @@ package as400.prototype {
             if(!initiated_) {         
                 s_.connect(host_, AS400.get_server_port(AS400.RMTCMD));
                 initiated_ = true;
-            }
+            } else jobq_.shift().call(this);
         }
 
         public function close() : void {
@@ -141,6 +142,9 @@ package as400.prototype {
             trace("onClose() ... ", evt.type);
         }
 
+        /// each time we send a request to the server, we'll get
+        /// a reply later. Here's the function we deal with a
+        /// reply from the server.
         private function onData(evt:ProgressEvent) : void {
 
             trace("onData()...", evt.type);
@@ -178,7 +182,7 @@ package as400.prototype {
 
             trace("<<<<<<<<<<<< call_program_rpy() >>>>>>>>>");
 
-            var i:int = 0, len:int = 0;
+            var i:int = 0, len:int = 0, pgm_arg_len:int = 0;;
             // recieve 20-byte header
             var rpy:ByteArray = new ByteArray();
             s_.readBytes(rpy, 0, 20);
@@ -214,7 +218,7 @@ package as400.prototype {
                         continue; // skip INPUT args
 
                     // 12-byte arg-header
-                    len = rpy.readInt(); // total length
+                    pgm_arg_len = rpy.readInt(); // total length
                     if(len != (12 + arg.as400Dta.length)) {
                         // @todo what if the caller has set a wrong arg-length value
                         trace("total length of arg[", i, "]:", 12 + arg.as400Dta.length, ", which should be:", len);
@@ -222,7 +226,9 @@ package as400.prototype {
                     var cp:int = rpy.readShort();
                     trace("arg[", i, "], cp:", cp);
                     // data length of the arg
-                    len = rpy.readInt();
+                    len = rpy.readInt();         // @todo 可能错吗? 怕它错, 下面实际收 arg-data 时, 长度用了 pgm_arg_len - 12
+                                                 // @remark 哎呀, 这个值还真得不能用, 在使用 INOUT 传 QUSEC_T 时, 这个值会和 qusec_t.bytes_in 相同
+                                                 // @see    t005.as 中 delete-usrspc 的情况
                     if(len != arg.as400Dta.length) {
                         // @todo
                         trace("data length of arg[", i, "]:", arg.as400Dta.length, ", which should be:", len);
@@ -235,7 +241,7 @@ package as400.prototype {
                               ", which should be:",
                               usage);
                     }
-                    arg.value = arg.as400Dta.read(rpy);
+                    arg.value = arg.as400Dta.read(rpy, pgm_arg_len - 12); // @remark arg length actually returned MIGHT NOT be the same as what it expectected to be, either longer or shorter!
                     trace("value of arg[", i, "]:", arg.value);
                 }
             }
@@ -246,12 +252,14 @@ package as400.prototype {
             notifier_.call(caller_, rc, argl_, msg);
 
             // start next request
-            jobq_.shift().call(this);
+            // @remark If reuse_ == false, the next request is FAREWELL, otherwise there is NO next request.
+            if(jobq_.length > 0)
+                jobq_.shift().call(this);
         }
 
         private function call_program_rqs() : void {
 
-            trace("<<<<<<<<<<<< call_program_rqs() >>>>>>>>>");
+            trace("<<<<<<<<<<<< call_program_rqs(): " + lib_ + "/" + pgm_ + " >>>>>>>>>");
 
             var i:int = 0, len:int = 0;
             // compose request package of PGM-CALL request
@@ -315,9 +323,9 @@ package as400.prototype {
                     if(arg.argType != ProgramArgument.OUTPUT)
                         arg.as400Dta.write(rqs, arg.value);
 
-                    trace("PGM-CALL, rqs.length:", rqs.length);
-                    trace("PGM-CALL, rqs:", ENC.listbarr(rqs));
                 } // for-loop
+                trace("PGM-CALL, rqs.length:", rqs.length);
+                trace("PGM-CALL, rqs:", ENC.listbarr(rqs));
             }
 
             // send PGM-CALL request

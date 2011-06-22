@@ -23,7 +23,10 @@ package as400.prototype {
             length_ = total_digits / 2 + 1;
         }
 
-        public function read(from:ByteArray) : Object {
+        public function read(from:ByteArray,
+                             actualLength:uint = 0) : Object {
+
+            /// @todo what to do with actualLength ??
 
             // convert
             var v:Vector.<int> = new Vector.<int>(length_ * 2);
@@ -60,7 +63,6 @@ package as400.prototype {
             var value:Number = Number(val);
             value *= Math.pow(10, fractional_digits_);
             var n:int = int(value.toPrecision(total_digits_));
-            trace("znd.write(), n:int", n);
 
             var negative:Boolean = n < 0;
             if(negative)
@@ -76,7 +78,6 @@ package as400.prototype {
                 dec = n / Math.pow(10, exponent);
                 n -= dec * Math.pow(10, exponent);
                 v.push(dec);
-                trace("pkd.write(), i", i, "; dec:", dec);
             }
 
             // add sign 4-bit at the end
@@ -89,12 +90,9 @@ package as400.prototype {
             for(i = 0; i < v.length; i+=2) {
                 var place:int = (v[i] << 4) | v[i+1];
                 to.writeByte(place);
-                trace("pkd.write(), i", i/2,
-                      "(", v[i], ",", v[i+1], ")",
-                      "; byte:", place);
             }
-        }
+        } // write()
 
-    }
+    } // class Packed
 
 }

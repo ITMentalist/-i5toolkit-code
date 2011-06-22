@@ -23,7 +23,10 @@ package as400.prototype {
             length_ = total_digits;
         }
 
-        public function read(from:ByteArray) : Object {
+        public function read(from:ByteArray,
+                             actualLength:uint = 0) : Object {
+
+            /// @todo what to do with actualLength ??
 
             var dec:int = 0;
             var sign_bits:int = 0;

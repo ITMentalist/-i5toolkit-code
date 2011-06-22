@@ -2,7 +2,11 @@
  * @file t005.as
  *
  * Test of calling IBM i APIs using class RemoteCommand.
- * @todo reuse a program-call object
+ *
+ * @remark t005.as reuses a RemoteProgram object during 4 calls to different IBM i APIs (programs):
+ *  - QUSCRTUS. This API is used to create a User Space (USRSPC) object.
+ *  - QCMDEXC, which is called twice to execute 2 CL commands, CHGUSRSPC and DMPOBJ.
+ *  - QUSDLTUS. This API is used to delete the created USRSPC.
  */
 
 package {
@@ -14,9 +18,9 @@ package {
 
     public class t005 extends Sprite {
 
-        private var host:String = "g525";
-        private var user:String = "ljl";
-        private var pwd:String  = "ydostars";
+        private var host:String = "******";
+        private var user:String = "***";
+        private var pwd:String  = "******";
         private var pgm_call:RemoteCommand;
         private var q:Vector.<Function>;
         private var argl:Vector.<ProgramArgument>;
@@ -29,25 +33,25 @@ package {
                                     user,
                                     pwd,
                                     "QSYS",
-                                    "QUSCRTUS");
+                                    "QUSCRTUS",
+                                    true);  // reuse this program-call object
 
             q = new Vector.<Function>();
 
             q.push(change_usrspc);
             q.push(dump_usrspc);
             q.push(delete_usrspc);
+            q.push(thats_all);
 
             create_usrspc();
         }
 
+        private function thats_all() : void {
+            trace("<<<<<<<<<< THAT'S ALL :p >>>>>>>>>>");
+        }
+
         private function create_usrspc() : void {
 
-            pgm_call
-                = new RemoteCommand(host,
-                                    user,
-                                    pwd,
-                                    "QSYS",
-                                    "QUSCRTUS");
             // create a *USRSPC, AS3, in QGPL
             argl
                 = new <ProgramArgument>[new ProgramArgument(new EBCDIC(20),
@@ -72,12 +76,16 @@ package {
         }
 
         private function change_usrspc() : void {
+
+            /*
             pgm_call
                 = new RemoteCommand(host,
                                     user,
                                     pwd,
                                     "QSYS",
                                     "QCMDEXC");
+            */
+            pgm_call.pgm = "QCMDEXC";
             // change the content of *USRSPC via the CHGUSRSPC command from i5/OS Programmer's Toolkit
             cmd_argl
                 = new <ProgramArgument>[new ProgramArgument(new EBCDIC(100),
@@ -90,31 +98,36 @@ package {
         }
 
         private function dump_usrspc() : void {
+            /*
             pgm_call
                 = new RemoteCommand(host,
                                     user,
                                     pwd,
                                     "QSYS",
                                     "QCMDEXC");
+            */
             // dump *USRSPC
             cmd_argl[0].value = "DMPOBJ QGPL/AS3 *USRSPC";
             pgm_call.callx(this, cb_usrspc, cmd_argl);
         }
 
         private function delete_usrspc() : void {
+            /*
             pgm_call
                 = new RemoteCommand(host,
                                     user,
                                     pwd,
                                     "QSYS",
                                     "QUSDLTUS");
+            */
+            pgm_call.pgm = "QUSDLTUS";
             // delete *USRSPC AS3
             var qusec:ByteArray = new ByteArray();
-            qusec.writeInt(16);
-            for(var i:int = 0; i < 12; i++) qusec.writeByte(0);
+            qusec.writeInt(64);
+            for(var i:int = 0; i < 60; i++) qusec.writeByte(0);
             argl.splice(1, 5,
-                        new ProgramArgument(new HexData(16),
-                                            ProgramArgument.INOUT, // @todo here: total length of arg[ 1 ]: 28 , which should be: 16
+                        new ProgramArgument(new HexData(64),
+                                            ProgramArgument.INOUT,
                                             qusec) );
             pgm_call.callx(this, cb_usrspc, argl);
         }

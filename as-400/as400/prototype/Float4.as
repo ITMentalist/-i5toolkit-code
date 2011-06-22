@@ -11,7 +11,10 @@ package as400.prototype {
         public function get length() : uint { return 4; }
         public function set length(len:uint) : void {}
 
-        public function read(from:ByteArray) : Object {
+        public function read(from:ByteArray,
+                             actualLength:uint = 0) : Object {
+
+            /// @todo what to do with actualLength ??
 
             var value:Number = from.readFloat();
             return value;
