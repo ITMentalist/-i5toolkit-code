@@ -2,6 +2,10 @@
  * @file pcysvr.c
  *
  * The policy file server.
+ *
+ * @remark for details of deploying a policy server on an IBM i
+ * server, please refer to:
+ * http://i5toolkit.sourceforge.net/as-400/page_policy_server.html
  */
 
 # include <stdlib.h>
@@ -19,7 +23,8 @@
 # define _PORT 55556
 
 /**
- * @remark 下面 policy 文件中 外网的 DTD URL 是没用的; 吓人一跳, 还以为要连外网呢!
+ * Content of the example policy file. This policy file allow a Flash
+ * client to connect to any ports or your IBM i server.
  */
 # pragma convert(1208)
 static const char *_policy =

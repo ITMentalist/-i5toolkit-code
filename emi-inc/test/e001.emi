@@ -1,0 +1,40 @@
+/**
+ * @file e001.emi
+ *
+ * Test of instruction template deq-t.
+ */
+
+/*
+Dequeue FIFO *USRQ e001a. CL command to create e001a is the following:
+CALL PGM(QUSCRTUQ)
+     PARM('E001A     LSBIN' 'E001' 'F' X'00000000' X'00000020' X'00000100' X'00000100' '*CHANGE' 'Have a good day :p')
+*/
+dcl sysptr q auto init(
+        "E001A", type(Q, h'02')
+)                               ;
+
+dcl spcptr prefix auto          ;
+dcl dd buf-len bin(2) auto      ;
+        cpynv buf-len, deq-t-len  ;
+        modasa prefix, buf-len    ;
+dcl dd deq-prefix char(22) bas(prefix) ;
+        cpybla prefix->deq?option, x'10' ; /* wait indefinitely */
+
+dcl dd has-msg char(1) auto     ;
+dcl dd msg     char(32) auto    ;
+dcl spcptr msg-ptr auto init(msg) ;
+        rslvsp q, *, *, *       ;
+        deq deq-prefix,
+               msg-ptr,
+               q                ;
+brk "MSG"                       ;
+        %sendmsg(msg, 32)       ;
+
+        neg(s) buf-len          ;
+        modasa prefix, buf-len  ;
+
+brk "SEEYOU"                    ;
+        rtx *                   ;
+
+/include "q.emi"                ;
+pend                            ;

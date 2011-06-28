@@ -1,0 +1,37 @@
+/**
+ * @file q.emi
+ *
+ * Instruction templates for queue management instructions
+ */
+
+/**
+ * deq-t
+ *
+ * For operand 1 (message prefix) of instruction DEQ.
+ * @example test/e001.emi
+ */
+dcl spc deq-t bas(*)            ;
+        dcl dd deq?enq-timestamp   char(8) dir ; /* OUTPUT. Timestamp of enqueue of message */
+        dcl dd deq?timeout         char(8) dir ; /* Dequeue wait time-out value. (Ignored if B form is used) */
+        dcl dd deq?msg-size        bin(4)  dir ; /* OUTPUT. Size of message dequeued, max 64K */
+        dcl dd deq?option          char(1) dir ;
+        dcl dd deq?search-arg-len  char(1) dir ; /* Length of input search argument, max 256. Ignored for FIFO/LIFO queues. */
+        /*
+        dcl dd deq?search-arg  char(key-length) ; length of the key data of the dequeued message
+        dcl dd deq?key-return  char(key-length) ; key data of the dequeued message
+        */
+/* Length of deq-t not including the input search-arg and output key-returned  */
+dcl con deq-t-len bin(2) unsgnd init(21) ;
+
+/**
+ * deq-q-t
+ * Queue template for operand 3 of DEQ.
+ */
+dcl spc deq-q-t bas(*)          ;
+        dcl sysptr deq-q-t?q    dir ;
+        dcl dd deq-q-t?ext-opt  char(1) dir ;
+        dcl dd deq-q-t?ext-new-thd-mask bin(2) dir ;
+        dcl dd deq-q-t?ext-old-thd-mask bin(2) dir ;
+        dcl dd *                char(11) dir       ; /* Reserved (binary 0) */
+
+/* EOF - q.emi */

@@ -1,0 +1,40 @@
+/**
+ * @file e002.emi
+ *
+ * Test of instruction template deq-t.
+ */
+
+/*
+Dequeue keyed *USRQ e001b. Use the following CL command to create e001b.
+CALL PGM(QUSCRTUQ) PARM('E001B     LSBIN' 'E001' 'K' X'00000008' X'00000020' X'00000100' X'00000100' '*CHANGE' 'Have a good day :p')
+*/
+dcl sysptr q auto init(
+        "E001B", type(Q, h'02')
+)                               ;
+
+dcl spcptr prefix auto          ;
+dcl dd buf-len bin(2) auto      ;
+        cpynv buf-len, deq-t-len  ;
+        modasa prefix, buf-len    ;
+dcl dd deq-prefix char(36) bas(prefix) ;
+        cpybla deq-prefix(22:8), x'0000000000000000' ;
+        cpybla prefix->deq?option, x'1A' ; /* wait indefinitely, search for msg whose key *GE x'0000....'*/
+
+dcl dd has-msg char(1) auto     ;
+dcl dd msg     char(32) auto    ;
+dcl spcptr msg-ptr auto init(msg) ;
+        rslvsp q, *, *, *       ;
+        deq deq-prefix,
+               msg-ptr,
+               q                ;
+brk "MSG"                       ;
+        %sendmsg(msg, 32)       ;
+
+        neg(s) buf-len          ;
+        modasa prefix, buf-len  ;
+
+brk "SEEYOU"                    ;
+        rtx *                   ;
+
+/include "q.emi"                ;
+pend                            ;
