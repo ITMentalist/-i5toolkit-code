@@ -1,0 +1,69 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file e004.emi
+ *
+ * Test of SPC enq-t that's declared in q.emi
+ */
+
+/* FIFO *USRQ *LIBL/E001A. Max entry length = 32 */
+dcl sysptr e001a auto init(
+        "E001A", type(q, h'02')
+)                               ;
+/* Keyed *USRQ *LIBL/E001B.  Max entry length = 32. Key length = 8 */
+dcl sysptr e001b auto init(
+        "E001B", type(q, h'02')
+)                               ;
+
+dcl spcptr prefix auto          ;
+dcl dd enq-prefix char(1) bas(prefix) ; /* just because ENQ accept a scalar for operand 2, message prefix */
+dcl dd len bin(4) auto                ;
+dcl dd msg char(32) auto              ;
+dcl spcptr msg-ptr auto init(msg)     ;
+
+        /* enqueue FIFO queue E001A */
+        modasa prefix, 4        ;
+        cpyblap msg,
+          "i like OPM MI, it plain",
+          " "                          ;
+        triml len, msg, " "            ;
+        cpynv prefix->enq?msg-len, len ; /* me */
+        rslvsp e001a, *, *, *          ;
+        enq e001a, enq-prefix, msg-ptr ;
+        modasa prefix, -4              ;
+
+        /* enqueue keyed queue E001B with key value 'keyvalue' */
+        modasa prefix, 12       ;
+        cpyblap msg,
+          "i like OPM MI, it powerful",
+          " "                   ;
+        triml len, msg, " "     ;
+        cpynv prefix->enq?msg-len, len ;
+        cpybla prefix->enq?key, 'keyvalue' ; /* set 8-byte key value */
+        rslvsp e001b, *, *, *              ;
+        enq e001b, enq-prefix, msg-ptr     ;
+        modasa prefix, -12      ;
+
+        /* @remark Now check entries of E001A and E001B with the DSPQMSG command  */
+        rtx *                   ;
+
+/include "q.emi"                ;
+pend                            ;

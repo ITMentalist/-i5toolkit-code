@@ -1,8 +1,40 @@
 /**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
  * @file q.emi
  *
  * Instruction templates for queue management instructions
  */
+
+/ifndef __emi_q_h__           ;
+/define __emi_q_h__           ;
+
+/**
+ * enq-t
+ * For operand 2 of the MI instruction ENQ
+ * @example test/
+ */
+dcl spc enq-t bas(*)            ;
+        dcl dd enq?msg-len bin(4) dir ; /* Size of message to be enqueued */
+        dcl dd enq?key char(256) dir ;  /* valid only for keyed queues */
 
 /**
  * deq-t
@@ -34,4 +66,5 @@ dcl spc deq-q-t bas(*)          ;
         dcl dd deq-q-t?ext-old-thd-mask bin(2) dir ;
         dcl dd *                char(11) dir       ; /* Reserved (binary 0) */
 
+/endif                          ;
 /* EOF - q.emi */

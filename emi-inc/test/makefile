@@ -21,8 +21,8 @@
 
 BIN_LIB=lsbin
 
-MIFLAGS=incdir('/usr/local/include/emi-inc/mi')
-TARGETS=e001 e002
+MIFLAGS=incdir('/usr/local/include/emi-inc/mi' '/usr/local/include/emi-inc/api')
+TARGETS=e001 e002 e003 e004
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir emi-inc/test."

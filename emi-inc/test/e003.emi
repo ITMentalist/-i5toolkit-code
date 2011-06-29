@@ -1,0 +1,56 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file e003.emi
+ *
+ * Test of emi-inc/api/qcmdexc.emi and quscmdln.emi
+ */
+
+dcl dd cmd char(128) auto       ;
+dcl dd len pkd(15, 5) auto init(p'128') ;
+
+        cpyblap cmd,
+          "DSPJOB OPTION(*PGMSTK)",
+          " "                   ;
+        /* Call DSPJOB to display the current call stack */
+        setspp qcmdexc?cmd-str, cmd    ;
+        setspp qcmdexc?cmd-len, len    ;
+        callx qcmdexc, qcmdexc?argl, * ;
+
+        /* Send a message containing DBCS characters to QSYSOPR */
+        cpyblap cmd,
+          "SNDMSG MSG(x'0E5A700FC4C2C3E20E5C764C9C0F') TOUSR(*SYSOPR)",
+          " "                   ;
+dcl dd igc char(3) auto init('IGC') ;
+        setspp qcmdexc?igc, igc ;
+        callx qcmdexc, qcmdexc?argl-2, * ;
+brk '1'                         ;
+        /* display a command line window by calling QUSCMDLN */
+        callx quscmdln, *, *    ;
+brk 'SEEYOU'                    ;
+        rtx *                   ;
+
+/* includes */
+/include qcmdexc.emi            ;
+/include "uim.emi"         ;
+
+pend                            ;
+

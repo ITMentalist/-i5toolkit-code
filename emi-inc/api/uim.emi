@@ -1,0 +1,44 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file uim.emi
+ *
+ * For UIM (User Interface Manager) APIs.
+ */
+
+/ifndef __emi_quscmdln_h__           ;
+/define __emi_quscmdln_h__           ;
+
+/* ---------- Display APIs ---------- */
+/**
+ * Display Command Line Window (QUSCMDLN) API
+ *
+ * The Display Command Line Window (QUSCMDLN) API displays a window
+ * containing a command line.
+ * @remark QUSCMDLN has no arguments. Just call it directly.
+ * @example test/e004.emi
+ */
+dcl sysptr quscmdln auto init(
+        "QUSCMDLN", ctx("QSYS"), type(pgm)
+)                               ;
+
+/endif                          ;
+/* EOF - quscmdln.emi */
