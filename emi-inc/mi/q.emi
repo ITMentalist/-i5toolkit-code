@@ -66,5 +66,36 @@ dcl spc deq-q-t bas(*)          ;
         dcl dd deq-q-t?ext-old-thd-mask bin(2) dir ;
         dcl dd *                char(11) dir       ; /* Reserved (binary 0) */
 
+/**
+ * matqat-t
+ * Materialization template of MATQAT.
+ * @example test/e005.emi
+ */
+dcl spc matqat-t bas(*)         ;
+        dcl dd matqat?bytes-in  bin(4) dir ;
+        dcl dd matqat?bytes-out bin(4) dir ;
+        dcl dd matqat?obj-type  char(2) dir ;
+        dcl dd matqat?obj-name  char(30) dir ;
+        dcl dd matqat?crt-opt   char(4) dir  ;
+        dcl dd *                char(4) dir  ;
+        dcl dd matqat?spc-size  bin(4) dir   ;
+        dcl dd matqat?init-val  char(1) dir  ;
+        dcl dd matqat?perf-cls  char(4) dir  ;
+        dcl dd *                char(7) dir  ;
+        dcl sysptr matqat?ctx   dir          ;
+        dcl sysptr matqat?access-grp dir     ;
+        dcl dd matqat?q-attr    char(1) dir  ;
+        dcl dd matqat?cur-max-msgs bin(4) dir ;
+        dcl dd matqat?cur-msgs  bin(4) dir    ;
+        dcl dd matqat?ext-value bin(4) dir    ;
+        dcl dd matqat?key-len   bin(2) dir    ;
+        dcl dd matqat?max-msg-len bin(4) dir  ;
+        dcl dd *                char(1) dir   ;
+        dcl dd matqat?max-extends bin(4) dir  ;
+        dcl dd matqat?cur-extends bin(4) dir  ;
+        dcl dd matqat?init-msgs bin(4) dir    ;
+dcl con matqat-t-len bin(2) init(128)         ;
+dcl dd matqat?tmpl char(128) bas(*)           ; /* can be used to clear allocated AUTO storage */
+
 /endif                          ;
 /* EOF - q.emi */

@@ -42,7 +42,7 @@ dcl spcptr msg-ptr auto init(msg)     ;
         /* enqueue FIFO queue E001A */
         modasa prefix, 4        ;
         cpyblap msg,
-          "i like OPM MI, it plain",
+          "i like OPM MI, it's plain",
           " "                          ;
         triml len, msg, " "            ;
         cpynv prefix->enq?msg-len, len ; /* me */
@@ -53,7 +53,7 @@ dcl spcptr msg-ptr auto init(msg)     ;
         /* enqueue keyed queue E001B with key value 'keyvalue' */
         modasa prefix, 12       ;
         cpyblap msg,
-          "i like OPM MI, it powerful",
+          "i like OPM MI, it's powerful",
           " "                   ;
         triml len, msg, " "     ;
         cpynv prefix->enq?msg-len, len ;
