@@ -22,10 +22,31 @@
  * @file e005.emi
  *
  * Test of matqat-t declared in emi-inc/mi/q.emi
+ *
+ * @pre Create a user queue object called E005U that can contain pointers:
+ *      CALL PGM(QUSCRTUQ)
+ *           PARM('E005U     LSBIN'
+ *           'TOMORROW'
+ *           'K'
+ *           X'00000008'
+ *           X'00000020'
+ *           X'00000100'
+ *           X'00000100'
+ *           '*CHANGE'
+ *           'I can contain pointer data'
+ *           '*YES'
+ *           X'00000010000000000000000000000000'
+ *           '*DEFAULT'
+ *           '*YES')
+ *
+ * Output of E005 might like the following:
+ * 4 > call e005
+ *     *USRQ E005U can          contains pointer data
+ *     *DTAQ E005 can  NOT     contains pointer data
  */
 
 dcl sysptr qq auto init(
-        "E001B", type(q, h'02')
+        "E005U", type(q, h'02')
 )                               ;
 dcl spcptr qatr auto            ;
 dcl dd len bin(2) auto          ;
@@ -36,11 +57,29 @@ dcl dd len bin(2) auto          ;
         cpynv qatr->matqat?bytes-in, len ;
 
         matqat qatr, qq         ;
+        cpyblap msg, "*USRQ E005U can          contains pointer data", " " ;
+        tstbts(b) qatr->matqat?q-attr, 0 / nzer(=+2) ;
+        cpybla msg(17:3), "NOT"                      ;
+:
+        %sendmsg(msg, 50)       ;
+brk '1'                         ;
+
+dcl sysptr dtaq auto init(
+        "E005", type(q, h'01')
+)                               ;
+        matqat qatr, dtaq       ;
+        cpyblap msg, "*DTAQ E005 can          contains pointer data", " " ;
+        tstbts(b) qatr->matqat?q-attr, 0 / nzer(=+2) ;
+        cpybla msg(17:3), "NOT"                      ;
+:
+        %sendmsg(msg, 50)       ;
 
 brk '99'                        ;
         neg(s) len              ;
         modasa qatr, len        ;
         rtx *                   ;
+
+dcl dd msg char(50) auto        ;
 
 /include q.emi                  ;
 pend                            ;

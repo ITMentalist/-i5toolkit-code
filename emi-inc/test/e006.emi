@@ -1,0 +1,113 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file e006.emi
+ *
+ * Test of matqmsg-t declared in emi-inc/mi/q.emi
+ *
+ * @pre Create a *USRQ call E006 and put some q-entries into it.
+ *      CALL PGM(QUSCRTUQ)                                         
+ *           PARM('E006      LSBIN'
+ *                'E006_QQ'
+ *                'K'
+ *                X'00000009'
+ *                X'00000011'
+ *                X'00000020'
+ *                X'00000020'
+ *                '*CHANGE'
+ *                'keyed; key length = 9, max message length = 17')        
+ *
+ *      ENQUSRQ Q(E006) KEY(Jungle001) MSG('The rain is heavy') MSGLEN(17)
+ *      ENQUSRQ Q(E006) KEY(Jungle002) MSG('Monkeys are happy') MSGLEN(17)
+ *      ENQUSRQ Q(E006) KEY(TheSea001) MSG('Penguins like ...') MSGLEN(17)
+ *      ENQUSRQ Q(E006) KEY(*ANY) MSG('Deep in the .....') MSGLEN(17)     
+ *
+ * The output of E006 might like the following:
+ * 4 > call e006        
+ *     TheSea001        
+ *     Penguins like ...
+ */
+
+dcl sysptr q auto init(
+        "E006", type(q, h'02')
+)                               ;
+dcl spcptr rcv auto        ;
+dcl spcptr sel auto       ;
+dcl dd sel-tmpl char(16) bas(*) ;
+dcl dd len bin(4) auto          ;
+dcl dd sel-len bin(4) auto      ;
+
+        cpynv sel-len, matqmsg-select-t-len ;
+        addn(s) sel-len, 9                  ;
+        modasa sel, sel-len           ;
+        cpybrep sel->matqmsg-select?tmpl, x'00' ; /* clear selection template */
+        cpybla sel->matqmsg-select?option,
+               x"8800"      ; /* keyed, search for equal*/
+        cpynv sel->matqmsg-select?mat-key-size, 16 ; /* key length of E006 is 9 */
+        cpynv sel->matqmsg-select?mat-msg-size, 32 ; /* max msg length of E006 is 17 */
+dcl spcptr key-ptr auto                            ;
+dcl dd search-key char(9) bas(*)                   ;
+        setsppfp key-ptr, sel                      ;
+        addspp key-ptr, key-ptr, matqmsg-select-t-len ;
+        cpybla key-ptr->search-key, "TheSea001"       ;
+
+        /* retrieve bytes needed to allocate for operand 1 */
+        modasa rcv, 8             ;
+        cpynv  rcv->matqmsg?bytes-in, 8   ;
+        matqmsg rcv, q, sel->sel-tmpl     ;
+        cpynv len, rcv->matqmsg?bytes-out ;
+        modasa rcv, -8            ;
+brk '1'                           ;
+        /* actually materialize queue msgs */
+        modasa rcv, len         ;
+        cpybrep rcv->matqmsg?tmpl, x'00' ;
+        cpynv rcv->matqmsg?bytes-in, len ;
+        matqmsg rcv, q, sel->sel-tmpl    ;
+
+        /* what we get */
+        cmpnv(b) rcv->matqmsg?msgs-out, 0 / nhi(see-you) ; /* check the number of entries returned */
+
+dcl dd dbuf char(256) bas(*)    ;
+dcl dd key-rtn char(9) bas(*)   ;
+dcl dd msg-rtn char(17) bas(*)  ;
+dcl spcptr entry-ptr auto       ;
+dcl spcptr msg-ptr auto         ;
+        setsppfp entry-ptr, rcv   ;
+        addspp entry-ptr, entry-ptr, matqmsg-t-len ;
+        setsppfp key-ptr, entry-ptr                ;
+        addspp key-ptr, key-ptr, matqmsg-entry-t-len ;
+        /* Note that materialized key data and message are aligned to 16-byte boundaries! */
+        %sendmsg(key-ptr->key-rtn, 9) ;
+        setsppfp msg-ptr, key-ptr     ;
+        addspp msg-ptr, msg-ptr, 16   ;
+        %sendmsg(msg-ptr->msg-rtn, entry-ptr->matqmsg-entry?msg-len) ;
+
+brk '99'                        ;
+see-you:        
+        neg(s) sel-len          ;
+        modasa sel, sel-len     ;
+	neg(s) len              ;
+        modasa rcv, len         ;
+
+        rtx *                   ;
+
+/include q.emi                  ;
+pend                            ;

@@ -1,0 +1,95 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file enq.emi
+ *
+ * @param [in] Qualified queue name in format of char(10) q-name + char(10) library name;
+ *             special value *LIBL is acceptable.
+ * @param [in] Char(1) subtype code of the queue object. hex 01 for a data queue, and hex 02 for a user queue.
+ * @param [in] Bin(4), length of key data to enqueue.
+ * @param [in] Char(*), key data
+ * @param [in] Bin(4), length of message data to enqueue.
+ * @param [in] Char(*), message data
+ *
+ * @remark All parameter are expected to be passed by references.
+ * @remark Caller is assumed to pass the correct length of key data and message data.
+ */
+
+dcl spcptr .qual-q-name parm     ;
+dcl spcptr .subtype     parm     ;
+dcl spcptr .key-len     parm     ;
+dcl spcptr .key         parm     ;
+dcl spcptr .msg-len     parm     ;
+dcl spcptr .msg         parm     ;
+
+dcl ol pl-enq (
+	.qual-q-name,
+        .subtype,
+        .key-len,
+        .key,
+        .msg-len,
+        .msg
+) parm ext                      ;
+
+entry i-enq(pl-enq) ext         ;
+
+        calli resolve-queue, *, resolve-queue-ptr ;
+        calli enqueue, *, enqueue-ptr             ;
+see-you:        
+        rtx *                   ;
+
+/* Resolve target queue object */
+dcl insptr resolve-queue-ptr auto ;
+entry resolve-queue int         ;
+
+dcl dd qual-q-name char(20) bas(.qual-q-name) ;
+        dcl dd q-name char(10) def(qual-q-name) pos(1) ;
+        dcl dd lib-name char(10) def(qual-q-name) pos(11) ;
+dcl dd subtype char(1) bas(.subtype) ;
+
+dcl con *LIBL char(10) init (
+        "*LIBL"
+)                               ;
+dcl dd r-tmpl char(34) auto     ;
+dcl sysptr q-obj auto           ;
+
+        cpybrep r-tmpl, x'00'       ;
+        cpybla r-tmpl(1:1), x'0A'   ;
+        cpybla r-tmpl(2:1), subtype ;
+        cpyblap r-tmpl(3:30), q-name, " " ;
+
+        cmpbla(b) lib-name, *LIBL
+          / eq(resolve-in-libl) ;  /* @here */
+
+        b end-resolve           ;
+resolve-in-libl:
+        rslvsp q-obj, r-tmpl, *, * ;
+end-resolve:       
+        b resolve-queue-ptr     ;
+
+/* Enqeue */
+dcl insptr enqueue-ptr auto     ;
+entry enqueue int               ;
+
+        b enqueue-ptr           ;
+
+/include q.emi                  ;
+pend                            ;

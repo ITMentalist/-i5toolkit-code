@@ -97,5 +97,68 @@ dcl spc matqat-t bas(*)         ;
 dcl con matqat-t-len bin(2) init(128)         ;
 dcl dd matqat?tmpl char(128) bas(*)           ; /* can be used to clear allocated AUTO storage */
 
+/**
+ * matqmsg-t
+ * Materialization template of MATQMSG for operand 1 of MATQMSG
+ *
+ * @example test/e006.emi
+ */
+dcl spc matqmsg-t bas(*)        ;
+        dcl dd matqmsg?bytes-in bin(4) dir ;
+        dcl dd matqmsg?bytes-out bin(4) dir ;
+        dcl dd matqmsg?msgs-out bin(4) dir  ;
+        dcl dd matqmsg?msgs-on-q bin(4) dir ;
+        dcl dd matqmsg?max-msg-len bin(4) dir ;
+        dcl dd matqmsg?key-len  bin(4) dir    ;
+        dcl dd *                char(8) dir   ;
+        /* Message data (repeated for each message) */
+dcl con matqmsg-t-len bin(2) init(32) ;
+dcl dd matqmsg?tmpl char(32) bas(*) ; /* can be used to clear allocated AUTO storage */
+
+/**
+ * magqmsg-
+ * Message selection template of MATQMSG for operand 3 of MATQMSG.
+ * @example test/e006.emi
+ */
+dcl spc matqmsg-select-t bas(*) ;
+        /*
+        bits 0-3, type
+          0001 = All messages
+          0010 = First
+          0100 = Last
+          1000 = Keyed
+        bits 4-7, key relationship (if needed)
+          0010 = Greater than
+          0100 = Less than
+          0110 = Not equal
+          1000 = Equal
+          1010 = Greater than or equal
+          1100 = Less than or equal
+        */
+        dcl dd matqmsg-select?option char(2) dir ;
+        dcl dd matqmsg-select?mat-key-size   bin(4) dir ;
+        dcl dd matqmsg-select?mat-msg-size   bin(4) dir ;
+        dcl dd *                             char(6) dir ;
+        /* Input key value if needed */
+dcl con matqmsg-select-t-len bin(2) init(16) ;
+dcl dd matqmsg-select?tmpl char(16) bas(*)   ;
+
+/* @remark 这所以这样要求是为了当 message 当中含有 pointer 时, operand-1 中返回的内容中 pointer 可以保证被对齐到 16-byte boundaries
+The length of the message key and message text fields is determined by values supplied in operand 3, message selection data. If the length supplied in operand 3 exceeds the actual data length, the remaining space will be padded with binary zeros.
+
+Both of the fields specified under lengths must be zero or an integer multiple of 16. The maximum value allowed for the key length is 256. The maximum value allowed for the message text is 65,536.
+*/
+
+/**
+ * A queue entry returned by MATQMSG
+ */
+dcl spc matqmsg-entry-t bas(*)  ;
+        dcl dd matqmsg-entry?time-enqueued char(8) dir ;
+        dcl dd matqmsg-entry?msg-len       bin(4) dir  ;
+        dcl dd *                           char(4) dir ;
+        /* key data */
+        /* message */
+dcl con matqmsg-entry-t-len bin(2) init(16) ;
+
 /endif                          ;
 /* EOF - q.emi */

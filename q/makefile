@@ -19,7 +19,7 @@
 # makefile of subproject queue tools
 #
 
-MIFLAGS=INCDIR('.' '../ref')
+MIFLAGS=INCDIR('.' '../ref' '/usr/local/include/emi-inc/mi' '/usr/local/include/emi-inc/api')
 CRTPNLGRPFLAGS=INCFILE(QGPL/I5TOOLSRC)
 
 BIN_LIB=
