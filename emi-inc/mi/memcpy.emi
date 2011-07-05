@@ -1,0 +1,88 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file memcpy.emi
+ *
+ * BIF @memcpy
+ * @example q/enq.emi
+ */
+
+/ifndef __emi_memcpy_h__           ;
+/define __emi_memcpy_h__           ;
+
+/* @memcpy */
+dcl insptr @memcpy-ptr auto     ;
+
+dcl spcptr @memcpy?target parm    ;
+dcl spcptr @memcpy?source parm    ;
+dcl dd @memcpy?length bin(4) parm ;
+dcl ol @memcpy-pl (
+        @memcpy?target,
+        @memcpy?source,
+        @memcpy?length
+) parm int                      ;
+entry @memcpy(@memcpy-pl) int     ;
+
+dcl con @memcpy?snip-size bin(4) init(h'7FF0') ; /* 32767 - 15 */
+dcl dd @memcpy?bytes-remained bin(4) auto      ;
+dcl dd @memcpy?bytes-to-copy  bin(4) auto      ;
+dcl dd @memcpy?ch1 char(1) bas(*) ;
+dcl spcptr @memcpy?target-pos auto ;
+dcl spcptr @memcpy?source-pos auto ;
+dcl dtaptr @memcpy?target-dp auto ;
+dcl dtaptr @memcpy?source-dp auto ;
+dcl dd @memcpy?dp-attr char(7) auto init(
+        x"04000000000000"
+)                               ;
+        dcl dd @memcpy?dp-len bin(2) def(@memcpy?dp-attr) pos(2) ;
+
+        setsppfp @memcpy?target-pos, @memcpy?target    ;
+        setsppfp @memcpy?source-pos, @memcpy?source    ;
+        cpynv @memcpy?bytes-remained, @memcpy?length ;
+        cpynv @memcpy?bytes-to-copy, @memcpy?snip-size ;
+@memcpy?loop:
+        cmpnv(b) @memcpy?bytes-remained, @memcpy?bytes-to-copy
+          / hi(=+2)             ;
+        cpynv @memcpy?bytes-to-copy, @memcpy?bytes-remained ;
+:
+        /* set addresses of DTAPTRs */
+        setdp @memcpy?target-dp, @memcpy?target->@memcpy?ch1 ;
+        setdp @memcpy?source-dp, @memcpy?source->@memcpy?ch1 ;
+
+        /* attribute of DTAPTRs */
+        cpynv @memcpy?dp-len, @memcpy?length ;
+        setdpat @memcpy?target-dp, @memcpy?dp-attr ;
+        setdpat @memcpy?source-dp, @memcpy?dp-attr ;
+
+        cpybla @memcpy?target-dp, @memcpy?source-dp ;
+
+        subn(s) @memcpy?bytes-remained, @memcpy?bytes-to-copy ;
+        cmpnv(b) @memcpy?bytes-remained, 0 / nhi(@memcpy?end-loop) ;
+
+        addspp @memcpy?target-pos, @memcpy?target-pos, @memcpy?bytes-to-copy ;
+        addspp @memcpy?source-pos, @memcpy?source-pos, @memcpy?bytes-to-copy ;
+        b @memcpy?loop          ;
+
+@memcpy?end-loop: brk "@MEMCPY" ;
+        b @memcpy-ptr           ;
+
+/endif                          ;
+/* EOF - memcpy.emi */

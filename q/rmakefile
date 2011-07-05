@@ -38,8 +38,8 @@ all: upload_src compile
 upload_src:
 	lftp -e "cd $(HOST_DIR); mput $(SRC_LIST); by" $(HOST)
 # @todo too tricky :(
-	- rexec $(HOST) "CRTSRCPF QGPL/I5TOOLSRC"
-	lftp -e "put -a ddmqattr.pnl -o QGPL/I5TOOLSRC.ddmqattr; put -a dtaqattr.pnl -o QGPL/I5TOOLSRC.dtaqattr; put -a usrqattr.pnl -o QGPL/I5TOOLSRC.usrqattr; by" $(HOST)
+#	- rexec $(HOST) "CRTSRCPF QGPL/I5TOOLSRC"
+#	lftp -e "put -a ddmqattr.pnl -o QGPL/I5TOOLSRC.ddmqattr; put -a dtaqattr.pnl -o QGPL/I5TOOLSRC.dtaqattr; put -a usrqattr.pnl -o QGPL/I5TOOLSRC.usrqattr; by" $(HOST)
 	touch last-upload
 
 compile:

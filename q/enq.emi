@@ -21,6 +21,10 @@
 /**
  * @file enq.emi
  *
+ * The queue object management API ENQ can be using to enqueue
+ * messages to queue objects, such as user queues or data queues (at
+ * security level 30 or below).
+ *
  * @param [in] Qualified queue name in format of char(10) q-name + char(10) library name;
  *             special value *LIBL is acceptable.
  * @param [in] Char(1) subtype code of the queue object. hex 01 for a data queue, and hex 02 for a user queue.
@@ -31,6 +35,9 @@
  *
  * @remark All parameter are expected to be passed by references.
  * @remark Caller is assumed to pass the correct length of key data and message data.
+ * 
+ * The following are examples of using the ENQ API:
+ * @todo links of examples
  */
 
 dcl spcptr .qual-q-name parm     ;
@@ -77,19 +84,61 @@ dcl sysptr q-obj auto           ;
         cpyblap r-tmpl(3:30), q-name, " " ;
 
         cmpbla(b) lib-name, *LIBL
-          / eq(resolve-in-libl) ;  /* @here */
+          / eq(resolve-in-libl) ;
+dcl sysptr q-ctx auto           ;
+dcl dd ctx-tmpl char(34) auto init(
+        x"04014040404040404040404040404040404040404040404040404040404040400000"
+)                               ;
+        cpybla ctx-tmpl(3:30), lib-name ;
+        rslvsp q-ctx, ctx-tmpl, *, *    ;
+        rslvsp q-obj, r-tmpl, q-ctx, *  ;
 
         b end-resolve           ;
 resolve-in-libl:
         rslvsp q-obj, r-tmpl, *, * ;
 end-resolve:       
+brk "QPTR"                      ;
         b resolve-queue-ptr     ;
 
 /* Enqeue */
 dcl insptr enqueue-ptr auto     ;
 entry enqueue int               ;
 
+dcl spcptr prefix auto          ;
+dcl dd msg-prefix char(1) bas(*) ;
+dcl spcptr key-ptr auto         ;
+dcl dd len bin(4) auto          ;
+
+dcl dd key-len bin(4) bas(.key-len) ;
+dcl dd msg-len bin(4) bas(.msg-len) ;
+
+        cpynv len, 4            ;
+        cmpnv(b) key-len, 0
+          / nlo(=+2)            ;
+        cpynv key-len, 0        ;
+:
+        cmpnv(b) key-len, 256
+          / nhi(=+2)            ;
+        cpynv key-len, 256      ;
+:       
+        addn(s) len, key-len    ;
+        modasa prefix, len      ;
+
+        /* operand 2 of ENQ, prefix */
+dcl ol al-key(key-ptr, .key, key-len) arg  ;
+        cpynv prefix->enq?msg-len, msg-len ;
+        cmpnv(b) key-len, 0
+          / eq(=+4)             ;
+        /* copy from .key to prefix->enq?key */
+        setsppfp key-ptr, prefix           ;
+        addspp key-ptr, key-ptr, 4         ;
+        calli @memcpy, al-key, @memcpy-ptr ;
+:       
+        enq q-obj, prefix->msg-prefix, .msg ;
+
+brk "ENQ"                       ;
         b enqueue-ptr           ;
 
 /include q.emi                  ;
+/include memcpy.emi             ;
 pend                            ;
