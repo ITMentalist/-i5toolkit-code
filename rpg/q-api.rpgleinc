@@ -1,0 +1,48 @@
+     /**
+      * This file is part of i5/OS Programmer's Toolkit.
+      *
+      * Copyright (C) 2010, 2011  Junlei Li.
+      *
+      * i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+      * it under the terms of the GNU General Public License as published by
+      * the Free Software Foundation, either version 3 of the License, or
+      * (at your option) any later version.
+      *
+      * i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+      * but WITHOUT ANY WARRANTY; without even the implied warranty of
+      * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      * GNU General Public License for more details.
+      *
+      * You should have received a copy of the GNU General Public License
+      * along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+      */
+
+     /**
+      * @file q-api.rpgleinc
+      *
+      * The queue APIs provided by the Queue Tools subproject of i5/OS
+      * Programmer's Toolkit. Please refer to
+      * http://i5toolkit.sourceforge.net/q/page_q_q_apis.html for
+      * details.
+      */
+
+      /if not defined(i5toolkit_rpg_q_api)
+      /define i5toolkit_rpg_q_api
+
+     /**
+      * The Enqueue (ENQ) API
+      * Enquque a entry (message) to a queue object.
+      *
+      * @example test/t168.rpgle
+      */
+     d enq             pr                  extpgm('I5TOOLKIT/ENQ')
+      * qualified queue name. char(10) q-name + char(10) lib-name
+     d     q_name                    20a
+      * MI object subtype code. hex 01 for DTAQ, hex 02 for USRQ.
+     d     subtype                    1a
+     d     key_len                   10i 0
+     d     key                        1a   options(*varsize)
+     d     msg_len                   10i 0
+     d     msg                        1a   options(*varsize)
+
+      /endif
