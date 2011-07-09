@@ -1,0 +1,64 @@
+     /**
+      * This file is part of i5/OS Programmer's Toolkit.
+      *
+      * Copyright (C) 2010, 2011  Junlei Li.
+      *
+      * i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+      * it under the terms of the GNU General Public License as published by
+      * the Free Software Foundation, either version 3 of the License, or
+      * (at your option) any later version.
+      *
+      * i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+      * but WITHOUT ANY WARRANTY; without even the implied warranty of
+      * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      * GNU General Public License for more details.
+      *
+      * You should have received a copy of the GNU General Public License
+      * along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+      */
+
+     /**
+      * @file cbl018.cblle
+      *
+      * Test of queue object APIs provided by subproject Queue Tools
+      *  - Enqueue a *USRQ using the ENQ API
+      *
+      * @pre Create a FIFO USRQ called CBL018 like the following
+      *   4 > CALL PGM(QUSCRTUQ) PARM('CBL018    LSBIN' 'CBL018' 'F' X'00000000'
+      *       X'00000020' X'00000010' X'00000010' '*CHANGE' '')
+      */
+
+       process
+           NOSTDTRUNC
+           NOMONOPRC.
+
+       id division.
+       program-id. cbl018.
+
+       data division.
+       working-storage section.
+       01 q-name    pic x(20) value "CBL018    *LIBL".
+       01 q-subtype pic x(1) value x"02".
+       01 key-len   pic 9(9) usage binary.
+       01 k         pic x.
+       01 msg-len   pic 9(9) usage binary value 30.
+       01 msg       pic x(30) value "Welcome to the COBOL world".
+       01 ec type qusec-t.
+
+       linkage section.
+           copy qusec.
+
+       procedure division.
+       i-main.
+           call "ENQ" using
+                q-name
+                q-subtype
+                key-len
+                k
+                msg-len
+                msg.
+      * check the enqueued message using the DSPQMSG command
+      * e.g. DSPQMSG CBL018 *USRQ
+
+           stop run.
+       end program cbl018.

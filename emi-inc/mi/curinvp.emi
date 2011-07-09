@@ -1,0 +1,60 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file curinvp.emi
+ *
+ * BIF @curinvp. @curinvp retrieves the invocation pointer to the
+ * current invocation.
+ *
+ * @example q/enq.emi, test/e007.emi
+ */
+
+/ifndef __emi_curinvp_h__           ;
+/define __emi_curinvp_h__           ;
+
+dcl insptr @curinvp-ptr auto   ;
+
+dcl invptr @curinvp?invp parm  ;
+dcl ol @curinvp-pl (
+        @curinvp?invp
+) parm int                      ;
+entry @curinvp(@curinvp-pl) int ;
+
+dcl dd @curinvp?sel char(32) auto ;
+        dcl dd @curinvp?num-attrs bin(4) def(@curinvp?sel) pos(1) init(1) ;
+        dcl dd @curinvp?c-flag char(1)   def(@curinvp?sel) pos(5) init(x'00') ;
+        dcl dd * char(3)        def(@curinvp?sel) pos(6) init(x'000000') ;
+        dcl dd @curinvp?attr-off bin(4)  def(@curinvp?sel) pos(9) init(0)         ;
+        dcl dd @curinvp?attr-len bin(4)  def(@curinvp?sel) pos(13) init(0)        ;
+        /* attribute selection entry */
+        dcl dd @curinvp?attr-id  bin(4)  def(@curinvp?sel) pos(17) init(1) ; /* materalize INVP */
+        dcl dd @curinvp?a-flag  char(1)  def(@curinvp?sel) pos(21) init(x'00') ;
+        dcl dd *       char(3)  def(@curinvp?sel) pos(22) init(x'000000') ;
+        dcl dd @curinvp?rcv-off bin(4)   def(@curinvp?sel) pos(25) init(0)         ;
+        dcl dd @curinvp?rcv-len bin(4)   def(@curinvp?sel) pos(29) init(16)        ;
+dcl spcptr @curinvp?sel-ptr auto init(@curinvp?sel) ;
+dcl spcptr @curinvp?rcv-ptr auto                    ;
+
+        setspp @curinvp?rcv-ptr, @curinvp?invp         ;
+        matinvat @curinvp?rcv-ptr, *, @curinvp?sel-ptr ;
+brk "@CURINVP"                  ;
+        b @curinvp-ptr          ;
+/endif

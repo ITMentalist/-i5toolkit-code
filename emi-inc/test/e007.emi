@@ -1,0 +1,47 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file e007.emi
+ *
+ * Test of BIF @cur-invp in emi-inc/mi/cur-invp.emi
+ */
+
+dcl invptr i-ptr auto           ;
+dcl ol curinvp-al (i-ptr) arg   ;
+        calli @curinvp, curinvp-al, @curinvp-ptr ;
+
+dcl dd mat-tmpl char(32) auto bdry(16) ;
+dcl spcptr mat-ptr auto init(mat-tmpl) ;
+dcl spc * bas(mat-ptr)                 ;
+        dcl dd bytes-in bin(4) dir     ;
+        dcl dd bytes-out bin(4) dir    ;
+        dcl dd ptr-type char(1) dir    ;
+        dcl dd ptr-status char(1) dir  ;
+        dcl dd * char(6) dir           ;
+        dcl sysptr pcs dir             ;
+
+        cpynv bytes-in, 32      ;
+        matptr mat-ptr, i-ptr   ;
+brk '99'                        ; /* Have a look at ptr-type (hex 05) and the SYP to the pcs obj  */
+        rtx *                   ;
+
+/include curinvp.emi            ;
+pend                            ;

@@ -29,7 +29,6 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
  */
 
 /include ptrres.mi;
-/include qusec.mi;
 /include qcmn.mi;
 
 /* misc variables */
@@ -382,6 +381,16 @@ entry report-error int;
   calli send-msg, argl-sendmsg, .send-msg;
 
   b .report-error;
+
+dcl dd qusec char(512) auto;
+dcl spcptr .qusec auto init(qusec);
+dcl spc * bas(.qusec);
+  dcl dd ec-bytes-in bin(4) dir;
+  dcl dd ec-bytes-out bin(4) dir;
+  dcl dd ec-exid char(7) dir;
+  dcl dd * char(1) dir;
+  dcl dd ec-exdata char(496) dir;
+dcl con _USECLEN bin(4) init(512);
 
 /include when.mi;
 /include sendmsg.mi;

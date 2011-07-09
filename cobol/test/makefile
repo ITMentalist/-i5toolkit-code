@@ -27,7 +27,7 @@ CLFLAGS=genopt(*list *xref)
 MIFLAGS=incdir('.')
 
 TARGETS=cbl001 cbl002 cbl003 cbl004 cbl005 cbl006 cbl007 cbl008 cbl009 cbl010 \
-	cbl011 cbl012 cbl013 cbl014 cbl015 cbl016 cbl017
+	cbl011 cbl012 cbl013 cbl014 cbl015 cbl016 cbl017 cbl018
 
 all: $(TARGETS)
 	@echo "compilation done -- cobol/test"

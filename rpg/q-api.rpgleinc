@@ -29,6 +29,8 @@
       /if not defined(i5toolkit_rpg_q_api)
       /define i5toolkit_rpg_q_api
 
+      /copy apiec
+
      /**
       * The Enqueue (ENQ) API
       * Enquque a entry (message) to a queue object.
@@ -44,5 +46,8 @@
      d     key                        1a   options(*varsize)
      d     msg_len                   10i 0
      d     msg                        1a   options(*varsize)
+      * optional API error code
+     d     ec                              likeds(qusec_t)
+     d                                     options(*nopass)
 
       /endif

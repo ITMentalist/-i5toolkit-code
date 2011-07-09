@@ -18,6 +18,8 @@ along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses
 */
 /**
  * @file qusec.mi
+ *
+ * @deprecated Source files under this *DIR are going to be removed.
  */
 
 dcl dd qusec char(512) auto;

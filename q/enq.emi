@@ -32,6 +32,8 @@
  * @param [in] Char(*), key data
  * @param [in] Bin(4), length of message data to enqueue.
  * @param [in] Char(*), message data
+ * The following parameters are optional
+ * @param [in/out] Optional API error code in format of Qus_EC_t
  *
  * @remark All parameter are expected to be passed by references.
  * @remark Caller is assumed to pass the correct length of key data and message data.
@@ -46,6 +48,7 @@ dcl spcptr .key-len     parm     ;
 dcl spcptr .key         parm     ;
 dcl spcptr .msg-len     parm     ;
 dcl spcptr .msg         parm     ;
+dcl spcptr .err-code    parm     ;
 
 dcl ol pl-enq (
 	.qual-q-name,
@@ -53,10 +56,17 @@ dcl ol pl-enq (
         .key-len,
         .key,
         .msg-len,
-        .msg
-) parm ext                      ;
+        .msg,
+        .err-code
+) parm ext min(6)               ;
 
 entry i-enq(pl-enq) ext         ;
+
+        stpllen num-parms       ;
+        cmpnv(b) num-parms, 7
+          / neq(=+2)            ; /* clear ec.byte-out */
+        cpynv .err-code->qusec?bytes-out, 0 ;
+:       
 
         calli resolve-queue, *, resolve-queue-ptr ;
         calli enqueue, *, enqueue-ptr             ;
@@ -139,6 +149,120 @@ dcl ol al-key(key-ptr, .key, key-len) arg  ;
 brk "ENQ"                       ;
         b enqueue-ptr           ;
 
+dcl excm exc-mch excid(h'0000') int(on-error) imd cv('MCH') ;
+entry on-error int              ;
+
+dcl dd rtnexcp-tmpl char(19) auto bdry(16) ;
+dcl spcptr rtn-target auto init(rtnexcp-tmpl) ;
+dcl spc * bas(rtn-target)                     ;
+        /* target invocation to returned to */
+        dcl invptr rtn-invp dir               ;
+        dcl dd * char(1) dir                  ;
+        dcl dd action char(2) dir             ;
+
+dcl ol curinvp-al (rtn-invp) arg ;
+        calli @curinvp, curinvp-al, @curinvp-ptr ;
+
+        /* check the number of parameters passed */
+        cmpnv(b) num-parms, 6
+          / hi(has-ec-parm)    ;
+        /* disable EXCM exc-mch */
+        modexcpd exc-mch, x'2000', x'01' ;
+        /* re-signal exception to the caller */
+        cpybla action, x'0000'  ;
+        rtnexcp rtn-target      ;
+has-ec-parm:
+
+dcl spcptr excpd-ptr auto       ;
+dcl dd excpd-len bin(4) auto    ;
+dcl spc excpd-t bas(excpd-ptr)  ;
+        dcl dd retexcpd?bytes-in bin(4) dir ;
+        dcl dd retexcpd?bytes-out bin(4) dir ;
+        dcl dd retexcpd?excp-id char(2) dir  ;
+        dcl dd retexcpd?cv-len  bin(2) dir   ;
+        dcl dd retexcpd?cv char(34) dir      ;
+        dcl dd retexcpd?msg-ref-key char(2) dir ;
+        /* exception specific data */
+dcl dd excpd-msg-len bin(4) auto ;
+
+        modasa excpd-ptr, 8     ;
+        cpynv excpd-ptr->retexcpd?bytes-in, 8          ;
+        retexcpd excpd-ptr, x'01'           ;
+        cpynv excpd-len, excpd-ptr->retexcpd?bytes-out ;
+        modasa excpd-ptr, -8                ;
+        modasa excpd-ptr, excpd-len         ;
+        cpynv excpd-ptr->retexcpd?bytes-in, excpd-len  ;
+        retexcpd excpd-ptr, x'01'           ;
+
+        /* fill the error-code parm and return */
+        subn excpd-msg-len,
+          retexcpd?bytes-out, 94 ;
+        cmpnv(b) .err-code->qusec?bytes-in, 8
+          / lo(end-copy-msg-data) ;
+        addn .err-code->qusec?bytes-out,
+          excpd-msg-len, 16     ;          /* ec.bytes-out */
+:
+dcl dd cvtnc-bin2 bin(2) auto init(h'0000') ;
+        dcl dd cvtnc-ch1 char(1) def(cvtnc-bin2) pos(2) ;
+dcl dd cvtnc-attr char(7) auto init (
+        x"02000200000000"
+)                               ; /* treat receiver as ZND(2,0) */
+        cmpnv(b) .err-code->qusec?bytes-in, 15
+          / lo(end-copy-msg-data) ;
+        cpybla .err-code->qusec?msg-id(1:3),
+          excpd-ptr->retexcpd?cv ;
+        cpybla cvtnc-ch1, excpd-ptr->retexcpd?excp-id(1:1) ;
+        cvtnc .err-code->qusec?msg-id(4:2),
+          cvtnc-bin2, cvtnc-attr ;
+        cpybla cvtnc-ch1, excpd-ptr->retexcpd?excp-id(2:1) ;
+        cvtnc .err-code->qusec?msg-id(6:2),
+          cvtnc-bin2, cvtnc-attr ;
+:       
+        cmpnv(b) .err-code->qusec?bytes-in, 16
+          / nhi(end-copy-msg-data)            ;
+dcl spcptr memcpy-target auto   ;
+dcl spcptr memcpy-source auto   ;
+dcl dd memcpy-len bin(4) auto   ;
+dcl ol memcpy-al (memcpy-target, memcpy-source, memcpy-len) arg ;
+        setsppfp memcpy-target, .err-code ;
+        addspp memcpy-target, memcpy-target, 16 ;
+        setsppfp memcpy-source, excpd-ptr ;
+        addspp memcpy-source, memcpy-source, 48 ;
+        subn memcpy-len, .err-code->qusec?bytes-in, 16 ;
+        cmpnv(b) excpd-msg-len, memcpy-len
+          / hi(=+2)             ;
+        exchby excpd-msg-len, memcpy-len ;
+:       
+        calli @memcpy, memcpy-al, @memcpy-ptr   ;
+end-copy-msg-data:
+        neg(s) excpd-len        ;
+        modasa excpd-ptr, excpd-len ;
+
+        /*
+         * resume execution with the instruction that follows the
+         * RTNEXCP instruction and terminate the internal exception
+         * handler sub invocation.
+         */
+        cpybla action, x'0200'  ;
+        rtnexcp rtn-target      ;
+        b see-you               ;
+
+/* Globals */
+dcl dd num-parms bin(4) auto    ;
+dcl dd db char(512) bas(*)      ;
+
+/**
+ * API error code
+ * @todo replace old `qusec' with this one.
+ */
+dcl spc qusec-t bas(*)          ;
+        dcl dd qusec?bytes-in bin(4) dir ;
+        dcl dd qusec?bytes-out bin(4) dir ;
+        dcl dd qusec?msg-id char(7) dir   ;
+        dcl dd *            char(1) dir   ;
+        /* char(*) message specific data */
+
 /include q.emi                  ;
 /include memcpy.emi             ;
+/include curinvp.emi            ;
 pend                            ;
