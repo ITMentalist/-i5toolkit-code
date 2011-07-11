@@ -19,34 +19,39 @@
  */
 
 /**
- * @file UBin2.as
+ * @file t006.as
+ *
+ * Test of class as400.prototype.CompositeData
  */
 
-package as400.prototype {
+package {
 
-    import flash.utils.ByteArray;
+    import flash.display.*;
+    import flash.utils.*;
+    import as400.prototype.*;
 
-    public class UBin2 implements IAS400Data {
+    public class t006 extends Sprite {
 
-        public function get length() : uint { return 2; }
-        public function set length(len:uint) : void {}
+        public function t006() {
 
-        public function read(from:ByteArray,
-                             actualLength:uint = 0) : Object {
+            var a:CompositeData =
+                new CompositeData(new Bin2(),
+                                  new EBCDIC(30));
 
-            /// @todo what to do with actualLength ??
+            var host_data:ByteArray = new ByteArray();
 
-            var value:uint = from.readUnsignedShort();
-            return value;
+            // write()
+            var obj_name:String = "E006                          ";
+            a.write(host_data, 0x1934, obj_name);
+
+            // read()
+            host_data.position = 0;
+            var b2:int = a.read(host_data) as int;
+            var str:String = a.read(host_data) as String;
+
+            trace(b2, ",", "'" + str + "'");
         }
 
-        public function write(to:ByteArray, val:Object,
-                              ... no_more) : void {
-
-            var value:uint = uint(val);
-            to.writeShort(value);
-        }
-
-    }
+    } // class t006
 
 }
