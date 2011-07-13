@@ -31,20 +31,20 @@ dcl dd len pkd(15, 5) auto init(p'128') ;
           "DSPJOB OPTION(*PGMSTK)",
           " "                   ;
         /* Call DSPJOB to display the current call stack */
-        setspp qcmdexc?cmd-str, cmd    ;
-        setspp qcmdexc?cmd-len, len    ;
-        callx qcmdexc, qcmdexc?argl, * ;
+        setspp @qcmdexc?cmd-str, cmd    ;
+        setspp @qcmdexc?cmd-len, len    ;
+        callx @qcmdexc, @qcmdexc?argl, * ;
 
         /* Send a message containing DBCS characters to QSYSOPR */
         cpyblap cmd,
           "SNDMSG MSG(x'0E5A700FC4C2C3E20E5C764C9C0F') TOUSR(*SYSOPR)",
           " "                   ;
 dcl dd igc char(3) auto init('IGC') ;
-        setspp qcmdexc?igc, igc ;
-        callx qcmdexc, qcmdexc?argl-2, * ;
+        setspp @qcmdexc?igc, igc ;
+        callx @qcmdexc, @qcmdexc?argl-2, * ;
 brk '1'                         ;
         /* display a command line window by calling QUSCMDLN */
-        callx quscmdln, *, *    ;
+        callx @quscmdln, *, *    ;
 brk 'SEEYOU'                    ;
         rtx *                   ;
 

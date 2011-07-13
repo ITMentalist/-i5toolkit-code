@@ -21,49 +21,24 @@
 /**
  * @file CompositeData.as
  *
- * @todo methods to allower the user to append elements to <var>e_</var>
  * @attention This class is unstable!
  */
 
 package as400.prototype {
 
-    import flash.utils.ByteArray;
+    public class CompositeData {
 
-    public class CompositeData implements IAS400Data {
-
-        public function get length() : uint { return 0; }
-        public function set length(len:uint) : void {}
-
-        private var e_:Vector.<IAS400Data>;
+        // properties
+        // public, vecotr of Object
+        private var e_:Vector.<Object>;
+        public function get elements() : Vector.<Object> { return e_; }
+        public function set elements(e:Vector.<Object>) : void { e_ = e; }
 
         public function CompositeData(... elements) {
 
-            e_ = new Vector.<IAS400Data>();
-            for(var i:int = 0; i < elements.length; i++) {
-                if(elements[i] is IAS400Data) {
-                    e_.push(elements[i]);
-                } else
-                    ; // @todo raise exception
-            }
-        }
-
-        public function read(from:ByteArray,
-                             actualLength:uint = 0) : Object
-        {
-            var element:IAS400Data = e_.shift();
-            return element.read(from);
-        }
-
-        public function write(to:ByteArray,
-                              val:Object,
-                              ... more_objs) : void
-        {
-            e_[0].write(to, val);
-
-            for(var i:int = 1; i < e_.length; i++) {
-                var element:IAS400Data = e_[i];
-                element.write(to, more_objs[i - 1]);
-            }
+            e_ = new Vector.<Object>();
+            for(var i:int = 0; i < elements.length; i++)
+                e_.push(elements[i]);
         }
 
     } // class

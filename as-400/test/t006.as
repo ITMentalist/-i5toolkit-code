@@ -32,24 +32,8 @@ package {
 
     public class t006 extends Sprite {
 
+        /// @todo rewrite this test case
         public function t006() {
-
-            var a:CompositeData =
-                new CompositeData(new Bin2(),
-                                  new EBCDIC(30));
-
-            var host_data:ByteArray = new ByteArray();
-
-            // write()
-            var obj_name:String = "E006                          ";
-            a.write(host_data, 0x1934, obj_name);
-
-            // read()
-            host_data.position = 0;
-            var b2:int = a.read(host_data) as int;
-            var str:String = a.read(host_data) as String;
-
-            trace(b2, ",", "'" + str + "'");
         }
 
     } // class t006

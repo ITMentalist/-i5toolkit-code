@@ -72,8 +72,7 @@ package as400.prototype {
             return new Number(value.toFixed(fractional_digits_));
         } // read()
 
-        public function write(to:ByteArray, val:Object,
-                              ... no_more) : void {
+        public function write(to:ByteArray, val:Object) : void {
 
             var value:Number = Number(val);
             value *= Math.pow(10, fractional_digits_);

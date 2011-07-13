@@ -40,8 +40,7 @@ package as400.prototype {
             return value;
         }
 
-        public function write(to:ByteArray, val:Object,
-                              ... no_more) : void {
+        public function write(to:ByteArray, val:Object) : void {
 
             var value:Number = Number(val);
             to.writeFloat(value);

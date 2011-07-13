@@ -1,0 +1,13 @@
+/**
+ * @file sept.emi
+ *
+ * Definition of the spacpe pointer to QINSEPT, @SEPT-PTR
+ */
+
+/ifndef __emi_memcpy_h__           ;
+/define __emi_memcpy_h__           ;
+
+dcl spcptr @QINSEPT-PTR baspco  ;
+dcl sysptr @SEPT(7000) bas(@QINSEPT-PTR) ;
+
+/endif                          ;

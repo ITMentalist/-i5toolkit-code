@@ -36,9 +36,9 @@
  * @remark QUSCMDLN has no arguments. Just call it directly.
  * @example test/e004.emi
  */
-dcl sysptr quscmdln auto init(
-        "QUSCMDLN", ctx("QSYS"), type(pgm)
-)                               ;
+dcl sysptr @QUSCMDLN bas(@QINSEPT-PTR) pos(h'73B1') ; /* offset (hex 73B0) + 1 */
+
+/include sept.emi
 
 /endif                          ;
 /* EOF - quscmdln.emi */

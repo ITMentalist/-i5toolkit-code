@@ -261,7 +261,9 @@ package as400.prototype {
                               ", which should be:",
                               usage);
                     }
-                    arg.value = arg.as400Dta.read(rpy, pgm_arg_len - 12); // @remark arg length actually returned MIGHT NOT be the same as what it expectected to be, either longer or shorter!
+                    trace("length in bytes to read (pgm_arg_len - 12):", pgm_arg_len - 12);
+                    if(pgm_arg_len - 12 > 0)  // @todo need review, 2011-07-12
+                        arg.value = arg.as400Dta.read(rpy, pgm_arg_len - 12); // @remark arg length actually returned MIGHT NOT be the same as what it expectected to be, either longer or shorter!
                     trace("value of arg[", i, "]:", arg.value);
                 }
             }

@@ -68,6 +68,9 @@ package {
                                   i_pwd.text,
                                   "I5TOOLKIT",
                                   "ENQ");
+            var i:int = 0;
+            var exp_id:String = ""; for(i = 0; i < 7; i++) exp_id += String.fromCharCode(0);
+            var exp_data:ByteArray = new ByteArray(); for(i = 0; i < 16; i++) exp_data.writeByte(0);
             var argl:Vector.<ProgramArgument> =
                 new <ProgramArgument>[new ProgramArgument(new EBCDIC(20),
                                                           ProgramArgument.INPUT,
@@ -86,7 +89,19 @@ package {
                                                           64),
                                       new ProgramArgument(new EBCDIC(64),
                                                           ProgramArgument.INPUT,
-                                                          i_msg.text)
+                                                          i_msg.text),
+                                      new ProgramArgument(new CompositeType(new Bin4(),
+                                                                            new Bin4(),
+                                                                            new EBCDIC(7),
+                                                                            new EBCDIC(1),
+                                                                            new HexData(16)),
+                                                          ProgramArgument.INOUT,
+                                                          new CompositeData(32,
+                                                                            0,
+                                                                            exp_id,
+                                                                            String.fromCharCode(0),
+                                                                            exp_data)
+                                                          ) // Qus_EC_t
                                       ];
             pgm_call.callx(this, enq_callback, argl);
 
@@ -96,6 +111,15 @@ package {
                                       argl:Vector.<ProgramArgument>,
                                       msg:String = null) : void {
             trace("Call to ENQ returns ...");
+
+            var ec:CompositeData = argl[6].value as CompositeData;
+            var ds:Vector.<Object> = ec.elements;
+            trace("ec.bytes-in:", ds[0]); // ec.bytes-in
+            if(ds.length > 1) {
+                trace("ec.bytes-out:", ds[1]); // ec.bytes-out
+                trace("ec.exp_id:", ds[2]);
+            } else
+                trace("ec.bytes-out NOT returned!!");
         }
 
         private function init() : void {

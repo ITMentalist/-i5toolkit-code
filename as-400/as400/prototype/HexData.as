@@ -58,8 +58,7 @@ package as400.prototype {
             return r;
         } // read()
 
-        public function write(to:ByteArray, val:Object,
-                              ... no_more) : void {
+        public function write(to:ByteArray, val:Object) : void {
 
             var barr:ByteArray = ByteArray(val);
             if(barr.length < length_)
