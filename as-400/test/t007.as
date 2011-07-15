@@ -53,7 +53,7 @@ package {
         private var i_msg:TextField;
         private var i_sts:TextField; // the status line
 
-        private var btn_:UButton;
+        private var btn_:Button1;
 
         public function t007() {
 
@@ -132,7 +132,7 @@ package {
             i_sts = new TextField();
             var fmt:TextFormat = new TextFormat("Courier", 18, 0xb8860b, true);
             i_sts.alpha = 0.65;
-            i_sts.text  = "... Status line";
+            i_sts.text  = "... Click the apple!";
             i_sts.width = 200;
             i_sts.height = 90;
             i_sts.x = stage.stageWidth - i_sts.width;
@@ -235,9 +235,17 @@ package {
             // a button
             // @todo i think i need a pretty on
             //            var btn:Sprite = new Sprite();
-            btn_ = new UButton();
-            btn_.addEventListener(MouseEvent.CLICK, onBtnClick);
+            var apple:*;
+            apple = new RedApple();
+            var red:BitmapData = apple.load();
+            apple = new GreenApple();
+            var green:BitmapData = apple.load();
+
+            btn_ = new Button1(green, red, 15);
+            btn_.x = 100;
             btn_.y = i_sts.y;
+            // register event listener
+            btn_.addEventListener(MouseEvent.CLICK, onBtnClick);
             addChild(btn_);
         }
 

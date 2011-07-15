@@ -1,0 +1,41 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file dattim.emi
+ *
+ * For Date/Time/Timestamp instructions.
+ */
+
+/ifndef __emi_dattim_h__           ;
+/define __emi_dattim_h__           ;
+
+/**
+ * Conversion template for use by the CVTTS instruction to convert a
+ * 8-byte system clock to a 26-byte SAA timestamp.
+ *
+ * @example test/
+ */
+dcl dd @cvt?sysclock-to-saa-ts char(298) auto init(
+x"0000012A000100020000001A00080000000000000000000000000000000000000000000000000000000000000100000200000000000000000000000000180000008C0000000900000018003C000000000000000000000000000000520000000000000001001A4452C1C44040404040404040404040404040404040404040404040404040404040400000000000000000000000000002001A44520001000000000000000000000051FE2D0000000000000000000000000000001C00000018003C000000000000000000000000000000520000000000000001001A4452C1C44040404040404040404040404040404040404040404040404040404040400000000000000000000000000002001A44520001000000000000000000000051FE2D000000000000000000000000"
+)                               ;
+
+/endif                          ;
+/* EOF - dattim.emi */

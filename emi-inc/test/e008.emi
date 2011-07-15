@@ -1,0 +1,42 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file e008.emi
+ *
+ * Test of @cvt?sysclock-to-saa-ts that is defined in mi/dattime.emi.
+ * This program print the current UTC timestamp to the job log.
+ */
+
+dcl spcptr tmpl-ptr auto init(
+        @cvt?sysclock-to-saa-ts
+)                               ;
+dcl dd sys-clock char(8) auto   ; /* 8-byte system clock */
+dcl dd saa-ts char(26) auto     ; /* 26-byte SAA timestamp */
+
+        matmdata sys-clock, x'0004' ;
+        cvtts saa-ts, sys-clock,
+          tmpl-ptr              ;
+        %sendmsg(saa-ts, 26)    ;
+brk 'SEEYOU'                    ;
+        rtx *                   ;
+
+/include "dattim.emi"           ;
+pend                            ;

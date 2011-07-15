@@ -1,0 +1,199 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file matqat.emi
+ *
+ * The queue object management API MATQAT can be used to materialize
+ * attributes of a queue object. Note that, since the queue object
+ * management APIs run in user state, they cannot be used to operate
+ * on queue objects in system domain at security level 40 or above,
+ * for example, a DTAQ or a USRQ created in system domain.
+ *
+ * @param [in] Qualified queue name in format of char(10) q-name + char(10) library name;
+ *             special value *LIBL is acceptable.
+ * @param [in] Char(1) subtype code of the queue object. hex 01 for a data queue, and hex 02 for a user queue.
+ */
+
+dcl spcptr .qual-q-name parm     ;
+dcl spcptr .subtype     parm     ;
+dcl spcptr .err-code    parm     ;
+
+dcl ol pl-matqat (
+	.qual-q-name,
+        .subtype,
+        .err-code
+) parm ext min(2)               ;
+
+entry i-matqat(pl-matqat) ext         ;
+
+        stpllen num-parms       ;
+        cmpnv(b) num-parms, 7
+          / neq(=+2)            ; /* clear ec.byte-out */
+        cpynv .err-code->qusec?bytes-out, 0 ;
+:       
+
+        calli resolve-queue, *, resolve-queue-ptr ;
+
+        /* materialize q attributes */
+see-you:        
+        rtx *                   ;
+
+/* Exception handler */
+dcl excm oops excid(h'0000') int(on-error)
+/*
+imd cv('MCH') ;
+*/
+imd cv(x'00000000') ;
+
+entry on-error int              ;
+
+dcl spcptr excpd-ptr auto       ;
+dcl dd excpd-len bin(4) auto    ;
+dcl spc excpd-t bas(excpd-ptr)  ;
+        dcl dd retexcpd?bytes-in bin(4) dir ;
+        dcl dd retexcpd?bytes-out bin(4) dir ;
+        dcl dd retexcpd?excp-id char(2) dir  ;
+        dcl dd retexcpd?cv-len  bin(2) dir   ;
+        dcl dd retexcpd?cv char(32) dir      ;
+        dcl dd retexcpd?msg-ref-key char(4) dir ;
+        /* exception specific data */
+dcl dd excpd-msg-len bin(4) auto ;
+
+        modasa excpd-ptr, 8     ;
+        cpynv excpd-ptr->retexcpd?bytes-in, 8          ;
+        retexcpd excpd-ptr, x'01'           ;
+        cpynv excpd-len, excpd-ptr->retexcpd?bytes-out ;
+        modasa excpd-ptr, -8                ;
+        modasa excpd-ptr, excpd-len         ;
+        cpynv excpd-ptr->retexcpd?bytes-in, excpd-len  ;
+        retexcpd excpd-ptr, x'01'           ;
+brk "RET"                                   ;
+        /* return */
+dcl dd rtnexcp-tmpl char(19) auto bdry(16) ;
+dcl spcptr rtn-target auto init(rtnexcp-tmpl) ;
+dcl spc * bas(rtn-target)                     ;
+        /* target invocation to returned to */
+        dcl invptr rtn-invp dir               ;
+        dcl dd * char(1) dir                  ;
+        dcl dd action char(2) dir             ;
+
+dcl ol curinvp-al-2 (rtn-invp) arg ;
+        calli @curinvp, curinvp-al-2, @curinvp-ptr ;
+
+        cpybla action, x'0200'  ;
+        rtnexcp rtn-target      ;
+        b signal-exception      ;
+
+/* signal ... */
+signal-exception:       
+
+        %sendmsg(prog-msg, 32)  ;
+
+/* disable EXCPD oops */
+        modexcpd oops, x'2000', x'01' ;
+
+dcl dd excp-attr char(20) auto bdry(16) ;
+dcl spcptr excp-attr-ptr auto init(
+        excp-attr
+)                               ;
+dcl spc * bas(excp-attr-ptr)    ;
+        dcl invptr target-inv dir ;
+        dcl dd sig-opt char(1) dir ;
+        dcl dd * char(1) dir       ;
+        dcl dd first-excpd bin(2) dir ;
+
+dcl ol curinvp-al (target-inv) arg ;
+        calli @curinvp, curinvp-al, @curinvp-ptr ;
+        cpynv excpd-ptr->retexcpd?cv-len, 4 ;
+        cpybla excpd-ptr->retexcpd?cv, x'00000000' ;
+brk "SIG"                                          ;
+dcl dd ign-flag char(1) auto    ; /* exception ignored */
+dcl dd dfr-flag char(1) auto    ; /* exception deferred */
+        cpybla sig-opt, x"00"   ;
+        cpynv  first-excpd, 1   ;
+        sigexcp(i) excp-attr-ptr, excpd-ptr
+          / ign(ign-flag), dfr(dfr-flag) ;
+brk "ASIG"                               ;
+dcl dd prog-msg char(32) auto init(
+        "before SIGEXCP ..."
+)                               ;
+        cpyblap prog-msg, "after SIGEXCP", " " ;
+        %sendmsg(prog-msg, 32)  ;
+        b see-you               ;
+
+/* @here */
+
+/* Resolve target queue object */
+dcl insptr resolve-queue-ptr auto ;
+entry resolve-queue int         ;
+
+dcl dd qual-q-name char(20) bas(.qual-q-name) ;
+        dcl dd q-name char(10) def(qual-q-name) pos(1) ;
+        dcl dd lib-name char(10) def(qual-q-name) pos(11) ;
+dcl dd subtype char(1) bas(.subtype) ;
+
+dcl con *LIBL char(10) init (
+        "*LIBL"
+)                               ;
+dcl dd r-tmpl char(34) auto     ;
+dcl sysptr q-obj auto           ;
+
+        cpybrep r-tmpl, x'00'       ;
+        cpybla r-tmpl(1:1), x'0A'   ;
+        cpybla r-tmpl(2:1), subtype ;
+        cpyblap r-tmpl(3:30), q-name, " " ;
+
+        cmpbla(b) lib-name, *LIBL
+          / eq(resolve-in-libl) ;
+dcl sysptr q-ctx auto           ;
+dcl dd ctx-tmpl char(34) auto init(
+        x"04014040404040404040404040404040404040404040404040404040404040400000"
+)                               ;
+        cpybla ctx-tmpl(3:30), lib-name ;
+        rslvsp q-ctx, ctx-tmpl, *, *    ;
+        rslvsp q-obj, r-tmpl, q-ctx, *  ;
+
+        b end-resolve           ;
+resolve-in-libl:
+        rslvsp q-obj, r-tmpl, *, * ;
+end-resolve:       
+brk "QPTR"                      ;
+        b resolve-queue-ptr     ;
+
+/* Globals */
+dcl dd num-parms bin(4) auto    ;
+dcl dd db char(512) bas(*)      ;
+
+/**
+ * API error code
+ * @todo replace old `qusec' with this one.
+ */
+dcl spc qusec-t bas(*)          ;
+        dcl dd qusec?bytes-in bin(4) dir ;
+        dcl dd qusec?bytes-out bin(4) dir ;
+        dcl dd qusec?msg-id char(7) dir   ;
+        dcl dd *            char(1) dir   ;
+        /* char(*) message specific data */
+
+/include q.emi                  ;
+/include memcpy.emi             ;
+/include curinvp.emi            ;
+pend                            ;

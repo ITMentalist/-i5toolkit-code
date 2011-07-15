@@ -39,7 +39,8 @@
  * @remark Caller is assumed to pass the correct length of key data and message data.
  * 
  * The following are examples of using the ENQ API:
- * @todo links of examples
+ *  - https://i5toolkit.svn.sourceforge.net/svnroot/i5toolkit/as-400/test/t007.as
+ *    This is a Flash (AS3) program that calls the ENQ API to enqueue a USRQ at an IBM i server.
  */
 
 dcl spcptr .qual-q-name parm     ;
@@ -180,8 +181,8 @@ dcl spc excpd-t bas(excpd-ptr)  ;
         dcl dd retexcpd?bytes-out bin(4) dir ;
         dcl dd retexcpd?excp-id char(2) dir  ;
         dcl dd retexcpd?cv-len  bin(2) dir   ;
-        dcl dd retexcpd?cv char(34) dir      ;
-        dcl dd retexcpd?msg-ref-key char(2) dir ;
+        dcl dd retexcpd?cv char(32) dir      ;
+        dcl dd retexcpd?msg-ref-key char(4) dir ;
         /* exception specific data */
 dcl dd excpd-msg-len bin(4) auto ;
 

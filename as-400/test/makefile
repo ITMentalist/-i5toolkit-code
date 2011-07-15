@@ -11,10 +11,12 @@ CFLAGS=-g
 
 INCDIR=as400/prototype
 TARGETS=misc.swf test.swf test2.swf t003.swf t004.swf pixels.class t005.swf \
-	t006.swf t007.swf
+	t006.swf t007.swf t008.swf
 
 all: $(TARGETS)
 	@echo "......"
+
+t008.swf : Button1.as
 
 $(TARGETS) : $(INCDIR)/*.as
 

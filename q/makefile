@@ -28,7 +28,7 @@ TARGETS=qattr qmsg dspusrqmsg dspdtaqmsg qmdtl clrusrq \
 	enqusrq dequsrq \
 	dspqathlp.pnlgrp dspqat.pnlgrp dspqm.pnlgrp \
 	dspqd.cmd dspqmsg.cmd clrusrq.cmd enqusrq.cmd \
-	enq
+	enq matqat
 
 all: $(TARGETS)
 	@echo "compilation done -- q"
