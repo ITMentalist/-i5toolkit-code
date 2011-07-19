@@ -124,10 +124,10 @@ package {
 
         private function init() : void {
             // size of stage
-            trace("<<<<<<<<<< size of stage:", stage.stageWidth, stage.stageHeight);
+            // trace("<<<<<<<<<< size of stage:", root.stage.stageWidth, root.stage.stageHeight);
 
-            // stage.displayState = StageDisplayState.FULL_SCREEN;
-            trace("<<<<<<<<<< size of stage:", stage.stageWidth, stage.stageHeight);
+            // root.stage.displayState = StageDisplayState.FULL_SCREEN;
+            // trace("<<<<<<<<<< size of stage:", root.stage.stageWidth, root.stage.stageHeight);
 
             i_sts = new TextField();
             var fmt:TextFormat = new TextFormat("Courier", 18, 0xb8860b, true);
@@ -135,8 +135,8 @@ package {
             i_sts.text  = "... Click the apple!";
             i_sts.width = 200;
             i_sts.height = 90;
-            i_sts.x = stage.stageWidth - i_sts.width;
-            i_sts.y = stage.stageHeight - i_sts.height;
+            i_sts.x = 500 - i_sts.width;
+            i_sts.y = 375 - i_sts.height;
             i_sts.autoSize = TextFieldAutoSize.RIGHT;
             i_sts.setTextFormat(fmt);  // 太气人了, 这个调用是不是成居然跟 调用时点有关系 ~~ FAINT!!
             addChild(i_sts);
