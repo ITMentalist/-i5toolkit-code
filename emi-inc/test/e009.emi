@@ -1,0 +1,89 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file e009.emi
+ *
+ * Example of retrieving exception data via the RETEXCPD instruction.
+ */
+
+/* a damaged program object */
+dcl sysptr ii67b auto init (
+        "II67B", type(pgm)
+)                               ;
+
+        callx ii67b, *, *       ;
+brk "CALLPGM"                   ;
+see-you:        
+        rtx *                   ;
+
+/* exception description */
+dcl excm oops excid(h'1000') bp(damage-encountered) imd cv('MCH') ;
+
+/* branch point (BP) exception handler for exception hex 10## */
+damage-encountered:
+
+dcl dd len bin(4) auto          ;
+
+        modasa @excp-data-ptr, 8 ;
+        cpynv @excp-data?bytes-in, 8    ;
+        retexcpd @excp-data-ptr, x'00'  ;
+        cpynv len, @excp-data?bytes-out ;
+
+        modasa @excp-data-ptr, -8 ;
+        modasa @excp-data-ptr, len ;
+        cpynv @excp-data?bytes-in, len ;
+        retexcpd @excp-data-ptr, x'00' ;
+
+dcl spcptr excp-data-ptr auto          ;
+dcl spc * bas(excp-data-ptr)           ;
+        dcl sysptr obj-syp dir         ;
+        dcl dd int-dump-id char(8) dir ;
+        dcl dd error-class bin(2) dir  ;
+        dcl dd dev-num     bin(2) dir  ;
+
+        cmpbla(b) @excp-data?excid, x"1004" / neq(release-asf) ;
+
+        setsppfp excp-data-ptr, @excp-data-ptr ;
+        addspp excp-data-ptr, excp-data-ptr, h'30' ;
+
+dcl dd msg char(40) auto        ;
+        cpybla msg(1:26), "MCH1604, internal dump ID:" ;
+        cpybla msg(28:8), int-dump-id                  ;
+        %sendmsg(msg, 40)                              ;
+
+release-asf:    
+        neg(s) len                ;
+        modasa @excp-data-ptr, len ;
+        b see-you               ;
+
+/* Exception data template for RETEXCPD and SIGEXCP */
+dcl spcptr @excp-data-ptr auto   ;
+dcl spc @excp-data-t bas(@excp-data-ptr) ;
+        dcl dd @excp-data?bytes-in       bin(4) dir ;
+        dcl dd @excp-data?bytes-out      bin(4) dir ;
+        dcl dd @excp-data?excid          char(2) dir ;
+        dcl dd @excp-data?cv-len         bin(2) dir  ;
+        dcl dd @excp-data?cv             char(32) dir ;
+        dcl dd @excp-data?msg-ref-key    char(4) dir  ;
+        /* offset = h'30' */
+        /* exception specific data */
+
+pend                            ;
