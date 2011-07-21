@@ -43,6 +43,8 @@ package {
 
         private var s_fmt:TextFormat;
         private var i_fmt:TextFormat;
+        private var u_fmt:TextFormat;
+
         private var s_host:TextField;
         private var i_host:TextField;
         private var s_user:TextField;
@@ -61,7 +63,7 @@ package {
         }
 
         private function onBtnClick(evt:MouseEvent) : void {
-            trace("天哪 ...");
+
             var pgm_call:RemoteCommand =
                 new RemoteCommand(i_host.text,
                                   i_user.text,
@@ -103,7 +105,13 @@ package {
                                                                             exp_data)
                                                           ) // Qus_EC_t
                                       ];
-            pgm_call.callx(this, enq_callback, argl);
+            try {
+                pgm_call.callx(this, enq_callback, argl);
+            } catch(e:*) {
+                trace("RemoteCommand.callx() failed:", e);
+            } finally {
+                trace("After invoking RemoteCommand.callx().");
+            }
 
         }
 
@@ -118,8 +126,11 @@ package {
             if(ds.length > 1) {
                 trace("ec.bytes-out:", ds[1]); // ec.bytes-out
                 trace("ec.exp_id:", ds[2]);
-            } else
+            } else {
                 trace("ec.bytes-out NOT returned!!");
+                i_sts.text = "... Message enqueued";
+                i_sts.setTextFormat(u_fmt);
+            }
         }
 
         private function init() : void {
@@ -130,7 +141,7 @@ package {
             // trace("<<<<<<<<<< size of stage:", root.stage.stageWidth, root.stage.stageHeight);
 
             i_sts = new TextField();
-            var fmt:TextFormat = new TextFormat("Courier", 18, 0xb8860b, true);
+            u_fmt = new TextFormat("Courier", 18, 0xb8860b, true);
             i_sts.alpha = 0.65;
             i_sts.text  = "... Click the apple!";
             i_sts.width = 200;
@@ -138,7 +149,7 @@ package {
             i_sts.x = 500 - i_sts.width;
             i_sts.y = 375 - i_sts.height;
             i_sts.autoSize = TextFieldAutoSize.RIGHT;
-            i_sts.setTextFormat(fmt);  // 太气人了, 这个调用是不是成居然跟 调用时点有关系 ~~ FAINT!!
+            i_sts.setTextFormat(u_fmt);  // 太气人了, 这个调用是不是成居然跟 调用时点有关系 ~~ FAINT!!
             addChild(i_sts);
 
             s_fmt = new TextFormat("Courier", 16, 0x483d8b, true);
