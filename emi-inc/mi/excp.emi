@@ -37,7 +37,12 @@ dcl spc @excp-data-t bas(@excp-data-ptr) ;
         dcl dd @excp-data?cv             char(32) dir ;
         dcl dd @excp-data?msg-ref-key    char(4) dir  ;
         /* offset = h'30' */
-        /* exception specific data */
+        /* char(*), exception specific data. Length of the exception specific data = @excp-data?bytes-out - 48 - 46 */
+        /* invptr, source invocation */
+        /* invptr, target invocation */
+        /* ubin(2), source invocation address (instruction number) */
+        /* ubin(2), target invocation address (instruction number) */
+        /* char(10), machine-dependent data */
 
 /endif                           ;
 /* EOF - excp.emi */

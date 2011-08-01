@@ -1,0 +1,65 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file miportal.emi
+ */
+
+dcl spcptr .entry-num parm      ;
+dcl spcptr .op1 parm            ;
+dcl spcptr .op2 parm            ;
+dcl spcptr .op3 parm            ;
+dcl spcptr .op4 parm            ;
+
+dcl ol pl-main (
+        .entry-num,
+        .op1,
+        .op2,
+        .op3,
+        .op4
+) parm ext min(1)               ;
+
+entry *(
+        pl-main
+) ext                           ;
+
+dcl dd entry-num bin(2) unsgnd bas(.entry-num) ;
+dcl idl inst-index (matmatr, see-you)   ;
+
+        /* is entry-num valid? */
+        
+        b inst-index(entry-num)   ;
+see-you:        
+        rtx *                   ;
+
+/**
+ * MATMATR
+ */
+matmatr:        
+dcl dd matmatr-opt char(2) bas(.op2) ;
+
+        matmatr .op1, matmatr-opt ;
+brk "MATMATR"                     ;
+        b see-you                 ;
+
+/* globals */
+dcl dd db char(256) bas(*)      ;
+
+pend                            ;
