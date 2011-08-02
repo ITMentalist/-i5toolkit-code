@@ -41,7 +41,7 @@ entry *(
 ) ext                           ;
 
 dcl dd entry-num bin(2) unsgnd bas(.entry-num) ;
-dcl idl inst-index (matmatr, see-you)   ;
+dcl idl inst-index (matmatr, genuuid, see-you)   ;
 
         /* is entry-num valid? */
         
@@ -50,7 +50,7 @@ see-you:
         rtx *                   ;
 
 /**
- * MATMATR
+ * MATMATR. index number hex 0001
  */
 matmatr:        
 dcl dd matmatr-opt char(2) bas(.op2) ;
@@ -58,6 +58,14 @@ dcl dd matmatr-opt char(2) bas(.op2) ;
         matmatr .op1, matmatr-opt ;
 brk "MATMATR"                     ;
         b see-you                 ;
+
+/**
+ * GENUUID. index number hex 0002
+ */
+genuuid:        
+        genuuid .op1            ;
+brk "GENUUID"                   ;
+        b see-you               ;
 
 /* globals */
 dcl dd db char(256) bas(*)      ;
