@@ -34,7 +34,6 @@ package as400.prototype {
 
     public class RemoteCommand {
 
-        private var security_policy_loaded_:Boolean;
         private var s_:Socket;
         private var jobq_:Vector.<Function>;
         private var host_:String;
@@ -86,7 +85,6 @@ package as400.prototype {
                                       program:String,
                                       reuse:Boolean = false) {
 
-            security_policy_loaded_ = false;
             host_ = host;
             user_ = user.toUpperCase();      // convert input user name to upper case
             pwd_  = password.toUpperCase();  // convert input password to upper case
@@ -118,8 +116,10 @@ package as400.prototype {
 
             if(!initiated_) {
                 // @todo the URL and port
-                if(!security_policy_loaded_)
-                    Security.loadPolicyFile("xmlsocket://" + host_ + ":55556");
+                // var url:String = "http://" + host_ + "/crossdomain.xml";
+                var url:String = "xmlsocket://" + host_ + ":1023";
+                Security.loadPolicyFile(url);
+                trace("[SEC] Security policy file loaded from URL: " + url);
 
                 s_ = new Socket();
                 s_.addEventListener(Event.CONNECT, onConnected);

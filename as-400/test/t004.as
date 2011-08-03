@@ -151,7 +151,7 @@ package {
                                           argl:Vector.<ProgramArgument>,
                                           msg:String = null) : void {
             if(rc != 0)
-                ts_.text = msg;
+                ts_.text = "Program call failed."; // msg;
             else
                 ts_.text = "OUTPUT arguments of *PGM YY282: "
                     + argl[1].value.toString()

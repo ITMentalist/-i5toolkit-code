@@ -40,7 +40,7 @@
 # include <sys/time.h>
 # include <signal.h>
 
-# define _PORT 55556
+# define _PORT 1023 // 55556
 
 /**
  * Content of the example policy file. This policy file allow a Flash
