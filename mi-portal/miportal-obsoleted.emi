@@ -58,7 +58,6 @@ dcl dd matmatr-opt char(2) bas(.op2) ;
         matmatr .op1, matmatr-opt ;
 brk "MATMATR"                     ;
         b see-you                 ;
-
 /**
  * GENUUID. index number hex 0002
  */

@@ -120,6 +120,7 @@ package {
                                       msg:String = null) : void {
             trace("Call to ENQ returns ...");
 
+            // @deprecated NEED reveiew
             var ec:CompositeData = argl[6].value as CompositeData;
             var ds:Vector.<Object> = ec.elements;
             trace("ec.bytes-in:", ds[0]); // ec.bytes-in

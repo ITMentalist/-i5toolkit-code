@@ -20,13 +20,19 @@
 #
 
 MIFLAGS=INCDIR('.' '../ref' '/usr/local/include/emi-inc/mi' '/usr/local/include/emi-inc/api')
+RPGLEFLAGS=dbgview(*all) replace(*yes) incdir('/usr/local/include/rpg' '.')
+CLEFLAGS=output(*print) dbgview(*all)
 
 BIN_LIB=
 MAKERULES=rules.mk
 TARGETS=miportal
 
 all: $(TARGETS)
-	@echo "compilation done -- q"
+	@echo "compilation done -- mi-portal"
+
+miportal: miportal.module
+	system "crtpgm pgm($(BIN_LIB)/$@) module($(BIN_LIB)/$@) actgrp(MIPORTAL)"
+	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
 
 clean:
 	rmflnk $(TARGETS)
