@@ -18,7 +18,8 @@
 
 .SUFFIXES: .rpg .rpgle .c .cpp .clp .clle .cmd .cl-cmd .module .pf .lf .file \
 	.mi .emi .uim .pnlgrp \
-	.cbl .cblle
+	.cbl .cblle \
+	.java .class
 
 #PRESET VARIABLES
 MAKE=make
@@ -63,6 +64,8 @@ MAKE=make
 .cpp.module:
 	system "crtcppmod $(BIN_LIB)/$* srcstmf('$<') $(CPPLEFLAGS)"
 	ln -fs "/qsys.lib/$(BIN_LIB).lib/$*.module" $*.module
+.java.class:
+	javac $(JAVAFLAGS) $<
 
 # if target PF exists change it using CHFPF, otherwise create a new one using CRTPF
 .pf.file:
