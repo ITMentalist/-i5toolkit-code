@@ -52,12 +52,13 @@ unsigned store_ptr(void **pptr);
 void MATMATR (void*, void*, void*, void*);
 void GENUUID (void*, void*, void*, void*);
 void RSLVSP2 (void*, void*, void*, void*);
-void ENQ (void*, void*, void*, void*);
+void ENQ (void*, void*, void*, void**);
+void DEQWAIT (void*, void*, void*, void*);
 
 typedef void proc_t(void*, void*, void*, void*);
 static proc_t* proc_arr[512] = {
   NULL,
-  &MATMATR, &GENUUID, &RSLVSP2, &ENQ,
+  &MATMATR, &GENUUID, &RSLVSP2, &ENQ, &DEQWAIT,
   NULL
 };
 
@@ -188,4 +189,23 @@ void ENQ (void *op1, void *op2, void *op3, void *op4) {
 
   // enqueue
   _ENQ(&syp->ptr, op2, op3);
+}
+
+/// index = 5, _DEQWAIT
+# pragma linkage (_DEQWAIT, builtin)
+void _DEQWAIT(void *prefix, void *msg, void *q);
+
+void DEQWAIT (void *op1, void *op2, void *op3, void *op4) {
+
+  unsigned *offset;
+  void *spp;
+  ptr_t* syp;
+
+  // locate SYP in PTR-SPC
+  offset = (unsigned*)op3;
+  spp = (char*)_SETSPPFP(_ptr_spc) + *offset;
+  syp = (ptr_t*)spp;
+
+  // enqueue
+  _DEQWAIT(op1, op2, &syp->ptr);
 }
