@@ -1,9 +1,29 @@
 /**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
  * @file miportal.c
  *
  * @todo Type of the MI object to store pointers requested by clients
  * @todo call MIPORTAL for 256 times (看 auto-extend)
- * @todo 目前还没有设计回收 PTR-SPC 的接口 (for clients)
+ * @todo 目前还没有设计回收 PTR-INX 的接口 (for clients)
  */
 
 # include <stdlib.h>
@@ -23,42 +43,57 @@ void _CPYBWP(void*, void*, int);
 void _CRTS(void*, void*);
 
 /**
- * Creates PTR-SPC (space object to store pointers requested by clients
- * @post static SYP _ptr_spc
+ * Creates PTR-INX (index object to store pointers requested by clients
+ * @post static SYP _ptr_inx
  */
-void create_ptr_spc();
-# define MIPORTAL_PTR_SPC "miportal-ptr-space            "
-# define MIPORTAL_HDR_LEN 32
+void create_ptr_inx();
+# define MIPORTAL_PTR_INX "miportal-ptr-index            "
 
-/// @todo move type-definitions elsewhere
-typedef _Packed struct tag_ptr_spc_hdr {
-  unsigned cur_off;  // current offset value, 32 when PTR-SPC is created
-  char reserved[MIPORTAL_HDR_LEN - 4];
-} ptr_spc_hdr_t;
+/**
+ * Format of 32-byte pointer-index entries
+ */
+typedef _Packed struct tag_ptr_inx_entry {
+  char key[16];  // 16-byte UUID
+  void *ptr;
+} ptr_inx_entry_t;
 
 typedef _Packed struct tag_ptr {
   void *ptr;
 } ptr_t;
 
 /**
- * Stores a pointer into PTR-SPC
+ * Stores a pointer into PTR-INX or update an existing inx entry
  *
- * @param pptr, address of the pointer to store into PTR-SPC
- * @return offset of the stored pointer
- * @pre _ptr_spc
+ * @param pptr, address of the pointer to store into PTR-INX
+ * @return ptr-ID
+ * @pre _ptr_inx
  */
-unsigned store_ptr(void **pptr);
+int store_ptr(char *ptr_id, void **pptr);
+
+/**
+ * Remove a ptr-entry from PTR-INX
+ */
+int release_ptr(char *ptr_id, void** pptr);
+
+/**
+ * Locate a ptr by key
+ */
+int read_ptr(char *ptr_id, void **pptr);
 
 void MATMATR (void*, void*, void*, void*);
 void GENUUID (void*, void*, void*, void*);
 void RSLVSP2 (void*, void*, void*, void*);
 void ENQ (void*, void*, void*, void**);
 void DEQWAIT (void*, void*, void*, void*);
+/**
+ * @param[in] op1, 16-byte pointer ID
+ */
+void RELEASE_PTR(void* op1, void*, void*, void*);
 
 typedef void proc_t(void*, void*, void*, void*);
 static proc_t* proc_arr[512] = {
   NULL,
-  &MATMATR, &GENUUID, &RSLVSP2, &ENQ, &DEQWAIT,
+  &MATMATR, &GENUUID, &RSLVSP2, &ENQ, &DEQWAIT, &RELEASE_PTR,
   NULL
 };
 
@@ -66,10 +101,10 @@ static proc_t* proc_arr[512] = {
  * System pointer to pointer-space. This space object is created to
  * store pointers requested by clients of MIPORTAL.
  *
- * @remark To allowed _ptr_spc be used crossing calls to MIPORTAL,
+ * @remark To allowed _ptr_inx be used crossing calls to MIPORTAL,
  *         MIPORTAL should be compiled to use a persistend ACTGRP.
  */
-static void *_ptr_spc = NULL;
+static void *_ptr_inx = NULL;
 static char _dbg[512] = {0};
 
 int main(int argc, char *argv[]) {
@@ -107,68 +142,142 @@ void _RSLVSP2(void*, void*);
 
 void RSLVSP2 (void *op1, void *op2, void *op3, void *op4) {
   void *syp = NULL; // system pointer to the MI obj to resolve
-  int *offset = (int*)op1;
 
   _RSLVSP2(&syp, op2);
 
-  // return the offset of SYP into PTR-SPC as op1
-  *offset = store_ptr(&syp);
+  // return the offset of SYP into PTR-INX as op1
+  store_ptr(op1, &syp);
 }
 
-void create_ptr_spc() {
+# pragma linkage(_CRTINX, builtin)
+void _CRTINX(void* /* address of SYP to inx */,
+             void* /* creation template */);
 
-  crts_t tmpl;
+/**
+ * Create an index object with the following attributes
+ *  - temparory
+ *  - with a fixed-length associated space of length 4K
+ *  - fixed-length index entries
+ *  - immediate update
+ *  - insertion by key
+ *  - entry format: both pointers and scalar data
+ *  - optimized for random references
+ *  - do not track index coherency
+ *  - maximum object size of 1 Terabyte
+ */
+void create_ptr_inx() {
+
+  crtinx_t tmpl;
   size_t len = sizeof(tmpl);
-  ptr_spc_hdr_t* hdr;
 
   memset(&tmpl, 0, len);
   tmpl.bytes_in = len;
-  memcpy(tmpl.obj_type, "\x19\xEF", 2); // hex 19EF
-  memcpy(tmpl.obj_name, MIPORTAL_PTR_SPC, 30);
-  memcpy(tmpl.crt_opt,
-         "\x40\x02\x00\x00",
-         4);
-  /*
-b'01000000,00000010,000000...', hex 4002,0000
-  temparory, variable-length, not-in-context, no-ag, --, no-public-auth, no-init-owner, ----, not-set-public-auth, init-spc, auto-extend, hdw-protect=00, process-temporary-space-accounting=0(yes), ---, enforce-hwd-protection, bits 22-31: reserved
-  */
-  tmpl.spc_size = 0x1000; // 4K
-  memcpy(tmpl.perf_cls, "\x30\x00\x00\x00", 4);
-  /*
-    b'00110000,...'
-    bit 2. spread-the-space-object-among-storage-devices=1 (yes)
-    bit 3. machine-chooses-space-alignment=1 (yes)
-   */
+  memcpy(tmpl.obj_type, "\x0E\x01", 2);
+  memcpy(tmpl.obj_name, MIPORTAL_PTR_INX, 30);
+  tmpl.spc_size = 0x1000;
+  memcpy(tmpl.perf_cls, "\x91\x00\x00\x00", 4);
+  tmpl.attr[0] = 0x71;
+  tmpl.arg_len = 32;
+  tmpl.key_len = 16;
+  // longer template
+  tmpl.inx_fmt[0] = 0x01;
 
-  _CRTS(&_ptr_spc, &tmpl);
+  _CRTINX(&_ptr_inx, &tmpl);
 
-  // write initial header into PTR-SPC
-  hdr = (ptr_spc_hdr_t*)_SETSPPFP(_ptr_spc);
-  hdr->cur_off = MIPORTAL_HDR_LEN;
-
-  // for debug reason, log _ptr_spc to somewhere
-  memcpy(_dbg, &_ptr_spc, 16);
+  // for debug reason, log _ptr_inx to somewhere
+  memcpy(_dbg, &_ptr_inx, 16);
 }
 
-unsigned store_ptr(void **pptr) {
+# pragma linkage(_INSINXEN, builtin)
+void _INSINXEN(void**, // address of SYP to target index object
+               void*,  // arguemnt
+               void*   // option list
+               );
 
-  void *spp = NULL;
-  ptr_spc_hdr_t *hdr = NULL;
-  void *pos = NULL;
-  unsigned r = 0;
+int store_ptr(char *ptr_id, void **pptr) {
 
-  // make sure PTR-SPC exists
-  if(_ptr_spc == NULL)
-    create_ptr_spc();
+  genuuid_t id;
+  inx_oplist_t oplist;
+  ptr_inx_entry_t ent;
 
-  spp = _SETSPPFP(_ptr_spc);
-  hdr = (ptr_spc_hdr_t*)spp;
-  r = hdr->cur_off;
-  pos = (char*)spp + r;
-  _CPYBWP(pos, pptr, 16);
-  hdr->cur_off += 16;
+  // make sure PTR-INX exists
+  if(_ptr_inx == NULL)
+    create_ptr_inx();
 
-  return r;
+  // key portion of index entry, 16-byte UUID
+  memset(&id, 0, sizeof(genuuid_t));
+  id.bytes_in = sizeof(genuuid_t);
+  _GENUUID(&id);
+  memcpy(ptr_id, id.uuid, 16);
+
+  memset(&oplist, 0, sizeof(inx_oplist_t));
+  memcpy(ent.key, id.uuid, 16);
+  ent.ptr = *pptr;
+  memcpy(oplist.rule, "\x00\x02", 2);  // insert with replacement
+  oplist.occ_cnt = 1;
+  oplist.ent_len = sizeof(ptr_inx_entry_t);
+  oplist.ent_off = 0;
+  _INSINXEN(&_ptr_inx, &ent, &oplist);
+
+  return 0;
+}
+
+# pragma linkage(_RMVINXEN1, builtin)
+void _RMVINXEN1(void *,  // returned index entry
+                void **, // address of SYP to target index object
+                void *,  // option list
+                void *   // search key
+                );
+
+int release_ptr(char *ptr_id, void** pptr)  {
+
+  inx_oplist_t oplist;
+  ptr_inx_entry_t ent;
+  if(_ptr_inx == NULL)
+    return -1;
+
+  // remove inx entry by 16-byte ptr_id
+  memset(&oplist, 0, sizeof(inx_oplist_t));
+  memcpy(oplist.rule, "\x00\x01", 2);  // EQ
+  oplist.occ_cnt = 1;
+  oplist.arg_len = 16; // length of search-key
+  _RMVINXEN1(&ent, &_ptr_inx, &oplist, ptr_id);
+
+  // passed the pointer value stored in the removed entry back to ...
+  *pptr = ent.ptr;
+
+  // @todo check ent.rtn_cnt
+  return 0;
+}
+
+# pragma linkage(_FNDINXEN, builtin)
+void _FNDINXEN(void *,  // returned index entry
+               void **, // address of SYP to target index object
+               void *,  // option list
+               void *   // search key
+               );
+
+int read_ptr(char *ptr_id, void **pptr)  {
+
+  inx_oplist_t oplist;
+  ptr_inx_entry_t ent;
+  char search_key[16] = {0};
+  if(_ptr_inx == NULL)
+    return -1;
+
+  // remove inx entry by 16-byte ptr_id
+  memset(&oplist, 0, sizeof(inx_oplist_t));
+  memcpy(oplist.rule, "\x00\x01", 2);  // EQ
+  oplist.occ_cnt = 1;
+  oplist.arg_len = 16; // length of search-key
+  memcpy(search_key, ptr_id, 16);
+  _FNDINXEN(&ent, &_ptr_inx, &oplist, search_key);
+
+  // passed the pointer value stored in the removed entry back to ...
+  *pptr = ent.ptr;
+
+  // @todo check ent.rtn_cnt
+  return 0;
 }
 
 /// index = 4. _ENQ
@@ -177,18 +286,13 @@ void _ENQ(void*, void*, void*);
 
 void ENQ (void *op1, void *op2, void *op3, void *op4) {
 
-  unsigned *offset;
-  void *spp;
-  ptr_t* syp;
+  void* syp;
 
-  // locate SYP in PTR-SPC
-  offset = (unsigned*)op1;
-  spp = _SETSPPFP(_ptr_spc);
-  spp = (char*)spp + *offset;
-  syp = (ptr_t*)spp;
+  // locate SYP in PTR-INX
+  read_ptr(op1, &syp);
 
   // enqueue
-  _ENQ(&syp->ptr, op2, op3);
+  _ENQ(&syp, op2, op3);
 }
 
 /// index = 5, _DEQWAIT
@@ -197,15 +301,19 @@ void _DEQWAIT(void *prefix, void *msg, void *q);
 
 void DEQWAIT (void *op1, void *op2, void *op3, void *op4) {
 
-  unsigned *offset;
-  void *spp;
-  ptr_t* syp;
+  void* syp;
 
-  // locate SYP in PTR-SPC
-  offset = (unsigned*)op3;
-  spp = (char*)_SETSPPFP(_ptr_spc) + *offset;
-  syp = (ptr_t*)spp;
+  // locate SYP in PTR-INX
+  read_ptr(op3, &syp);
 
-  // enqueue
-  _DEQWAIT(op1, op2, &syp->ptr);
+  // deq
+  _DEQWAIT(op1, op2, &syp);
+}
+
+/// index = 6, RELEASE_PTR
+void RELEASE_PTR (void *op1, void *op2, void *op3, void *op4) {
+
+  void *ptr = NULL; // released MI pointer
+
+  release_ptr(op1, &ptr);
 }

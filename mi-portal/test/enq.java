@@ -41,7 +41,6 @@ public class enq {
         byte[] inst_inx = {  // ubin(2) instruction index, hex 0003 for _RSLVSP2
             0x00, 0x03
         };
-        int ptr_id = 0;
         byte[] rslvsp_tmpl = new byte[34]; // instruction template of RSLVSP
         rslvsp_tmpl[0] = 0x0A; // object type code of USRQ, hex 0A
         rslvsp_tmpl[1] = 0x02; // object subtype code of USRQ, hex 02
@@ -51,7 +50,7 @@ public class enq {
 
         ProgramParameter[] plist_rslvsp2 = new ProgramParameter[] {
             new ProgramParameter(inst_inx),  // input, ubbin(2) instruction index
-            new ProgramParameter(4),         // output, ptr-ID of the resolved system pointer
+            new ProgramParameter(16),         // output, ptr-ID of the resolved system pointer
             new ProgramParameter(rslvsp_tmpl) // input, instruction template of RSLVSP
         };
 
@@ -67,13 +66,13 @@ public class enq {
             if(!portal.run())
                 System.out.println("Issuing _RSLVSP2 failed.");
             else {
-                ptr_id = bin4.toInt(plist_rslvsp2[1].getOutputData());
+                byte[] ptr_id = plist_rslvsp2[1].getOutputData();
                 String msg = "Hello MI!";
 
                 inst_inx[1] = 0x04; // instruction index of ENQ, hex 0004
                 ProgramParameter[] plist_enq = new ProgramParameter[] {
                     new ProgramParameter(inst_inx),
-                    new ProgramParameter(bin4.toBytes(ptr_id)), // input, bin(4) ptr-ID
+                    new ProgramParameter(ptr_id), // input, char(16) ptr-ID
                     new ProgramParameter(bin4.toBytes(msg.getBytes().length)), // input, message prefix (bin(4) message length and optional message key)
                     new ProgramParameter(ch32.toBytes(msg))  // input, message text
                 };

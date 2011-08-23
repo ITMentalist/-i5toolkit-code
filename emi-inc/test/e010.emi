@@ -1,0 +1,114 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file e010.emi
+ *
+ * Test of creation templates for instruction CRTINX.
+ * @see emi-inc/mi/inx.emi
+ */
+
+dcl dd tmpl char(176) auto      ;
+dcl spcptr p auto init(tmpl)    ;
+dcl con hello-inx char(30) init("hello-inx") ;
+
+        cpybrep tmpl, x'00'     ;
+        cpynv p->crtinx?bytes-in, crtinx-tmpl-len-2 ;
+        cpybla p->crtinx?obj-type, x'0E01'          ;
+        cpybla p->crtinx?obj-name, hello-inx        ;
+        cpybla p->crtinx?crt-opt, x'00'             ;
+        cpynv p->crtinx?spc-size, h'1000'           ; /* space size, 4K */
+        /* b'1001,0001 */
+        cpybla p->crtinx?perf-cls, x'91' ;
+        cpynv p->crtinx?ext-off, 0       ; /* does NOT has template extension */
+        /* b'0111,0001', has longer template */
+        cpybla p->crtinx?attr, x'71' ;
+        cpynv  p->crtinx?arg-len, 32  ; /* bin(4) key, char(12) filler, ptr */
+        cpynv  p->crtinx?key-len, 4   ;
+        cpybla p->crtinx?inx-fmt, x'01' ; /* 1TB */
+brk '1'                                 ;
+dcl dd ha char(16) auto bdry(16)        ;
+        dcl sysptr inx def(ha) pos(1)   ;
+        crtinx inx, p                   ;
+brk '2' ;
+
+        /* insert an entry */
+dcl dd oplist char(10) auto     ;
+dcl spcptr oplist-ptr auto init(oplist) ;
+dcl spc * bas(oplist-ptr)               ;
+        dcl dd rule char(2) dir         ;
+        dcl dd arg-len bin(2) unsgnd dir ;
+        dcl dd arg-off bin(2) dir        ;
+        dcl dd occ-cnt bin(2) dir        ;
+        dcl dd rtn-cnt bin(2) dir        ;
+        /* entries */
+        dcl dd first-ent-len bin(2) unsgnd dir        ;
+        dcl dd first-ent-off bin(2) dir               ;
+dcl dd ent char(32) auto bdry(16)        ;
+        dcl dd key bin(4) def(ent) pos(1) init(h'66') ;
+        dcl dd * char(12) def(ent) pos(5)             ;
+        dcl sysptr yy310 def(ent) pos(17) init(
+          "YY310", type(pgm)
+        )                       ;
+dcl spcptr ent-ptr auto init(ent) ;
+
+        rslvsp yy310, *, *, *   ;
+
+        cpybla rule, x'0002'              ;
+        cpynv occ-cnt, 1                  ; /* insert only one INX ENTRY */
+        cpynv first-ent-len, 32           ;
+        cpynv first-ent-off, 0            ;
+        insinxen inx, ent-ptr, oplist-ptr ;
+
+brk '90'                        ;
+        cpynv key, h'60'        ;
+        insinxen inx, ent-ptr, oplist-ptr ;
+        cpynv key, h'61'        ;
+        insinxen inx, ent-ptr, oplist-ptr ;
+brk '91'                                  ;
+        /* find the FIRST entry */
+        cpybla rule, x'0006'    ;
+        cpynv occ-cnt, 1        ;
+        cpybrep ent, x'00'      ;
+        fndinxen ent-ptr, inx, oplist-ptr, ent-ptr ;
+brk '92'                                           ;
+        /* find the LAST entry */
+        cpybla rule, x'0007'    ;
+        cpynv occ-cnt, 1        ;
+        cpybrep ent, x'00'      ;
+        fndinxen ent-ptr, inx, oplist-ptr, ent-ptr ;
+brk '93'                                           ;
+        /* 找到 h'61', 删了这个 entry */
+dcl dd search-key bin(4) auto init(h'61') ;
+dcl spcptr search-key-ptr auto init(search-key) ;
+        cpybla rule, x'0001'              ; /* EQ */
+        cpynv occ-cnt, 1                  ;
+        cpynv arg-len, 4                  ;
+        fndinxen ent-ptr, inx, oplist-ptr, search-key-ptr ; /* rtn-cnt=1, ent 是 h'61' entry 的内容 */
+
+        rmvinxen ent-ptr, inx, oplist-ptr, search-key-ptr ; /* rtn-cnt=1 */
+brk '99'                        ;
+        desinx inx              ;
+see-you:
+brk 'END'                       ;
+        rtx *                   ;
+
+/include inx.emi                ;
+pend                            ;

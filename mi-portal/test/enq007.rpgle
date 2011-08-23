@@ -33,7 +33,7 @@
 
       * instruction index=3, _RSLVSP2
      d inx             s              5u 0 inz(3)
-     d q               s             10u 0
+     d q               s             16a
      d enq_prefix      ds                  qualified
      d   msg_len                     10i 0
      d msg             s             32a   inz('from enq.rpgle')

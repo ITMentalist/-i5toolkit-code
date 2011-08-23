@@ -41,7 +41,6 @@ public class deq {
         byte[] inst_inx = {  // ubin(2) instruction index, hex 0003 for _RSLVSP2
             0x00, 0x03
         };
-        int ptr_id = 0;
         byte[] rslvsp_tmpl = new byte[34]; // instruction template of RSLVSP
         rslvsp_tmpl[0] = 0x0A; // object type code of USRQ, hex 0A
         rslvsp_tmpl[1] = 0x02; // object subtype code of USRQ, hex 02
@@ -51,7 +50,7 @@ public class deq {
 
         ProgramParameter[] plist_rslvsp2 = new ProgramParameter[] {
             new ProgramParameter(inst_inx),  // input, ubbin(2) instruction index
-            new ProgramParameter(4),         // output, ptr-ID of the resolved system pointer
+            new ProgramParameter(16),         // output, ptr-ID of the resolved system pointer
             new ProgramParameter(rslvsp_tmpl) // input, instruction template of RSLVSP
         };
 
@@ -67,7 +66,9 @@ public class deq {
             if(!portal.run())
                 System.out.println("Issuing _RSLVSP2 failed.");
             else {
-                ptr_id = bin4.toInt(plist_rslvsp2[1].getOutputData());
+                byte[] ptr_id = plist_rslvsp2[1].getOutputData();
+                // debug
+                System.out.println("length of ptr_id: " + ptr_id.length);
                 byte[] prefix = new byte[21];
                 prefix[20] = 0x10; // bit 3 of 1-byte dequeue option (time-out option) = 1, wait infinitely
 
@@ -75,12 +76,12 @@ public class deq {
                 ProgramParameter[] plist_deq = new ProgramParameter[] {
                     new ProgramParameter(inst_inx),
                     new ProgramParameter(prefix, 21), // inout, message prefix
-                    new ProgramParameter(32),                   // output, message text
-                    new ProgramParameter(bin4.toBytes(ptr_id))  // input, bin(4) ptr-ID
+                    new ProgramParameter(32),         // output, message text
+                    new ProgramParameter(ptr_id)      // input, char(16) ptr-ID
                 };
                 portal.setParameterList(plist_deq);
                 if(!portal.run())
-                    System.out.println("Failed to issue the ENQ instruction.");
+                    System.out.println("Failed to issue the DEQ instruction.");
                 else {
                     String msg = (String)ch32.toObject(plist_deq[2].getOutputData());
                     System.out.println("Queue message dequeued: '" + msg + "'");

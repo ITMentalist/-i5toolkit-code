@@ -1,0 +1,84 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file inx.mi
+ *
+ * Header for independent index management instructions.
+ */
+
+/ifndef __emi_inx_h__           ;
+/define __emi_inx_h__           ;
+
+/**
+ * Creation template for instruction CRTINX.
+ */
+dcl spc crtinx-t bas(*)           ;
+        dcl dd crtinx?bytes-in bin(4) dir ;
+        dcl dd crtinx?bytes-out bin(4) dir ;
+        /* symbolic obj-ID */
+        dcl dd crtinx?obj-type char(2) dir ;
+        dcl dd crtinx?obj-name char(30) dir ;
+        dcl dd crtinx?crt-opt  char(4) dir  ;
+        /* recovery option */
+        dcl dd *             char(2) dir ;
+        dcl dd crtinx?asp-num  bin(2) dir  ;
+        dcl dd crtinx?spc-size bin(4) dir  ;
+        dcl dd crtinx?init-val char(1) dir ;
+        dcl dd crtinx?perf-cls char(4) dir ;
+        dcl dd *             char(3) dir ;
+        dcl dd crtinx?ext-off  bin(4) dir  ; /* offset to template extension */
+        dcl sysptr crtinx?ctx  dir         ; /* context */
+        dcl sysptr crtinx?ag   dir         ; /* access group */
+        /*
+         * index attributes
+         *  bit 0. Entry length attribute. 0=fixed-length entries, 1=variable-length entries
+         *  bit 1. Immediate update. 0=no, 1=yes
+         *  bit 2. Key insertion.    0=no, 1=yes
+         *  bit 3. Entry format.     0=scalar data only, 1=both pointers and scalar data
+         *  bit 4. Optimized operation. 0=optimize for random access, 1=optimize for sequence access
+         *  bit 5. Maximum entry length (obsolete)
+         *  bit 6. Index coherency tracking. 0=no, 1=yes
+         *  bit 7. Longer template.  0=no, 1=yes
+         * @remark The original size of the creation template is 101, the size of the longer template is 176.
+         */
+        dcl dd crtinx?attr     char(1) dir ;
+        dcl dd crtinx?arg-len  bin(2) unsgnd dir ; /* argument length (aka. entry length) including key length */
+        dcl dd crtinx?key-len  bin(2) unsgnd dir ;
+        /* the following are fields belong to the longer creation template */
+        dcl dd *             char(12) dir ;
+        dcl dd crtinx?tmpl-ver char(1) dir  ; /* MUST BE hex 00 */
+        dcl dd crtinx?inx-fmt  char(1) dir  ; /* index format. 0=max object size of 4GB, 1=max object size of 1TB */
+        dcl dd *             char(61) dir ;
+dcl con crtinx-tmpl-len bin(2) init(101)  ;
+dcl con crtinx-tmpl-len-2 bin(2) init(176)  ;
+
+/**
+ * Creation template extension for instruction CRTINX
+ */
+dcl spc crtinx-ex-t bas(*)        ;
+        dcl sysptr crtinx-ex?owner dir ; /* SYP to the created index's owner USRPRF */
+        dcl dd *              char(4) dir ;
+        /* domain assigned to the created index object. hex 0000=choosen by the machine, hex 0001=the domain will be 'User'*/
+        dcl dd crtinx-ex?domain char(2) dir ;
+        dcl dd *              char(42) dir ;
+
+/endif                          ;
+/* eof - inx.mi */
