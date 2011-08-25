@@ -121,4 +121,29 @@ typedef _Packed struct tag_genuuid {
   char uuid[16];
 } genuuid_t;
 
+// MATPTR
+/**
+ * Materialization template for space pointers (88 bytes).
+ */
+typedef _Packed struct tag_matptr_spp {
+  unsigned bytes_in;
+  unsigned bytes_out;
+  char type[1];
+  char ctx_type[2];
+  char ctx_name[30];
+  char obj_type[2];
+  char obj_name[30];
+  int offset;  // offset into space
+  char info[2]; // pointer info
+                //  bit 0. Pointer target accessible from user state
+                //  bit 1. Pointer target is teraspace
+  char filler[1];
+  char ext_off[8]; // extended offset into space
+} matptr_spp_t;
+
+# pragma linkage(_MATPTR, builtin)
+void _MATPTR(void *, /* materialization template */
+             void ** /* address of pointer */
+             );
+
 # endif // !defined __miportal_inst_tmpl_h__

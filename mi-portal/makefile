@@ -30,6 +30,8 @@ TARGETS=miportal
 all: $(TARGETS)
 	@echo "compilation done -- mi-portal"
 
+miportal.module: inst-tmpl.h
+
 miportal: miportal.module
 	system "crtpgm pgm($(BIN_LIB)/$@) module($(BIN_LIB)/$@) actgrp(MIPORTAL)"
 	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@

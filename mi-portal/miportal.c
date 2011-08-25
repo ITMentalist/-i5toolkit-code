@@ -34,7 +34,7 @@
 
 /// @todo prototypes of MI instructions should be moved to other source unit
 # pragma linkage (_SETSPPFP, builtin)
-void* _SETSPPFP(void*);
+void* _SETSPPFP(void* /* source pointer */);
 
 # pragma linkage (_CPYBWP, builtin)
 void _CPYBWP(void*, void*, int);
@@ -85,15 +85,40 @@ void GENUUID (void*, void*, void*, void*);
 void RSLVSP2 (void*, void*, void*, void*);
 void ENQ (void*, void*, void*, void**);
 void DEQWAIT (void*, void*, void*, void*);
+
 /**
  * @param[in] op1, 16-byte pointer ID
  */
 void RELEASE_PTR(void* op1, void*, void*, void*);
 
+// space pointer operations
+void SETSPPFP (void*, void*, void*, void*);
+
+// 8. read_addr(spp, buf, len)
+void READ_ADDR (void*, void*, void*, void*);
+// 9. write_addr(spp, buf, len)
+void WRITE_ADDR (void*, void*, void*, void*);
+// 10. ADDSPP
+void ADDSPP (void*, void*, void*, void*);
+// 11. SUBSPP
+void SUBSPP (void*, void*, void*, void*);
+// 12. SUBSPPFO
+void SUBSPPFO (void*, void*, void*, void*);
+// 13. STSPPO
+void STSPPO (void*, void*, void*, void*);
+// 14. SETSPPO
+void SETSPPO (void*, void*, void*, void*);
+// 15. NEW_PTR
+void NEW_PTR (void*, void*, void*, void*);
+// 16. CMPPTRT
+void CMPPTRT (void*, void*, void*, void*);
+
 typedef void proc_t(void*, void*, void*, void*);
 static proc_t* proc_arr[512] = {
   NULL,
   &MATMATR, &GENUUID, &RSLVSP2, &ENQ, &DEQWAIT, &RELEASE_PTR,
+  &SETSPPFP, &READ_ADDR, &WRITE_ADDR, &ADDSPP, &SUBSPP, &SUBSPPFO, &STSPPO, &SETSPPO,
+  &NEW_PTR, &CMPPTRT,
   NULL
 };
 
@@ -316,4 +341,187 @@ void RELEASE_PTR (void *op1, void *op2, void *op3, void *op4) {
   void *ptr = NULL; // released MI pointer
 
   release_ptr(op1, &ptr);
+}
+
+/// index = 7, SETSPPFP
+void SETSPPFP (void *op1, void *op2, void *op3, void *op4) {
+
+  void *spp = NULL;
+  void *src_ptr = NULL;
+
+  read_ptr(op2, &src_ptr);
+  spp = _SETSPPFP(src_ptr);
+  store_ptr(op1, &spp);
+}
+
+/**
+ * index = 8, read from an SLS address pointed to by a space pointer
+ *
+ * @param [in] op1, ID of the source space pointer
+ * @param [out] op2, buffer provided by client
+ * @param [in] op3, number of bytes to read
+ */
+void READ_ADDR (void *op1, void *op2, void *op3, void *op4) {
+
+  void *spp = NULL;
+  unsigned len = *(unsigned*)op3;
+
+  read_ptr(op1, &spp);
+  memcpy(op2, spp, len);
+}
+
+/**
+ * index = 9, write to an SLS address pointed to by a space pointer
+ *
+ * @param [in] op1, ID of the target space pointer
+ * @param [in] op2, buffer provided by client
+ * @param [in] op3, number of bytes to write
+ */
+void WRITE_ADDR (void *op1, void *op2, void *op3, void *op4) {
+
+  void *spp = NULL;
+  unsigned len = *(unsigned*)op3;
+
+  read_ptr(op1, &spp);
+  memcpy(spp, op2, len);
+}
+
+/**
+ * 10. ADDSPP
+ *
+ * @param [in] op1, target pointer
+ * @param [in] op2, source pointer
+ * @param [in] op3, bin(4) incremention
+ */
+void ADDSPP (void *op1, void *op2, void *op3, void *op4) {
+
+  char *target_ptr = NULL;
+  char *source_ptr = NULL;
+  int displacement = *(int*)op3;
+
+  read_ptr(op1, &target_ptr);
+  read_ptr(op2, &source_ptr);
+
+  target_ptr = source_ptr + displacement;
+
+  store_ptr(op1, &target_ptr);
+}
+
+/**
+ * 11. SUBSPP
+ *
+ * @param [in] op1, target pointer
+ * @param [in] op2, source pointer
+ * @param [in] op3, bin(4) decremention
+ */
+void SUBSPP (void *op1, void *op2, void *op3, void *op4) {
+
+  char *target_ptr = NULL;
+  char *source_ptr = NULL;
+  int displacement = *(int*)op3;
+
+  read_ptr(op1, &target_ptr);
+  read_ptr(op2, &source_ptr);
+
+  target_ptr = source_ptr - displacement;
+
+  store_ptr(op1, &target_ptr);
+}
+
+/**
+ * 12. SUBSPPFO
+ *
+ * @param [out] op1, bin(4) offset difference
+ * @param [in] op2, minuend pointer
+ * @param [in] op3, subtrahend pointer
+ */
+void SUBSPPFO (void *op1, void *op2, void *op3, void *op4) {
+
+  char *spp1 = NULL;
+  char *spp2 = NULL;
+  int *offset = (int*)op1;
+
+  read_ptr(op2, &spp1);
+  read_ptr(op3, &spp2);
+
+  *offset = spp1 - spp2;
+}
+
+/**
+ * 13. STSPPO
+ *
+ * @param [out] op1, bin(4) offset value of input space pointer
+ * @param [in] op2, space pointer
+ */
+void STSPPO (void *op1, void *op2, void *op3, void *op4) {
+
+  void *spp = NULL;
+  int *offset = (int*)op1;
+  matptr_spp_t tmpl;
+
+  read_ptr(op2, &spp);
+
+  memset(&tmpl, 0, sizeof(matptr_spp_t));
+  tmpl.bytes_in = sizeof(matptr_spp_t);
+  _MATPTR(&tmpl, &spp);
+
+  *offset = tmpl.offset;
+}
+
+/**
+ * 14. SETSPPO
+ *
+ * @param [out] op1, space pointer
+ * @param [in] op2, bin(4) offset value
+ */
+void SETSPPO (void *op1, void *op2, void *op3, void *op4) {
+  char *spp = NULL;
+  int *offset = (int*)op2;
+  matptr_spp_t tmpl;
+  int diff = 0;
+
+  read_ptr(op1, &spp);
+
+  // get current offset of target space pointer
+  memset(&tmpl, 0, sizeof(matptr_spp_t));
+  tmpl.bytes_in = sizeof(matptr_spp_t);
+  _MATPTR(&tmpl, &spp);
+
+  // set input offset value into target space pointer
+  diff = *offset - tmpl.offset;
+  spp += diff;
+
+  // store modified SPP back
+  store_ptr(op1, &spp);
+}
+
+/**
+ * 15. NEW_PTR. contruct and return a new NULL pointer
+ *
+ * @param [out] op1, pointer ID of the newly allocated pointer.
+ */
+void NEW_PTR (void *op1, void *op2, void *op3, void *op4) {
+
+  void *ptr = NULL;
+  store_ptr(op1, &ptr);
+}
+
+/**
+ * 16. CMPPTRT
+ *
+ * @param [in] op1, input pointer
+ * @param [in] op2, char(1) pointer type
+ * @param [out] op2, bin(4) comparison result. 1 if pointer is of specified type, otherwise 0.
+ */
+# pragma linkage(_CMPPTRT, builtin)
+int _CMPPTRT(char /* pointer type */, void * /* pointer */);
+
+void CMPPTRT (void *op1, void *op2, void *op3, void *op4) {
+
+  void *ptr = NULL;
+  char *ptr_type = (char*)op2;
+  int *result = (int*)op3;
+
+  read_ptr(op1, &ptr);
+  *result = _CMPPTRT(ptr_type[0], ptr);
 }
