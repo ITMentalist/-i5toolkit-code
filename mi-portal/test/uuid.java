@@ -47,7 +47,7 @@ public class uuid {
             0x00, 0x00, 0x00, 0x00
         };
 
-        AS400 i = new AS400();  // in case running at an IBM i server
+        AS400 i = new AS400();
         ProgramParameter[] plist = new ProgramParameter[] {
             new ProgramParameter(inst_inx),  // input, ubin(2) instruction index
             new ProgramParameter(uuid_tmpl, 32) // inout, instruction template of GENUUID

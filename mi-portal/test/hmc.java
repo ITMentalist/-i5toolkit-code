@@ -46,7 +46,7 @@ public class hmc {
         tmpl[2] = 0x04; tmpl[3] = 0x1C; // byte-in = 1052
         byte[] opt = {0x02, 0x04};
 
-        AS400 i = new AS400();  // in case running at an IBM i server
+        AS400 i = new AS400();
         ProgramParameter[] plist_matmatr = new ProgramParameter[] {
             new ProgramParameter(inst_inx),  // input, ubbin(2) instruction index
             new ProgramParameter(tmpl, 1052),  // inout, instruction template

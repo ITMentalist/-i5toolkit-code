@@ -20,12 +20,15 @@
      /**
       * @file t136.rpgle
       *
-      * Test of QusMaterializeContext, listing objects in QSYS.
+      * Test of QusMaterializeContext, listing objects in a context object (default to QSYS).
       */
 
      h dftactgrp(*no) bnddir('QC2LE')
 
-      /copy mih52
+      /copy mih-pgmexec
+      /copy mih-ctx
+      /copy mih-ptr
+
      d opt             ds                  likeds(matctx_option_t)
      d rcv             ds                  likeds(matctx_receiver_t)
      d                                     based(bufptr)
@@ -55,9 +58,19 @@
      d subtype                        2a   overlay(msg:4)
      d obj_name                      30a   overlay(msg:7)
 
+     d mmaaiinn        pr                  extpgm('T136')
+     d     tgt_ctx                   10a   options(*nopass)
+
+     d mmaaiinn        pi
+     d     tgt_ctx                   10a   options(*nopass)
+
       /free
            rslvsp_tmpl.obj_type = x'0401';
-           rslvsp_tmpl.obj_name = 'QSYS';
+           if %parms > 0;
+               rslvsp_tmpl.obj_name = tgt_ctx;
+           else;
+               rslvsp_tmpl.obj_name = 'QSYS';
+           endif;
            rslvsp2(ctx : rslvsp_tmpl);
 
            opt = *allx'00';

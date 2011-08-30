@@ -36,7 +36,7 @@ public class deq {
 
     public static void main(String[] args) {
 
-        AS400 i = new AS400();  // in case running at an IBM i server
+        AS400 i = new AS400();
 
         byte[] inst_inx = {  // ubin(2) instruction index, hex 0003 for _RSLVSP2
             0x00, 0x03

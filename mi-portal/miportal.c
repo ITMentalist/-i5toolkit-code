@@ -80,24 +80,26 @@ int release_ptr(char *ptr_id, void** pptr);
  */
 int read_ptr(char *ptr_id, void **pptr);
 
-void MATMATR (void*, void*, void*, void*);
-void GENUUID (void*, void*, void*, void*);
-void RSLVSP2 (void*, void*, void*, void*);
-void ENQ (void*, void*, void*, void**);
-void DEQWAIT (void*, void*, void*, void*);
+void MATMATR (void*, void*, void*, void*); // 1. MATMATR
+void GENUUID (void*, void*, void*, void*); // 2. GENUUID
+void RSLVSP2 (void*, void*, void*, void*); // 3. RSLVSP2
+void ENQ (void*, void*, void*, void**);    // 4. ENQ
+void DEQWAIT (void*, void*, void*, void*); // 5. DEQWAIT
 
 /**
+ * 6. RELEASE_PTR
+ *
  * @param[in] op1, 16-byte pointer ID
  */
-void RELEASE_PTR(void* op1, void*, void*, void*);
+void RELEASE_PTR (void* op1, void*, void*, void*);
 
-// space pointer operations
+// 7. space pointer operations
 void SETSPPFP (void*, void*, void*, void*);
 
 // 8. read_addr(spp, buf, len)
-void READ_ADDR (void*, void*, void*, void*);
+void READ_FROM_ADDR (void*, void*, void*, void*);
 // 9. write_addr(spp, buf, len)
-void WRITE_ADDR (void*, void*, void*, void*);
+void WRITE_TO_ADDR (void*, void*, void*, void*);
 // 10. ADDSPP
 void ADDSPP (void*, void*, void*, void*);
 // 11. SUBSPP
@@ -112,13 +114,17 @@ void SETSPPO (void*, void*, void*, void*);
 void NEW_PTR (void*, void*, void*, void*);
 // 16. CMPPTRT
 void CMPPTRT (void*, void*, void*, void*);
+// 17. SETSPFP
+void SETSPFP (void*, void*, void*, void*);
+// 18. RSLVSP4
+void RSLVSP4 (void*, void*, void*, void*);
 
 typedef void proc_t(void*, void*, void*, void*);
 static proc_t* proc_arr[512] = {
   NULL,
   &MATMATR, &GENUUID, &RSLVSP2, &ENQ, &DEQWAIT, &RELEASE_PTR,
-  &SETSPPFP, &READ_ADDR, &WRITE_ADDR, &ADDSPP, &SUBSPP, &SUBSPPFO, &STSPPO, &SETSPPO,
-  &NEW_PTR, &CMPPTRT,
+  &SETSPPFP, &READ_FROM_ADDR, &WRITE_TO_ADDR, &ADDSPP, &SUBSPP, &SUBSPPFO, &STSPPO, &SETSPPO,
+  &NEW_PTR, &CMPPTRT, &SETSPFP, &RSLVSP4,
   NULL
 };
 
@@ -166,12 +172,17 @@ void GENUUID (void *op1, void *op2, void *op3, void *op4) {
 void _RSLVSP2(void*, void*);
 
 void RSLVSP2 (void *op1, void *op2, void *op3, void *op4) {
+
   void *syp = NULL; // system pointer to the MI obj to resolve
+  void *old_syp = NULL;
 
   _RSLVSP2(&syp, op2);
 
   // return the offset of SYP into PTR-INX as op1
-  store_ptr(op1, &syp);
+  if(read_ptr(op1, &old_syp) == 0)
+    update_ptr(op1, &syp);
+  else
+    store_ptr(op1, &syp);
 }
 
 # pragma linkage(_CRTINX, builtin)
@@ -247,6 +258,28 @@ int store_ptr(char *ptr_id, void **pptr) {
   return 0;
 }
 
+int update_ptr(char *ptr_id, void **pptr) {
+
+  genuuid_t id;
+  inx_oplist_t oplist;
+  ptr_inx_entry_t ent;
+
+  // make sure PTR-INX exists
+  if(_ptr_inx == NULL)
+    return -1;
+
+  memset(&oplist, 0, sizeof(inx_oplist_t));
+  memcpy(ent.key, ptr_id, 16);
+  ent.ptr = *pptr;
+  memcpy(oplist.rule, "\x00\x02", 2);  // insert with replacement
+  oplist.occ_cnt = 1;
+  oplist.ent_len = sizeof(ptr_inx_entry_t);
+  oplist.ent_off = 0;
+  _INSINXEN(&_ptr_inx, &ent, &oplist);
+
+  return 0;
+}
+
 # pragma linkage(_RMVINXEN1, builtin)
 void _RMVINXEN1(void *,  // returned index entry
                 void **, // address of SYP to target index object
@@ -268,10 +301,13 @@ int release_ptr(char *ptr_id, void** pptr)  {
   oplist.arg_len = 16; // length of search-key
   _RMVINXEN1(&ent, &_ptr_inx, &oplist, ptr_id);
 
-  // passed the pointer value stored in the removed entry back to ...
-  *pptr = ent.ptr;
+  if(oplist.rtn_cnt > 0)
+    *pptr = ent.ptr;
+  else {
+    *pptr = NULL;
+    return -1;
+  }
 
-  // @todo check ent.rtn_cnt
   return 0;
 }
 
@@ -298,10 +334,13 @@ int read_ptr(char *ptr_id, void **pptr)  {
   memcpy(search_key, ptr_id, 16);
   _FNDINXEN(&ent, &_ptr_inx, &oplist, search_key);
 
-  // passed the pointer value stored in the removed entry back to ...
-  *pptr = ent.ptr;
+  if(oplist.rtn_cnt > 0)
+    *pptr = ent.ptr;
+  else {
+    *pptr = NULL;
+    return -1;
+  }
 
-  // @todo check ent.rtn_cnt
   return 0;
 }
 
@@ -314,7 +353,8 @@ void ENQ (void *op1, void *op2, void *op3, void *op4) {
   void* syp;
 
   // locate SYP in PTR-INX
-  read_ptr(op1, &syp);
+  if(read_ptr(op1, &syp) != 0)
+    return;
 
   // enqueue
   _ENQ(&syp, op2, op3);
@@ -329,7 +369,8 @@ void DEQWAIT (void *op1, void *op2, void *op3, void *op4) {
   void* syp;
 
   // locate SYP in PTR-INX
-  read_ptr(op3, &syp);
+  if(read_ptr(op3, &syp) != 0)
+    return;
 
   // deq
   _DEQWAIT(op1, op2, &syp);
@@ -348,10 +389,17 @@ void SETSPPFP (void *op1, void *op2, void *op3, void *op4) {
 
   void *spp = NULL;
   void *src_ptr = NULL;
+  void *old_spp = NULL;
 
-  read_ptr(op2, &src_ptr);
+  if(read_ptr(op2, &src_ptr) != 0)
+    return;
+
   spp = _SETSPPFP(src_ptr);
-  store_ptr(op1, &spp);
+
+  if(read_ptr(op1, &old_spp) == 0)
+    update_ptr(op1, &spp);
+  else
+    store_ptr(op1, &spp);
 }
 
 /**
@@ -361,12 +409,14 @@ void SETSPPFP (void *op1, void *op2, void *op3, void *op4) {
  * @param [out] op2, buffer provided by client
  * @param [in] op3, number of bytes to read
  */
-void READ_ADDR (void *op1, void *op2, void *op3, void *op4) {
+void READ_FROM_ADDR (void *op1, void *op2, void *op3, void *op4) {
 
   void *spp = NULL;
   unsigned len = *(unsigned*)op3;
 
-  read_ptr(op1, &spp);
+  if(read_ptr(op1, &spp) != 0)
+    return;
+
   memcpy(op2, spp, len);
 }
 
@@ -377,12 +427,14 @@ void READ_ADDR (void *op1, void *op2, void *op3, void *op4) {
  * @param [in] op2, buffer provided by client
  * @param [in] op3, number of bytes to write
  */
-void WRITE_ADDR (void *op1, void *op2, void *op3, void *op4) {
+void WRITE_TO_ADDR (void *op1, void *op2, void *op3, void *op4) {
 
   void *spp = NULL;
   unsigned len = *(unsigned*)op3;
 
-  read_ptr(op1, &spp);
+  if(read_ptr(op1, &spp) != 0)
+    return;
+
   memcpy(spp, op2, len);
 }
 
@@ -392,6 +444,9 @@ void WRITE_ADDR (void *op1, void *op2, void *op3, void *op4) {
  * @param [in] op1, target pointer
  * @param [in] op2, source pointer
  * @param [in] op3, bin(4) incremention
+ *
+ * @attention ADDSPP and SUBSPP generate a new space pointer and hence
+ * should be released by calling RELEASE_PTR after using
  */
 void ADDSPP (void *op1, void *op2, void *op3, void *op4) {
 
@@ -399,12 +454,16 @@ void ADDSPP (void *op1, void *op2, void *op3, void *op4) {
   char *source_ptr = NULL;
   int displacement = *(int*)op3;
 
-  read_ptr(op1, &target_ptr);
-  read_ptr(op2, &source_ptr);
+  // source spp must exists
+  if(read_ptr(op2, &source_ptr) != 0)
+    return;
+
+  if(read_ptr(op1, &target_ptr) != 0)
+    store_ptr(op1, &target_ptr);
 
   target_ptr = source_ptr + displacement;
 
-  store_ptr(op1, &target_ptr);
+  update_ptr(op1, &target_ptr);
 }
 
 /**
@@ -420,12 +479,16 @@ void SUBSPP (void *op1, void *op2, void *op3, void *op4) {
   char *source_ptr = NULL;
   int displacement = *(int*)op3;
 
-  read_ptr(op1, &target_ptr);
-  read_ptr(op2, &source_ptr);
+  // source spp must exists
+  if(read_ptr(op2, &source_ptr) != 0)
+    return;
+
+  if(read_ptr(op1, &target_ptr) != 0)
+    store_ptr(op1, &target_ptr);
 
   target_ptr = source_ptr - displacement;
 
-  store_ptr(op1, &target_ptr);
+  update_ptr(op1, &target_ptr);
 }
 
 /**
@@ -441,8 +504,9 @@ void SUBSPPFO (void *op1, void *op2, void *op3, void *op4) {
   char *spp2 = NULL;
   int *offset = (int*)op1;
 
-  read_ptr(op2, &spp1);
-  read_ptr(op3, &spp2);
+  if(read_ptr(op2, &spp1) != 0 ||\
+     read_ptr(op3, &spp2) != 0)
+    return;
 
   *offset = spp1 - spp2;
 }
@@ -459,7 +523,8 @@ void STSPPO (void *op1, void *op2, void *op3, void *op4) {
   int *offset = (int*)op1;
   matptr_spp_t tmpl;
 
-  read_ptr(op2, &spp);
+  if(read_ptr(op2, &spp) != 0)
+    return;
 
   memset(&tmpl, 0, sizeof(matptr_spp_t));
   tmpl.bytes_in = sizeof(matptr_spp_t);
@@ -480,7 +545,8 @@ void SETSPPO (void *op1, void *op2, void *op3, void *op4) {
   matptr_spp_t tmpl;
   int diff = 0;
 
-  read_ptr(op1, &spp);
+  if(read_ptr(op1, &spp) != 0)
+    return;
 
   // get current offset of target space pointer
   memset(&tmpl, 0, sizeof(matptr_spp_t));
@@ -492,7 +558,7 @@ void SETSPPO (void *op1, void *op2, void *op3, void *op4) {
   spp += diff;
 
   // store modified SPP back
-  store_ptr(op1, &spp);
+  update_ptr(op1, &spp);
 }
 
 /**
@@ -522,6 +588,61 @@ void CMPPTRT (void *op1, void *op2, void *op3, void *op4) {
   char *ptr_type = (char*)op2;
   int *result = (int*)op3;
 
-  read_ptr(op1, &ptr);
+  if(read_ptr(op1, &ptr) != 0)
+    return;
+
   *result = _CMPPTRT(ptr_type[0], ptr);
+}
+
+/**
+ * 17. Set System Pointer from Pointer (SETSPFP)
+ *
+ * @param [in] op1, source pointer
+ * @param [in] op2, pointer-ID of the returned pointer
+ */
+# pragma linkage(_SETSPFP, builtin)
+void *_SETSPFP(void * /* source pointer */);
+
+void SETSPFP (void *op1, void *op2, void *op3, void *op4) {
+
+  void *syp = NULL;
+  void *src_ptr = NULL;
+  void *old_syp = NULL;
+
+  if(read_ptr(op1, &src_ptr) != 0)
+    return;
+
+  syp = _SETSPFP(src_ptr);
+
+  if(read_ptr(op2, &old_syp) == 0)
+    update_ptr(op2, &syp);
+  else
+    store_ptr(op2, &syp);
+}
+
+/**
+ * 18. RSLVSP4
+ *
+ */
+# pragma linkage (_RSLVSP4, builtin)
+void _RSLVSP4(void**, // address of returned SYP to target MI object
+              void*,  // resolve template
+              void**); // address of SYP to a context object
+
+void RSLVSP4 (void *op1, void *op2, void *op3, void *op4) {
+
+  void *ctx = NULL;
+  void *syp = NULL; // system pointer to the MI obj to resolve
+  void *old_syp = NULL;
+
+  if(read_ptr(op3, &ctx) != 0) // invalid ptr-id of syp to ctx obj
+    return;
+
+  _RSLVSP4(&syp, op2, &ctx);
+
+  // return the offset of SYP into PTR-INX as op1
+  if(read_ptr(op1, &old_syp) == 0)
+    update_ptr(op1, &syp);
+  else
+    store_ptr(op1, &syp);
 }

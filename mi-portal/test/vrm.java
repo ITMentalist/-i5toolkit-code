@@ -46,7 +46,7 @@ public class vrm {
             0x02, 0x0C
         };
 
-        AS400 i = new AS400();  // in case running at an IBM i server
+        AS400 i = new AS400();
         ProgramParameter[] plist = new ProgramParameter[] {
             new ProgramParameter(inst_inx),  // input, ubin(2) instruction index
             new ProgramParameter(matmatr_tmpl, 16), // inout, instruction template of MATMATR
