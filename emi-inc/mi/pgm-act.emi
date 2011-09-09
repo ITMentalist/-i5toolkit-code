@@ -16,10 +16,15 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 /**
  * @file pgm-act.emi
  *
  * header for program activation instructions,
+ *
+ * @obsoleted This source file is marked as obsoleted, and will be
+ *            removed along with ../test/t_pgm_act.emi when
+ *            pgm-exec.emi is completed.
  */
 
 /ifndef __emi_pgm_act_h__       ;

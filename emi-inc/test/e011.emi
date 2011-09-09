@@ -1,0 +1,92 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file e011.emi
+ *
+ * Materialize ASP info.
+ * @see emi-inc/mi/rsc.emi
+ */
+
+dcl dd len bin(4) auto          ;
+dcl spcptr p auto               ;
+dcl dd opt char(8) auto init(
+        x"1F00000000000000"
+)                               ;
+        /* number of bytes needed */
+        modasa p, 8             ;
+        cpynv p->rmd?bytes-in, 8 ;
+        matrmd p, opt           ;
+        cpynv len, p->rmd?bytes-out ;
+        modasa p, -8                ;
+brk "1"                             ;
+        /* actually MAT ASP info */
+        modasa p, len              ;
+        cpynv p->rmd?bytes-in, len ;
+        matrmd p, opt              ;
+brk "2"                            ;
+dcl dd c256 char(256) bas(*)       ;
+        /* how many ASPs do you have? */
+dcl dd msg char(64) auto init(
+        "We get 000 ASPs installed"
+)                               ;
+        dcl dd n znd(3,0) def(msg) pos(8) ;
+
+        addspp p, p, 16         ;
+        cpynv n, p->asp?num     ;
+        %sendmsg(msg, 32)       ;
+brk "3"                         ;
+        /* details of each ASP */
+dcl dd asps bin(2) unsgnd auto  ;
+dcl dd i bin(2) unsgnd auto     ;
+        cpynv asps, p->asp?num  ;
+        addspp p, p, 16         ;
+        cpynv i, 0              ;
+        cpyblap msg,
+          "ASP 000, rsc-name: ##########, type: ",
+          " "                   ;
+dcl dd asp-num znd(3,0) def(msg) pos(5)   ;
+dcl dd rsc-name char(10) def(msg) pos(20) ;
+dcl dd asp-type char(10) def(msg) pos(38) ;
+loop:
+        cpynv asp-num, p->aspi?num   ;
+        cpybla rsc-name, p->aspi?rsc-name ;
+
+        cmpnv(b) asp-num, 1 / hi(=+3) ;
+        cpybla asp-type, "System ASP" ;
+        b check-type                  ;
+:       
+        cpybla asp-type, "User ASP  " ;
+check-type:
+        %sendmsg(msg, 64)       ;
+brk '4'                         ;
+        addn(s) i, 1            ;
+        cmpnv(b) i, asps / lo(loop) ;
+end-loop:       
+
+brk "END"                       ;
+        neg(s) len              ;
+        modasa p, len           ;
+see-you:
+        rtx *                   ;
+
+/include rsc.emi                ;
+pend                            ;
+

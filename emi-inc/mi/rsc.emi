@@ -1,0 +1,70 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file rsc.emi
+ *
+ * Instruction templates for storage and resource management instructions
+ */
+
+/ifndef __emi_rsc_h__           ;
+/define __emi_rsc_h__           ;
+
+/**
+ * Materialization template of MATRMD.
+ * @example test/
+ */
+dcl spc rmd-t bas(*)            ;
+        dcl dd rmd?bytes-in bin(4) dir ;
+        dcl dd rmd?bytes-out bin(4) dir ;
+        dcl dd rmd?timestamp char(8) dir ;
+        /* RMD information */
+
+/**
+ * Auxiliary Storage Pool Information (Short format) (Hex 1F)
+ */
+dcl spc asp-t bas(*)            ;
+        dcl dd asp?num bin(2) unsgnd dir ;
+        dcl dd *       char(14) dir      ;
+        /* repeated asp-info-t entry */
+
+dcl spc asp-info-t bas(*)       ; /* 32 bytes */
+        dcl dd aspi?num bin(2) unsgnd dir ;
+        /*
+        number of allocated auxiliary storage unit =
+          number of configed, non-mirrored disk units + number of mirrored pairs of disk unit
+        */
+        dcl dd aspi?alloc-unit-num bin(2) unsgnd dir ;
+        dcl dd aspi?rsc-name char(10) dir            ; /* ASP resource name */
+        dcl dd aspi?ctrl-flag bin(2) unsgnd dir      ;
+        dcl dd aspi?addr-remained char(8) dir        ;
+        dcl dd aspi?pri-asp-num char(2) dir          ;
+        /*
+        Independent ASP type: @remark this field is meaningful only for an independent ASP
+          bit 0. primary ASP
+          bit 1. secondary ASP
+          bit 2. UDFS ASP
+        */
+        dcl dd aspi?type char(1) dir                 ;
+        dcl dd * char(5) dir                         ;
+
+/endif                          ;
+/* EOF - rsc.emi */
+

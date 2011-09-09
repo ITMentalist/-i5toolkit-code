@@ -118,13 +118,20 @@ void CMPPTRT (void*, void*, void*, void*);
 void SETSPFP (void*, void*, void*, void*);
 // 18. RSLVSP4
 void RSLVSP4 (void*, void*, void*, void*);
+// 19. RSLVSP2_H
+void RSLVSP2_H (void*, void*, void*, void*);
+// 20. RSLVSP4_H
+void RSLVSP4_H (void*, void*, void*, void*);
+// 21. CALLPGMV
+void CALLPGMV (void*, void*, void*, void*);
 
 typedef void proc_t(void*, void*, void*, void*);
 static proc_t* proc_arr[512] = {
   NULL,
   &MATMATR, &GENUUID, &RSLVSP2, &ENQ, &DEQWAIT, &RELEASE_PTR,
   &SETSPPFP, &READ_FROM_ADDR, &WRITE_TO_ADDR, &ADDSPP, &SUBSPP, &SUBSPPFO, &STSPPO, &SETSPPO,
-  &NEW_PTR, &CMPPTRT, &SETSPFP, &RSLVSP4,
+  &NEW_PTR, &CMPPTRT, &SETSPFP, &RSLVSP4, &RSLVSP2_H, &RSLVSP4_H,
+  &CALLPGMV,
   NULL
 };
 
@@ -171,6 +178,12 @@ void GENUUID (void *op1, void *op2, void *op3, void *op4) {
 # pragma linkage (_RSLVSP2, builtin)
 void _RSLVSP2(void*, void*);
 
+/**
+ * 3. RSLVSP2
+ *
+ * @param [out] Pointer ID of resolved system pointer
+ * @param [in]  Resolve option
+ */
 void RSLVSP2 (void *op1, void *op2, void *op3, void *op4) {
 
   void *syp = NULL; // system pointer to the MI obj to resolve
@@ -425,7 +438,7 @@ void READ_FROM_ADDR (void *op1, void *op2, void *op3, void *op4) {
  *
  * @param [in] op1, ID of the target space pointer
  * @param [in] op2, buffer provided by client
- * @param [in] op3, number of bytes to write
+ * @param [in] op3, Ubin(4) number of bytes to write
  */
 void WRITE_TO_ADDR (void *op1, void *op2, void *op3, void *op4) {
 
@@ -645,4 +658,133 @@ void RSLVSP4 (void *op1, void *op2, void *op3, void *op4) {
     update_ptr(op1, &syp);
   else
     store_ptr(op1, &syp);
+}
+
+/**
+ * index = 19. RSLVSP2_H
+ *
+ * @param [out] Pointer ID of resolved system pointer
+ * @param [in]  Pointer ID of space pointer addressing the resolve option
+ *
+ * @remark Unlike RSLVSP2,, when using RSLVSP2_H, operand 2 is a space
+ * pointer addressing the prepared resolved option data allocated at
+ * the server side.
+ *
+ * @excample test/cmdline.clp
+ */
+void RSLVSP2_H (void *op1, void *op2, void *op3, void *op4) {
+
+  void *syp = NULL; // system pointer to the MI obj to resolve
+  void *old_syp = NULL;
+  void *opt_ptr = NULL;
+
+  if(read_ptr(op2, &opt_ptr) != 0)
+    return;
+
+  _RSLVSP2(&syp, opt_ptr);
+
+  // return the offset of SYP into PTR-INX as op1
+  if(read_ptr(op1, &old_syp) == 0)
+    update_ptr(op1, &syp);
+  else
+    store_ptr(op1, &syp);
+}
+
+/**
+ * index = 20. RSLVSP4_H
+ *
+ * @param [out] Pointer ID of resolved system pointer
+ * @param [in]  Pointer ID of space pointer addressing the resolve option
+ * @param [in]  Pointer ID of a system pointer to the target context object
+ *
+ * @remark Unlike RSLVSP4,, when using RSLVSP4_H, operand 2 is a space
+ * pointer addressing the prepared resolved option data allocated at
+ * the server side.
+ */
+void RSLVSP4_H (void *op1, void *op2, void *op3, void *op4) {
+
+  void *ctx = NULL;
+  void *syp = NULL; // system pointer to the MI obj to resolve
+  void *old_syp = NULL;
+  void *opt_ptr = NULL;
+
+  if(read_ptr(op2, &opt_ptr) != 0)
+    return;
+
+  if(read_ptr(op3, &ctx) != 0) // invalid ptr-id of syp to ctx obj
+    return;
+
+  _RSLVSP4(&syp, opt_ptr, &ctx);
+
+  // return the offset of SYP into PTR-INX as op1
+  if(read_ptr(op1, &old_syp) == 0)
+    update_ptr(op1, &syp);
+  else
+    store_ptr(op1, &syp);
+}
+
+/**
+ * 21. CALLPGMV
+ *
+ * @param [in] Pointer ID to *PGM object
+ * @param [in] Array of pointer IDs of space pointer that addressing each program argument
+ * @param [in] Ubin(4) number of aruments
+ *
+ * @excample test/cmdline.clp
+ */
+# pragma linkage(_CALLPGMV, builtin)
+void _CALLPGMV(void **, // addr of syp
+               void **, // arg-ptr-arry[]
+               unsigned // number of arguments
+               );
+
+void CALLPGMV (void *op1, void *op2, void *op3, void *op4) {
+
+  void *pgm = NULL;
+  void *argarr = NULL; // argument arrary
+  unsigned args = 0;
+  int i = 0;
+  char *pos = NULL;
+  void *argptr = NULL;
+  char *ptrid = NULL;
+
+  if(read_ptr(op1, &pgm) != 0) // retrieve syp to pgm
+    return;
+
+  // prepare arg-array
+  args = *(unsigned*)op3;
+  argarr = malloc(16 * args);
+  pos = (char*)argarr;
+  ptrid = (char*)op2;
+  for(i = 0; i < args; i++, pos += 16, ptrid += 16) {
+    if(read_ptr(ptrid, &argptr) != 0) {
+      free(argarr);
+      return;
+    }
+    memcpy(pos, &argptr, 16);
+  }
+
+  // call target program
+  _CALLPGMV(&pgm, argarr, args);
+
+  free(argarr);
+}
+
+/**
+ * ##. MATCTX1
+ *
+ * @param [out] receiver
+ * @param [in]  materialization options
+ */
+void MATCTX1 (void *op1, void *op2, void *op3, void *op4) {
+}
+
+/**
+ * ##. MATCTX2
+ *
+ * @param [out] receiver
+ * @param [in]  address of SYP to target context object
+ * @param [in]  materialization options
+ */
+void MATCTX2 (void *op1, void *op2, void *op3, void *op4) {
 }

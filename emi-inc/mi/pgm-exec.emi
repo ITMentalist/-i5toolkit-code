@@ -1,0 +1,71 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file pgm-exec.emi
+ *
+ * Instruction templates for program execution related instructions.
+ */
+
+/ifndef __emi_pgm_exec_h__           ;
+/define __emi_pgm_exec_h__           ;
+
+/**
+ * Materialization template of MATINVE
+ */
+dcl spc inve-t bas(*)           ;
+        dcl dd * char(12) dir   ;
+        dcl dd inve?thd-mark-cnt bin(4) dir ;
+        dcl dd * char(32) dir               ;
+        dcl sysptr inve?pgm dir             ;
+        dcl dd inve?inv-num bin(2) dir      ;
+        /*
+        Invocation type:
+          hex 01 = Call external
+          hex 02 = Transfer control
+          hex 03 = Event handler
+          hex 04 = External exception handler
+          hex 05 = Initial program in process problem state
+          hex 06 = Initial program in process initiation state
+          hex 07 = Initial program in process termination state
+          hex 08 = Invocation exit
+          hex 09 = Return trap handler or return/XCTL trap handler
+          hex 0A = Call program ??
+          hex 0B = Reserved
+          hex 0C = Reserved
+          hex 0D = Reserved
+          hex 0E = Process Default Exception Handler (PDEH)
+        */
+        dcl dd inve?inv-type char(1) dir    ;
+        dcl dd * char(1) dir                ;
+        dcl dd inve?inv-mark bin(4) dir     ;
+        dcl dd inve?state-w char(2) dir     ; /* state of the invocation the current invocation is invoked with. (e.g. caller's invocation) */
+                                              /* hex 8000 = System state. hex 0001 = User state. */
+        dcl dd inve?state   char(2) dir     ; /* state of the current invocation */
+        dcl dd * char(4) dir                ;
+        dcl sysptr inve?asf dir             ;
+        dcl sysptr inve?ssf dir             ;
+        dcl dd inve?inv-mark-long char(8) dir ;
+        dcl dd inve?thd-mark-cnt-long char(8) dir ;
+        dcl dd * char(16) dir                     ;
+dcl con inve-t-len bin(2) init(144)               ;
+dcl dd inve?all char(144) bas(*)                  ;
+
+/endif                          ;
