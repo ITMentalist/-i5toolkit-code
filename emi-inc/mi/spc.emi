@@ -1,0 +1,96 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file spc.emi
+ *
+ * Space management instructions
+ */
+
+/ifndef __emi_spc_h__           ;
+/define __emi_spc_h__           ;
+
+/**
+ * Creation template of the CRTS instruction
+ *
+ * @remark This SPC object can be used either as the creation template
+ * of CRTS or as the materialization template of MATS.
+ */
+dcl spc crts-t bas(*)           ;
+        dcl dd crts?bytes-in bin(4) dir ;
+        dcl dd crts?bytes-out bin(4) dir ;
+        dcl dd crts?obj-type  char(2) dir ;
+        dcl dd crts?obj-name  char(30) dir ;
+        /*
+        Creation option:
+        Bit 0. 0=Temporary, 1=Permanent
+        Bit 1. 0=Fixed-length, 1=Variable-length
+        Bit 2. 0=not in context, 1=addressibility is inserted into a context
+        Bit 3. Member of access group
+        Bits 4-5. Reserved (binary 0)
+        Bit 6. Public authority is specified. 0=No, 1=Yes
+        Bit 7. Initial owner is specified. 0=No, 1=Yes
+        Bits 8-11. Reserved (binary 0)
+        Bit 12. Set public authority in the created space object. 0=No, 1=Yes
+        Bit 13. Initialize space. 0=Initialize, 1=Do not initialize
+        Bit 14. Automatically extend space. 0=No, 1=Yes
+        Bits 15-16. Hardware storage protection level.
+          00=Reference and modify allowed for user state programs
+          01=Only reference allowed for user state programs
+          10=Invalid (yields  template value invalid  (hex 3801) exception) The MODS instruction can be used to change the hardware storage protection level to 10.
+          11=No reference or modify allowed for user state programs
+        Bit 17. Process temporary space accounting. 0=Yes, 1=No
+        Bits 18-20. Reserved (binary 0)
+        Bit 21. Always enforce hardware storage protection of space. 0=No (only when hardware storage protection is being enforced for all storage. ), 1=Yes
+        Bits 22-31. Reserved (binary 0)
+        */
+        dcl dd crts?crt-opt   char(4) dir  ;
+        /* char(4) recover options */
+        dcl dd *              char(2) dir ;
+        dcl dd crts?asp-num   bin(2) unsgnd dir ;
+        dcl dd crts?size      bin(4) dir        ;
+        dcl dd crts?init-val  char(1) dir       ;
+        dcl dd crts?perf-cls  char(4) dir       ;
+        dcl dd *              char(1) dir       ;
+        dcl dd crts?pub-auth  char(2) dir       ;
+        dcl dd crts?ext-off   bin(4)  dir       ; /* when using SPC crts-t, extension offest should be set to hex 60 */
+        dcl sysptr crts?ctx           dir       ;
+        dcl sysptr crts?ag            dir       ; /* access group */
+        /*
+        The following is the extended creation template. Only the
+	max-size field is meaningful when this SPC object is used as
+	the materialization template of MATS.
+        */
+        dcl sysptr crts?owner         dir ;
+        /*
+        For CRTS, max-size is the largest size needed for the created space object ;
+        for MATS, max-size is the actual maximum size of a space object.
+        */
+        dcl dd crts?max-size bin(4)   dir ;
+        /*
+        Domain assigned to the created space object
+        */
+        dcl dd crts?domain   char(2)  dir ;
+        dcl dd crts?filler   char(42) dir ;
+dcl con crts-t-len bin(2) init(160)       ;
+dcl dd crts?all char(160) bas(*) ;
+
+/endif                          ;
+/* EOF - spc.emi */

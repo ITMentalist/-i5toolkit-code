@@ -1,0 +1,51 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ * 
+ * Copyright (C) 2010, 2011  Junlei Li (李君磊).
+ * 
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file e012.emi
+ *
+ * Test of emi-inc/mi/spc.emi
+ */
+
+dcl spcptr p auto               ;
+        modasa p, crts-t-len    ;
+        cpybrep p->crts?all, x'00' ;
+
+        cpynv p->crts?bytes-in, crts-t-len ;
+        cpybla p->crts?obj-type, x"19EF"   ;
+        cpyblap p->crts?obj-name,
+          "piggy pot :-)", " "  ;
+        /*
+        temp(0=0), var-length(1=1), not-in-ctx(2=0), auto-extend(14=1), track(17=0)
+        01000000,00000010,00...
+        */
+        cpybla p->crts?crt-opt, x"40020000" ;
+        cpynv p->crts?size, h'2000'         ;
+        cpybla p->crts?perf-cls, x"F0000000" ;
+brk '1'                         ;
+dcl dd dbg char(16) auto bdry(16) ;
+        dcl sysptr my-piggy-pot def(dbg) pos(1) ;
+        crts my-piggy-pot, p    ;
+brk 'END'                       ;
+see-you:        
+        rtx *                   ;
+
+/include "spc.emi"              ;
+pend                            ;

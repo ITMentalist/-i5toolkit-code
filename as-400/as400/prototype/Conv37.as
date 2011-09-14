@@ -63,7 +63,7 @@ package as400.prototype {
 
                 var ch:int = int(pc_str.charCodeAt(i));
                 if(ch < 0)
-                    ch = 256 + ch;
+                    ch &= 0xFF;
                 r.writeByte(_qebcdic[ch]);
             }
 

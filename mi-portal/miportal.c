@@ -124,6 +124,20 @@ void RSLVSP2_H (void*, void*, void*, void*);
 void RSLVSP4_H (void*, void*, void*, void*);
 // 21. CALLPGMV
 void CALLPGMV (void*, void*, void*, void*);
+// 22. CRTS
+void CRTS (void*, void*, void*, void*);
+// 22. CRTS_H
+void CRTS_H (void*, void*, void*, void*);
+// 24. DESS
+void DESS (void*, void*, void*, void*);
+// 25. MATS
+void MATS (void*, void*, void*, void*);
+// 26. MATS_H
+void MATS_H (void*, void*, void*, void*);
+// 27. MODS1
+void MODS1 (void*, void*, void*, void*);
+// 28. MODS2
+void MODS2 (void*, void*, void*, void*);
 
 typedef void proc_t(void*, void*, void*, void*);
 static proc_t* proc_arr[512] = {
@@ -131,7 +145,7 @@ static proc_t* proc_arr[512] = {
   &MATMATR, &GENUUID, &RSLVSP2, &ENQ, &DEQWAIT, &RELEASE_PTR,
   &SETSPPFP, &READ_FROM_ADDR, &WRITE_TO_ADDR, &ADDSPP, &SUBSPP, &SUBSPPFO, &STSPPO, &SETSPPO,
   &NEW_PTR, &CMPPTRT, &SETSPFP, &RSLVSP4, &RSLVSP2_H, &RSLVSP4_H,
-  &CALLPGMV,
+  &CALLPGMV, &CRTS, &CRTS_H, &DESS, &MATS, &MATS_H, &MODS1, &MODS2,
   NULL
 };
 
@@ -191,7 +205,6 @@ void RSLVSP2 (void *op1, void *op2, void *op3, void *op4) {
 
   _RSLVSP2(&syp, op2);
 
-  // return the offset of SYP into PTR-INX as op1
   if(read_ptr(op1, &old_syp) == 0)
     update_ptr(op1, &syp);
   else
@@ -768,6 +781,148 @@ void CALLPGMV (void *op1, void *op2, void *op3, void *op4) {
   _CALLPGMV(&pgm, argarr, args);
 
   free(argarr);
+}
+
+/**
+ * 22. CRTS
+ *
+ * @param [out] Pointere ID of the system pointer to the created space object
+ * @param [in] Creationg template
+ */
+# pragma linkage(_CRTS, builtin)
+void _CRTS(void**, void*);
+
+void CRTS (void *op1, void *op2, void *op3, void *op4) {
+
+  void *syp = NULL; // system pointer to the created space object
+  void *old_syp = NULL;
+
+  _CRTS(&syp, op2);
+
+  if(read_ptr(op1, &old_syp) == 0)
+    update_ptr(op1, &syp);
+  else
+    store_ptr(op1, &syp);
+}
+
+/**
+ * 23. CRTS_H
+ *
+ * @param [out] Pointere ID of the system pointer to the created space object
+ * @param [in] Pointer ID of the space pointer addressing the creationg template (allocated at server side)
+ */
+void CRTS_H (void *op1, void *op2, void *op3, void *op4) {
+
+  void *syp = NULL; // system pointer to the created space object
+  void *old_syp = NULL;
+  void *tmpl_spp = NULL;
+
+  if(read_ptr(op2, &tmpl_spp) != 0) // invalid ptr ID
+    return;
+
+  _CRTS(&syp, tmpl_spp);
+
+  if(read_ptr(op1, &old_syp) == 0)
+    update_ptr(op1, &syp);
+  else
+    store_ptr(op1, &syp);
+}
+
+/**
+ * 24. DESS
+ *
+ * @param [in] Pointer ID of the SYP to the space object to destroy
+ */
+# pragma linkage(_DESS, builtin)
+void _DESS(void**);
+
+void DESS (void *op1, void *op2, void *op3, void *op4) {
+
+  void *syp = NULL;
+
+  if(read_ptr(op1, &syp) != 0)
+    return;
+
+  _DESS(&syp);
+}
+
+/**
+ * 25. MATS
+ *
+ * @param [inout] 116-byte materialization template
+ * @param [in] Pointer ID of the SYP to the space object
+ */
+# pragma linkage(_MATS, builtin)
+void _MATS(void*, void**);
+
+void MATS (void *op1, void *op2, void *op3, void *op4) {
+
+  void *syp = NULL;
+
+  if(read_ptr(op2, &syp) != 0)
+    return;
+
+  _MATS(op1, &op2);
+}
+
+/**
+ * 26. MATS_H
+ *
+ * @param [in] Pointer ID of the SPP to the materialization template (allocated at server side)
+ * @param [in] Pointer ID of the SYP to the space object
+ */
+void MATS_H (void *op1, void *op2, void *op3, void *op4) {
+
+  void *syp = NULL;
+  void *tmpl_spp = NULL;
+
+  if(read_ptr(op1, &tmpl_spp) != 0)
+    return;
+
+  if(read_ptr(op2, &syp) != 0)
+    return;
+
+  _MATS(tmpl_spp, &op2);
+}
+
+/**
+ * 27. MODS1
+ * Modify space size
+ *
+ * @param [in] Pointer ID of the SYP to target space object
+ * @param [in] Bin(4) space size
+ */
+# pragma linkage(_MODS1, builtin)
+void _MODS1(void**, void*);
+
+void MODS1 (void *op1, void *op2, void *op3, void *op4) {
+
+  void *syp = NULL;
+
+  if(read_ptr(op1, &syp) != 0)
+    return;
+
+  _MODS1(&syp, op2);
+}
+
+/**
+ * 28. MODS2
+ * Modify space attributes (including space size)
+ *
+ * @param [in] Pointer ID of the SYP to target space object
+ * @param [in] 28-byte modification template
+ */
+# pragma linkage(_MODS2, builtin)
+void _MODS2(void**, void*);
+
+void MODS2 (void *op1, void *op2, void *op3, void *op4) {
+
+  void *syp = NULL;
+
+  if(read_ptr(op1, &syp) != 0)
+    return;
+
+  _MODS2(&syp, op2);
 }
 
 /**
