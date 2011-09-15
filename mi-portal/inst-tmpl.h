@@ -146,4 +146,12 @@ void _MATPTR(void *, /* materialization template */
              void ** /* address of pointer */
              );
 
+# define _CRTS_TMPL_LEN 160
+
+# pragma linkage(_CPYBWP, builtin)
+void _CPYBWP(void *, // target address
+             void *, // source address
+             int     // bytes to copy
+             );
+
 # endif // !defined __miportal_inst_tmpl_h__

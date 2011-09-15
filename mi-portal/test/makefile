@@ -26,7 +26,7 @@ JAVAFLAGS=-g
 
 BIN_LIB=
 MAKERULES=rules.mk
-TARGETS=uuid.class vrm.class prcnum enq007 enq.class deq.class hmc.class testbarray.class
+TARGETS=uuid.class vrm.class prcnum enq007 enq.class deq.class hmc.class testbarray.class Piggypot.class
 
 all: $(TARGETS)
 	@echo "compilation done -- mi-portal/test"

@@ -138,6 +138,8 @@ void MATS_H (void*, void*, void*, void*);
 void MODS1 (void*, void*, void*, void*);
 // 28. MODS2
 void MODS2 (void*, void*, void*, void*);
+// 29 (hex 001D). DUP_PTR
+void DUP_PTR (void*, void*, void*, void*);
 
 typedef void proc_t(void*, void*, void*, void*);
 static proc_t* proc_arr[512] = {
@@ -146,6 +148,7 @@ static proc_t* proc_arr[512] = {
   &SETSPPFP, &READ_FROM_ADDR, &WRITE_TO_ADDR, &ADDSPP, &SUBSPP, &SUBSPPFO, &STSPPO, &SETSPPO,
   &NEW_PTR, &CMPPTRT, &SETSPFP, &RSLVSP4, &RSLVSP2_H, &RSLVSP4_H,
   &CALLPGMV, &CRTS, &CRTS_H, &DESS, &MATS, &MATS_H, &MODS1, &MODS2,
+  &DUP_PTR,
   NULL
 };
 
@@ -410,7 +413,12 @@ void RELEASE_PTR (void *op1, void *op2, void *op3, void *op4) {
   release_ptr(op1, &ptr);
 }
 
-/// index = 7, SETSPPFP
+/**
+ * index = 7, SETSPPFP
+ *
+ * @param [out] op1. Pointer ID of returned space pointer
+ * @param [in]  op2. Pointer ID of source pointer
+ */
 void SETSPPFP (void *op1, void *op2, void *op3, void *op4) {
 
   void *spp = NULL;
@@ -796,8 +804,13 @@ void CRTS (void *op1, void *op2, void *op3, void *op4) {
 
   void *syp = NULL; // system pointer to the created space object
   void *old_syp = NULL;
+  void *crt_tmpl = NULL;
 
-  _CRTS(&syp, op2);
+  crt_tmpl = malloc(_CRTS_TMPL_LEN);
+  memcpy(crt_tmpl, op2, _CRTS_TMPL_LEN);
+  _CRTS(&syp, crt_tmpl);
+  memcpy(op2, crt_tmpl, _CRTS_TMPL_LEN);
+  free(crt_tmpl);
 
   if(read_ptr(op1, &old_syp) == 0)
     update_ptr(op1, &syp);
@@ -858,11 +871,16 @@ void _MATS(void*, void**);
 void MATS (void *op1, void *op2, void *op3, void *op4) {
 
   void *syp = NULL;
+  void *mat_tmpl = NULL;
 
   if(read_ptr(op2, &syp) != 0)
     return;
 
-  _MATS(op1, &op2);
+  mat_tmpl = malloc(_CRTS_TMPL_LEN);
+  memcpy(mat_tmpl, op2, _CRTS_TMPL_LEN);
+  _MATS(mat_tmpl, &syp);
+  memcpy(op2, mat_tmpl, _CRTS_TMPL_LEN);
+  free(mat_tmpl);
 }
 
 /**
@@ -882,7 +900,7 @@ void MATS_H (void *op1, void *op2, void *op3, void *op4) {
   if(read_ptr(op2, &syp) != 0)
     return;
 
-  _MATS(tmpl_spp, &op2);
+  _MATS(tmpl_spp, &syp);
 }
 
 /**
@@ -923,6 +941,30 @@ void MODS2 (void *op1, void *op2, void *op3, void *op4) {
     return;
 
   _MODS2(&syp, op2);
+}
+
+/**
+ * Duplicate an MI pointer at the server side
+ *
+ * @param [out] Pointer ID of the duplicated pointer
+ * @param [in]  Pointer ID of the source pointer
+ */
+void DUP_PTR (void *op1, void *op2, void *op3, void *op4) {
+
+  void *newptr = NULL;
+  void *srcptr = NULL;
+  void *old = NULL;
+
+  // load source pointer
+  if((read_ptr(op2, &srcptr)) != 0)
+    return;
+
+  _CPYBWP(&newptr, &srcptr, 16);
+
+  if(read_ptr(op1, &old) == 0)
+    update_ptr(op1, &newptr);
+  else
+    store_ptr(op1, &newptr);
 }
 
 /**
