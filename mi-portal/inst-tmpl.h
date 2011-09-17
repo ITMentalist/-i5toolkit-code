@@ -154,4 +154,33 @@ void _CPYBWP(void *, // target address
              int     // bytes to copy
              );
 
+# pragma linkage(_ALCHSS, builtin)
+void *_ALCHSS (int,  // Heap ID
+               int   // Number of bytes to allocate
+               );
+
+# pragma linkage (_CRTHS, builtin)
+void _CRTHS (void *, // address of returned heap ID
+             void *  // heap creation template
+             );
+
+# pragma linkage (_DESHS, builtin)
+void _DESHS (void *); // address of returned heap ID
+
+# pragma linkage (_FREHSS, builtin)
+void _FREHSS (void *); // space pointer
+
+# pragma linkage(_REALCHSS, builtin)
+void *_REALCHSS (void*, // input space pointer
+                 int    // Number of bytes to allocate
+                 );
+
+# pragma linkage (_SETHSSMK, builtin)
+void _SETHSSMK (void **,  // address of mark ID pointer
+                int *     // address of heap ID
+                );
+
+# pragma linkage (_FREHSSMK, builtin)
+void _FREHSSMK (void **);  // address of mark ID pointer
+
 # endif // !defined __miportal_inst_tmpl_h__

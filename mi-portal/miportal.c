@@ -140,6 +140,22 @@ void MODS1 (void*, void*, void*, void*);
 void MODS2 (void*, void*, void*, void*);
 // 29 (hex 001D). DUP_PTR
 void DUP_PTR (void*, void*, void*, void*);
+// 30 (hex 001E). CPYBWP
+void CPYBWP (void*, void*, void*, void*);
+// 31 (hex 001F). ALCHSS
+void ALCHSS (void*, void*, void*, void*);
+// 32 (hex 0020). CRTHS
+void CRTHS (void*, void*, void*, void*);
+// 33 (hex 0021). DESHS
+void DESHS (void*, void*, void*, void*);
+// 34 (hex 0022). FREHSS
+void FREHSS (void*, void*, void*, void*);
+// 35 (hex 0023). REALCHSS
+void REALCHSS (void*, void*, void*, void*);
+// 36 (hex 0024). SETHSSMK
+void SETHSSMK (void*, void*, void*, void*);
+// 37 (hex 0025). FREHSSMK
+void FREHSSMK (void*, void*, void*, void*);
 
 typedef void proc_t(void*, void*, void*, void*);
 static proc_t* proc_arr[512] = {
@@ -148,7 +164,8 @@ static proc_t* proc_arr[512] = {
   &SETSPPFP, &READ_FROM_ADDR, &WRITE_TO_ADDR, &ADDSPP, &SUBSPP, &SUBSPPFO, &STSPPO, &SETSPPO,
   &NEW_PTR, &CMPPTRT, &SETSPFP, &RSLVSP4, &RSLVSP2_H, &RSLVSP4_H,
   &CALLPGMV, &CRTS, &CRTS_H, &DESS, &MATS, &MATS_H, &MODS1, &MODS2,
-  &DUP_PTR,
+  &DUP_PTR, &CPYBWP, &ALCHSS, &CRTHS, &DESHS, &FREHSS, &REALCHSS,
+  &SETHSSMK, &FREHSSMK,
   NULL
 };
 
@@ -330,9 +347,10 @@ int release_ptr(char *ptr_id, void** pptr)  {
   oplist.arg_len = 16; // length of search-key
   _RMVINXEN1(&ent, &_ptr_inx, &oplist, ptr_id);
 
-  if(oplist.rtn_cnt > 0)
+  if(oplist.rtn_cnt > 0) {
     *pptr = ent.ptr;
-  else {
+    memset(ptr_id, 0x00, 16); // clear pointer ID
+  } else {
     *pptr = NULL;
     return -1;
   }
@@ -797,9 +815,6 @@ void CALLPGMV (void *op1, void *op2, void *op3, void *op4) {
  * @param [out] Pointere ID of the system pointer to the created space object
  * @param [in] Creationg template
  */
-# pragma linkage(_CRTS, builtin)
-void _CRTS(void**, void*);
-
 void CRTS (void *op1, void *op2, void *op3, void *op4) {
 
   void *syp = NULL; // system pointer to the created space object
@@ -944,7 +959,7 @@ void MODS2 (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * Duplicate an MI pointer at the server side
+ * 29 (hex 001D). Duplicate an MI pointer at the server side
  *
  * @param [out] Pointer ID of the duplicated pointer
  * @param [in]  Pointer ID of the source pointer
@@ -965,6 +980,182 @@ void DUP_PTR (void *op1, void *op2, void *op3, void *op4) {
     update_ptr(op1, &newptr);
   else
     store_ptr(op1, &newptr);
+}
+
+/**
+ * 30 (hex 001E). CPYBWP
+ *
+ * Copy specified length of data addressed by source space pointer to
+ * the storage addressed by target space pointer. Pointer data items
+ * can be successfully duplicated via this instruction.
+ *
+ * @attention This instruction is to copy data between server-side
+ * storage. To copy client-side storage to/from server-side storage,
+ * use support functions WRITE_TO_ADDR and READ_FROM_ADDR
+ * respectively.
+ *
+ * @attention Either the source spcptr or the target spcptr must be a
+ * valid space pointer.
+ *
+ * @param [int] Pointer ID of the target space pointer
+ * @param [in]  Pointer ID of the source space pointer
+ * @param [in]  UBin(4). Number of bytes to copy
+ */
+void CPYBWP (void *op1, void *op2, void *op3, void *op4) {
+
+  void *tgtptr = NULL;
+  void *srcptr = NULL;
+  unsigned len = *(unsigned*)op3;
+
+  // load source pointer
+  if((read_ptr(op1, &tgtptr)) != 0 || \
+     (read_ptr(op2, &srcptr)) != 0)
+    return;
+
+  _CPYBWP(&tgtptr, &srcptr, len);
+}
+
+/**
+ * 31 (hex 001F). ALCHSS
+ *
+ * Allocate heap storage on an activation-group (AGP) based heap space.
+ *
+ * @param [in/out] Pointer ID to a space pointer addressing the newly
+ * allocated heap storage.
+ * @param [in] Bin(4). Heap ID. A value of zero represent the default
+ * heap space of an AGP.
+ * @param [in] Bin(4). Number of bytes to allocated. The possible
+ * maximum single allocation size for a Single Level Store (SLS) heap
+ * is 16M - 1 Page.
+ */
+void ALCHSS (void *op1, void *op2, void *op3, void *op4) {
+
+  void *spp = NULL;
+  int heap_id = *(int*)op2;
+  int len = *(int*)op3;
+  void *oldptr = NULL;
+
+  spp = _ALCHSS(heap_id, len);
+
+  // store SPP to allocated heap storage
+  if(read_ptr(op1, &oldptr) == 0)
+    update_ptr(op1, &spp);
+  else
+    store_ptr(op1, &spp);
+}
+
+/**
+ * 32 (hex 0020). CRTHS
+ * Create AGP-based heap space.
+ *
+ * @remark Heap managemnet MI instructions works with Single Level Store (SLS) heap spaces.
+ *
+ * @param [out] Bin(4). Heap ID of the created heap space.
+ * @param [in]  96-byte heap creation template.
+ */
+void CRTHS (void *op1, void *op2, void *op3, void *op4) {
+
+  _CRTHS(op1, op2);
+}
+
+/**
+ * 33 (hex 0021). DESHS
+ * Destroy AGP-based heap space.
+ *
+ * @param [in] Bin(4). Heap ID of the created heap space.
+ */
+void DESHS (void *op1, void *op2, void *op3, void *op4) {
+
+  _DESHS(op1);
+}
+
+/**
+ * 34 (hex 0022). FREHSS
+ *
+ * Free allocated heap storage.
+ *
+ * @param [in] Pointer ID to the space pointer addressing the
+ * beginning of allocated heap storage.
+ *
+ * @remark The entire space allocation is de-allocated; partial
+ * de-allocation is not supported.
+ */
+void FREHSS (void *op1, void *op2, void *op3, void *op4) {
+
+  void *spp = NULL;
+
+  if((read_ptr(op1, &spp)) != 0)
+    return;
+
+  _FREHSS(spp);
+  release_ptr(op1, &spp);
+}
+
+/**
+ * 35 (hex 0023). REALCHSS
+ *
+ * Reallocate heap storage on an activation-group (AGP) based heap space.
+ *
+ * @param [in/out] Pointer ID to a space pointer addressing the reallocated heap storage.
+ * @param [in] Bin(4). Number of bytes to allocated. The possible
+ * maximum single allocation size for a Single Level Store (SLS) heap
+ * is 16M - 1 Page.
+ */
+void REALCHSS (void *op1, void *op2, void *op3, void *op4) {
+
+  void *spp = NULL;
+  int len = *(int*)op2;
+
+  if(read_ptr(op1, &spp) != 0)
+    return;
+
+  spp = _REALCHSS(spp, len);
+
+  // store SPP to reallocated heap storage
+  update_ptr(op1, &spp);
+}
+
+/**
+ * 36 (hex 0024). SETHSSMK
+ *
+ * Set AGP-based heap space storage mark
+ *
+ * @param [in/out] Pointer ID to a space pointer serving as a mark ID
+ * @param [in] Bin(4). Heap ID
+ */
+void SETHSSMK (void *op1, void *op2, void *op3, void *op4) {
+
+  void *mark = NULL;
+  int *heap_id = (int*)op2;
+
+  _SETHSSMK(&mark, heap_id);
+
+  // stored returned mark ID pointer
+  if(read_ptr(op1, &mark) == 0)
+    update_ptr(op1, &mark);
+  else
+    store_ptr(op1, &mark);
+}
+
+/**
+ * 37 (hex 0025). FREHSSMK
+ *
+ * Free AGP-based heap space storage mark
+ *
+ * @param [in/out] Pointer ID to a space pointer serving as a mark ID
+ * @post The input mark ID pointer is released on return.
+ */
+void FREHSSMK (void *op1, void *op2, void *op3, void *op4) {
+
+  void *mark = NULL;
+
+  if((read_ptr(op1, &mark)) != 0)
+    return;
+
+  _FREHSSMK(&mark);
+
+  // release mark ID pointer
+  release_ptr(op1, &mark);
 }
 
 /**
