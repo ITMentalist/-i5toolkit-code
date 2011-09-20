@@ -158,15 +158,11 @@ void SETHSSMK (void*, void*, void*, void*);
 void FREHSSMK (void*, void*, void*, void*);
 // 38 (hex 0026). MATHSAT_H
 void MATHSAT_H (void*, void*, void*, void*);
-// 39 (hex 0027). MATCTX1
-void MATCTX1 (void*, void*, void*, void*);
-// 40 (hex 0028). MATCTX1_H
+// 39 (hex 0027). MATCTX1_H
 void MATCTX1_H (void*, void*, void*, void*);
-// 41 (hex 0029). MATCTX2
-void MATCTX2 (void*, void*, void*, void*);
-// 42 (hex 003A). MATCTX2_H
+// 40 (hex 0028). MATCTX2_H
 void MATCTX2_H (void*, void*, void*, void*);
-// 43 (hex 003B). QTEMPPTR
+// 41 (hex 0029). QTEMPPTR
 void QTEMPPTR (void*, void*, void*, void*);
 
 typedef void proc_t(void*, void*, void*, void*);
@@ -178,8 +174,8 @@ static proc_t* proc_arr[512] = {
   &NEW_PTR, &CMPPTRT, &SETSPFP, &RSLVSP4, &RSLVSP2_H, &RSLVSP4_H,
   &CALLPGMV, &CRTS, &CRTS_H, &DESS, &MATS, &MATS_H, &MODS1, &MODS2,
   &DUP_PTR, &CPYBWP, &ALCHSS, &CRTHS, &DESHS, &FREHSS, &REALCHSS,
-  &SETHSSMK, &FREHSSMK, &MATHSAT_H, &MATCTX1, &MATCTX1_H,
-  &MATCTX2, &MATCTX2_H, &QTEMPPTR,
+  &SETHSSMK, &FREHSSMK, &MATHSAT_H, &MATCTX1_H, &MATCTX2_H,
+  &QTEMPPTR,
   NULL
 };
 
@@ -1192,18 +1188,7 @@ void MATHSAT_H (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 39 (hex 0027) . MATCTX1
- *
- * @param [out] receiver
- * @param [in]  materialization options
- */
-void MATCTX1 (void *op1, void *op2, void *op3, void *op4) {
-
-  QusMaterializeContext(op1, NULL, op2);
-}
-
-/**
- * 40 (hex 0028). MATCTX1_H
+ * 39 (hex 0027). MATCTX1_H
  *
  * @param [in] Pointer ID of the SPP adddressing the materialization template
  * @param [in] materialization options
@@ -1218,24 +1203,7 @@ void MATCTX1_H (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 41 (hex 0029). MATCTX2
- *
- * @param [out] receiver
- * @param [in]  Pointer ID of SYP to target context object
- * @param [in]  materialization options
- */
-void MATCTX2 (void *op1, void *op2, void *op3, void *op4) {
-
-  void *ctx = NULL;
-
-  if((read_ptr(op2, &ctx)) != 0)
-    return;
-
-  QusMaterializeContext(op1, ctx, op3);
-}
-
-/**
- * 42 (hex 003A). MATCTX2_H
+ * 40 (hex 0028). MATCTX2_H
  *
  * @param [in] Pointer ID of the SPP adddressing the materialization template
  * @param [in] Pointer ID of SYP to target context object
@@ -1254,7 +1222,7 @@ void MATCTX2_H (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 43 (hex 003B). QTEMPPTR
+ * 41 (hex 0029). QTEMPPTR
  *
  * @param [in/out] Pointer ID of the returned system pointer to QTEMP (of course, of the current MI process).
  */

@@ -71,8 +71,7 @@ public class PiggyPot {
 }
 
 /**
- * This class implements the basic creation template of the CRTS instruction.
- * @remark Length of the basic creattion tmplate of CRTS is 96 bytes.
+ * Creation template of CRTS
  */
 class CRTSTmpl {
 

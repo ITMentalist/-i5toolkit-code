@@ -19,7 +19,7 @@
  */
 
 /**
- * @file ListUesrProfile.java
+ * @file ListUserProfile.java
  *
  * This example Java program lists all User Profiles (USRSRFs) on an
  * IBM i server via the Materrialize Context (MATCTX) MI instruction.
@@ -29,13 +29,88 @@
  * @todo Finish it!
  */
 
+import java.io.IOException;
 import com.ibm.as400.access.*;
 import u.ByteArray;
 
-public class ListUesrProfile {
+public class ListUserProfile {
 
     public static void main(String[] args) {
 
+        ListUserProfile l = new ListUserProfile();
+        l.run();
+    }
+
+    private static final String MIPORTAL =
+        "/qsys.lib/i5toolkit.lib/miportal.pgm";
+
+    private ProgramCall portal_;
+
+    public void run() {
+
+        byte[] heap_spp = null;
+        int len = 0;
+        byte[] mat_tmpl = null;
+        byte[] mat_opt = null;
+
+        try {
+            // allocate 8 bytes of heap storage at the server side
+            heap_spp = alloc_heap_storage(8);
+
+            // MATCTX1_H, get number of bytes available
+            len = bytes_needed();
+            System.out.println("Number of bytes needed to materialize USRPRF names: "
+                               + len);
+
+            // reallocate heap storage
+
+            // MATCTX1_H, actually materialize usrprf names
+
+            // report what we get
+
+            // free allocated heap storage
+            free_heap_storage(heap_spp);
+
+        } catch(Exception e) { e.printStackTrace(); }
+
+    }
+
+    /// call ALCHSS to allocate heap storage on server jobs' default heap
+    private byte[] alloc_heap_storage(int len)
+        throws Exception
+    {
+        ProgramParameter[] plist = new ProgramParameter[] {
+            new ProgramParameter(new byte[] {0x00, 0x1f}), // instruction index of ALCHSS
+            new ProgramParameter(16),  // returned space pointer ID
+            new ProgramParameter(ByteArray.fromInt32(0)),  // heap ID
+            new ProgramParameter(ByteArray.fromInt32(8))   // number of bytes to allocate
+        };
+
+        AS400 i = new AS400();
+        portal_ = new ProgramCall(i, MIPORTAL, plist);
+        // portal_.setParameterList(plist);
+        if(!portal_.run())
+            throw new Exception("alloc_heap_storage()");
+
+        return plist[1].getOutputData();
+    }
+
+    private void free_heap_storage(byte[] heap_spp)
+        throws Exception
+    {
+        ProgramParameter[] plist = new ProgramParameter[] {
+            new ProgramParameter(new byte[] {0x00, 0x22}), // instruction index of FREHSS
+            new ProgramParameter(heap_spp)                 // space pointer ID
+        };
+
+        portal_.setParameterList(plist);
+        if(!portal_.run())
+            throw new Exception("free_heap_storage()");
+    }
+
+    private int bytes_needed() // @todo should use previously allocated heap storage as TMPL
+        throws Exception
+    {
         byte[] mat_tmpl = new ByteArray(8).
             writeInt32(8).  // Number of bytes provided for materialization
             writeInt32(0).  // Number of bytes available for materialization
@@ -47,24 +122,16 @@ public class ListUesrProfile {
             new ProgramParameter(mat_opt) // input, materialization options
         };
 
-        AS400 i = new AS400();
-        ProgramCall portal = new ProgramCall(i,
-                                             "/qsys.lib/i5toolkit.lib/miportal.pgm",
-                                             plist_matctx);
+        portal_.setParameterList(plist_matctx);
+        if(!portal_.run())
+            throw new Exception("bytes_needed()");
 
-        try {
-
-            byte[] rtn = plist_matctx[1].getOutputData();
-            int a = ByteArray.load(rtn, 8).readInt32();
-            portal.run();
-
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
-
+        byte[] rtn = plist_matctx[1].getOutputData();
+        int bytes_available = ByteArray.load(rtn, 4, 4).readInt32();
+        return bytes_available;
     }
 
-} // class ListUesrProfile
+} // class ListUserProfile
 
 class MATCTXOptionTmpl {
 

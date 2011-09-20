@@ -348,11 +348,16 @@ public class ByteArray {
         // clear ...
         clear();
 
-        readBytes(data, bytes, off);
+        arr_ = new byte[bytes];
+        writeBytes(data, bytes, off);
+        pos_ = 0;
     }
     public synchronized void fromBytes(byte[] data, int bytes)
         throws IOException
     { fromBytes(data, bytes, 0); }
+    public synchronized void fromBytes(byte[] data)
+        throws IOException
+    { fromBytes(data, data.length, 0); }
 
     public synchronized byte[] toBytes() {
 
@@ -363,17 +368,34 @@ public class ByteArray {
         return copy;
     }
 
-    public static synchronized ByteArray load(byte[] data, int bytes, int off)
+    public static ByteArray load(byte[] data, int bytes, int off)
         throws IOException
     {
         ByteArray r = new ByteArray(bytes);
-        r.readBytes(data, bytes, off);
+        r.writeBytes(data, bytes, off);
+        r.pos_ = 0;
 
         return r;
     }
-    public static synchronized ByteArray load(byte[] data, int bytes)
+    public static ByteArray load(byte[] data, int bytes)
         throws IOException
     { return load(data, bytes, 0); }
+    public static ByteArray load(byte[] data)
+        throws IOException
+    { return load(data, data.length, 0); }
+
+    /// @todo is it proper to add some conversion functionalities to this class
+
+    public static byte[] fromInt32(int val)
+        throws IOException
+    {
+
+        ByteArray b = new ByteArray(4);
+        b.writeInt32(val);
+        b.position(0);
+
+        return b.toBytes();
+    }
 
     /// Content of *TBL QSYS/QEBCDIC
     public static final int[] _qebcdic = {
