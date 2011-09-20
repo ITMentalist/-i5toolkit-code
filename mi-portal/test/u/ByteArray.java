@@ -18,6 +18,8 @@
  * <http://www.gnu.org/licenses/>.
  */
 
+package u;
+
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -31,7 +33,7 @@ import java.io.PrintStream;
  *
  * @todo write/read pkd/znd 4/8-byte float
  */
-class ByteArray {
+public class ByteArray {
 
     private int pos_;
     public int position() { return pos_; }
@@ -360,6 +362,18 @@ class ByteArray {
 
         return copy;
     }
+
+    public static synchronized ByteArray load(byte[] data, int bytes, int off)
+        throws IOException
+    {
+        ByteArray r = new ByteArray(bytes);
+        r.readBytes(data, bytes, off);
+
+        return r;
+    }
+    public static synchronized ByteArray load(byte[] data, int bytes)
+        throws IOException
+    { return load(data, bytes, 0); }
 
     /// Content of *TBL QSYS/QEBCDIC
     public static final int[] _qebcdic = {

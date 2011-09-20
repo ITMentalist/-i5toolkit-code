@@ -183,4 +183,16 @@ void _SETHSSMK (void **,  // address of mark ID pointer
 # pragma linkage (_FREHSSMK, builtin)
 void _FREHSSMK (void **);  // address of mark ID pointer
 
+# pragma linkage (_MATHSAT, builtin)
+void _MATHSAT (void *,  // materialization template
+               void *,  // heap ID
+               void *   // attribute selection option
+               );
+
+// for QusMaterializeContext()
+# include <qusmiapi.h>
+
+# pragma linkage (_QTEMPPTR, builtin)
+void *_QTEMPPTR (void);
+
 # endif // !defined __miportal_inst_tmpl_h__

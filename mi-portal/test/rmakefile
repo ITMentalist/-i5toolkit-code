@@ -18,23 +18,29 @@
 #
 # make remotely
 #
+# @remark memo on changes
+#  - use rput.sh to upload changed source files
+#  - do NOT upload rules.mk and build.sh anymore
+#
 
 HOST=g525
 BIN_LIB=LSBIN
 HOST_DIR=/home/ljl/chqs/mi-portal/test
-BUILD_SCRIPT=$(HOST_DIR)/build.sh
+BUILD_SCRIPT=$(HOST_DIR)/../../build.sh
+RULESF=../../rules.mk
 BUILD_LOG=.build-log
-SRC_LIST=$(shell find . -type f -cnewer last-upload -a \( -name '*.mi' -o -name '*.emi' -o -name '*.rpgle' -o -name '*.c' -o -name '*.h' -o -name '*.java' \) ) ../../rules.mk makefile ../../build.sh
+SRC_LIST=$(shell find . -type f -newer last-upload -a \( -name '*.mi' -o -name '*.emi' -o -name '*.rpgle' -o -name '*.c' -o -name '*.h' -o -name '*.java' \) ) makefile
 
 all: upload_src compile
 	@echo "end of compilation -- i5toolkit/mi-portal/test"
 
 upload_src:
-	lftp -e "cd $(HOST_DIR); mput $(SRC_LIST); by" $(HOST)
+	./rput.sh $(HOST) $(HOST_DIR) $(SRC_LIST)
+#	lftp -e "cd $(HOST_DIR); mput $(SRC_LIST); by" $(HOST)
 	touch last-upload
 
 compile:
-	rexec $(HOST) "CALL QP2SHELL PARM('$(BUILD_SCRIPT)' '$(HOST_DIR)/$(BUILD_LOG)' '-e BIN_LIB=$(BIN_LIB) -e MAKERULES=rules.mk')"
+	rexec $(HOST) "CALL QP2SHELL PARM('$(BUILD_SCRIPT)' '$(HOST_DIR)/$(BUILD_LOG)' '-e BIN_LIB=$(BIN_LIB) -e MAKERULES=$(RULESF)')"
 	lftp -e "cd $(HOST_DIR); get $(BUILD_LOG); by" $(HOST)
 	cat $(BUILD_LOG)
 

@@ -23,11 +23,14 @@
 # Build script of this subproject.
 # @remark This scipt file is supported to run in the PASE environment.
 #
+# @todo Reconsider the process of auto upload/compilation
+#
 
 USAGE="usage: ./build.sh build-log [params-to-make ...]"
 
 # change current directory
-DIR=$(dirname $0)
+# @todo Sep 19, 2011 $DIR is changed temporaryly from `dirname $0` to `dirname $1`
+DIR=$(dirname $1)
 cd $DIR
 
 BUILD_LOG=$1

@@ -48,7 +48,7 @@ public class hmc {
 
         AS400 i = new AS400();
         ProgramParameter[] plist_matmatr = new ProgramParameter[] {
-            new ProgramParameter(inst_inx),  // input, ubbin(2) instruction index
+            new ProgramParameter(inst_inx),  // input, ubin(2) instruction index
             new ProgramParameter(tmpl, 1052),  // inout, instruction template
             new ProgramParameter(opt) // input, instruction template of RSLVSP
         };

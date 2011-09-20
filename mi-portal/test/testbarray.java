@@ -24,6 +24,8 @@
  * Test of class ByteArray.
  */
 
+import u.ByteArray;
+
 public class testbarray {
 
     public static void main(String[] args) {

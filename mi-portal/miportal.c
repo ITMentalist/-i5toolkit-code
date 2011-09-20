@@ -156,8 +156,21 @@ void REALCHSS (void*, void*, void*, void*);
 void SETHSSMK (void*, void*, void*, void*);
 // 37 (hex 0025). FREHSSMK
 void FREHSSMK (void*, void*, void*, void*);
+// 38 (hex 0026). MATHSAT_H
+void MATHSAT_H (void*, void*, void*, void*);
+// 39 (hex 0027). MATCTX1
+void MATCTX1 (void*, void*, void*, void*);
+// 40 (hex 0028). MATCTX1_H
+void MATCTX1_H (void*, void*, void*, void*);
+// 41 (hex 0029). MATCTX2
+void MATCTX2 (void*, void*, void*, void*);
+// 42 (hex 003A). MATCTX2_H
+void MATCTX2_H (void*, void*, void*, void*);
+// 43 (hex 003B). QTEMPPTR
+void QTEMPPTR (void*, void*, void*, void*);
 
 typedef void proc_t(void*, void*, void*, void*);
+
 static proc_t* proc_arr[512] = {
   NULL,
   &MATMATR, &GENUUID, &RSLVSP2, &ENQ, &DEQWAIT, &RELEASE_PTR,
@@ -165,7 +178,8 @@ static proc_t* proc_arr[512] = {
   &NEW_PTR, &CMPPTRT, &SETSPFP, &RSLVSP4, &RSLVSP2_H, &RSLVSP4_H,
   &CALLPGMV, &CRTS, &CRTS_H, &DESS, &MATS, &MATS_H, &MODS1, &MODS2,
   &DUP_PTR, &CPYBWP, &ALCHSS, &CRTHS, &DESHS, &FREHSS, &REALCHSS,
-  &SETHSSMK, &FREHSSMK,
+  &SETHSSMK, &FREHSSMK, &MATHSAT_H, &MATCTX1, &MATCTX1_H,
+  &MATCTX2, &MATCTX2_H, &QTEMPPTR,
   NULL
 };
 
@@ -1159,20 +1173,100 @@ void FREHSSMK (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * ##. MATCTX1
+ * 39 (hex 0027). MATHSAT_H
+ *
+ * Materialize AGP-based heap space attributes. Operand 1 is assumed to be allocated in server side storage
+ *
+ * @param [in] Pointer ID of the space pointer addressing the materialization template
+ * @param [in] Heap ID template
+ * @param [in] Char(1). Attribute selection
+ */
+void MATHSAT_H (void *op1, void *op2, void *op3, void *op4) {
+
+  void *tmpl_spp = NULL;
+
+  if((read_ptr(op1, &tmpl_spp)) != 0)
+    return;
+
+  _MATHSAT(tmpl_spp, op2, op3);
+}
+
+/**
+ * 39 (hex 0027) . MATCTX1
  *
  * @param [out] receiver
  * @param [in]  materialization options
  */
 void MATCTX1 (void *op1, void *op2, void *op3, void *op4) {
+
+  QusMaterializeContext(op1, NULL, op2);
 }
 
 /**
- * ##. MATCTX2
+ * 40 (hex 0028). MATCTX1_H
+ *
+ * @param [in] Pointer ID of the SPP adddressing the materialization template
+ * @param [in] materialization options
+ */
+void MATCTX1_H (void *op1, void *op2, void *op3, void *op4) {
+
+  void *tmpl_spp = NULL;
+  if((read_ptr(op1, &tmpl_spp)) != 0)
+    return;
+
+  QusMaterializeContext(tmpl_spp, NULL, op2);
+}
+
+/**
+ * 41 (hex 0029). MATCTX2
  *
  * @param [out] receiver
- * @param [in]  address of SYP to target context object
+ * @param [in]  Pointer ID of SYP to target context object
  * @param [in]  materialization options
  */
 void MATCTX2 (void *op1, void *op2, void *op3, void *op4) {
+
+  void *ctx = NULL;
+
+  if((read_ptr(op2, &ctx)) != 0)
+    return;
+
+  QusMaterializeContext(op1, ctx, op3);
+}
+
+/**
+ * 42 (hex 003A). MATCTX2_H
+ *
+ * @param [in] Pointer ID of the SPP adddressing the materialization template
+ * @param [in] Pointer ID of SYP to target context object
+ * @param [in] materialization options
+ */
+void MATCTX2_H (void *op1, void *op2, void *op3, void *op4) {
+
+  void *tmpl_spp = NULL;
+  void *ctx = NULL;
+
+  if((read_ptr(op1, &tmpl_spp)) != 0 || \
+     (read_ptr(op2, &ctx)) != 0)
+    return;
+
+  QusMaterializeContext(tmpl_spp, ctx, op3);
+}
+
+/**
+ * 43 (hex 003B). QTEMPPTR
+ *
+ * @param [in/out] Pointer ID of the returned system pointer to QTEMP (of course, of the current MI process).
+ */
+void QTEMPPTR (void *op1, void *op2, void *op3, void *op4) {
+
+  void *qtemp = NULL;
+
+  qtemp = _QTEMPPTR();
+
+  // update or store qtemp
+  if(read_ptr(op1, &qtemp) == 0)
+    update_ptr(op1, &qtemp);
+  else
+    store_ptr(op1, &qtemp);
 }
