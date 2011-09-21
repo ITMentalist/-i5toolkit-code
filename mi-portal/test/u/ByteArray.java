@@ -392,7 +392,7 @@ public class ByteArray {
 
         ByteArray b = new ByteArray(4);
         b.writeInt32(val);
-        b.position(0);
+        b.pos_ = 0;
 
         return b.toBytes();
     }

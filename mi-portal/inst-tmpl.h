@@ -195,4 +195,21 @@ void _MATHSAT (void *,  // materialization template
 # pragma linkage (_QTEMPPTR, builtin)
 void *_QTEMPPTR (void);
 
+// Pointer-based mutex management instructions
+# pragma linkage (_CRTMTX, builtin)
+int _CRTMTX (void *,  // mutex
+             void *   // creation options
+             );
+# pragma linkage (_DESMTX, builtin)
+int _DESMTX (void *,  // mutex
+             void *   // destroy options
+             );
+# pragma linkage (_LOCKMTX, builtin)
+int _LOCKMTX (void *, // mutex
+              void *  // lock request template
+              );
+# pragma linkage (_UNLKMTX, builtin)
+int _UNLKMTX (void *  // mutex
+              );
+
 # endif // !defined __miportal_inst_tmpl_h__

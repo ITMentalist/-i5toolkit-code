@@ -164,6 +164,14 @@ void MATCTX1_H (void*, void*, void*, void*);
 void MATCTX2_H (void*, void*, void*, void*);
 // 41 (hex 0029). QTEMPPTR
 void QTEMPPTR (void*, void*, void*, void*);
+// 42 (hex 003A). CRTMTX
+void CRTMTX (void*, void*, void*, void*);
+// 43 (hex 003B). DESMTX
+void DESMTX (void*, void*, void*, void*);
+// 44 (hex 003C). LOCKMTX
+void LOCKMTX (void*, void*, void*, void*);
+// 45 (hex 003D). UNLKMTX
+void UNLKMTX (void*, void*, void*, void*);
 
 typedef void proc_t(void*, void*, void*, void*);
 
@@ -176,6 +184,7 @@ static proc_t* proc_arr[512] = {
   &DUP_PTR, &CPYBWP, &ALCHSS, &CRTHS, &DESHS, &FREHSS, &REALCHSS,
   &SETHSSMK, &FREHSSMK, &MATHSAT_H, &MATCTX1_H, &MATCTX2_H,
   &QTEMPPTR,
+  &CRTMTX, &DESMTX, &LOCKMTX, &UNLKMTX,
   NULL
 };
 
@@ -347,6 +356,8 @@ int release_ptr(char *ptr_id, void** pptr)  {
 
   inx_oplist_t oplist;
   ptr_inx_entry_t ent;
+  char search_key[16] = {0};
+
   if(_ptr_inx == NULL)
     return -1;
 
@@ -355,7 +366,8 @@ int release_ptr(char *ptr_id, void** pptr)  {
   memcpy(oplist.rule, "\x00\x01", 2);  // EQ
   oplist.occ_cnt = 1;
   oplist.arg_len = 16; // length of search-key
-  _RMVINXEN1(&ent, &_ptr_inx, &oplist, ptr_id);
+  memcpy(search_key, ptr_id, 16);
+  _RMVINXEN1(&ent, &_ptr_inx, &oplist, search_key);
 
   if(oplist.rtn_cnt > 0) {
     *pptr = ent.ptr;
@@ -1106,7 +1118,7 @@ void FREHSS (void *op1, void *op2, void *op3, void *op4) {
  *
  * Reallocate heap storage on an activation-group (AGP) based heap space.
  *
- * @param [in/out] Pointer ID to a space pointer addressing the reallocated heap storage.
+ * @param [in] Pointer ID to a space pointer addressing the reallocated heap storage.
  * @param [in] Bin(4). Number of bytes to allocated. The possible
  * maximum single allocation size for a Single Level Store (SLS) heap
  * is 16M - 1 Page.
@@ -1237,4 +1249,90 @@ void QTEMPPTR (void *op1, void *op2, void *op3, void *op4) {
     update_ptr(op1, &qtemp);
   else
     store_ptr(op1, &qtemp);
+}
+
+/**
+ * 42 (hex 003A). CRTMTX
+ *
+ * Create pointer-based mutex
+ *
+ * @param [in] Pointer ID of an existing space pointer. The created
+ *              mutex (a synchronization pointer) will be put into
+ *              storage addressed by this space pointer.
+ * @param [in] 32-byte mutex creation template
+ * @param [out] Bin(4) result code
+ */
+void CRTMTX (void *op1, void *op2, void *op3, void *op4) {
+
+  void *mtx_spp = NULL;
+  int *rtn = (int*)op3;
+
+  if(read_ptr(op1, &mtx_spp) != 0)
+    return;
+
+  *rtn = _CRTMTX(mtx_spp, op2);
+}
+
+/**
+ * 43 (hex 003B). DESMTX
+ *
+ * Destroy pointer-based mutex
+ *
+ * @param [in] Pointer ID of an space pointer addressing the control
+ *             area (a synchronization pointer) of a pointer-based
+ *             mutex
+ * @param [in] Bin(4) mutex destroy template, must be zero
+ * @param [out] Bin(4) result code
+ */
+void DESMTX (void *op1, void *op2, void *op3, void *op4) {
+
+  void *mtx_spp = NULL;
+  int *rtn = (int*)op3;
+
+  if(read_ptr(op1, &mtx_spp) != 0)
+    return;
+
+  *rtn = _DESMTX(mtx_spp, op2);
+}
+
+/**
+ * 44 (hex 003C). LOCKMTX
+ *
+ * Lock pointer-based mutex
+ *
+ * @param [in] Pointer ID of an space pointer addressing the control
+ *             area (a synchronization pointer) of a pointer-based
+ *             mutex
+ * @param [in] 16-byte lock request template
+ * @param [out] Bin(4) result code
+ */
+void LOCKMTX (void *op1, void *op2, void *op3, void *op4) {
+
+  void *mtx_spp = NULL;
+  int *rtn = (int*)op3;
+
+  if((read_ptr(op1, &mtx_spp)) != 0)
+    return;
+
+  *rtn = _LOCKMTX(mtx_spp, op2);
+}
+
+/**
+ * 45 (hex 003D). UNLKMTX
+ *
+ * Unlock pointer-based mutex
+ *
+ * @param [in] Pointer ID of an space pointer addressing the control
+ *        area (a synchronization pointer) of a pointer-based mutex
+ * @param [out] Bin(4) result code
+ */
+void UNLKMTX (void *op1, void *op2, void *op3, void *op4) {
+
+  void *mtx_spp = NULL;
+  int *rtn = (int*)op3;
+
+  if((read_ptr(op1, &mtx_spp)) != 0)
+    return;
+
+  *rtn = _UNLKMTX(mtx_spp);
 }
