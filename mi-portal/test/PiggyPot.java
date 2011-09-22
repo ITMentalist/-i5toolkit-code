@@ -28,6 +28,7 @@
  */
 
 import com.ibm.as400.access.*;
+import u.*;
 
 public class PiggyPot {
 

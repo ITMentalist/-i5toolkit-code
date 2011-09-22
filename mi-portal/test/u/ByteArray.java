@@ -345,10 +345,11 @@ public class ByteArray {
     public synchronized void fromBytes(byte[] data, int bytes, int off)
         throws IOException
     {
-        // clear ...
-        clear();
-
+        len_ = 0;
         arr_ = new byte[bytes];
+        cur_size_ = bytes;
+
+        pos_ = 0;
         writeBytes(data, bytes, off);
         pos_ = 0;
     }

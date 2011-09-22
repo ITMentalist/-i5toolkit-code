@@ -141,6 +141,38 @@ typedef _Packed struct tag_matptr_spp {
   char ext_off[8]; // extended offset into space
 } matptr_spp_t;
 
+# pragma linkage (_ENQ, builtin)
+void _ENQ(void**,  // address of SYP to target queue object
+          void*,   // message prefix
+          void*);  // message text
+
+# pragma linkage (_DEQWAIT, builtin)
+void _DEQWAIT(void *prefix, void *msg, void **q);
+
+# pragma linkage(_CMPPTRT, builtin)
+int _CMPPTRT(char /* pointer type */, void * /* pointer */);
+
+# pragma linkage(_SETSPFP, builtin)
+void *_SETSPFP(void * /* source pointer */);
+
+# pragma linkage(_CALLPGMV, builtin)
+void _CALLPGMV(void **, // addr of syp
+               void **, // arg-ptr-arry[]
+               unsigned // number of arguments
+               );
+
+# pragma linkage(_DESS, builtin)
+void _DESS(void**);
+
+# pragma linkage(_MATS, builtin)
+void _MATS(void*, void**);
+
+# pragma linkage(_MODS1, builtin)
+void _MODS1(void**, void*);
+
+# pragma linkage(_MODS2, builtin)
+void _MODS2(void**, void*);
+
 # pragma linkage(_MATPTR, builtin)
 void _MATPTR(void *, /* materialization template */
              void ** /* address of pointer */

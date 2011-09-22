@@ -31,35 +31,30 @@
  */
 
 import com.ibm.as400.access.*;
+import u.*;
 
 public class enq {
 
     public static void main(String[] args) {
 
-        AS400 i = new AS400();
-
-        byte[] inst_inx = {  // ubin(2) instruction index, hex 0003 for _RSLVSP2
-            0x00, 0x03
-        };
-        byte[] rslvsp_tmpl = new byte[34]; // instruction template of RSLVSP
-        rslvsp_tmpl[0] = 0x0A; // object type code of USRQ, hex 0A
-        rslvsp_tmpl[1] = 0x02; // object subtype code of USRQ, hex 02
-        AS400Text objname = new AS400Text(30, i);
-        objname.toBytes("Q007                          ", rslvsp_tmpl, 2); // char(30) object name
-        rslvsp_tmpl[32] = rslvsp_tmpl[33] = 0x00; // required authority
-
-        ProgramParameter[] plist_rslvsp2 = new ProgramParameter[] {
-            new ProgramParameter(inst_inx),  // input, ubbin(2) instruction index
-            new ProgramParameter(16),         // output, ptr-ID of the resolved system pointer
-            new ProgramParameter(rslvsp_tmpl) // input, instruction template of RSLVSP
-        };
-
-        ProgramCall portal = new ProgramCall(i,
-                                             "/qsys.lib/i5toolkit.lib/miportal.pgm",
-                                             plist_rslvsp2
-                                             );
-
         try {
+            byte[] inst_inx = {  // ubin(2) instruction index, hex 0003 for _RSLVSP2
+                0x00, 0x03
+            };
+            RSLVSPTmpl rtmpl = new RSLVSPTmpl(0x0A02, // object type/subtype code of USRQ, hex 0A02
+                                              "Q007",
+                                              0x0000);// required authority
+            ProgramParameter[] plist_rslvsp2 = new ProgramParameter[] {
+                new ProgramParameter(inst_inx),  // input, ubbin(2) instruction index
+                new ProgramParameter(16),         // output, ptr-ID of the resolved system pointer
+                new ProgramParameter(rtmpl.toBytes()) // input, instruction template of RSLVSP
+            };
+
+            AS400 i = new AS400();
+            ProgramCall portal = new ProgramCall(i,
+                                                 "/qsys.lib/i5toolkit.lib/miportal.pgm",
+                                                 plist_rslvsp2
+                                                 );
 
             AS400Bin4 bin4 = new AS400Bin4();
             AS400Text ch32 = new AS400Text(32, i);

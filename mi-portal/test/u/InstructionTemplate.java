@@ -12,11 +12,11 @@ public interface InstructionTemplate {
     /**
      *
      */
-    byte[] toBytes();
+    byte[] toBytes() throws java.io.IOException;
 
     /**
      * Construct an instruction template from raw data returned from
      * an IBM i server
      */
-    void fromBytes(byte[] hostData);
+    void fromBytes(byte[] hostData) throws java.io.IOException;
 }

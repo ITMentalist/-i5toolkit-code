@@ -32,6 +32,9 @@
 
 # include "inst-tmpl.h"
 
+# include <qusec.h>
+# include <qmhsndpm.h>
+
 /// @todo prototypes of MI instructions should be moved to other source unit
 # pragma linkage (_SETSPPFP, builtin)
 void* _SETSPPFP(void* /* source pointer */);
@@ -60,6 +63,13 @@ typedef _Packed struct tag_ptr_inx_entry {
 typedef _Packed struct tag_ptr {
   void *ptr;
 } ptr_t;
+
+/**
+ * Check number of operands to pass to a specific MI instruction
+ */
+void check_operand_num(int inx,     // MI Portal defined instruction index
+                       int operands // number of operands passed by caller
+                       );
 
 /**
  * Stores a pointer into PTR-INX or update an existing inx entry
@@ -164,18 +174,18 @@ void MATCTX1_H (void*, void*, void*, void*);
 void MATCTX2_H (void*, void*, void*, void*);
 // 41 (hex 0029). QTEMPPTR
 void QTEMPPTR (void*, void*, void*, void*);
-// 42 (hex 003A). CRTMTX
+// 42 (hex 002A). CRTMTX
 void CRTMTX (void*, void*, void*, void*);
-// 43 (hex 003B). DESMTX
+// 43 (hex 002B). DESMTX
 void DESMTX (void*, void*, void*, void*);
-// 44 (hex 003C). LOCKMTX
+// 44 (hex 002C). LOCKMTX
 void LOCKMTX (void*, void*, void*, void*);
-// 45 (hex 003D). UNLKMTX
+// 45 (hex 002D). UNLKMTX
 void UNLKMTX (void*, void*, void*, void*);
 
 typedef void proc_t(void*, void*, void*, void*);
 
-static proc_t* proc_arr[512] = {
+static proc_t* _proc_arr[512] = {
   NULL,
   &MATMATR, &GENUUID, &RSLVSP2, &ENQ, &DEQWAIT, &RELEASE_PTR,
   &SETSPPFP, &READ_FROM_ADDR, &WRITE_TO_ADDR, &ADDSPP, &SUBSPP, &SUBSPPFO, &STSPPO, &SETSPPO,
@@ -186,6 +196,19 @@ static proc_t* proc_arr[512] = {
   &QTEMPPTR,
   &CRTMTX, &DESMTX, &LOCKMTX, &UNLKMTX,
   NULL
+};
+
+static unsigned short _arg_num_arr[512] = {
+  0xFFFF,
+  2, 1, 2, 3, 3, 1,
+  2, 3, 3, 3, 3, 3, 2, 2,
+  1, 3, 2, 3, 2, 3,
+  3, 2, 2, 1, 2, 2, 2, 2,
+  2, 3, 3, 2, 1, 1, 2,
+  2, 1, 3, 2, 3,
+  1,
+  3, 3, 3, 2,
+  0xFFFF
 };
 
 /**
@@ -206,9 +229,46 @@ int main(int argc, char *argv[]) {
     return -1;
 
   inx = *(unsigned short*)argv[1];
-  proc_arr[inx](argv[2], argv[3], argv[4], argv[5]);
+
+  // check number of operands for target MI instruction
+  check_operand_num(inx, argc - 2);
+
+  _proc_arr[inx](argv[2], argv[3], argv[4], argv[5]);
 
   return 0;
+}
+
+/// @todo check for upper limit of instruction index
+void check_operand_num(int inx,     // MI Portal defined instruction index
+                       int operands // number of operands passed by caller
+                       ) {
+
+  Qus_EC_t ec;
+  char msg[196] = {0};
+  char key[4] = {0};
+
+  if(operands == _arg_num_arr[inx])
+    return;
+
+  sprintf(msg,
+          "Number of operands passed to MI Portal "     \
+          "not valid. Instruction index is hex %04X. "  \
+          "Number of operands passed is %d, which is "   \
+          "expected to be %d.",
+          inx, operands, _arg_num_arr[inx]
+          );
+  memset(&ec, 0, sizeof(Qus_EC_t));
+  ec.Bytes_Provided = sizeof(Qus_EC_t);
+  QMHSNDPM("CPF9898",
+           "QCPFMSG   QSYS      ",
+           msg,
+           strlen(msg),
+           "*ESCAPE   ",
+           "*PGMBDY   ",
+           1,
+           key,
+           &ec
+           );
 }
 
 /// index = 1. _MATMATR1
@@ -413,10 +473,15 @@ int read_ptr(char *ptr_id, void **pptr)  {
   return 0;
 }
 
-/// index = 4. _ENQ
-# pragma linkage (_ENQ, builtin)
-void _ENQ(void*, void*, void*);
-
+/**
+ * index = 4. ENQ
+ *
+ * @param [in] Pointer ID of system pointer to queue object
+ * @param [in] Message prefix
+ * @param [in] Message text
+ *
+ * @todo ENQ_H (for using of enqueue messages containing pointers)
+ */
 void ENQ (void *op1, void *op2, void *op3, void *op4) {
 
   void* syp;
@@ -430,9 +495,6 @@ void ENQ (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /// index = 5, _DEQWAIT
-# pragma linkage (_DEQWAIT, builtin)
-void _DEQWAIT(void *prefix, void *msg, void *q);
-
 void DEQWAIT (void *op1, void *op2, void *op3, void *op4) {
 
   void* syp;
@@ -445,7 +507,11 @@ void DEQWAIT (void *op1, void *op2, void *op3, void *op4) {
   _DEQWAIT(op1, op2, &syp);
 }
 
-/// index = 6, RELEASE_PTR
+/**
+ * index = 6, RELEASE_PTR
+ *
+ * @param [in] Pointer ID of the ptr to release
+ */
 void RELEASE_PTR (void *op1, void *op2, void *op3, void *op4) {
 
   void *ptr = NULL; // released MI pointer
@@ -653,9 +719,6 @@ void NEW_PTR (void *op1, void *op2, void *op3, void *op4) {
  * @param [in] op2, char(1) pointer type
  * @param [out] op2, bin(4) comparison result. 1 if pointer is of specified type, otherwise 0.
  */
-# pragma linkage(_CMPPTRT, builtin)
-int _CMPPTRT(char /* pointer type */, void * /* pointer */);
-
 void CMPPTRT (void *op1, void *op2, void *op3, void *op4) {
 
   void *ptr = NULL;
@@ -674,9 +737,6 @@ void CMPPTRT (void *op1, void *op2, void *op3, void *op4) {
  * @param [in] op1, source pointer
  * @param [in] op2, pointer-ID of the returned pointer
  */
-# pragma linkage(_SETSPFP, builtin)
-void *_SETSPFP(void * /* source pointer */);
-
 void SETSPFP (void *op1, void *op2, void *op3, void *op4) {
 
   void *syp = NULL;
@@ -697,6 +757,9 @@ void SETSPFP (void *op1, void *op2, void *op3, void *op4) {
 /**
  * 18. RSLVSP4
  *
+ * @param [out] Pointer ID of resolved system pointer
+ * @param [in]  Resolve option
+ * @param [in]  Pointer ID of context object
  */
 # pragma linkage (_RSLVSP4, builtin)
 void _RSLVSP4(void**, // address of returned SYP to target MI object
@@ -793,12 +856,6 @@ void RSLVSP4_H (void *op1, void *op2, void *op3, void *op4) {
  *
  * @excample test/cmdline.clp
  */
-# pragma linkage(_CALLPGMV, builtin)
-void _CALLPGMV(void **, // addr of syp
-               void **, // arg-ptr-arry[]
-               unsigned // number of arguments
-               );
-
 void CALLPGMV (void *op1, void *op2, void *op3, void *op4) {
 
   void *pgm = NULL;
@@ -883,9 +940,6 @@ void CRTS_H (void *op1, void *op2, void *op3, void *op4) {
  *
  * @param [in] Pointer ID of the SYP to the space object to destroy
  */
-# pragma linkage(_DESS, builtin)
-void _DESS(void**);
-
 void DESS (void *op1, void *op2, void *op3, void *op4) {
 
   void *syp = NULL;
@@ -902,9 +956,6 @@ void DESS (void *op1, void *op2, void *op3, void *op4) {
  * @param [inout] 116-byte materialization template
  * @param [in] Pointer ID of the SYP to the space object
  */
-# pragma linkage(_MATS, builtin)
-void _MATS(void*, void**);
-
 void MATS (void *op1, void *op2, void *op3, void *op4) {
 
   void *syp = NULL;
@@ -947,9 +998,6 @@ void MATS_H (void *op1, void *op2, void *op3, void *op4) {
  * @param [in] Pointer ID of the SYP to target space object
  * @param [in] Bin(4) space size
  */
-# pragma linkage(_MODS1, builtin)
-void _MODS1(void**, void*);
-
 void MODS1 (void *op1, void *op2, void *op3, void *op4) {
 
   void *syp = NULL;
@@ -967,9 +1015,6 @@ void MODS1 (void *op1, void *op2, void *op3, void *op4) {
  * @param [in] Pointer ID of the SYP to target space object
  * @param [in] 28-byte modification template
  */
-# pragma linkage(_MODS2, builtin)
-void _MODS2(void**, void*);
-
 void MODS2 (void *op1, void *op2, void *op3, void *op4) {
 
   void *syp = NULL;
@@ -1252,7 +1297,7 @@ void QTEMPPTR (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 42 (hex 003A). CRTMTX
+ * 42 (hex 002A). CRTMTX
  *
  * Create pointer-based mutex
  *
@@ -1274,7 +1319,7 @@ void CRTMTX (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 43 (hex 003B). DESMTX
+ * 43 (hex 002B). DESMTX
  *
  * Destroy pointer-based mutex
  *
@@ -1296,7 +1341,7 @@ void DESMTX (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 44 (hex 003C). LOCKMTX
+ * 44 (hex 002C). LOCKMTX
  *
  * Lock pointer-based mutex
  *
@@ -1318,7 +1363,7 @@ void LOCKMTX (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 45 (hex 003D). UNLKMTX
+ * 45 (hex 002D). UNLKMTX
  *
  * Unlock pointer-based mutex
  *
