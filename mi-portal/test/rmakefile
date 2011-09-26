@@ -29,13 +29,14 @@ HOST_DIR=/home/ljl/chqs/mi-portal/test
 BUILD_SCRIPT=$(HOST_DIR)/../../build.sh
 RULESF=../../rules.mk
 BUILD_LOG=.build-log
+TOOLDIR=../../tool
 SRC_LIST=$(shell find . -type f -newer last-upload -a \( -name '*.mi' -o -name '*.emi' -o -name '*.rpgle' -o -name '*.c' -o -name '*.h' -o -name '*.java' \) ) makefile
 
 all: upload_src compile
 	@echo "end of compilation -- i5toolkit/mi-portal/test"
 
 upload_src:
-	./rput.sh $(HOST) $(HOST_DIR) $(SRC_LIST)
+	$(TOOLDIR)/rput.sh $(HOST) $(HOST_DIR) $(SRC_LIST)
 #	lftp -e "cd $(HOST_DIR); mput $(SRC_LIST); by" $(HOST)
 	touch last-upload
 

@@ -28,19 +28,21 @@
 HOST=g525
 BIN_LIB=lsbin
 HOST_DIR=/home/ljl/chqs/rpg
-BUILD_SCRIPT=$(HOST_DIR)/build.sh
+BUILD_SCRIPT=$(HOST_DIR)/../build.sh
+RULESF=../rules.mk
 BUILD_LOG=.build-log
-SRC_LIST=$(shell find . -type f -newer last-upload -a \( -name '*.rpgle' -o -name '*.emi' -o -name '*.java' -o -name '*.uim' -o -name '*.c' -o -name '*.pf' -o -name '*.clp' -o -name '*.rpg' -o -name '*.rpgleinc' \) ) ../../rules.mk makefile ../../build.sh
+TOOLDIR=../../tool
+SRC_LIST=$(shell find . -type f -newer last-upload -a \( -name '*.rpgle' -o -name '*.emi' -o -name '*.java' -o -name '*.uim' -o -name '*.c' -o -name '*.pf' -o -name '*.clp' -o -name '*.rpg' -o -name '*.rpgleinc' \) ) makefile
 
 all: upload_src compile
 	@echo "end of compilation -- i5toolkit/rpg"
 
 upload_src:
-	lftp -e "cd $(HOST_DIR); mput $(SRC_LIST); by" $(HOST)
+	$(TOOLDIR)/rput.sh $(HOST) $(HOST_DIR) $(SRC_LIST)
 	touch last-upload
 
 compile:
-	rexec $(HOST) "CALL QP2SHELL PARM('$(BUILD_SCRIPT)' '$(HOST_DIR)/$(BUILD_LOG)' '-e BIN_LIB=$(BIN_LIB) -e MAKERULES=rules.mk')"
+	rexec $(HOST) "CALL QP2SHELL PARM('$(BUILD_SCRIPT)' '$(HOST_DIR)/$(BUILD_LOG)' '-e BIN_LIB=$(BIN_LIB) -e MAKERULES=$(RULESF)')"
 	lftp -e "cd $(HOST_DIR); get $(BUILD_LOG); by" $(HOST)
 	cat $(BUILD_LOG)
 

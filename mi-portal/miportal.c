@@ -35,16 +35,6 @@
 # include <qusec.h>
 # include <qmhsndpm.h>
 
-/// @todo prototypes of MI instructions should be moved to other source unit
-# pragma linkage (_SETSPPFP, builtin)
-void* _SETSPPFP(void* /* source pointer */);
-
-# pragma linkage (_CPYBWP, builtin)
-void _CPYBWP(void*, void*, int);
-
-# pragma linkage (_CRTS, builtin)
-void _CRTS(void*, void*);
-
 /**
  * Creates PTR-INX (index object to store pointers requested by clients
  * @post static SYP _ptr_inx
@@ -889,10 +879,10 @@ void CALLPGMV (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 22. CRTS
+ * 22 (hex 0016). CRTS
  *
  * @param [out] Pointere ID of the system pointer to the created space object
- * @param [in] Creationg template
+ * @param [in] Creation template
  */
 void CRTS (void *op1, void *op2, void *op3, void *op4) {
 
@@ -913,7 +903,7 @@ void CRTS (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 23. CRTS_H
+ * 23 (hex 0017). CRTS_H
  *
  * @param [out] Pointere ID of the system pointer to the created space object
  * @param [in] Pointer ID of the space pointer addressing the creationg template (allocated at server side)
@@ -936,7 +926,7 @@ void CRTS_H (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 24. DESS
+ * 24 (hex 0018). DESS
  *
  * @param [in] Pointer ID of the SYP to the space object to destroy
  */
@@ -951,7 +941,7 @@ void DESS (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 25. MATS
+ * 25 (hex 0019). MATS
  *
  * @param [inout] 116-byte materialization template
  * @param [in] Pointer ID of the SYP to the space object
@@ -972,7 +962,7 @@ void MATS (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 26. MATS_H
+ * 26 (hex 001A). MATS_H
  *
  * @param [in] Pointer ID of the SPP to the materialization template (allocated at server side)
  * @param [in] Pointer ID of the SYP to the space object
@@ -992,7 +982,7 @@ void MATS_H (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 27. MODS1
+ * 27 (hex 001B). MODS1
  * Modify space size
  *
  * @param [in] Pointer ID of the SYP to target space object
@@ -1009,7 +999,7 @@ void MODS1 (void *op1, void *op2, void *op3, void *op4) {
 }
 
 /**
- * 28. MODS2
+ * 28 (hex 001C). MODS2
  * Modify space attributes (including space size)
  *
  * @param [in] Pointer ID of the SYP to target space object
@@ -1091,7 +1081,7 @@ void CPYBWP (void *op1, void *op2, void *op3, void *op4) {
  * allocated heap storage.
  * @param [in] Bin(4). Heap ID. A value of zero represent the default
  * heap space of an AGP.
- * @param [in] Bin(4). Number of bytes to allocated. The possible
+ * @param [in] Bin(4). Number of bytes to allocate. The possible
  * maximum single allocation size for a Single Level Store (SLS) heap
  * is 16M - 1 Page.
  */
@@ -1164,7 +1154,7 @@ void FREHSS (void *op1, void *op2, void *op3, void *op4) {
  * Reallocate heap storage on an activation-group (AGP) based heap space.
  *
  * @param [in] Pointer ID to a space pointer addressing the reallocated heap storage.
- * @param [in] Bin(4). Number of bytes to allocated. The possible
+ * @param [in] Bin(4). Number of bytes to allocate. The possible
  * maximum single allocation size for a Single Level Store (SLS) heap
  * is 16M - 1 Page.
  */
@@ -1248,7 +1238,7 @@ void MATHSAT_H (void *op1, void *op2, void *op3, void *op4) {
  * 39 (hex 0027). MATCTX1_H
  *
  * @param [in] Pointer ID of the SPP adddressing the materialization template
- * @param [in] materialization options
+ * @param [in] Materialization options
  */
 void MATCTX1_H (void *op1, void *op2, void *op3, void *op4) {
 
@@ -1264,7 +1254,7 @@ void MATCTX1_H (void *op1, void *op2, void *op3, void *op4) {
  *
  * @param [in] Pointer ID of the SPP adddressing the materialization template
  * @param [in] Pointer ID of SYP to target context object
- * @param [in] materialization options
+ * @param [in] Materialization options
  */
 void MATCTX2_H (void *op1, void *op2, void *op3, void *op4) {
 
