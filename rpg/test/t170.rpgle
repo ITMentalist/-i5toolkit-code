@@ -29,6 +29,7 @@
       /copy mih-ptr
       /copy mih-pgmexec
       /copy mih-ctx
+      /copy mih-undoc
 
      d i_main          pr                  extpgm('T170')
      d   p_ctx_name                  10a
@@ -41,16 +42,21 @@
      d ctx                             *
      d ctx2                            *   overlay(ctx)
      d                                     procptr
+     d ctx3                          16a   overlay(ctx)
 
      d i_main          pi
      d   p_ctx_name                  10a
 
       /free
-           // resolve system pointer to target context object
-           rtmpl = *allx'00';
-           rtmpl.obj_type = x'0401';
-           rtmpl.obj_name = p_ctx_name;
-           rslvsp2 (ctx : rtmpl);
+           if p_ctx_name = 'QTEMP';
+               ctx = qtempptr();
+           else;
+               // resolve system pointer to target context object
+               rtmpl = *allx'00';
+               rtmpl.obj_type = x'0401';
+               rtmpl.obj_name = p_ctx_name;
+               rslvsp2 (ctx : rtmpl);
+           endif;
 
            //
            mopt = *allx'00';

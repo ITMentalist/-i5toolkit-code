@@ -1,0 +1,67 @@
+     /**
+      * This file is part of i5/OS Programmer's Toolkit.
+      *
+      * Copyright (C) 2010, 2011  Junlei Li.
+      *
+      * i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+      * it under the terms of the GNU General Public License as published by
+      * the Free Software Foundation, either version 3 of the License, or
+      * (at your option) any later version.
+      *
+      * i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+      * but WITHOUT ANY WARRANTY; without even the implied warranty of
+      * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      * GNU General Public License for more details.
+      *
+      * You should have received a copy of the GNU General Public License
+      * along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+      */
+
+     /**
+      * @file mih-dmps.rpgleinc
+      *
+      * Dump space management instructions.
+      */
+
+      /if not defined(i5toolkit_rpg_mih_dmps)
+      /define i5toolkit_rpg_mih_dmps
+
+     /**
+      * Materialization template of the Materialize Dump Space
+      * (MATDMPS) instruction, of length 128 bytes.
+      */
+     d matdmps_t       ds                  qualified
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     obj_type                   2a
+     d     obj_name                  30a
+      * Creation options
+     d     crt_opt                    4a
+      * Recovery options
+     d     rcvy_opt                   4a
+     d     spc_size                  10i 0
+     d     init_spc_val...
+     d                                1a
+     d     perf_cls                   4a
+     d                                7a
+     d     ctx                         *
+     d                               16a
+      * Dump space size
+     d     size                      10i 0
+      * Data size
+     d     data_size                 10i 0
+      * Data size limit
+     d     data_size_limit...
+     d                               10i 0
+     d                               20a
+
+     /**
+      * @BIF _MATDMPS (Materialize Dump Space (MATDMPS))
+      *
+      * @example test/t171.rpgle
+      */
+     d matdmps         pr                  extproc('_MATDMPS')
+     d     receiver                        likeds(matdmps_t)
+     d     dmps                        *
+
+      /endif
