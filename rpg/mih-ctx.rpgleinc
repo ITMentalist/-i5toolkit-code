@@ -47,7 +47,11 @@
       */
      d context_entry_full_t...
      d                 ds                  qualified
-     d     objid                           likeds(sym_object_id_t)
+     d     type                       2a
+     d     type_code                  1a   overlay(type)
+     d     subtype_code...
+     d                                1a   overlay(type:2)
+     d     name                      30a
      d     ptr                         *
 
      /**
@@ -103,7 +107,7 @@
      d     acc_grp                     *                                        access group
       * selected context entries
 
-     /* Receiver template for MATCTX with extension. */
+     /* Receiver template for MATCTX with extension. 112 bytes. */
      d matctx_receiver_ext_t...
      d                 ds                  qualified
      d     base                            likeds(matctx_receiver_t)
