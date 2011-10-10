@@ -21,9 +21,9 @@
       * @file t171.rpgle
       *
       * Test of _MATDMPS. This program materialize attributes of a
-      * dump space object (with MI object type code hex 13) being
-      * composited in a given save file. The only parameter accepted
-      * by t171.rpgle is a CHAR(10) object name of an FILE object with
+      * dump space object (with MI object type code hex 13) which is a
+      * component of a given save file. The only parameter accepted by
+      * t171.rpgle is a CHAR(10) object name of an FILE object with
       * attribute SAVF.
       *
       * @remark Since both a *FILE object and a dump space object are
