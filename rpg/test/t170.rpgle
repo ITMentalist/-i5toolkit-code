@@ -34,6 +34,10 @@
      d i_main          pr                  extpgm('T170')
      d   p_ctx_name                  10a
 
+     d cvt_saa_ts      pr
+     d   saa_ts                      26a
+     d   sys_clock                    8a
+
      d rtmpl           ds                  likeds(rslvsp_tmpl)
      d mopt            ds                  likeds(matctx_option_t)
      d mtmpl           ds                  likeds(
@@ -43,6 +47,7 @@
      d ctx2                            *   overlay(ctx)
      d                                     procptr
      d ctx3                          16a   overlay(ctx)
+     d cur_ts          s             26a
 
      d i_main          pi
      d   p_ctx_name                  10a
@@ -67,11 +72,13 @@
            QusMaterializeContext(mtmpl : ctx2 : mopt);
            // check mtmpl.ext_attr
            if tstbts(%addr(mtmpl.ext_attr) : 0) > 0;
-               dsply 'Has Changed List' '' p_ctx_name;
-           endif;
+               dsply 'Has COL' '' p_ctx_name;
+               cvt_saa_ts(cur_ts : mtmpl.cur_time);
+               dsply 'COL time' '' cur_ts;
 
-           if tstbts(%addr(mtmpl.ext_attr) : 1) = 0;
-               dsply 'Changed List Usable' '' p_ctx_name;
+               if tstbts(%addr(mtmpl.ext_attr) : 1) = 0;
+                   dsply 'COL Usable' '' p_ctx_name;
+               endif;
            endif;
 
            if tstbts(%addr(mtmpl.ext_attr) : 2) > 0;
@@ -84,3 +91,32 @@
 
            *inlr = *on;
       /end-free
+
+     p cvt_saa_ts      b
+
+      /copy mih-dattim
+     d tmpl            ds                  likeds(convert_dattim_t)
+
+     d cvt_saa_ts      pi
+     d   saa_ts                      26a
+     d   sys_clock                    8a
+
+      /free
+           tmpl = *allx'00';
+           tmpl.size = %size(tmpl);
+           tmpl.op1_ddat_num = 1;
+           tmpl.op2_ddat_num = 2;
+           tmpl.op1_len      = 26; // SAA timestamp
+           tmpl.op2_len      = 8;  // system clock
+           tmpl.ddat_list_len= 256;
+           tmpl.ddats        = 2;
+           tmpl.off_ddat1    = 24;
+           tmpl.off_ddat2    = 140;
+           tmpl.ddat1        = saa_timestamp_ddat_value;
+           tmpl.ddat2        = system_clock_ddat_value;
+
+           cvtts( saa_ts
+                : sys_clock
+                : tmpl );
+      /end-free
+     p                 e
