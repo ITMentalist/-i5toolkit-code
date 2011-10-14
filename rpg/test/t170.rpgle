@@ -73,7 +73,7 @@
            // check mtmpl.ext_attr
            if tstbts(%addr(mtmpl.ext_attr) : 0) > 0;
                dsply 'Has COL' '' p_ctx_name;
-               cvt_saa_ts(cur_ts : mtmpl.cur_time);
+               cvt_saa_ts(cur_ts : mtmpl.col_time);
                dsply 'COL time' '' cur_ts;
 
                if tstbts(%addr(mtmpl.ext_attr) : 1) = 0;

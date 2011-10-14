@@ -113,7 +113,9 @@
      d     base                            likeds(matctx_receiver_t)
      d     ext_attr                   1a
      d                                7a
-     d     cur_time                   8a
+      * Timestamp currently associated with the changed object list (COL)
+      * of the context object
+     d     col_time                   8a
       * selected context entries
 
       * @deprecated Calculate the size of receiver template by BIF %size()

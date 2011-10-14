@@ -91,7 +91,7 @@
            setbts(%addr(mopt.sel_flag) : 7); // retrieve symbolic ID
            setbts(%addr(mopt.sel_criteria) : 3);
              // select by modification date/time
-           mopt.timestamp = mtmpl.cur_time;
+           mopt.timestamp = mtmpl.col_time;
              // use current COL time as search criteria
            mtmpl = *allx'00';
            mtmpl.base.bytes_in = %size(matctx_receiver_t);
