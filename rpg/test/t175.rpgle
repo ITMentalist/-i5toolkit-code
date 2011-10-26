@@ -21,6 +21,12 @@
       * @file t175.rpgle
       *
       * Extracting mapping table from MI object types to external object types.
+      * Output of T175 might like the following:
+      *   0E09 ALRTBL
+      *   1B01 AUTL
+      *   1E05 BLKSF 
+      *   1937 BNDDIR
+      *   ...
       */
 
      h dftactgrp(*no)
@@ -29,8 +35,11 @@
 
       /copy mih-comp
       /copy mih-ptr
+      /copy mih-undoc
 
-     d rtmpl           ds                  likeds(rslvsp_tmpl)
+     d sept_spp        s               *
+     d sept            s               *   dim(7000)
+     d                                     based(sept_spp)
      d                 ds
      d qlicnv                          *
      d qlicnv_ptr                      *   procptr overlay(qlicnv)
@@ -51,11 +60,9 @@
      d ex_type         s              7a
 
       /free
-           // resolve system pointer to *PGM QSYS/QLICNV
-           rtmpl = *allx'00';
-           rtmpl.obj_type = x'0201';
-           rtmpl.obj_name = 'QLICNV';
-           rslvsp2 (qlicnv : rtmpl);
+           // locate QLICNV's system pointer in SEPT
+           sept_spp = sysept();
+           qlicnv = sept(x'4A');
 
            // retrieve space pointer addressing the associated
            // space of QLICNV

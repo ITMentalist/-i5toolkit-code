@@ -26,7 +26,7 @@
 
 BIN_LIB=
 
-TARGETS=exobjtype miobjtype rlink
+TARGETS=exobjtype miobjtype rlink lsobjtypes
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir qsh."
