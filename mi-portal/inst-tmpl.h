@@ -253,4 +253,13 @@ int _LOCKMTX (void *, // mutex
 int _UNLKMTX (void *  // mutex
               );
 
+# pragma linkage(_CRTINX, builtin)
+void _CRTINX(void** /* address of SYP to inx */,
+             void* /* creation template */);
+
+# define _CRTINX_TMPL_LEN 176  // length of the longer tmpl
+
+# pragma linkage(_DESINX, builtin)
+void _DESINX(void**); /* address of SYP to inx */
+
 # endif // !defined __miportal_inst_tmpl_h__

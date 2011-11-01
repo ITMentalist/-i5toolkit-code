@@ -173,6 +173,12 @@ void LOCKMTX (void*, void*, void*, void*);
 // 45 (hex 002D). UNLKMTX
 void UNLKMTX (void*, void*, void*, void*);
 
+// Independent Indext Managment
+// 46 (hex 002E). CRTINX
+void CRTINX (void*, void*, void*, void*);
+// 47 (hex 002F). DESINX
+void DESINX (void*, void*, void*, void*);
+
 typedef void proc_t(void*, void*, void*, void*);
 
 static proc_t* _proc_arr[512] = {
@@ -185,6 +191,7 @@ static proc_t* _proc_arr[512] = {
   &SETHSSMK, &FREHSSMK, &MATHSAT_H, &MATCTX1_H, &MATCTX2_H,
   &QTEMPPTR,
   &CRTMTX, &DESMTX, &LOCKMTX, &UNLKMTX,
+  &CRTINX, &DESINX,
   NULL
 };
 
@@ -197,7 +204,8 @@ static unsigned short _arg_num_arr[512] = {
   2, 3, 3, 2, 1, 1, 2,
   2, 1, 3, 2, 3,
   1,
-  3, 3, 3, 2,
+  3, 3, 3, 2,  // CRTMTX, ...
+  2, 1,        // CRTINX, DESINX, ...
   0xFFFF
 };
 
@@ -299,10 +307,6 @@ void RSLVSP2 (void *op1, void *op2, void *op3, void *op4) {
   else
     store_ptr(op1, &syp);
 }
-
-# pragma linkage(_CRTINX, builtin)
-void _CRTINX(void* /* address of SYP to inx */,
-             void* /* creation template */);
 
 /**
  * Create an index object with the following attributes
@@ -1370,4 +1374,45 @@ void UNLKMTX (void *op1, void *op2, void *op3, void *op4) {
     return;
 
   *rtn = _UNLKMTX(mtx_spp);
+}
+
+/**
+ * 46 (hex 002E). CRTINX
+ *
+ * Create Independent Index
+ *
+ * @param [out] Pointere ID of the system pointer to the created index object
+ * @param [in] Creation template
+ */
+void CRTINX (void *op1, void *op2, void *op3, void *op4) {
+
+  void *syp = NULL;
+  void *old_syp = NULL;
+  void *crt_tmpl = NULL;
+
+  // @attention the creation template for CRTINX should be aligned to 16-byte boundaries
+  crt_tmpl = malloc(_CRTINX_TMPL_LEN);
+  memcpy(crt_tmpl, op2, _CRTINX_TMPL_LEN);
+  _CRTINX(&syp, crt_tmpl);
+  free(crt_tmpl);
+
+  if(read_ptr(op1, &old_syp) == 0)
+    update_ptr(op1, &syp);
+  else
+    store_ptr(op1, &syp);
+}
+
+/**
+ * 47 (hex 002F). DESINX
+ *
+ * @param [in] Pointer ID of the SYP to the index object to destroy
+ */
+void DESINX (void *op1, void *op2, void *op3, void *op4) {
+
+  void *syp = NULL;
+
+  if(read_ptr(op1, &syp) != 0)
+    return;
+
+  _DESINX(&syp);
 }

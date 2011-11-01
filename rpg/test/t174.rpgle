@@ -174,7 +174,7 @@
                // convert returned MI object type code to external objec type name
                obj_type = *blanks;
                qlicvttp(cvt_type : obj_type : oid.type : ec);
-               // in case QLICVTTP failed on some MI obj-type, e.g. hex 0D50 (*MEM)
+               // in case QLICVTTP failed on internal obj types, e.g. hex 0D50 (*MEM)
                if ec.bytes_out > 0;
                    cvthc(mi_type : oid.type : 4);
                    obj_type = 'MI Type Code: hex ' + mi_type;

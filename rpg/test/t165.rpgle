@@ -41,7 +41,7 @@
 
       /free
            propb(%addr(tmpl) : x'00' : %size(tmpl));
-           tmpl.bytes_in    = %size(tmpl);
+           tmpl.bytes_in    = %size(tmpl);  // @remark NOT necessary!
            tmpl.obj_type    = x'1934'; // *USRSPC
            tmpl.obj_name    = 'Romio';
            tmpl.crt_opt     = x'C0020000';

@@ -54,7 +54,7 @@
            tmpl_len = %size(crtinx_tmpl_t);
            tmpl_ptr = %alloc(tmpl_len);
            propb(tmpl_ptr : x'00' : tmpl_len);
-           tmpl.bytes_in = tmpl_len;
+           tmpl.bytes_in = tmpl_len;  // @remark NOT necessary!
            tmpl.obj_type = x'0E01';     // object type/subtype
            tmpl.obj_name = 'NIHAO';     // index name
            tmpl.crt_opt  = x'00000000'; // creation option

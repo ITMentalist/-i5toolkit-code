@@ -40,7 +40,7 @@
 
       /free
            propb(%addr(tmpl) : x'00' : %size(tmpl));
-           tmpl.bytes_in    = %size(tmpl);
+           tmpl.bytes_in    = %size(tmpl);  // @remark NOT necessary!
            tmpl.obj_type    = x'19EF'; // 
            tmpl.obj_name    = 'Juliet';
            tmpl.crt_opt     = x'40020000';
