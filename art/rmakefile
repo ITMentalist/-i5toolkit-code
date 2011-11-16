@@ -28,17 +28,20 @@ BIN_LIB=lsbin
 HOST_DIR=/home/ljl/chqs/art
 BUILD_SCRIPT=$(HOST_DIR)/build.sh
 BUILD_LOG=.build-log
+RULESF=../rules.mk
+TOOLDIR=../tool
 SRC_LIST=$(shell find . -type f -cnewer last-upload -a \( -name '*.rpgle' -o -name '*.emi' -o -name '*.java' -o -name '*.uim' -o -name '*.c' -o -name '*.pf' -o -name '*.rpg' \) ) ../rules.mk makefile ../build.sh
 
 all: upload_src compile
 	@echo "end of compilation -- i5toolkit/art"
 
 upload_src:
-	lftp -e "cd $(HOST_DIR); mput $(SRC_LIST); by" $(HOST)
+	$(TOOLDIR)/rput.sh $(HOST) $(HOST_DIR) $(SRC_LIST)
+#	lftp -e "cd $(HOST_DIR); mput $(SRC_LIST); by" $(HOST)
 	touch last-upload
 
 compile:
-	rexec $(HOST) "CALL QP2SHELL PARM('$(BUILD_SCRIPT)' '$(HOST_DIR)/$(BUILD_LOG)' '-e BIN_LIB=$(BIN_LIB) -e MAKERULES=rules.mk')"
+	rexec $(HOST) "CALL QP2SHELL PARM('$(BUILD_SCRIPT)' '$(HOST_DIR)/$(BUILD_LOG)' '-e BIN_LIB=$(BIN_LIB) -e MAKERULES=$(RULESF)')"
 	lftp -e "cd $(HOST_DIR); get $(BUILD_LOG); by" $(HOST)
 	cat $(BUILD_LOG)
 
