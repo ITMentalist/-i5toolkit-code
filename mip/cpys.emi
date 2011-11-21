@@ -5,7 +5,6 @@
  * space object. For example, to copy the contents of QSYS/QPROCT to a
  * *USRSPC, you can first create a *USRSPC that is equal to or larger
  * than QPROCT and than call CPYS like the following
- *
  * @code
  * CALL PGM(CPYS) PARM('SPC102' X'1934' 'QPROCT' X'19DA')
  * @endcode
@@ -68,7 +67,7 @@ dcl ol al-memcpy(
         src,
         bytes-2-copy
 ) arg                           ;
-        calli @memcpy, al-memcpy, @memcpy-ptr ;
+        calli @memcpy, al-memcpy, @memcpy-ptr ; /* @remark test of @MEMCPY ... */
 
 brk "END"                       ;
         rtx *                   ;
