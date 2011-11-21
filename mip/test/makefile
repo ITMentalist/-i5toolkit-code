@@ -21,8 +21,7 @@
 # @remark CL command CRTFRMSTMF must be compiled manually for the first time, since it is used to compile itself.
 #
 
-BIN_LIB=i5toolkit
-MAKERULES=../rules.mk
+MAKERULES=../../rules.mk
 TARGETS=tmip01 tmip02 tmip03 tmip04
 
 all: $(TARGETS)

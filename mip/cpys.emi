@@ -1,0 +1,81 @@
+/**
+ * @file cpys.emi
+ *
+ * Copy entirely the contents of the source space object to the target
+ * space object. For example, to copy the contents of QSYS/QPROCT to a
+ * *USRSPC, you can first create a *USRSPC that is equal to or larger
+ * than QPROCT and than call CPYS like the following
+ *
+ * @code
+ * CALL PGM(CPYS) PARM('SPC102' X'1934' 'QPROCT' X'19DA')
+ * @endcode
+ */
+
+dcl spcptr .tgt-name parm       ;
+dcl spcptr .tgt-type parm       ;
+dcl spcptr .src-name parm       ;
+dcl spcptr .src-type parm       ;
+dcl ol pl-main(
+        .tgt-name,
+        .tgt-type,
+        .src-name,
+        .src-type
+) parm ext min(4)               ;
+entry *(pl-main) ext            ;
+
+dcl dd tgt-name char(30) bas(.tgt-name) ;
+dcl dd tgt-type char(02) bas(.tgt-type) ;
+dcl dd src-name char(30) bas(.src-name) ;
+dcl dd src-type char(02) bas(.src-type) ;
+
+dcl dd rt char(34) auto         ;
+dcl sysptr tgt-spc auto         ;
+dcl sysptr src-spc auto         ;
+
+brk "RSLVSP"                      ;
+        cpybrep rt, x'00'         ;
+        cpybla rt(1:2), tgt-type  ;
+        cpybla rt(3:30), tgt-name ;
+        rslvsp tgt-spc, rt, *, *  ;
+        cpybla rt(1:2), src-type  ;
+        cpybla rt(3:30), src-name ;
+        rslvsp src-spc, rt, *, *  ;
+
+dcl spcptr mat auto             ;
+        modasa mat, crts-t-len  ;
+        cpybrep mat->crts?all, x'00' ;
+        cpybla mat->crts?bytes-in, crts-t-len ;
+brk "MATS"                      ;
+        mats mat, src-spc       ;
+dcl dd bytes-2-copy bin(4) auto ;
+        cpynv bytes-2-copy,
+          mat->crts?size        ;
+        mats mat, tgt-spc       ;
+        cmpnv(b) bytes-2-copy,
+          mat->crts?size / nhi(copy-spc) ;
+        cpyblap msg,
+          "Size of target space is smaller than the size of source space.",
+          " "                   ;
+        %sendmsg(msg, msg-len)  ;
+copy-spc:       
+brk "COPY"                      ;
+dcl spcptr tgt auto             ;
+dcl spcptr src auto             ;
+        setsppfp tgt, tgt-spc   ;
+        setsppfp src, src-spc   ;
+dcl ol al-memcpy(
+        tgt,
+        src,
+        bytes-2-copy
+) arg                           ;
+        calli @memcpy, al-memcpy, @memcpy-ptr ;
+
+brk "END"                       ;
+        rtx *                   ;
+
+dcl dd msg char(64) auto        ;
+dcl con msg-len bin(2) init(64) ;
+
+/include spc.emi                ;
+/include memcpy.emi             ;
+pend                            ;

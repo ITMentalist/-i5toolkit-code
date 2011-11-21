@@ -20,24 +20,27 @@
      d   ldatype                      1a
      d   ldalen                       5u 0
      d   dta                       1024a
-     d func            s               *   procptr
+     d funcptr         s               *   procptr
      d i               s             10i 0
 
-     d addi            pr            10i 0 extproc(func)
-     d   addent1                     10i 0 value
-     d   addent2                     10i 0 value
+     d func            pr            10i 0 extproc(funcptr)
+     d   parm1                       10i 0 value
+     d   parm2                       10i 0 value
 
       /free
+           // Locate the LDA pointer in the PCO
            @pco = pcoptr2();
+           // Address the associated space of the LDA
            ldaspcptr = setsppfp(pco.ldaproc);
-           // check ldaspc.start
+           // Offset to the actual data area portion
            ldaaraptr = ldaspcptr + ldaspc.start;
 
-           // call procedure via the PROCPTR stored in the LDA
-           cpybwp( %addr(func)
+           // Load PROCPTR funcptr from the LDA
+           cpybwp( %addr(funcptr)
                  : %addr(ldaara.dta)
                  : 16 );
-           i = addi(955 : 6);
+           // Call target procedure via PROCPTR funcptr
+           i = func(955 : 6);
            dsply 'i' '' i;
 
            *inlr = *on;

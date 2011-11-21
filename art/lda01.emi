@@ -25,12 +25,12 @@
  */
 
 dcl spc pco baspco                      ;
-        dcl sysptr qtemp dir pos(h"41") ;
-        dcl sysptr lda dir pos(h"231")  ;
+        dcl sysptr qtemp dir pos(h"41") ; /* [1] */
+        dcl sysptr lda dir pos(h"231")  ; /* [2] */
 
 dcl spcptr lda-spc-ptr auto           ;
 dcl spc lda-spc bas(lda-spc-ptr)      ;
-        dcl dd lda-start bin(2) dir pos(9) ;
+        dcl dd lda-start bin(2) dir pos(9) ; /* [3] */
 
 dcl spcptr lda-area-ptr auto              ;
 dcl spc lda-area bas(lda-area-ptr)        ;
@@ -38,11 +38,21 @@ dcl spc lda-area bas(lda-area-ptr)        ;
         dcl dd lda-dta-len bin(2) dir     ;
         dcl dd lda-dta-buf char(1024) dir ;
 
-        setsppfp lda-spc-ptr, lda ;
+        setsppfp lda-spc-ptr, lda ; /* [4] */
         addspp lda-area-ptr,
-          lda-spc-ptr, lda-start  ;
-brk "1"                           ;
-        cpybwp lda-dta-buf, qtemp ;
+          lda-spc-ptr, lda-start  ; /* [5] */
+        cpybwp lda-dta-buf, qtemp ; /* [6] */
 brk "END"                         ;
         rtx *                     ;
 pend                              ;
+
+/*
+Code notes:
+[1] A system pointer to the QTEMP library of the current job can be found in the PCO at offset hex 40.
+[2] A system pointer to the LDA of the current job can be found in the PCO at offset hex 0230.
+[3] A BIN(2) field in the associated space of the LDA indicates the start position of the actual data area portion of the LDA in its associated space.
+[4] Invoking the SETSPPFP instruction on the system pointer to the LDA returns a space pointer addressing the start of the LDA's associated space.
+[5] Offset to the actual data area portion within the associated space of the LDA.
+[6] Copy the system pointer to the QTEMP library to the content of the LDA.
+
+*/

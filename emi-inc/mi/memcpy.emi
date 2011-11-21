@@ -68,7 +68,7 @@ dcl dd @memcpy?dp-attr char(7) auto init(
         setdp @memcpy?source-dp, @memcpy?source->@memcpy?ch1 ;
 
         /* attribute of DTAPTRs */
-        cpynv @memcpy?dp-len, @memcpy?length ;
+        cpynv @memcpy?dp-len, @memcpy?bytes-to-copy ;
         setdpat @memcpy?target-dp, @memcpy?dp-attr ;
         setdpat @memcpy?source-dp, @memcpy?dp-attr ;
 

@@ -18,12 +18,13 @@
 #
 # makefile of subproject OPM MI Disassembler (mip)
 #
-# @remark CL command CRTFRMSTMF must be compiled manually for the first time, since it is used to compile itself.
-#
 
 BIN_LIB=i5toolkit
 MAKERULES=../rules.mk
-TARGETS=geninstinx t_mip01
+TARGETS=geninstinx prtproct cpys
+
+MIFLAGS=incdir('.' '/usr/local/include/emi/mi')
+RPGLEFLAGS=dbgview(*all) replace(*yes) incdir('/usr/local/include/rpg' '.')
 
 all: $(TARGETS)
 	@echo "end of compilation: sub-dir mip."
