@@ -203,7 +203,7 @@
       * Length of symbol
      d     len                        1a
       * symbol
-     d     name                      16a
+     d     name                      48a
 
      /**
       * Symbol table format segment

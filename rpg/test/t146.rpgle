@@ -32,7 +32,10 @@
 
      fQSYSPRT   o    f  132        disk
 
-      /copy mih52
+      /copy mih-comp
+      /copy mih-ptr
+      /copy mih-pgmexec
+      /copy mih-pgmmng
 
      d i_t146          pr                  extpgm('T146')
      d    pgm_name                   10a
@@ -46,7 +49,7 @@
      d msg             s             80a
      d lst_fld1        s             10a
      d lst_fld2        s             10a
-     d lst_fld3        s             16a
+     d lst_fld3        s             50a
      d lst_fld4        s             10a
      d i               s             10i 0
      d buckets         s             10i 0 based(sym_start)
@@ -108,7 +111,8 @@
            len = rcv.symtbl_len;
 
            pos = sym_start + 4;
-           msg = 'ODT Ref   MI Inst   Symbol Name     Symbol Org';
+           msg = 'ODT Ref   MI Inst   Symbol Name'
+            + '                                       Symbol Org';
            except OBVREC;
            for i = 1 to buckets;
                if bucket = -1;

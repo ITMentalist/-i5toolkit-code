@@ -1,0 +1,20 @@
+/ifndef __emi_heap_h__          ;
+/define __emi_heap_h__          ;
+
+/**
+ * Creation template of CRTHS
+ */
+dcl dd crths-t char(96) auto    ;
+        dcl dd * char(8) def(crths-t) pos(1) ;
+        dcl dd crths?max-alloc bin(4) unsgnd def(crths-t) pos(9) ; /* Maximum single allocation */
+        dcl dd crths?min-bdry-algn bin(4) unsgnd def(crths-t) pos(13) ; /* Minimum boundary alignment */
+        dcl dd crths?crt-size bin(4) unsgnd def(crths-t) pos(17) ;
+        dcl dd crths?ext-size bin(4) unsgnd def(crths-t) pos(21) ;
+        dcl dd crths?domain bin(2) unsgnd def(crths-t) pos(25)   ;
+        dcl dd crths?heap-attr char(1) def(crths-t) pos(27)       ;
+        dcl dd crths?alloc-val char(1) def(crths-t) pos(28)      ;
+        dcl dd crths?free-val char(1) def(crths-t) pos(29)       ;
+        dcl dd * char(67) def(crths-t) pos(30)                   ;
+dcl spcptr crths-ptr auto init(crths-t)                          ;
+
+/endif                          ;

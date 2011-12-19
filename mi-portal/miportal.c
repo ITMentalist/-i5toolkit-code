@@ -343,12 +343,6 @@ void create_ptr_inx() {
   memcpy(_dbg, &_ptr_inx, 16);
 }
 
-# pragma linkage(_INSINXEN, builtin)
-void _INSINXEN(void**, // address of SYP to target index object
-               void*,  // arguemnt
-               void*   // option list
-               );
-
 int store_ptr(char *ptr_id, void **pptr) {
 
   genuuid_t id;
@@ -399,13 +393,6 @@ int update_ptr(char *ptr_id, void **pptr) {
   return 0;
 }
 
-# pragma linkage(_RMVINXEN1, builtin)
-void _RMVINXEN1(void *,  // returned index entry
-                void **, // address of SYP to target index object
-                void *,  // option list
-                void *   // search key
-                );
-
 int release_ptr(char *ptr_id, void** pptr)  {
 
   inx_oplist_t oplist;
@@ -433,13 +420,6 @@ int release_ptr(char *ptr_id, void** pptr)  {
 
   return 0;
 }
-
-# pragma linkage(_FNDINXEN, builtin)
-void _FNDINXEN(void *,  // returned index entry
-               void **, // address of SYP to target index object
-               void *,  // option list
-               void *   // search key
-               );
 
 int read_ptr(char *ptr_id, void **pptr)  {
 

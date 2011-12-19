@@ -30,7 +30,7 @@ BIN_LIB=lsbin
 HOST_DIR=/home/ljl/chqs/mi
 BUILD_SCRIPT=$(HOST_DIR)/build.sh
 BUILD_LOG=.build-log
-SRC_LIST=$(shell find . -type f -cnewer last-upload -a \( -name '*.emi' \) ) ../../rules.mk makefile ../../build.sh
+SRC_LIST=$(shell find . -type f -newer last-upload -a \(-name '*.c' -o -name '*.h' -o -name '*.emi' \) ) ../../rules.mk makefile ../../build.sh
 
 all: upload_src compile
 	@echo "end of compilation -- i5toolkit/emi-inc/test"

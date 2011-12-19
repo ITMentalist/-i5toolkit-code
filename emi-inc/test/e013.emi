@@ -1,0 +1,33 @@
+/**
+ * @file e013.emi
+ *
+ * Test of the CRTHS, DES instructions
+ */
+
+        cpybrep crths-t, x"00"  ;
+        cpynv crths?max-alloc, h"FFF000" ; /* 16M - 1 page */
+        cpynv crths?min-bdry-algn, h"200" ; /* set "Minimum boundary alignment" to 512 bytes */
+        cpynv crths?domain, h"0001"             ; /* User domain */
+        cpybla crths?heap-attr, x"0C"           ; /* Allow heap space mark, initialize allocations, ... */
+        cpybla crths?alloc-val, x"40"           ; /* Initialize allocations with hex 40 */
+        cpybla crths?free-val, x"60"            ; /* `-' */
+
+brk "CRT"                       ;
+dcl dd heap-id bin(4) auto      ;
+        crths heap-id, crths-ptr ;
+dcl spcptr some-ptr auto         ;
+dcl dd greetings char(64) bas(some-ptr) ;
+        alchss some-ptr, heap-id, h"100" ; /* Check 512-bytes content addressed by some-ptr */
+brk "1"                                  ;
+        cpybla greetings, "Ni hao :-)"   ;
+brk "2"                                  ;
+        frehss some-ptr                  ;
+brk "3"                                  ;
+        deshs heap-id                    ;
+brk "END"                                ;
+        rtx *                   ;
+
+dcl dd dbg char(1024) bas(*)    ;
+
+/include heap.emi               ;
+pend                            ;

@@ -262,4 +262,24 @@ void _CRTINX(void** /* address of SYP to inx */,
 # pragma linkage(_DESINX, builtin)
 void _DESINX(void**); /* address of SYP to inx */
 
+# pragma linkage(_INSINXEN, builtin)
+void _INSINXEN(void**, // address of SYP to target index object
+               void*,  // arguemnt
+               void*   // option list
+               );
+
+# pragma linkage(_FNDINXEN, builtin)
+void _FNDINXEN(void *,  // returned index entry
+               void **, // address of SYP to target index object
+               void *,  // option list
+               void *   // search key
+               );
+
+# pragma linkage(_RMVINXEN1, builtin)
+void _RMVINXEN1(void *,  // returned index entry
+                void **, // address of SYP to target index object
+                void *,  // option list
+                void *   // search key
+                );
+
 # endif // !defined __miportal_inst_tmpl_h__
