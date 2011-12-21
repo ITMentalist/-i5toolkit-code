@@ -22,7 +22,7 @@
 BIN_LIB=lsbin
 
 MIFLAGS=incdir('/usr/local/include/emi/mi' '/usr/local/include/emi/api')
-CLEFLAGS=incdir('/usr/local/include/emi/c') dbgview(*all)
+CLEFLAGS=incdir('/usr/local/include/emi/c') dbgview(*all) output(*print)
 TARGETS=e001 e002 e003 e004 e005 e006 e007 e008 e009 e010 \
 	e011 e012 e013 e014
 

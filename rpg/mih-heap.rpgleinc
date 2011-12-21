@@ -39,6 +39,13 @@
      d frehss          pr                  extproc('_FREHSS')
      d     ptr                         *   value
 
+     /**
+      * @bif _REALCHSS (Reallocate Activation Group-Based Heap Space Storage (REALCHSS))
+      */
+     d realchss        pr              *   extproc('_REALCHSS')
+     d     ptr                         *   value
+     d     size                      10i 0 value
+
      /* CRTHS template */
      d crths_tmpl_len  c                   96
      d crths_tmpl_t    ds            96    qualified
