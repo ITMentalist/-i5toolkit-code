@@ -656,5 +656,46 @@
      d     range                           likeds(fndrinvn_search_range_t)
      d     criterion                       likeds(fndrinvn_criterion_t)
 
+     /**
+      * Layout of the Language/Utility Work Area (LUWA)
+      */
+     d luwa_t          ds                  qualified
+      *
+      * Language/Utility return code.
+      * 0 = Normal.
+      * 1 = Last Record 'LR' set on.
+      * 2 = Error, no halt indicator set.
+      * 3 = Error, halt indicator set on.
+      *
+     d     lu_rc                      5u 0
+     d                                2a
+      * Invocation mark count of program with which files are associated.
+     d     inv_mark                  10i 0
+      * ILE Product Return Code
+     d     product_rc                10i 0
+      * ILE User Return Code
+     d     user_rc                   10i 0
+      *
+      * Controlled cancel indicator
+      * '0' = Cancel not pending.
+      * '1' = Cancel pending.
+      *
+     d     ctrl_cancel...
+     d                                1a
+      * Job date in format CYYMMDD. C is '0' for 1900's and '1' for 2000's
+     d     job_date                   7a
+      * 8 job switches (aka. UPSI's)
+     d     job_sws                    8a
+
+     /**
+      * @BIF _LUWRKA
+      *
+      * Returns the space pointer addressing the QWCLUWA space object (19EF)
+      * in the WCB.
+      *
+      * @example test/t177.rpgle
+      */
+     d luwrka          pr              *   extproc('_LUWRKA')
+
      /* end -- program execution */
       /endif
