@@ -24,7 +24,8 @@ MAKERULES=rules.mk
 RPGLEFLAGS=dbgview(*all) replace(*yes) incdir('/usr/local/include/rpg')
 RPGFLAGS=genopt(*list *atr)
 
-TARGETS=who u whoami jobi jobi2 testuept filluept hello vldeml lda01 lda02 lda03 lda04 callcnt
+TARGETS=who u whoami jobi jobi2 testuept filluept hello vldeml lda01 lda02 lda03 lda04 callcnt \
+	upsi
 
 all: $(TARGETS)
 	@echo "compilation done -- art"
