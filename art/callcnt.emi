@@ -26,9 +26,9 @@
 
 dcl spc pco baspco              ;
         dcl ptr *(12) dir       ;
-        dcl spcptr luwa-spp dir ; /* At offset hex C0 */
+        dcl spcptr luwa-spp dir ; /* Space pointer to LUWA at offset hex C0 */
 
-dcl spc luwa bas(luwa-spp)      ; /* Language/Utility Work Area */
+dcl spc luwa bas(luwa-spp)      ; /* The Language/Utility Work Area */
         dcl dd luwa-data char(32) dir ; /* 32-byte content of the LUWA */
         dcl dd call-counter bin(4) dir ;
 
@@ -38,9 +38,9 @@ dcl dd msg char(32) auto        ;
         ) ;
         dcl dd znd-cnt znd(6, 0) def(msg) pos(27) ;
 
-        addn(s) call-counter, 1     ;
+        addn(s) call-counter, 1     ; /* Increment call-counter by 1 */
         cpynv znd-cnt, call-counter ;
-        %sendmsg(msg, 32)           ;
+        %sendmsg(msg, 32)           ; /* Display call-counter */
 brk "SEEYOU"                        ;
         rtx *                       ;
 pend                                ;

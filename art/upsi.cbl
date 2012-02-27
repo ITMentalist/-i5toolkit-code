@@ -23,15 +23,17 @@
      /**
       * @file upsi.cbl
       *
-      * Example of using job switches (UPSI switches) in COBOL.
+      * Example of accessing job switches (UPSI switches) in COBOL.
       */
        ID DIVISION.
-       PROGRAM-ID. YY636.
+       PROGRAM-ID. UPSI.
 
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
-       SPECIAL-NAMES. SYSTEM-CONSOLE IS SYSTM
+       SPECIAL-NAMES.
+      * Define a mnemonic-name to be associated with job switch 1
             UPSI-0 IS UUU
+      * Define switch-status conditions for job switch 1
                 ON STATUS IS UUU-ON
                 OFF STATUS IS UUU-OFF.
        DATA DIVISION.
@@ -40,6 +42,7 @@
 
        PROCEDURE DIVISION.
        MAIN-PROGRAM.
+      * Reverse the current setting of job switch 1
            IF UUU-ON THEN
                DISPLAY "JOB SWITCH 1 IS ON"
                SET UUU TO OFF
