@@ -1,0 +1,31 @@
+/**
+ * @file lock03.emi
+ *
+ * Saves the PCS pointer of the current process in 1934 space PCSPTR
+ */
+dcl sysptr space auto init (
+        "PCSPTR", type(spc, h'34')
+)                               ;
+
+dcl dd tmpl char(32) auto bdry(16)  ;
+dcl spcptr tmpl-ptr auto init(tmpl) ;
+dcl spc * bas(tmpl-ptr)             ;
+        dcl dd bin bin(4) dir       ;
+        dcl dd bout bin(4) dir      ;
+        dcl dd * char(8) dir        ;
+        dcl sysptr pcs-ptr dir      ;
+
+        cpynv bin, 32               ;
+        matpratr tmpl-ptr, *, x'25' ;
+brk '1'                             ;
+
+dcl spcptr space-ptr auto       ;
+dcl spc pcs-t bas(space-ptr)    ;
+        dcl sysptr tgt-ptr dir  ;
+
+        rslvsp space, *, *, *   ;
+        setsppfp space-ptr, space ;
+        cpybwp tgt-ptr, pcs-ptr   ;
+brk 'END'                       ;
+        rtx *                   ;
+pend                            ;

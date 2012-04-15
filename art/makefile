@@ -20,12 +20,14 @@
 #
 
 BIN_LIB=
-MAKERULES=rules.mk
+MAKERULES=../rules.mk
 RPGLEFLAGS=dbgview(*all) replace(*yes) incdir('/usr/local/include/rpg')
 RPGFLAGS=genopt(*list *atr)
+MIFLAGS=incdir('.' '/usr/local/include/emi/mi')
 
 TARGETS=who u whoami jobi jobi2 testuept filluept hello vldeml lda01 lda02 lda03 lda04 callcnt \
-	upsi
+	upsi \
+	lock01 lock02 lock03
 
 all: $(TARGETS)
 	@echo "compilation done -- art"

@@ -1,0 +1,37 @@
+/**
+ * @file lock.emi
+ *
+ * EMI header fro lock management instructions.
+ */
+
+/ifndef __emi_inx_h__           ;
+/define __emi_inx_h__           ;
+
+/**
+ * Lock request template of the Lock Object (LOCK) instruction
+ * @todo Naming
+ */
+dcl spc lock-t bas(*)           ;
+        dcl dd lock?num-rqst bin(4) dir ;
+        dcl dd lock?state-offset bin(2) dir ;
+        dcl dd lock?timeout char(8) dir     ;
+
+/**
+ * Simple lock request template for instruction LOCK
+ *
+ * @remark hex 03F5 is the op-code of MI instruction LOCK.
+ */
+dcl dd #03f5-simple char(64) auto ;
+        dcl dd * bin(4) def(#03f5-simple) pos(1) init(1) ;
+        dcl dd * bin(2) def(#03f5-simple) pos(5) init(32) ;
+        dcl dd #03f5?timeout char(8) def(#03f5-simple) pos(7) init(x"00000D693A400000") ; /* default to 1 hour */
+        /*
+        Lock request type is synchronous with wait timeout value 1 hour
+        */
+        dcl dd #03f5?opt char(2) def(#03f5-simple) pos(15) init(x"4000") ;
+        dcl sysptr #03f5?obj def(#03f5-simple) pos(17) ;
+        dcl dd #03f5?lock-state char(1) def(#03f5-simple) pos(33) init(x"09") ; /* default to LENR */
+dcl spcptr #03f5-simple-ptr auto init(#03f5-simple) ;
+
+/endif                          ;
+/* eof -- lock.mi */
