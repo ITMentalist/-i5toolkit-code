@@ -30,12 +30,9 @@ import com.ibm.as400.access.*;
 
 public class vrm {
 
-    /// ctor
     public static void main(String[] args) {
 
-        byte[] inst_inx = {  // ubin(2) instruction index, hex 0001 for MATMATR
-            0x00, 0x01
-        };
+        byte[] inst_inx = {0x00, 0x01}; // ubin(2) instruction index, hex 0001 for MATMATR
         byte[] matmatr_tmpl = {
             0x00, 0x00, 0x00, 0x10, // bin(4) bytes-in = 16
             0x00, 0x00, 0x00, 0x00, // bin(4) bytes-out
@@ -57,7 +54,6 @@ public class vrm {
                                              "/qsys.lib/i5toolkit.lib/miportal.pgm",
                                              plist
                                              );
-
         try {
             if(!portal.run())
                 System.out.println("Oops!");

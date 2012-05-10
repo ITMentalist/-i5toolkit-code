@@ -1,0 +1,14 @@
+             PGM
+             DCL        VAR(&MSG) TYPE(*CHAR) LEN(80)
+             DCL        VAR(&SBS) TYPE(*CHAR) LEN(10)
+
+             CALL       PGM(QMNSBS) PARM(&SBS '' '') /* Retrieve the +
+                          current subsystem */
+             CHGVAR     VAR(&MSG) VALUE('Teddy bear doesn''t +
+                          hibernate in' *BCAT &SBS) /* Report +
+                          returned current SBS to QSYSOPR */
+             SNDMSG     MSG(&MSG) TOUSR(*SYSOPR)
+
+             TFRJOB     JOBQ(SUMMER) RTGDTA(GOHOME) RQSDTA('CALL +
+                          PGM_A') /* Move to the next phase */
+ SEEYOU:     ENDPGM

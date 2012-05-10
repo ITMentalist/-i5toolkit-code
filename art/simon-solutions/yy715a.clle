@@ -1,0 +1,33 @@
+             PGM
+             DCL        VAR(&NTFMSG) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&MSG) TYPE(*CHAR) LEN(80)
+             DCL        VAR(&SBS) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&RUNPTY) TYPE(*DEC) LEN(2 0)
+             DCL        VAR(&PKDATTR) TYPE(*CHAR) LEN(7) +
+                          VALUE(X'03000200000000')
+             DCL        VAR(&ZNDATTR) TYPE(*CHAR) LEN(7) +
+                          VALUE(X'02000200000000')
+             DCL        VAR(&PTY) TYPE(*CHAR) LEN(2)
+
+ LOOP:       CALL       PGM(QRCVDTAQ) PARM('SEASONS' '*LIBL' +
+                          X'00010F' &NTFMSG X'00001D')
+             IF         COND(&NTFMSG *EQ 'SEEYOU') THEN(GOTO +
+                          CMDLBL(SEEYOU))
+
+             CALL       PGM(QMNSBS) PARM(&SBS '' '') /* Retrieve the +
+                          current subsystem */
+             RTVJOBA    RUNPTY(&RUNPTY)
+             CALLPRC    PRC('_LBCPYNV') PARM((&PTY) (&ZNDATTR) +
+                          (&RUNPTY) (&PKDATTR))
+             CHGVAR     VAR(&MSG) VALUE('The whole' *BCAT &SBS *BCAT +
+                          'was hot and buzy. We''ve been running +
+                          at priority' *BCAT &PTY) /* Report +
+                          returned current SBS to QSYSOPR */
+             SNDMSG     MSG(&MSG) TOUSR(*SYSOPR)
+
+             TFRJOB     JOBQ(AUTUMN) RTGDTA(HELLO_AUTUMN) +
+                          RQSDTA('CALL PGM_B') /* Move to the next +
+                          phase */
+
+             GOTO       CMDLBL(LOOP)
+ SEEYOU:     ENDPGM

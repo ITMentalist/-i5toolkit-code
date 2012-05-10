@@ -1,0 +1,14 @@
+             PGM
+             DCL        VAR(&MSG) TYPE(*CHAR) LEN(80)
+             DCL        VAR(&SBS) TYPE(*CHAR) LEN(10)
+
+             CALL       PGM(QMNSBS) PARM(&SBS '' '') /* Retrieve the +
+                          current subsystem */
+             CHGVAR     VAR(&MSG) VALUE(&SBS *BCAT 'is lovely here') +
+                          /* Report returned current SBS to QSYSOPR */
+             SNDMSG     MSG(&MSG) TOUSR(*SYSOPR)
+
+             TFRJOB     JOBQ(WINTER) RTGDTA(HELLO_WINTER) +
+                          RQSDTA('CALL PGM_C') /* Move to the next +
+                          phase */
+ SEEYOU:     ENDPGM
