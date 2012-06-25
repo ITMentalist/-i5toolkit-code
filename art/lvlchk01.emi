@@ -1,0 +1,110 @@
+/**
+ * This file is part of i5/OS Programmer's Toolkit.
+ *
+ * Copyright (C) 2010, 2012  Junlei Li.
+ *
+ * i5/OS Programmer's Toolkit is free software: you can redistribute
+ * it and/or modify it under the terms of the GNU General Public
+ * License as published by the Free Software Foundation, either
+ * version 3 of the License, or (at your option) any later version.
+ *
+ * i5/OS Programmer's Toolkit is distributed in the hope that it will
+ * be useful, but WITHOUT ANY WARRANTY; without even the implied
+ * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ * See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with i5/OS Programmer's Toolkit.  If not, see
+ * <http://www.gnu.org/licenses/>.
+ */
+
+/**
+ * @file lvlchk01.emi
+ *
+ * Open a file and test RCDFMT-ID. 
+ * e.g.
+ *         CALL PGM(LVLCHK01) PARM('A16' X'01' 'REC' '2248F4F242962')
+ *         or
+ *         CALL PGM(LVLCHK01) PARM('A16' X'00')
+ */
+
+/* My parameter list */
+dcl spcptr @file-name parm      ;
+dcl spcptr @do-lvlchk parm      ;
+dcl spcptr @rcd-id parm         ;
+dcl spcptr @rcd-name parm       ;
+dcl ol pl-main (
+        @file-name,
+        @do-lvlchk,              /* hex 00 indicates no level-checking */
+        @rcd-name,
+        @rcd-id
+) parm ext min(2)               ;
+
+entry *(pl-main) ext            ;
+
+        /* Set file-name in the UFCB */
+dcl dd ch10 char(10) bas(*)                ;
+        cpybla file-name, @file-name->ch10 ;
+
+        /* Do level-checking or not? */
+dcl dd do-lvlchk char(1) bas(@do-lvlchk) ;
+        cmpbla(b) do-lvlchk, x'00' / eq(no-lvlchk) ;
+        /* Enable level-checking */
+        cpybla lvlonoff, x'80'  ;
+        /* Set RCDFMT name and ID in the UFCB */
+        cpybla rcd-name, @rcd-name->ch10 ;
+dcl dd ch13 char(13) bas(*)              ;
+        cpybla rcd-id, @rcd-id->ch13     ;
+
+        b open-file             ;
+no-lvlchk:      
+        /* Disable level-checking */
+        cpybla lvlonoff, x'00'  ;
+
+open-file:
+        callx sept(open-entry), pl-open-close, * ;
+
+brk "LOOK"                      ; /* DSPJOB OPTION(*OPNF) */
+
+close-file:     
+        callx sept(close-entry), pl-open-close, * ;
+
+see-you:        
+        rtx *                   ;
+
+/* UFCB definition */
+dcl dd ufcb char(256) auto bdry(16) ;
+        /* Fixed portion of the UFCB, of length 208 bytes */
+        dcl spcptr odp            def(ufcb) pos(001) ;
+        dcl dd file-name char(10) def(ufcb) pos(129) ;
+        dcl dd lib-id    bin(2)   def(ufcb) pos(139) init(-75) ; /* *LIBL, or -72 (S/38) */
+        dcl dd lib-name  char(10) def(ufcb) pos(141) init("*LIBL") ;
+        dcl dd mbr-id    bin(2)   def(ufcb) pos(151) init(-71) ; /* *FIRST, or -73 (S/38) */
+        dcl dd mbr-name  char(10) def(ufcb) pos(153)           ;
+        dcl dd flag1     char(1)  def(ufcb) pos(175) init(x'80') ; /* Share and secure flags. Bits 0-2: close options */
+        dcl dd flag2     char(1)  def(ufcb) pos(176) init(x'20') ; /* Open flags. */
+        /* UFCB parameters */
+        dcl dd lvlchk    bin(2)   def(ufcb) pos(209) init(6) ; /* Parameter lvlchk */
+        dcl dd lvlonoff  char(1)  def(ufcb) pos(211) init(x'80') ; /* Do level-check */
+        dcl dd rcdfmts   bin(2)   def(ufcb) pos(212) init(7) ; /* Parameter rcdfmts */
+        dcl dd rcdfmts-t char(27) def(ufcb) pos(214) ; /* PARM-VALUE of rcdfmts */
+        dcl dd end-list  bin(2)   def(ufcb) pos(241) init(h'7FFF') ; /* End of parameter list */
+
+/* PARM-VALUE of rcdfmts */
+dcl dd max-num bin(2)     def(rcdfmts-t) pos(1) init(1) ; /* The maximum number of formats. */
+dcl dd cur-num bin(2)     def(rcdfmts-t) pos(3) init(1) ; /* The current number of formats. */
+        /* Array of CHAR(10) format names and CHAR(13) format IDs */
+        dcl dd rcd-name char(10) def(rcdfmts-t) pos(5)  ;
+        dcl dd rcd-id   char(13) def(rcdfmts-t) pos(15) ;
+
+/* System Entry Point Table (SEPT) */
+dcl spc pco baspco           ; /* The PCO object */
+        dcl spcptr @sept dir ; /* Space pointer addressing the SEPT */
+dcl sysptr sept(7000) bas(@sept) ;
+
+dcl con close-entry bin(2)   init(11) ; /* SYSPTR to QDMCLOSE in the SEPT is sept(11) */
+dcl con open-entry  bin(2)   init(12) ; /* SYSPTR to QDMCOPEN in the SEPT is sept(12) */
+dcl spcptr @ufcb auto init(ufcb)      ;
+dcl ol pl-open-close (@ufcb) arg ; /* Argument list of QDMCLOSE and QDMCOPEN */
+
+pend                            ;
