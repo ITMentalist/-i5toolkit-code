@@ -23,9 +23,10 @@
  *
  * Open a file and test RCDFMT-ID. 
  * e.g.
- *         CALL PGM(LVLCHK01) PARM('A16' X'01' 'REC' '2248F4F242962')
- *         or
- *         CALL PGM(LVLCHK01) PARM('A16' X'00')
+ * Open file with level-checking:
+ *   CALL PGM(LVLCHK01) PARM(FILE-NAME X'01' RCDFMT-NAME RCDFMT-ID)
+ * Open file without level-checking:
+ *   CALL PGM(LVLCHK01) PARM(FILE-NAME X'00')
  */
 
 /* My parameter list */
@@ -34,10 +35,10 @@ dcl spcptr @do-lvlchk parm      ;
 dcl spcptr @rcd-id parm         ;
 dcl spcptr @rcd-name parm       ;
 dcl ol pl-main (
-        @file-name,
-        @do-lvlchk,              /* hex 00 indicates no level-checking */
-        @rcd-name,
-        @rcd-id
+        @file-name,              /* CHAR(10) file name */
+        @do-lvlchk,              /* CHAR(1)  flag. hex 00 indicates no level-checking */
+        @rcd-name,               /* CHAR(10) record format name */
+        @rcd-id                  /* CHAR(13) record format ID */
 ) parm ext min(2)               ;
 
 entry *(pl-main) ext            ;

@@ -27,7 +27,8 @@ MIFLAGS=incdir('.' '/usr/local/include/emi/mi')
 
 TARGETS=who u whoami jobi jobi2 testuept filluept hello vldeml lda01 lda02 lda03 lda04 callcnt \
 	upsi \
-	lock01 lock02 lock03
+	lock01 lock02 lock03 \
+	lvlchk01 lvlchk02
 
 all: $(TARGETS)
 	@echo "compilation done -- art"
