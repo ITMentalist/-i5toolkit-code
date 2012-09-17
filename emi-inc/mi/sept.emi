@@ -1,0 +1,19 @@
+/**
+ * @file sept.emi
+ *
+ * Declaration of the SEPT
+ */
+
+/ifndef __emi_sept_h__           ;
+/define __emi_sept_h__           ;
+
+dcl spc * baspco                 ;
+        dcl spcptr @pco?sept dir     ;
+        dcl sysptr @pco?wcbt dir     ; /* 19 D0 QWCBT##  */
+        dcl sysptr @pco?dmcq dir     ; /* 19 EF QDMCQ    */
+        dcl ptr * dir                ;
+        dcl sysptr @pco?qtemp dir    ; /* 04 C1 QTEMP    */
+dcl sysptr pco?sept(7000) bas(@pco?sept) ;
+
+/endif                          ;
+/* eof -- sept.mi */

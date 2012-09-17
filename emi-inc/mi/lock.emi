@@ -4,8 +4,8 @@
  * EMI header fro lock management instructions.
  */
 
-/ifndef __emi_inx_h__           ;
-/define __emi_inx_h__           ;
+/ifndef __emi_lock_h__           ;
+/define __emi_lock_h__           ;
 
 /**
  * Lock request template of the Lock Object (LOCK) instruction
