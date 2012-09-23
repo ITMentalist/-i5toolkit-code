@@ -1,0 +1,28 @@
+             PGM        PARM(&SBSNAM &POOLID)
+             DCL        VAR(&SBSNAM) TYPE(*CHAR) LEN(10)
+             DCL        VAR(&POOLID) TYPE(*INT) LEN(2)
+
+             DCL        VAR(&MSGDTA) TYPE(*CHAR) LEN(256)
+             DCL        VAR(&UNUSED) TYPE(*INT) STG(*DEFINED) LEN(4) +
+                          DEFVAR(&MSGDTA 42)
+             DCL        VAR(&MSG) TYPE(*CHAR) LEN(80) +
+                          VALUE('Unallocated storage in target main +
+                          storage pool in KB: ')
+             DCL        VAR(&ZND) TYPE(*CHAR) STG(*DEFINED) LEN(11) +
+                          DEFVAR(&MSG 61)
+             DCL        VAR(&ZNDATTR) TYPE(*CHAR) LEN(7) +
+                          VALUE(X'02000B00000000')
+             DCL        VAR(&BIN4ATTR) TYPE(*CHAR) LEN(7) +
+                          VALUE(X'0A000400000000')
+
+             IF         COND(&POOLID *EQ 0) THEN(SETOBJACC +
+                          OBJ(UNALLOC) OBJTYPE(*PGM) POOL(&SBSNAM))
+             ELSE       CMD(SETOBJACC OBJ(UNALLOC) OBJTYPE(*PGM) +
+                          POOL(&SBSNAM &POOLID))
+             RCVMSG     PGMQ(*SAME) MSGQ(*PGMQ) MSGTYPE(*COMP) +
+                          MSGDTA(&MSGDTA)
+             CALLPRC    PRC('_LBCPYNV') PARM((&ZND) (&ZNDATTR) +
+                          (&UNUSED) (&BIN4ATTR))
+             SNDPGMMSG  MSG(&MSG)
+             SETOBJACC  OBJ(UNALLOC) OBJTYPE(*PGM) POOL(*PURGE)
+             ENDPGM

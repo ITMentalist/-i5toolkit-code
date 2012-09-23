@@ -34,6 +34,10 @@
      d agp_exit        pr
       * Prototype of the ACTGRP exit program register by atiexit()
      d agp_exit2       pr
+     d   ag_mark                     10u 0
+     d   reason                      10u 0
+     d   result_code                 10u 0
+     d   user_rc                     10u 0
       *
       * Prototype of me -- EOJ07
       *
@@ -42,10 +46,6 @@
      d i_main          pr                  extpgm('EOJ07')
      d   flag                         1a
 
-     d   ag_mark                     10u 0
-     d   reason                      10u 0
-     d   result_code                 10u 0
-     d   user_rc                     10u 0
      d exit_proc       s               *   procptr
      d fc              s             12a
 

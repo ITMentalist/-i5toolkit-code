@@ -252,6 +252,70 @@
      d                               10i 0
 
      /**
+      * Materialization template for MATRMD with option hex 2D --
+      * Materialize main storage pool information.
+      *
+      * @remark Option "Main Storage Pool Information (Hex 2D)" is the
+      * preferred method of materializing main storage pool
+      * information because some of the fields for this option may
+      * overflow without any indication of error.
+      */
+     d matrmd_tmpl2d_t...
+     d                 ds                  qualified
+     d                                     based(dummy_ptr)
+     d     bytes_in                  10i 0
+     d     bytes_out                 10i 0
+     d     time_of_day...
+     d                               20u 0
+      *
+      * Machine minimum transfer size is the smallest number of bytes
+      * that may be transferred as a block to or from main storage. A
+      * typical value of this field is 4K.
+      *
+     d     machine_minimum_transfer_size...
+     d                               10u 0
+     d     maximum_number_of_pools...
+     d                               10u 0
+     d     current_number_of_pools...
+     d                               10u 0
+     d                                4a
+      *
+      * Main storage size is the amount of main storage, in units
+      * equal to the machine minimum transfer size, which may be
+      * apportioned among main storage pools.
+      *
+     d     main_storage_size...
+     d                               20u 0
+     d     pool_1_minimum_size...
+     d                               20u 0
+      *
+      * Array of individual main storage pool information DS of type
+      * msp_info2_t (repeated once for each pool, up to the current
+      * number of pools)
+      *
+
+     /* Main storage pool information (for option hex 2D). */
+     d msp_info2_t     ds                  qualified
+     d     pool_size...
+     d                               20u 0
+     d     pool_maintenance...
+     d                               20u 0
+     d     thread_interruptions_database...
+     d                               20u 0
+     d     thread_interruptions_nondatabase...
+     d                               20u 0
+     d     data_transferred_to_pool_database...
+     d                               20u 0
+     d     data_transferred_to_pool_nondatabase...
+     d                               20u 0
+      * Unallocated pool storage
+     d     unal                      20u 0
+      * Alias of @var unal
+     d     amount_of_pool_not_assigned_to_virtual_addresses...
+     d                               20u 0 overlay(unal)
+     d                                8a
+
+     /**
       * Materialization template for MATRMD with option hex 0A --
       * MPL Control Data with 2-byte counts.
       *
