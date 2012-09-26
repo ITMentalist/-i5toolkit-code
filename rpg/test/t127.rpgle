@@ -61,10 +61,12 @@
            for i = 1 to mpl.machine_current_number_of_mpl_classes;
                if mpl_cls.mpl_max > 0;
                    // check mpl_class
-                   msg = %char(mpl_cls.current_mpl)
+                   msg = %char(i)
+                         + '/'
+                         + %char(mpl_cls.mpl_max)
                          + '/'
                          + %char(mpl_cls.number_of_threads_assigned_to_class);
-                   dsply 'MPL/Threads in MPL' '' msg;
+                   dsply 'MPLCls/Max/ThdsInMPL' '' msg;
                endif;
 
                pos += %size(mpl_class_info_t);

@@ -1,0 +1,70 @@
+/**
+ * @file eoj09.emi
+ *
+ * OPM MI example of using the SETIEXIT instruction.
+ */
+
+dcl spcptr @flag parm           ;
+dcl dd arg char(20) parm        ;
+/**
+ * Parameter list of EOJ09's external entry point.
+ *  - CHAR(1) @var flag passed by reference. Set @var flag to 'E' if
+ *    EOJ09 is expected to be execute as an invocation exit program.
+ *  - Optional CHAR(20) scalar.
+ */
+dcl ol plist (
+        @flag,
+        arg
+) parm ext min(1)               ;
+entry i-main(plist) ext         ;
+
+dcl dd flag char(1) bas(@flag)  ;
+        /* Check flag parm. Branch to label i-inv-exit
+           if flag equal to 'E'. */
+        cmpbla(b) flag, "E"
+          / eq(i-inv-exit)      ;
+brk "START"                     ;
+        /* Retrieve a SYSPTR of mine via MATINVE, option hex 01 */
+dcl dd inve-tmpl char(16) auto bdry(16)     ;
+        dcl sysptr me def(inve-tmpl) pos(1) ;
+        matinve inve-tmpl, *, x'01' ;
+brk "1"                             ;
+        /* Set myself as my INV-EXIT */
+        setiexit me, argl-exit  ;
+brk "2"                         ;
+        /* Do my works */
+        cpybrep msg, ' '        ;
+        cpybla msg, "Doing my works ..." ;
+        %sendmsg(msg, 32)       ;
+dcl dd wt auto char(16)         ;
+        dcl dd * char(8) def(wt) pos(1) init(
+          x"00000D693A400000"
+        ) ; /* 1 hour */
+        waittime wt             ; /* Sleep ... */
+see-you:        
+        rtx *                   ;
+
+/* Run as INV-EXIT */
+i-inv-exit:
+brk "INVEXIT"                   ;
+        cpybrep msg, ' '        ;
+        cpybla msg, "INV-EXIT:" ;
+        cpybla msg(11:20), arg  ;
+        %sendmsg(msg, 32)       ;
+        cpybrep msg, "cleanup " ;
+        %sendmsg(msg, 32)       ;
+        b see-you               ;
+
+dcl dd exit-flag char(1) init("E") ;
+dcl spcptr @exit-flag auto init(exit-flag) ;
+dcl dd exit-arg char(20) stat init (
+        "Oops, time to leave!"
+)                               ;
+/* Argument list to INV-EXIT */
+dcl ol argl-exit (
+        @exit-flag,
+        exit-arg
+) arg                           ;
+dcl dd msg char(32) auto        ;
+
+pend                            ;
