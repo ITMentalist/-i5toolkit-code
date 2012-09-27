@@ -98,6 +98,113 @@
      d     ctx_ptr                     *   dim(256)
 
      /**
+      * Materialization template for MATPRATR, option hex 20 --
+      * Process status indicators.
+      */
+     d matpratr_20_t   ds                  qualified
+     d                                     based(@dummy)
+     d   bytes_in                    10i 0
+     d   bytes_out                   10i 0
+      *
+      * Thread state.
+      * Bits 0-2: External existence state
+      *   000 = Suspended due to Suspend Process or Suspend Thread
+      *   010 = Suspended due to Suspend Process or Suspend Thread,
+      *         in instruction wait
+      *   100 = Active, in ineligible wait
+      *   101 = Active, in current MPL
+      *   110 = Active, in instruction wait
+      *   111 = Active, in instruction wait, in current MPL
+      * Bit 3: Invocation exit active
+      * Bit 4: Stopped by a signal
+      * Bit 5: Suspended by Suspend Thread
+      * Bits 6-7: Reserved (binary 0)
+      * Bits 8-10: Internal processing phase
+      *   001 = Initiation phase
+      *   010 = Problem phase
+      *   100 = Termination phase
+      * Bits 11-15: Reserved (binary 0)
+      *
+     d   thd_state                    2a
+     d   pending_thread_interrupts...
+     d                                2a
+      *
+      * Process initial internal termination status
+      *
+      * @remark The process initial internal termination status
+      * represents the final internal termination status prior to
+      * entering the termination phase. It is updated by the most
+      * recent internal termination action. It is possible for both
+      * the process initial internal termination status and the
+      * process initial external termination status fields to contain
+      * valid non-zero values.
+      *
+     d   piit                         3a
+      *
+      * Hex 80 = Return from first invocation in problem phase
+      * Hex 40 = Return from first invocation in initiation phase and
+      *          no problem phase program specified.
+      * Hex 21 = Terminate Thread instruction issued against the
+      *          initial thread by a thread in the process.
+      * Hex 20 = Terminate Process instruction issued by a thread
+      *          within the process.
+      * Hex 18 = An unhandled signal with a default signal handling
+      *          action of terminate the process or terminate the
+      *          request was delivered to the process.
+      * Hex 10 = Exception was not handled by the initial thread in
+      *          the process.
+      * Hex 00 = Process terminated externally.
+      *
+     d     iit_reason                 1a   overlay(piit:1)
+      *
+      * 1. If the termination is caused by a Return External
+      * instruction from the first invocation in the initial thread,
+      * then this code is binary 0's.
+      * 2. If the termination is caused by an unhandled signal, then
+      * this code is the signal number of the unhandled signal.
+      * 3. The code is assigned by the original exception code that
+      * caused process termination to start.
+      *
+     d     iit_code                   2a   overlay(piit:2)
+      *
+      * Process initial external termination status
+      *
+      * @remark The process external internal termination status
+      * represents the final external termination status prior to
+      * entering the termination phase. It is updated by the most
+      * recent external termination action. It is possible for both
+      * the process initial internal termination status and the
+      * process initial external termination status fields to contain
+      * valid non-zero values.
+      *
+     d   piet                         3a
+      * Initial external termination reason:
+      *   Hex 80 = Terminate Process instruction issued explicitly to
+      *            the process by a thread in another process.
+      *   Hex 40 = Terminate Thread instruction issued explicitly to
+      *            the initial thread of the process by a thread in
+      *            another process.
+      *   Hex 00 = Process terminated internally.
+     d     iet_reason                 1a   overlay(piet:1)
+      * Initial external termination code
+     d     iet_code                   2a   overlay(piet:2)
+      *
+      * Process final termination status
+      *
+      * @remark The process final termination status is presented as
+      * event-related data in the terminate process event. Usually the
+      * event is the only source of the process final termination
+      * status since the process will cease to exist before its
+      * attributes can be materialized.
+      *
+      * @remark The process final termination status describes how the
+      * final phase (aka the termination phase) of the process
+      * terminated. It is updated by the most recent termination
+      * action for the final process phase.
+      *
+     d   pfit                         3a
+
+     /**
       * @BIF _MATPRATR1 (Materialize Process Attributes (MATPRATR))
       */
      d matpratr1       pr                  extproc('_MATPRATR1')
