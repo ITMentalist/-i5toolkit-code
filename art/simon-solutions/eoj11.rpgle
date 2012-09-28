@@ -27,6 +27,7 @@
      d msg_key         s              4a
      d ec              ds                  likeds(qusec_t)
      d text            s             30a
+     d eoj12           pr                  extpgm('EOJ12')
 
      d i_main          pr                  extpgm('EOJ11')
      d   greeting                    20a
@@ -41,6 +42,7 @@
                text = 'ARG: ' + greeting;
                dsply text '';
                dsply 'Cleanup, cleanup, cleanup ...' '';
+               eoj12();
                *inlr = *on;
                return;
            endif;

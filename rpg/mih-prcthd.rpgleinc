@@ -169,7 +169,7 @@
       *
       * Process initial external termination status
       *
-      * @remark The process external internal termination status
+      * @remark The process initial external termination status
       * represents the final external termination status prior to
       * entering the termination phase. It is updated by the most
       * recent external termination action. It is possible for both

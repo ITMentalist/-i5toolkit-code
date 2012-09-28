@@ -1,4 +1,4 @@
-     h dftactgrp(*no)
+     h dftactgrp(*no) bnddir('QC2LE')
      fQSYSPRT   O    f  132        printer
 
       /copy mih-prcthd.rpgleinc
@@ -39,9 +39,9 @@
            endif;
            except VALREC;
 
-           if a2 = x'0000';
-           //  *inlr = *on;
-           //  return;
+           if psts.iit_reason = x'00' and psts.iet_reason = x'00';
+               *inlr = *on;
+               return;
            endif;
 
            // Initial internal termination reason

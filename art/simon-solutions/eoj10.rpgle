@@ -27,10 +27,12 @@
       /end-free
 
      p inv_exit        b
+     d eoj12           pr                  extpgm('EOJ12')
      d inv_exit        pi
      d   @arg                          *
      d arg             s             20a   based(@arg)
       /free
+           eoj12();
            dsply 'Exit Arg' '' arg;
       /end-free
      p                 e
