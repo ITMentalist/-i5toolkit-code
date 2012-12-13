@@ -36,11 +36,6 @@ brk "2"                         ;
         cpybrep msg, ' '        ;
         cpybla msg, "Doing my works ..." ;
         %sendmsg(msg, 32)       ;
-/* ... */
-dcl dd k bin(2) auto init(5)    ;
-        subn(s) k, 5            ;
-        div k, 5, k             ;
-/* ... */
 dcl dd wt auto char(16)         ;
         dcl dd * char(8) def(wt) pos(1) init(
           x"00000D693A400000"
