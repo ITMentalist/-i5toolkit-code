@@ -31,7 +31,7 @@
                           LEN(5) DEFVAR(&CPOP 16)
 
              DCL        VAR(&QUSEC) TYPE(*CHAR) LEN(16) +
-                          VALUE(X'00000010000000000000000000000000')
+                          VALUE(X'00000000000000000000000000000000')
              DCL        VAR(&CMDSTR) TYPE(*CHAR) LEN(256)
              DCL        VAR(&CMDSTRLEN) TYPE(*INT) LEN(4) VALUE(2)
              DCL        VAR(&CPOPLEN) TYPE(*INT) LEN(4) VALUE(20)
@@ -67,6 +67,6 @@
 
              GOTO       CMDLBL(READ)
 /* 3) Clean-up */
- QUIT:       RMVMSG     CLEAR(*ALL)
+ QUIT:       RMVMSG     PGMQ(*SAME (*)) CLEAR(*ALL)
              SNDPGMMSG  MSG('Farewell :p')
  BANG:       ENDPGM
