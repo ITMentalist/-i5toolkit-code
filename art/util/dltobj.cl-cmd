@@ -1,0 +1,34 @@
+             CMD        PROMPT('Delete Object (DLTOBJ)')
+
+             PARM       KWD(OBJ) TYPE(Q_OBJ) MIN(1) PROMPT('Object')
+             PARM       KWD(OBJTYPE) TYPE(*CHAR) LEN(7) RSTD(*YES) +
+                          SPCVAL((*ALRTBL ALRTBL) (*AUTL AUTL) +
+                          (*BNDDIR BNDDIR) (*CFGL CFGL) (*CLD CLD) +
+                          (*CLS CLS) (*CMD CMD) (*CNNL CNNL) (*COSD +
+                          COSD) (*CRQD CRQD) (*CSI CSI) (*CTLD +
+                          CTLD) (*DEVD DEVD) (*DTAARA DTAARA) +
+                          (*DTAQ DTAQ) (*EDTD EDTD) (*FILE FILE) +
+                          (*FNTRSC FNTRSC) (*FNTTBL FNTTBL) +
+                          (*FORMDF FORMDF) (*FTR FTR) (*GSS GSS) +
+                          (*IGCDCT IGCDCT) (*IGCSRT IGCSRT) +
+                          (*IMGCLG IMGCLG) (*IPXD IPXD) (*JOBD +
+                          JOBD) (*JOBQ JOBQ) (*JRN JRN) (*JRNRCV +
+                          JRNRCV) (*LIND LIND) (*MEDDFN MEDDFN) +
+                          (*MGTCOL MGTCOL) (*MODULE MODULE) (*MODD +
+                          MODD) (*MSGF MSGF) (*MSGQ MSGQ) (*NODGRP +
+                          NODGRP) (*NODL NODL) (*NTBD NTBD) (*NWID +
+                          NWID) (*NWSCFG NWSCFG) (*NWSD NWSD) +
+                          (*OUTQ OUTQ) (*OVL OVL) (*PAGDFN PAGDFN) +
+                          (*PAGSEG PAGSEG) (*PDFMAP PDFMAP) (*PDG +
+                          PDG) (*PGM PGM) (*PNLGRP PNLGRP) (*PSFCFG +
+                          PSFCFG) (*QMFORM QMFORM) (*QMQRY QMQRY) +
+                          (*QRYDFN QRYDFN) (*SBSD SBSD) (*SCHIDX +
+                          SCHIDX) (*SPADCT SPADCT) (*SQLPKG SQLPKG) +
+                          (*SRVPGM SRVPGM) (*TBL TBL) (*TIMZON +
+                          TIMZON) (*USRIDX USRIDX) (*USRQ USRQ) +
+                          (*USRSPC USRSPC) (*VLDL VLDL) (*WSCST +
+                          WSCST)) MIN(1) PROMPT('Object type')
+
+ Q_OBJ:      QUAL       TYPE(*GENERIC) LEN(10)
+             QUAL       TYPE(*NAME) LEN(10) DFT(*LIBL) +
+                          SPCVAL((*CURLIB) (*LIBL)) PROMPT('Library')
