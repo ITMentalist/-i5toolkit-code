@@ -1,0 +1,206 @@
+/**
+ * @file su.emi
+ *
+ * CPP of command SU
+ */
+
+dcl spcptr @tgt-user parm       ;
+dcl dd tgt-user char(10) bas(@tgt-user) ;
+dcl spcptr @pwd parm            ;
+dcl dd pwd char(128) bas(@pwd)  ;
+
+dcl ol pl-main(
+        @tgt-user, @pwd
+) parm ext                      ;
+entry *(pl-main) ext            ;
+brk "MORNING"                   ;
+        /* Check target USRPRF parameter */
+        cmpbla(b) tgt-user, *EXIT / eq(=+3) ;
+        calli swap-to, *, @swap-to          ;
+        b =+2                               ;
+:
+        calli swap-back, *, @swap-back ;  /* SU USER(*EXIT) */
+:       
+brk "SEEU"                      ;
+        rtx *                   ;
+
+/* Routine: swap-to */
+dcl insptr @swap-to auto        ;
+entry swap-to int               ;
+dcl sysptr @sudtaq auto         ;
+dcl dd rt char(34) auto         ;
+        dcl dd * char(2) def(rt) pos(1) init(x"0A01") ;
+        dcl dd * char(30) def(rt) pos(3) init(" ")    ;
+        dcl dd * char(2) def(rt) pos(33) init(x"0000")   ;
+
+        /* Resolve QTEMP/@SUDTAQ */
+        cpybla rt(3:30), qrcvdtaq?q       ;
+        setip @on-2201, crt-su-dtaq       ;
+        rslvsp @sudtaq, rt, @pco?qtemp, * ;
+        b so-boring                       ;
+crt-su-dtaq:
+        cpyblap cl-cmd,
+          "CRTDTAQ DTAQ(QTEMP/@SUDTAQ) MAXLEN(12) SEQ(*LIFO) AUT(*CHANGE)",
+          " "                   ;
+        triml pkd-cmd-len, cl-cmd, " " ;
+        callx pco?sept(qcmdexc-entry),
+          al-qcmdexc, *         ;
+so-boring:
+        /* Save current profile handle for swapping back */
+        cpybla user, cur-user   ;
+        setspp @ph, org-ph      ;
+        callx pco?sept(qsygetph-entry),
+          al-qsygetph-short, * ; /* When specify *CURRENT for parm user, QSYGETPH expects 3-4 parms */
+        cpynv qrcvdtaq?len, 12 ;
+        setspp @qrcvdtaq?msg, org-ph ;
+        callx pco?sept(qsnddtaq-entry),
+          al-qsnddtaq, *        ;
+brk "MEMO"                           ;
+        /* Get the profile handle of the target USRPRF */
+        cpybla user, tgt-user   ;
+        setspp @ph, ph          ;
+        cmpbla(b) pwd, "*NOPWD" / eq(spec-pwd-value) ;
+        triml pwd-len, pwd, " " ;
+        callx pco?sept(qsygetph-entry),
+          al-qsygetph, *        ;
+        b =+2                   ;
+spec-pwd-value: 
+        callx pco?sept(qsygetph-entry),
+          al-qsygetph-short, * ; /* When specify a special value for parm PASSWORD, QSYGETPH expects 3-4 parms */
+:
+        /* Swap to target USRPRF */
+        callx pco?sept(qwtsetp-entry),
+          al-qwtsetp, *         ;
+        callx pco?sept(qsyrlsph-entry),
+          al-qsyrlsph, *        ; /* Release profile handle of tgt-user */
+end-swap-to:    
+brk "TO"                        ;
+        b @swap-to              ;
+
+/* Routine: swap-back */
+dcl insptr @swap-back auto      ;
+entry swap-back int             ;
+        /* Resolve QTEMP/@SUDTAQ */
+        /* @todo 不用的呀 */
+        cpybla rt(3:10), qrcvdtaq?q       ;
+        setip @on-2201, end-swap-back     ;
+        rslvsp @sudtaq, rt, @pco?qtemp, * ;
+
+        /* Dequeue previous profile handle from @SUDTAQ */
+        setspp @qrcvdtaq?msg, org-ph ;
+        callx pco?sept(qrcvdtaq-entry),
+          al-qrcvdtaq, *        ;
+        cmpnv(b) qrcvdtaq?len, 0 / neq(end-deq) ;
+        cpybla msg,
+          "Exit to where? :p"   ;
+        setspp @sndimdmsg?text,
+          msg                   ;
+        triml sndimdmsg?textl,
+          msg, " "              ;
+        cpybla sndimdmsg?msgtype,
+          "*ESCAPE"             ;
+        calli sndimdmsg, *, @sndimdmsg ;
+        b end-swap-back                     ;
+end-deq:
+        /* Set profile handle to previous PH */
+        setspp @ph, org-ph      ;
+        callx pco?sept(qwtsetp-entry),
+          al-qwtsetp, *         ;
+        callx pco?sept(qsyrlsph-entry),
+          al-qsyrlsph, *        ;
+
+end-swap-back:  
+        b @swap-back            ;
+
+/* Exception handlers */
+dcl excm excd-2201 excid(h'2201') bp(on-2201) imd ;
+dcl insptr @on-2201 auto                ;
+on-2201:
+        cpybla msg,
+          "Data queue @sudtaq does not exist" ;
+        cpybla msg(12:7), qrcvdtaq?q          ;
+        setspp @sndimdmsg?text,
+          msg                   ;
+        triml sndimdmsg?textl,
+          msg, " "              ;
+        cpybla sndimdmsg?msgtype,
+          "*DIAG"                      ;
+        calli sndimdmsg, *, @sndimdmsg ;
+brk "2201"                      ;
+        b @on-2201              ;
+
+/* QCMDEXC */
+dcl con qcmdexc-entry bin(2) unsgnd init(h'7C5') ;
+dcl dd pkd-cmd-len pkd(15,5) auto                ;
+dcl spcptr @pkd-cmd-len auto init(pkd-cmd-len)   ;
+dcl dd cl-cmd char(64) auto                      ;
+dcl spcptr @cmd-str auto init(cl-cmd)            ;
+dcl ol al-qcmdexc (@cmd-str, @pkd-cmd-len) arg   ;
+
+/* QSYGETPH */
+dcl con qsygetph-entry bin(2) unsgnd init(h'1305') ;
+dcl dd user char(10) auto                          ;
+dcl spcptr @user auto init(user)                   ;
+dcl dd ph char(12) auto                            ;
+dcl dd org-ph char(12) auto                        ; /* Profile handle of original USRPRF */
+dcl spcptr @ph auto                                ;
+dcl dd ec-size bin(4) auto init(0)                 ;
+dcl spcptr @ec auto init(ec-size)                  ;
+dcl dd pwd-len bin(4) auto                         ; /* triml pwd-len, pwd */
+dcl spcptr @pwd-len auto init(pwd-len)             ;
+dcl dd ccsid bin(4) auto init(-1)                  ; /* determine CCSID according to the current password level (QPWDLVL) */
+dcl spcptr @ccsid auto init(ccsid)                 ;
+dcl ol al-qsygetph (
+        @user, @pwd, @ph, @ec, @pwd-len, @ccsid
+) arg                                      ;
+dcl ol al-qsygetph-short (
+        @user, @pwd, @ph
+) arg                                      ;
+dcl con cur-user char(10) init("*CURRENT")         ;
+
+/* QSYRLSPH */
+dcl con qsyrlsph-entry bin(2) unsgnd init(h'130B') ;
+dcl ol al-qsyrlsph (@ph) arg                       ;
+
+/* QWTSETP */
+dcl con qwtsetp-entry bin(2) unsgnd init(h'1350') ;
+dcl ol al-qwtsetp (@ph) arg                       ;
+
+/* QRCVDTAQ */
+dcl con qrcvdtaq-entry bin(2) unsgnd init(h'B51') ;
+dcl dd qrcvdtaq?q char(10) auto init("@SUDTAQ")   ;
+dcl spcptr @qrcvdtaq?q auto init(qrcvdtaq?q)      ;
+dcl dd qrcvdtaq?lib char(10) auto init("QTEMP")   ;
+dcl spcptr @qrcvdtaq?lib auto init(qrcvdtaq?lib)  ;
+dcl dd qrcvdtaq?len pkd(5,0) auto init(p'12')     ;
+dcl spcptr @qrcvdtaq?len auto init(qrcvdtaq?len)  ;
+dcl spcptr @qrcvdtaq?msg auto                     ;
+dcl dd qrcvdtaq?waittime pkd(5,0) auto init(p'0') ; /* Dequeue @SUDTAQ without waiting */
+dcl spcptr @qrcvdtaq?waittime auto init(qrcvdtaq?waittime) ;
+dcl ol al-qrcvdtaq(
+        @qrcvdtaq?q,
+        @qrcvdtaq?lib,
+        @qrcvdtaq?len,
+        @qrcvdtaq?msg,
+        @qrcvdtaq?waittime
+) arg                           ;
+
+/* QSNDDTAQ */
+dcl con qsnddtaq-entry bin(2) unsgnd init(h'B52') ;
+dcl ol al-qsnddtaq(
+        @qrcvdtaq?q,
+        @qrcvdtaq?lib,
+        @qrcvdtaq?len,
+        @qrcvdtaq?msg
+) arg                           ;
+
+
+dcl con *EXIT char(10) init("*EXIT") ;
+dcl dd msg char(64) auto init(" ")   ;
+dcl dd flag bin(2) auto init(0) ;
+
+/* Includes */
+/include "sept.emi"             ;
+/include "sndimdmsg.emi"        ;
+
+pend                            ;

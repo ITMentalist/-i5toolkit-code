@@ -1,0 +1,56 @@
+/**
+ * @file sndimdmsg.emi
+ *
+ * Interal entry-point sndimdmsg (Send Immediate Message).
+ */
+
+/ifndef __emi_sndimdmsg_h__     ;
+/define __emi_sndimdmsg_h__     ;
+
+/include "sept.emi"             ;
+
+/**
+ * @pre SETSPP @SNDIMDMSG?TEXT
+ * @pre CPYNV/TRIML SNDIMDMSG?TEXTL
+ * @pre optionally CPYBLA SNDIMDMSG?MSGTYPE
+ */
+
+dcl insptr @sndimdmsg auto      ;
+entry sndimdmsg int             ;
+        callx pco?sept(qmhsndpm-entry),
+          al-qmhsndpm, *        ;
+        b @sndimdmsg            ;
+
+dcl con qmhsndpm-entry bin(2) init(h'10AD')                ;
+dcl dd sndimdmsg?msgid char(7) auto init('CPF9898')        ;
+dcl spcptr @sndimdmsg?msgid auto init(sndimdmsg?msgid)     ;
+dcl dd sndimdmsg?msgf char(20) auto init('QCPFMSG   QSYS') ;
+dcl spcptr @sndimdmsg?msgf auto init(sndimdmsg?msgf)       ;
+dcl spcptr @sndimdmsg?text auto                            ;
+dcl dd sndimdmsg?textl bin(4) auto                         ;
+dcl spcptr @sndimdmsg?textl auto init(sndimdmsg?textl)     ;
+dcl dd sndimdmsg?msgtype char(10) auto init("*INFO")       ;
+dcl spcptr @sndimdmsg?msgtype auto init(sndimdmsg?msgtype) ;
+dcl dd sndimdmsg?cstke char(10) auto init("*PGMBDY")       ;
+dcl spcptr @sndimdmsg?cstke auto init(sndimdmsg?cstke)     ;
+dcl dd sndimdmsg?cstkc bin(4) auto init(1)                 ;
+dcl spcptr @sndimdmsg?cstkc auto init(sndimdmsg?cstkc)     ;
+dcl dd sndimdmsg?msgkey char(4) auto                       ;
+dcl spcptr @sndimdmsg?msgkey auto init(sndimdmsg?msgkey)   ;
+dcl dd sndimdmsg?ec char(16) auto                          ;
+        dcl dd * bin(4) def(sndimdmsg?ec) pos(1) init(16)  ;
+dcl spcptr @sndimdmsg?ec auto init(sndimdmsg?ec)           ;
+
+dcl ol al-qmhsndpm (
+        @sndimdmsg?msgid,
+        @sndimdmsg?msgf,
+        @sndimdmsg?text,
+        @sndimdmsg?textl,
+        @sndimdmsg?msgtype,
+        @sndimdmsg?cstke,
+        @sndimdmsg?cstkc,
+        @sndimdmsg?msgkey,
+        @sndimdmsg?ec
+) arg                           ;
+
+/endif                          ;

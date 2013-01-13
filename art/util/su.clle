@@ -1,0 +1,59 @@
+/********************************************************************/
+/* @file su.clle                                                    */
+/* CL version of the CPP of the SU command.                         */
+/********************************************************************/
+
+pgm (&tgtusr &pwd)
+
+dcl &tgtusr *char 10
+dcl &pwd *char 128
+dcl &org_ph *char 12
+dcl &tgt_ph *char 12
+dcl &qnam *char 10 value('@SUDTAQ')
+dcl &qlib *char 10 value('QTEMP')
+DCL VAR(&ENT_LEN) TYPE(*DEC) LEN(5 0) VALUE(12)
+dcl &timeout *dec len(3 0) value(0)
+dcl &pwd_len *int 4 value(128)
+dcl &ccsid *int 4 value(-1)
+dcl &where *ptr
+dcl &pwd@  *ptr
+
+if cond(&tgtusr *ne '*EXIT') then(goto swap_to)
+else cmd(goto swap_back)
+
+swap_to:
+        chkobj &qnam/&qlib
+        MONMSG     MSGID(CPF9801) EXEC(DO)
+          CRTDTAQ DTAQ(QTEMP/@SUDTAQ) MAXLEN(12) +
+            SEQ(*LIFO) AUT(*CHANGE)
+        enddo
+
+        call QSYGETPH ('*CURRENT  ' ' ' &org_ph)
+        call QSNDDTAQ (&qnam &qlib ent_len org_ph)
+
+        if (%sst(&pwd 1 6) *eq '*NOPWD') then( +
+          call QSYGETPH (&tgtusr &pwd &tgt_ph) )
+        else cmd(do)
+          callprc prc('_MEMCHR') parm((&pwd *byref) (' ' *byval) +
+            (pwd_len *byval)) rtnval(&where)
+          if (&where *ne *null) then(do)
+            chgvar &pwd@ %addr(@pwd)
+            chgvar &pwd_len (%ofs(where) - %ofs(&pwd@) ))
+            call QSYGETPH (&tgtusr &pwd &tgt_ph &ec &pwd_len &ccsid)
+          enddo
+        call QWTSETP(&tgt_ph)
+        call QSYRLSPH(&tgt_ph)
+        enddo
+        goto bye
+
+swap_back:
+        call QRCVDTAQ (&qnam &qlib &ent_len &org_ph &timeout)
+        if (&ent_len *eq 0) then( +
+          SNDPGMMSG MSGID(CPF9898) MSGF(QSYS/QCPFMSG) +
+          MSGDTA('Exit to where? :p') MSGTYPE(*ESCAPE))
+        else cmd(do)
+          call QWTSETP(&org_ph)
+          call QSYRLSPH(&org_ph)
+        enddo
+
+bye: endpgm
