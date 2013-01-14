@@ -10,7 +10,14 @@
 # include <except.h>
 # include <decimal.h>
 
-# define _SUDTAQ_NAME "SUDTAQ    "
+# include <qsygetph.h>
+# include <qsnddtaq.h>
+# include <qwtsetp.h>
+# include <qsyrlsph.h>
+# include <qrcvdtaq.h>
+# include <qmhsndpm.h>
+
+# define _SUDTAQ_NAME "@SUDTAQ   "
 # define _SUDTAQ_LIB  "QTEMP     "
 # define _MAX_PWD_LEN 128
 
@@ -20,7 +27,7 @@ void _RSLVSP4(void **pobjptr,
               void ** ctx);
 
 # pragma linkage(_PCOPTR2, builtin)
-void *_PCOPTR2();
+void* _PCOPTR2(void);
 
 typedef _Packed struct {
   void *sept_spp;
@@ -45,7 +52,7 @@ int main(int argc, char* argv[]) {
   usr = argv[1];
   pwd = argv[2];
 
-  if(memcmp(argv[2], "*EXIT", 5) != 0)
+  if(memcmp(usr, "*EXIT", 5) != 0)
     swap_to(usr, pwd);
   else
     swap_back();
@@ -66,7 +73,7 @@ void swap_to(char *usr, char *pwd) {
   int pwd_len = 0;
   char *where = 0;
 
-  pco = (pco_t*)_PCOPTR2();
+  pco = _PCOPTR2();
 
   memcpy(rt, "\xa\x1", 2);
   memset(rt + 2, 0x40, 30);
@@ -88,14 +95,14 @@ void swap_to(char *usr, char *pwd) {
 
   // Switch to target USRPRF
   if(memcmp(pwd, "*NOPWD", 6) == 0)
-    QSYGETPH(user, pwd, tgt_ph);  // pwd is one of the *NOPWD### special values
+    QSYGETPH(usr, pwd, tgt_ph);  // pwd is one of the *NOPWD### special values
   else {
     // Calculate password length
     pwd_len = _MAX_PWD_LEN;
     where = memchr(pwd, 0x40, _MAX_PWD_LEN);
     if(where != NULL)
       pwd_len = (char*)where - pwd;
-    QSYGETPH(user, pwd, tgt_ph, ec, pwd_len, -1);
+    QSYGETPH(usr, pwd, tgt_ph, ec, pwd_len, -1);
   }
   QWTSETP(tgt_ph);
   QSYRLSPH(tgt_ph);
@@ -105,12 +112,12 @@ void swap_back() {
 
   char org_ph[12] = {0};
   decimal(5,0) ent_len = 12d;
-  decimal(3,0) timeout = 0d;
+  decimal(5,0) timeout = 0d;
   char mk[4] = {0};
   char ec[16] = {0};
 
   // Retrieve previous PH
-  QRCVDTAQ(_SUDTAQ_NAME, _SUDTAQ_LIB, ent_len, org_ph, timeout);
+  QRCVDTAQ(_SUDTAQ_NAME, _SUDTAQ_LIB, &ent_len, org_ph, timeout);
   if(ent_len == 0d) {
     QMHSNDPM("CPF9898",
              "QCPFMSG   QSYS      ",

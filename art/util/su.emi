@@ -1,7 +1,7 @@
 /**
  * @file su.emi
  *
- * CPP of command SU
+ * CPP of the SU command.
  */
 
 dcl spcptr @tgt-user parm       ;
@@ -50,7 +50,8 @@ so-boring:
         cpybla user, cur-user   ;
         setspp @ph, org-ph      ;
         callx pco?sept(qsygetph-entry),
-          al-qsygetph-short, * ; /* When specify *CURRENT for parm user, QSYGETPH expects 3-4 parms */
+          al-qsygetph-short, * ; /* When specify *CURRENT for parm user, */
+                                 /* QSYGETPH expects 3-4 parms           */
         cpynv qrcvdtaq?len, 12 ;
         setspp @qrcvdtaq?msg, org-ph ;
         callx pco?sept(qsnddtaq-entry),
@@ -66,7 +67,8 @@ brk "MEMO"                           ;
         b =+2                   ;
 spec-pwd-value: 
         callx pco?sept(qsygetph-entry),
-          al-qsygetph-short, * ; /* When specify a special value for parm PASSWORD, QSYGETPH expects 3-4 parms */
+          al-qsygetph-short, * ; /* When specify a special value for parm */
+                                 /* PASSWORD, QSYGETPH expects 3-4 parms  */
 :
         /* Swap to target USRPRF */
         callx pco?sept(qwtsetp-entry),
@@ -81,7 +83,6 @@ brk "TO"                        ;
 dcl insptr @swap-back auto      ;
 entry swap-back int             ;
         /* Resolve QTEMP/@SUDTAQ */
-        /* @todo 不用的呀 */
         cpybla rt(3:10), qrcvdtaq?q       ;
         setip @on-2201, end-swap-back     ;
         rslvsp @sudtaq, rt, @pco?qtemp, * ;
@@ -142,13 +143,15 @@ dcl con qsygetph-entry bin(2) unsgnd init(h'1305') ;
 dcl dd user char(10) auto                          ;
 dcl spcptr @user auto init(user)                   ;
 dcl dd ph char(12) auto                            ;
-dcl dd org-ph char(12) auto                        ; /* Profile handle of original USRPRF */
+dcl dd org-ph char(12) auto                        ;
+        /* Profile handle of original USRPRF */
 dcl spcptr @ph auto                                ;
 dcl dd ec-size bin(4) auto init(0)                 ;
 dcl spcptr @ec auto init(ec-size)                  ;
-dcl dd pwd-len bin(4) auto                         ; /* triml pwd-len, pwd */
+dcl dd pwd-len bin(4) auto                         ;
 dcl spcptr @pwd-len auto init(pwd-len)             ;
-dcl dd ccsid bin(4) auto init(-1)                  ; /* determine CCSID according to the current password level (QPWDLVL) */
+dcl dd ccsid bin(4) auto init(-1)                  ;
+        /* determine CCSID according to the current password level (QPWDLVL) */
 dcl spcptr @ccsid auto init(ccsid)                 ;
 dcl ol al-qsygetph (
         @user, @pwd, @ph, @ec, @pwd-len, @ccsid
@@ -175,7 +178,8 @@ dcl spcptr @qrcvdtaq?lib auto init(qrcvdtaq?lib)  ;
 dcl dd qrcvdtaq?len pkd(5,0) auto init(p'12')     ;
 dcl spcptr @qrcvdtaq?len auto init(qrcvdtaq?len)  ;
 dcl spcptr @qrcvdtaq?msg auto                     ;
-dcl dd qrcvdtaq?waittime pkd(5,0) auto init(p'0') ; /* Dequeue @SUDTAQ without waiting */
+dcl dd qrcvdtaq?waittime pkd(5,0) auto init(p'0') ;
+        /* Dequeue @SUDTAQ without waiting */
 dcl spcptr @qrcvdtaq?waittime auto init(qrcvdtaq?waittime) ;
 dcl ol al-qrcvdtaq(
         @qrcvdtaq?q,
