@@ -1,0 +1,26 @@
+/**                                                                 */
+/** @file matpg.cl-cmd                                              */
+/** ART-ID: MATCRTPG                                                */
+/**                                                                 */
+
+ MATPG:      CMD        PROMPT('Materialise Program Template')        
+                                                                      
+             PARM       KWD(PGM) TYPE(Q1) MIN(1) PROMPT('Program')    
+                                                                      
+             PARM       KWD(FILE) TYPE(Q2) MIN(1) PROMPT('File')      
+                                                                      
+             PARM       KWD(MBR) TYPE(*NAME) DFT(*PGM) SPCVAL((*PGM) +
+                          (*FILE)) EXPR(*YES) PROMPT('Member')        
+                                                                      
+             PARM       KWD(MBROPT) TYPE(*CHAR) LEN(8) RSTD(*YES) +   
+                          DFT(*REPLACE) VALUES(*REPLACE *ADD) +       
+                          PROMPT('Replace or add records')            
+                                                                      
+ Q1:         QUAL       TYPE(*NAME) MIN(1) EXPR(*YES)                 
+             QUAL       TYPE(*NAME) DFT(*LIBL) SPCVAL((*LIBL)) +      
+                          EXPR(*YES) PROMPT('Library')                
+                                                                      
+ Q2:         QUAL       TYPE(*NAME) MIN(1) EXPR(*YES)                 
+             QUAL       TYPE(*NAME) DFT(*CURLIB) SPCVAL((*CURLIB +    
+                          *CURLIB) (*LIBL)) EXPR(*YES) +              
+                          PROMPT('Library')                           

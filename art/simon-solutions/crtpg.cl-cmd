@@ -1,0 +1,22 @@
+/**                                                                 */
+/** @file crtpg.cl-cmd                                              */
+/** ART-ID: MATCRTPG                                                */
+/**                                                                 */
+
+ CRTPG:      CMD        PROMPT('Create Program from Template')         
+                                                                       
+             PARM       KWD(PGM) TYPE(Q1) MIN(1) PROMPT('Program')     
+                                                                       
+             PARM       KWD(FILE) TYPE(Q2) MIN(1) PROMPT('File')       
+                                                                       
+             PARM       KWD(MBR) TYPE(*NAME) DFT(*PGM) SPCVAL((*PGM) + 
+                          (*FILE)) EXPR(*YES) PROMPT('Member')         
+                                                                       
+ Q1:         QUAL       TYPE(*NAME) MIN(1) EXPR(*YES)                  
+             QUAL       TYPE(*NAME) DFT(*CURLIB) SPCVAL((*CURLIB +     
+                          *CURLIB)) EXPR(*YES) PROMPT('Library')       
+                                                                       
+ Q2:         QUAL       TYPE(*NAME) MIN(1) EXPR(*YES)                  
+             QUAL       TYPE(*NAME) DFT(*LIBL) SPCVAL((*LIBL) +        
+                          (*CURLIB *CURLIB)) EXPR(*YES) +              
+                          PROMPT('Library')                            
