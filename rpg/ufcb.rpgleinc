@@ -1,0 +1,296 @@
+     /**
+      * This file is part of i5/OS Programmer's Toolkit.
+      *
+      * Copyright (C) 2010, 2013  Junlei Li.
+      *
+      * i5/OS Programmer's Toolkit is free software: you can redistribute it and/or modify
+      * it under the terms of the GNU General Public License as published by
+      * the Free Software Foundation, either version 3 of the License, or
+      * (at your option) any later version.
+      *
+      * i5/OS Programmer's Toolkit is distributed in the hope that it will be useful,
+      * but WITHOUT ANY WARRANTY; without even the implied warranty of
+      * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+      * GNU General Public License for more details.
+      *
+      * You should have received a copy of the GNU General Public License
+      * along with i5/OS Programmer's Toolkit.  If not, see <http://www.gnu.org/licenses/>.
+      */
+
+     /**
+      * @file ufcb.rpgleinc
+      *
+      * Definitions of UFCB, ODP, DCB, and Open Feedback Area.
+      */
+
+      /if not defined(i5toolkit_rpg_ufcb)
+      /define i5toolkit_rpg_ufcb
+
+     /**
+      * DS ufcb_base_t -- Fixed portion of UFCB
+      */
+     d ufcb_base_t     ds                  qualified
+     d   @odp                          *
+     d   @inbuf                        *
+     d   @outbuf                       *
+     d   @open_fbk                     *
+     d   @io_fbk                       *
+     d   @next_ufcb                    *
+     d   @sep_ind                      *
+     d                               16a
+     d   file                        10a
+     d   lib_id                       5i 0
+     d   lib                         10a
+     d   mbr_id                       5i 0
+     d   mbr                         10a
+     d   last_dev                    10a
+     d   dev_inx                      5i 0
+     d   flags                        2a
+     d   sh_sec_flg                   1a   overlay(flags)
+     d   opn_flg                      1a   overlay(flags:2)
+     d   ver                          2a
+     d   rel                          2a
+     d   inv_mrk_cnt                 10i 0
+      * mark counter options and blocked record flag
+     d   markcntflg                   1a
+     d                                1a
+     d   invactflg                    1a
+     d                                1a
+     d   nativeflg                    1a
+     d                                2a
+     d   opnscope                     1a
+     d*                               5a
+      * bit 0 - equivalent to C's "rtncode=y" parameter
+     d   bang                         1a
+     d                                4a
+     d   inv_mrk_cnt_hi...
+     d                               10i 0
+     d                                7a
+
+     /**
+      * Constants related with UFCB
+      */
+     /* Special values of library and member fields */
+     d LIBNAM_LIBL     c                   '*LIBL'
+     d LIBID_LIBL      c                   -75
+     d MBRID_FIRST     c                   -71
+     d LIBID_LIBL38    c                   -72
+     d MBRID_FIRST38   c                   -73
+     /* Share and secure flags */
+     d SS_PERMANENT    c                   x'80'
+     d SS_SHR          c                   x'10'
+     d SS_SHR_YES      c                   x'08'
+     d SS_SEC          c                   x'04'
+     d SS_SEC_YES      c                   x'02'
+     /* Open flags */
+     d OPN_INPUT       c                   x'20'
+     d OPN_OUTPUT      c                   x'10'
+     d OPN_UPDATE      c                   x'08'
+     d OPN_DELETE      c                   x'04'
+     /* Mark count and blocked record flags */
+     d MRK_YES         c                   x'80'
+     d MRK_BLK_YES     c                   x'20'
+
+     /**
+      * End of UFCB parameter list -- hex 7FFF
+      */
+     d END_PARM_LIST   c                   x'7FFF'
+
+     /**
+      * Do NOT perform level-checking
+      */
+     d NO_LVLCHK       c                   x'000600'
+
+     /**
+      * DS lvlchk_parm_t -- LVLCHK parameter
+      */
+     d lvlchk_parm_t...
+     d                 ds                  qualified
+     d   parm_id                      5i 0 inz(6)
+     d   parm_val                     1a   inz(x'80')
+
+     /**
+      * DS rcdfmts_parm_t -- RCDFMTS parameter
+      */
+     d rcdfmts_parm_t...
+     d                 ds                  qualified
+     d   parm_id                      5i 0 inz(7)
+     d   max_num                      5i 0
+     d   cur_num                      5i 0
+      * Array of RCDFMT NAME/ID pairs
+
+     /**
+      * DS rcdfmt_name_id_t -- RCDFMT NAME/ID pair
+      */
+     d rcdfmt_name_id_t...
+     d                 ds                  qualified
+     d   rcdfmt_name                 10a
+     d   rcdfmt_id                   13a
+
+     /**
+      * SEPT entry number (started from 1) of QDMCLOSE.
+      */
+     d sept_qcmclose   c                   11
+
+     /**
+      * SEPT entry number (started from 1) of QDMCOPEN.
+      */
+     d sept_qcmcopen   c                   12
+
+     /**
+      * Open feedback area
+      */
+     d open_fbk_t      ds                  qualified
+     d   odp_type                     2a
+     d   file                        10a
+     d   lib                         10a
+     d   splf                        10a
+     d   splf_lib                    10a
+     d   splf_num                     5u 0
+     d   max_rcdlen                   5u 0
+     d   max_keylen                   5u 0
+     d   mbr                         10a
+     d                               10i 0
+     d                               10i 0
+     d   file_type                    5u 0
+      * @todo more fields
+
+     /**
+      * Open Data Path (ODP)
+      */
+     d odp_t           ds                  qualified
+     d   status                       4a
+     d   dev_len                     10i 0
+     d   opn_size                    10i 0
+     d   opn_fbk_offset...
+     d                               10i 0
+      * Offset to Device Control Block (DCB)
+     d   dcb_offset                  10i 0
+      * @todo more fields in ODP
+
+     /**
+      * Device Control Block (DCB)
+      */
+     d dcb_t           ds                  qualified
+     d   max_devs                     5u 0
+     d   num_dev                      5u 0
+      * Array of Device Name List (DNL) entries
+
+     /**
+      * Device Name List (DNL) entry
+      */
+     d dnl_t           ds                  qualified
+     d   dev_name                    10a
+      * @todo What is `FM'?
+     d   fm_offset                   10i 0
+     d   fm_length                   10i 0
+     d   lud_ptr_inx                  5u 0
+      *
+      * Start of Data Management Entry Point Table (DMEPT)
+      *
+      * Get next
+     d   get_inx                      5u 0
+      * Get by RRN
+     d   getd_inx                     5u 0
+      * Get by key
+     d   getk_inx                     5u 0
+      * Put by RRN
+     d   putd_inx                     5u 0
+      * Put
+     d   put_inx                      5u 0
+      * Put and get
+     d   ptgt_inx                     5u 0
+      * Update
+     d   upd_inx                      5u 0
+      * Delete
+     d   dlt_inx                      5u 0
+      * Force EOD
+     d   feod_inx                     5u 0
+      * Force EOV
+     d   feov_inx                     5u 0
+      * Commit
+     d   cmt_inx                      5u 0
+      * Rollback
+     d   rlbk_inx                     5u 0
+      * Release (free record lock)
+     d   rls_inx                      5u 0
+
+     /**
+      * Parameter list of I/O routines
+      */
+     d io_plist_t      ds                  qualified
+     d   ptrs                          *   dim(3)
+     d   @ufcb                         *   overlay(io_plist_t)
+     d   @opt_lst                      *   overlay(io_plist_t:17)
+     d   @ctrl_lst                     *   overlay(io_plist_t:33)
+
+     /**
+      * Constants for I/O routine's option list
+      */
+     /* Operation option byte (byte 0) */
+     d io_opt_lst_0_release_all...
+     d                 c                   x'00'
+     d io_opt_lst_0_release_first...
+     d                 c                   x'01'
+     d io_opt_lst_0_get_first...
+     d                 c                   x'01'
+     d io_opt_lst_0_get_last...
+     d                 c                   x'02'
+     d io_opt_lst_0_get_next_wait...
+     d                 c                   x'03'
+     d io_opt_lst_0_get_previous...
+     d                 c                   x'04'
+     d io_opt_lst_0_get_next_no_wait...
+     d                 c                   x'13'
+     d io_opt_lst_0_put_wait...
+     d                 c                   x'00'
+     d io_opt_lst_0_put_no_wait...
+     d                 c                   x'10'
+      * @todo more byte 0 constants
+
+     /* Share option byte (byte 1) */
+     d io_opt_lst_1_get_for_read...
+     d                 c                   x'00'
+     d io_opt_lst_1_get_for_update...
+     d                 c                   x'03'
+     d io_opt_lst_1_get_for_no_position...
+     d                 c                   x'10'
+
+     /**
+      * Date option byte (byte 2)
+      */
+     d io_opt_lst_2_acc_rcd...
+     d                 c                   x'00'
+     d io_opt_lst_2_get_prior...
+     d                 c                   x'10'
+
+     /**
+      * Device Support byte (byte 3)
+      */
+     d io_opt_lst_3_get...
+     d                 c                   x'01'
+     d io_opt_lst_3_getd...
+     d                 c                   x'02'
+     d io_opt_lst_3_put...
+     d                 c                   x'05'
+     d io_opt_lst_3_putget...
+     d                 c                   x'06'
+     d io_opt_lst_3_update...
+     d                 c                   x'07'
+     d io_opt_lst_3_delete...
+     d                 c                   x'08'
+     d io_opt_lst_3_release...
+     d                 c                   x'0B'
+
+     /**
+      * Common I/O feedback area
+      */
+     d io_fbk_base_t   ds                  qualified
+     d   fil_dep_iofdk_offset...
+     d                                5u 0
+     d   num_read_op                 10u 0
+      * @todo
+     d                              120a
+     d   rec_read                     5u 0
+
+      /endif

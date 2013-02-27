@@ -21,7 +21,8 @@
 
 BIN_LIB=
 MAKERULES=rules.mk
-RPGLEFLAGS=dbgview(*all) replace(*yes) incdir('/usr/local/include/rpg' '.')
+INCDIR=/usr/local/include/rpg/
+RPGLEFLAGS=dbgview(*all) replace(*yes) incdir('$(INCDIR)' '.')
 RPGFLAGS=genopt(*list *atr)
 CLFLAGS=genopt(*list *xref)
 MIFLAGS=incdir('.')
@@ -41,7 +42,8 @@ TARGETS=t001 t002 t003 t004 t005 t006 t007 t008 t009 t010 t011 t012 t013 t014 t0
 	t140 t141 t141a t142cl t143rpg t144 t145 t146 t147 t148 \
 	t149 uandi t151 t152 t153 t154 t155 t156 t157 t158 t159 \
 	t160 t161 t162 t163 t164 t165 t166 t167 t168 t169 t170 \
-	t171 t172 t173 t174 t175 t176 t177 t178 t179 t180 t181
+	t171 t172 t173 t174 t175 t176 t177 t178 t179 t180 t181 \
+	t182 t183
 
 all: $(TARGETS)
 	@echo "compilation done -- rpg"
@@ -84,3 +86,5 @@ t085: t085.module
 t092: t092.module
 	system "crtpgm pgm($@) module($@) bnddir(QC2LE)"
 	ln -fs /qsys.lib/$(BIN_LIB).lib/$@.pgm $@
+
+t182: $(INCDIR)/ufcb.rpgleinc

@@ -38,6 +38,44 @@
      d setdp           pr              *   extproc('_SETDP')
      d     addr                        *   value
      d     attr                       7a   value
+     d                                     likeds(dpat_t)
+
+     /**
+      * Data pointer attributes
+      */
+     d dpat_t          ds                  qualified
+      * Scalar type
+     d   type                         1a
+      * Length
+     d   len                          5u 0
+     d   dec_pos                      1a   overlay(len)
+     d   digits                       1a   overlay(len:2)
+      * Reserved (binary 0)
+     d                                4a
+
+     /**
+      * Scalar types
+      */
+     d DPAT_SIGNED_BINARY...
+     d                 c                   x'00'
+     d DPAT_FLOATING_POINT...
+     d                 c                   x'01'
+     d DPAT_ZONED_DECIMAL...
+     d                 c                   x'02'
+     d DPAT_PACKED_DECIMAL...
+     d                 c                   x'03'
+     d DPAT_CHARACTER...
+     d                 c                   x'04'
+     d DPAT_ONLYNS...
+     d                 c                   x'06'
+     d DPAT_ONLYS...
+     d                 c                   x'07'
+     d DPAT_EITHER...
+     d                 c                   x'08'
+     d DPAT_OPEN...
+     d                 c                   x'09'
+     d DPAT_UNSIGNED_BINARY...
+     d                 c                   x'0A'
 
      /**
       * @BIF _SETDPADR (Set Data Pointer Addressability (SETDPADR))
