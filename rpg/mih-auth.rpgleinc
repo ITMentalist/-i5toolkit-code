@@ -200,7 +200,7 @@
 
      /* long format privately authorized USRPRF struction */
      d auth_desc_long_t...
-     d                 ds            80    qualified
+     d                 ds                  qualified
      d                                     based(dummy_ptr)
      d     usrprf_type...
      d                                2a
