@@ -54,6 +54,8 @@
      d rec             s            256a   based(@dummy)
      d iofbk           ds                  likeds(io_fbk_base_t)
      d                                     based(@iofbk)
+     d dbfiofbk        ds                  likeds(io_fbk_dbf_t)
+     d                                     based(@dbfiofbk)
 
      d @pco            s               *
      d @sept           s               *   based(@pco)
@@ -70,16 +72,15 @@
            ufcb = *allx'00';
            ufcb.no_more = END_PARM_LIST;
            ufcb.base.file   = 'A333';
-           ufcb.base.lib_id = LIBID_LIBL38;
-           ufcb.base.lib    = LIBNAM_LIBL;
-           ufcb.base.mbr_id = MBRID_FIRST38;
+           ufcb.base.lib    = '*LIBL';
+           ufcb.base.mbr_id = MBRID_FIRST;
            ufcb.base.flags  =
              %bitor(SS_PERMANENT : SS_SEC : SS_SEC_YES)
              + %bitor(OPN_INPUT : OPN_UPDATE);
            %subst(ufcb.lvlchk : 1 : 3) = NO_LVLCHK;
 
            // Test: rtncode=y
-           ufcb.base.bang = x'80'; // @interesting ... @here 总结
+           ufcb.base.rtncode = RTNCODE_YES;
 
            // Locate @sept
            @pco = pcoptr2();
@@ -95,6 +96,7 @@
 
            // Locate IO feedback area
            @iofbk = ufcb.base.@io_fbk;
+           @dbfiofbk = @iofbk + iofbk.spec_iofdk_offset;
 
            // Locate DMEPT
            @odp = ufcb.base.@odp;
@@ -114,7 +116,7 @@
            read_pl.@ctrl_lst = *NULL;
            update_pl.@ufcb = @ufcb;
            update_optl = io_opt_lst_0_put_wait
-                  + io_opt_lst_1_get_for_read
+                  + io_opt_lst_1_get_for_read_only
                   + io_opt_lst_2_acc_rcd
                   + io_opt_lst_3_update;
            update_pl.@opt_lst  = %addr(update_optl);
@@ -127,7 +129,7 @@
                        : read_pl.ptrs
                        : 3 );
                // @dummy = ufcb.base.@inbuf; // Check rec
-               if iofbk.rec_read = 0;
+               if iofbk.rcd_read = 0;
                    dsply 'EOF' '';
                    leave;
                else;

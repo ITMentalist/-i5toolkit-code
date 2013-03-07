@@ -45,6 +45,7 @@
      d   mbr                         10a
      d   last_dev                    10a
      d   dev_inx                      5i 0
+      * Flags/State
      d   flags                        2a
      d   sh_sec_flg                   1a   overlay(flags)
      d   opn_flg                      1a   overlay(flags:2)
@@ -60,8 +61,8 @@
      d                                2a
      d   opnscope                     1a
      d*                               5a
-      * bit 0 - equivalent to C's "rtncode=y" parameter
-     d   bang                         1a
+      * Setting bit 0 to 1 is equivalent to C's "rtncode=y" parameter
+     d   rtncode                      1a
      d                                4a
      d   inv_mrk_cnt_hi...
      d                               10i 0
@@ -72,10 +73,11 @@
       */
      /* Special values of library and member fields */
      d LIBNAM_LIBL     c                   '*LIBL'
-     d LIBID_LIBL      c                   -75
-     d MBRID_FIRST     c                   -71
-     d LIBID_LIBL38    c                   -72
-     d MBRID_FIRST38   c                   -73
+      * No use! ufcb_base_t.lib_id field is never checked!
+     d LIBID           c                   72
+     d MBRID           c                   73
+     d LIBID_LIBL      c                   -72
+     d MBRID_FIRST     c                   -73
      /* Share and secure flags */
      d SS_PERMANENT    c                   x'80'
      d SS_SHR          c                   x'10'
@@ -90,6 +92,12 @@
      /* Mark count and blocked record flags */
      d MRK_YES         c                   x'80'
      d MRK_BLK_YES     c                   x'20'
+
+     /**
+      * RTNCODE field
+      */
+     d RTNCODE_YES     c                   x'80'
+     d RTNCODE_NO      c                   x'00'
 
      /**
       * End of UFCB parameter list -- hex 7FFF
@@ -162,10 +170,14 @@
      d   status                       4a
      d   dev_len                     10i 0
      d   opn_size                    10i 0
+      * Offest to open feedback area
      d   opn_fbk_offset...
      d                               10i 0
       * Offset to Device Control Block (DCB)
      d   dcb_offset                  10i 0
+      * Offest to I/O feedback area
+     d   io_fbk_offset...
+     d                               10i 0
       * @todo more fields in ODP
 
      /**
@@ -178,10 +190,13 @@
 
      /**
       * Device Name List (DNL) entry
+      *
+      * @remark Refer to "Device definition list" in the Info-Center for more details
+      * http://publib.boulder.ibm.com/infocenter/iseries/v5r4/topic/dm/rbal3pdttr.htm
       */
      d dnl_t           ds                  qualified
      d   dev_name                    10a
-      * @todo What is `FM'?
+      * @todo Check the `FM' component
      d   fm_offset                   10i 0
      d   fm_length                   10i 0
      d   lud_ptr_inx                  5u 0
@@ -240,29 +255,88 @@
      d                 c                   x'03'
      d io_opt_lst_0_get_previous...
      d                 c                   x'04'
+     d io_opt_lst_0_getk_next_unique...
+     d                 c                   x'05'
+     d io_opt_lst_0_getk_prev_unique...
+     d                 c                   x'06'
+     d io_opt_lst_0_getd_relcur...
+     d                 c                   x'07'
+     d io_opt_lst_0_getd_ordinal_relstr_wait...
+     d                 c                   x'08'
      d io_opt_lst_0_get_next_no_wait...
      d                 c                   x'13'
+     d io_opt_lst_0_get_next_wait_via_acc_input...
+     d                 c                   x'23'
+     d io_opt_lst_0_get_next_wait_via_evt_handler...
+     d                 c                   x'83'
+     d io_opt_lst_0_get_cancel...
+     d                 c                   x'0C'
+     d io_opt_lst_0_get_same...
+     d                 c                   x'0E'
+     d io_opt_lst_0_getd_ordinal_relstr_no_wait...
+     d                 c                   x'18'
+     d io_opt_lst_0_getd_next_mod_wait...
+     d                 c                   x'0A'
+     d io_opt_lst_0_getd_next_mod_no_wait...
+     d                 c                   x'1A'
+     d io_opt_lst_0_getd_unblocked_wait...
+     d                 c                   x'0B'
+     d io_opt_lst_0_getd_unblocked_no_wait...
+     d                 c                   x'1B'
+     d io_opt_lst_0_getd_cancel...
+     d                 c                   x'0C'
+     d io_opt_lst_0_getk_key_equal...
+     d                 c                   x'0B'
+     d io_opt_lst_0_getk_key_before_or_equal...
+     d                 c                   x'0A'
+     d io_opt_lst_0_getk_key_before...
+     d                 c                   x'09'
+     d io_opt_lst_0_getk_key_after_or_equal...
+     d                 c                   x'0C'
+     d io_opt_lst_0_getk_key_after...
+     d                 c                   x'0D'
      d io_opt_lst_0_put_wait...
      d                 c                   x'00'
      d io_opt_lst_0_put_no_wait...
      d                 c                   x'10'
-      * @todo more byte 0 constants
+     d io_opt_lst_0_put_get_next_wait...
+     d                 c                   x'03'
+     d io_opt_lst_0_put_get_next_no_wait...
+     d                 c                   x'13'
+     d io_opt_lst_0_put_get_cancel...
+     d                 c                   x'0C'
+     d io_opt_lst_0_put_send_error_msg...
+     d                 c                   x'0F'
 
      /* Share option byte (byte 1) */
-     d io_opt_lst_1_get_for_read...
+     d io_opt_lst_1_get_for_read_only...
      d                 c                   x'00'
      d io_opt_lst_1_get_for_update...
      d                 c                   x'03'
-     d io_opt_lst_1_get_for_no_position...
+     d io_opt_lst_1_get_for_read_only_no_position...
      d                 c                   x'10'
+     d io_opt_lst_1_get_for_update_no_position...
+     d                 c                   x'13'
 
      /**
       * Date option byte (byte 2)
       */
      d io_opt_lst_2_acc_rcd...
      d                 c                   x'00'
-     d io_opt_lst_2_get_prior...
+     d io_opt_lst_2_no_acc_rcd...
+     d                 c                   x'01'
+     d io_opt_lst_2_acc_all_rcd...
+     d                 c                   x'02'
+     d io_opt_lst_2_no_acc_all_rcd...
+     d                 c                   x'03'
+     d io_opt_lst_2_get_prior_acc_rcd...
      d                 c                   x'10'
+     d io_opt_lst_2_get_prior_no_acc_rcd...
+     d                 c                   x'11'
+     d io_opt_lst_2_get_prior_acc_all_rcd...
+     d                 c                   x'12'
+     d io_opt_lst_2_get_prior_no_acc_all_rcd...
+     d                 c                   x'13'
 
      /**
       * Device Support byte (byte 3)
@@ -284,13 +358,62 @@
 
      /**
       * Common I/O feedback area
+      * @remark
+      * See http://publib.boulder.ibm.com/infocenter/iseries/v5r4/topic/dm/rbal3ciofa.htm
+      * for details.
       */
      d io_fbk_base_t   ds                  qualified
-     d   fil_dep_iofdk_offset...
+      * Offset to file-dependent feedback area
+     d   spec_iofdk_offset...
      d                                5u 0
-     d   num_read_op                 10u 0
-      * @todo
-     d                              120a
-     d   rec_read                     5u 0
+     d   write_count                 10u 0
+     d   read_count                  10u 0
+     d   write_read_count...
+     d                               10u 0
+     d   other_op_count...
+     d                               10u 0
+     d                                1a
+      * Current operation
+     d   cur_op                       1a
+     d   last_rcdfmt                 10a
+     d   dev_cls                      2a
+     d   dev_name                    10a
+     d   num_bytes                   10u 0
+     d                               80a
+     d   rcd_read                     5u 0
+     d   rcdfmt_len                   5u 0
+     d                                2a
+     d   blk_cnt                     10u 0
+     d                                8a
+
+     /**
+      * I/O feedback area for database files
+      * @remark
+      * See http://publib.boulder.ibm.com/infocenter/iseries/v5r4/topic/dm/rbal3dbiof.htm
+      * for details.
+      */
+     d io_fbk_dbf_t    ds                  qualified
+      * Size of the database feedback area, including the
+      * key and the null key field byte map.
+     d   size                        10u 0
+     d   jopt                         4a
+     d   null_key_fld_map_offset...
+     d                                5u 0
+     d   num_locked_rcds...
+     d                                5u 0
+     d   max_flds                     5u 0
+     d   fld_mapping_err_offset...
+     d                               10u 0
+     d   file_pos_ind                 1a
+     d   rcd_del_ind                  1a
+     d   num_key_flds                 5u 0
+     d   char1_num_key_flds...
+     d                                1a   overlay(num_key_flds:2)
+     d                                4a
+     d   key_len                      5u 0
+     d   mbr_num                      5u 0
+     d   rrn                         10u 0
+      * CHAR(*) Key value
+      * CHAR(*) Null key field byte map
 
       /endif
