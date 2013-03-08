@@ -33,7 +33,7 @@
       * - Check for validity of the data stored in the OPEN field and
       *   repair it if the data is invalid
       *
-      * @example Invoke RPROPNFLD to repaire an OPEN field in DBF
+      * @example Invoke RPROPNFLD to repair an OPEN field in DBF
       * *LIBL/SOMEFILE at position 1, with length 10:
       * CALL RPROPNFLD('SOMEFILE  *LIBL' X'0001' X'000A')
       */
@@ -83,12 +83,11 @@
      d read_optl       s              4a
      d update_pl       ds                  likeds(io_plist_t)
      d update_optl     s              4a
-     d rec             s            256a   based(@dummy)
      d iofbk           ds                  likeds(io_fbk_base_t)
      d                                     based(@iofbk)
      d dbfiofbk        ds                  likeds(io_fbk_dbf_t)
      d                                     based(@dbfiofbk)
-
+      * SEPT
      d @pco            s               *
      d @sept           s               *   based(@pco)
      d sept            s               *   based(@sept)
@@ -102,6 +101,7 @@
      d   fld_len                      5u 0
 
       /free
+           // [1] Initialize UFCB control options
            ufcb = *allx'00';
            ufcb.no_more = END_PARM_LIST;
            ufcb.base.file   = fnam.obj_name;
@@ -113,27 +113,29 @@
            // Do NOT perform level-checking
            %subst(ufcb.lvlchk : 1 : 3) = NO_LVLCHK;
 
-           // Locate @sept
+           // [2] Locate SEPT
            @pco = pcoptr2();
 
-           // Open DBF
+           // [3] Call the DM open routine (QDMCOPEN) to open DBF
            callpgmv( sept(sept_qcmcopen)
                    : @ufcb
                    : 1 );
 
-           // Retrieve record length
+           // [3.1] Retrieve record length
            @ofa = ufcb.base.@open_fbk;
            rcdlen = ofa.max_rcdlen;
+             // (fld_pos + fld_len - 1) should <= rcdlen
 
-           // Locate IO feedback areas
+           // [4] Prepare for I/O operations
+           // [4.1] Locate I/O feedback areas
            @iofbk = ufcb.base.@io_fbk;
            @dbfiofbk = @iofbk + iofbk.spec_iofdk_offset;
 
-           // Locate DMEPT
+           // [4.2] Locate DMEPT
            @odp = ufcb.base.@odp;
            @dcb = @odp + odp.dcb_offset;
 
-           // Set parameter list of i/o routines
+           // [4.3] Set parameter list of i/o routines
            read_pl.@ufcb = @ufcb;
            read_optl = io_opt_lst_0_get_next_wait
                   + io_opt_lst_1_get_for_update
@@ -151,18 +153,18 @@
 
            @rec = ufcb.base.@inbuf;
            dow '1';
-               // Read a record
+               // [4.4] Read a record
                callpgmv( sept(dcb.dnl(1).get_inx)
                        : read_pl.ptrs
                        : 3 );
-               // Check for EOF
+               // [4.5] Check for EOF
                if iofbk.rcd_read = 0;
                    leave;
                endif;
 
-               // Check/Repair the current record
+               // [5] Check/Repair the current record
                if check_and_repair();
-                   // Update the current record
+                   // [4.6] Update the current record
                    callpgmv( sept(dcb.dnl(1).upd_inx)
                            : update_pl.ptrs
                            : 3 );
@@ -202,7 +204,7 @@
      d                 pi              n
 
       /free
-           // Check for truncated DBCS character data
+           // [5.1] Check for truncated DBCS character data
            // Search for control character SO
            @where = memchr(@rec : ctrl_ch : fld_len);
            dow @where <> *NULL and dist < fld_len;
@@ -224,8 +226,9 @@
                return *OFF;
            endif;
 
-           // Repair truncated DBCS data
+           // [5.2] Repair truncated DBCS data
            rem = fld_len - dist - 1;
+             // Number of bytes after to last SO
            if rem <= 2;
                propb(@rec + dist : WS : fld_len - dist);
            else;
