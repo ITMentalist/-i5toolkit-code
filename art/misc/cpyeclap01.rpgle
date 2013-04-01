@@ -8,8 +8,8 @@
       /copy mih-dtaptr
 
       * OPEN fields
-      * long_o contains 4 Chinese characters: 程序设计
-     d long_o          s             10a   inz(x'0E4A6C58F155894EC50F')
+      * long_o contains 4 DBCS characters: 'ＨＩＧＨ'
+     d long_o          s             10a   inz(x'0E42C842C942C742C80F')
      d short_o         s              6a
      d @long_o         s               *
      d @short_o        s               *
@@ -47,8 +47,8 @@
              // Result: 
 
            // [2.2] DB||SI padding should be performed
-           short_e   = x'0E58A50F';     // Chinese character: 笑
-           pad.double_byte_pad_value = x'4DC6';  // Set DB pad character
+           short_e   = x'0E42C50F';     // DBCS character: 'Ｅ'
+           pad.double_byte_pad_value = x'42C7';  // Set DB pad character to ' Ｇ'
            cpyeclap( @long_e : @short_e : pad );
              // Result: 
 
