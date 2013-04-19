@@ -28,7 +28,11 @@
       /free
            // [1] Resolve external data object ANIMAL-METHODS
            dta_name = 'ANIMAL-METHODS';
-           rslvdp2(dta_ptr : dta_name);
+           monitor;
+               rslvdp2(dta_ptr : dta_name);
+           on-error;
+               // Error handling
+           endmon;
 
            // [2] Obtain a space pointer from dta_ptr so that
            // instruction pointers in data struture @var methods
