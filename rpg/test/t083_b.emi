@@ -20,13 +20,20 @@
 /**
  * @file t083_b.emi
  *
- * Export an character variable named VVV
+ * Exports:
+ *  - Character scalar named NOVEL
+ *  - Data structure named PERSONAL-INFO
  */
 
-dcl dd vvv char(24) ext
-        init("family, spring, and fall");
+DCL DD NOVEL CHAR(32) EXT
+        INIT("Family, Spring, and Fall") ;
 
-dcl dd pgms char(32) ext bdry(16) ;
-        /* 不要用这的存 pointer, 这东西是在 pgm act 过程中初始化的, ... */
+DCL DD PERSONAL-INFO CHAR(64) EXT ;
+        DCL DD NAME CHAR(32) DEF(PERSONAL-INFO) POS(1) INIT(
+          "Sun Wukong"
+        )                       ;
+        DCL DD AGE PKD(5,0) DEF(PERSONAL-INFO) POS(33) INIT(
+          P"1500"
+        )                       ;
 
-pend                                    ;
+PEND                            ;

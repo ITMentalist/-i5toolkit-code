@@ -1,0 +1,48 @@
+/**
+ * @file puppy.emi
+ */
+
+dcl insptr @method parm         ;
+dcl spcptr @p parm              ;
+dcl ol pl-main(@method, @p) parm ext min(0);
+
+entry *(pl-main) ext            ;
+        stpllen argc            ;
+        cmpnv(b) argc, 0 / eq(see-you) ;
+
+        b       @method         ;
+see-you:
+        rtx     *               ;
+
+dcl dd argc bin(4) auto         ;
+/* Exports: methods of an animal */
+dcl dd animal-methods char(64) STAT EXT bdry(16)                  ;
+        dcl insptr @chase def(animal-methods) pos(1) init(chase)  ;
+        dcl insptr @taste def(animal-methods) pos(17) init(taste) ;
+        dcl ptr *         def(animal-methods) pos(33)             ;
+        dcl dd * char(16) def(animal-methods) pos(49) init(
+          "PUPPY-MOTHODS"
+        )                                             ;
+
+/* Method Chase() */
+chase: 
+        cpyblap msg, "A puppy chases cats.", " " ;
+        %sendmsg(msg, 32)       ;
+brk     "CHASE"                 ;
+        b       see-you         ;
+
+/* Method Taste() */
+taste:      
+dcl dd food char(16) bas(*)      ;
+        cpybla  msg(1:16), @p->food             ;
+        cpyblap msg(17:16), "taste bad :(", " " ;
+        cmpbla(b) @p->food, "Meat" / neq(=+2) ;
+        cpyblap msg(17:16), "TASTY!", " "     ;
+:
+        %sendmsg(msg, 32)       ;
+brk     "TASTE"                 ;
+        b       see-you         ;
+
+dcl dd msg char(32) auto        ;
+
+pend                            ;
