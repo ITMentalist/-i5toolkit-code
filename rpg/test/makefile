@@ -43,7 +43,7 @@ TARGETS=t001 t002 t003 t004 t005 t006 t007 t008 t009 t010 t011 t012 t013 t014 t0
 	t149 uandi t151 t152 t153 t154 t155 t156 t157 t158 t159 \
 	t160 t161 t162 t163 t164 t165 t166 t167 t168 t169 t170 \
 	t171 t172 t173 t174 t175 t176 t177 t178 t179 t180 t181 \
-	t182 t183
+	t182 t183 t157b
 
 all: $(TARGETS)
 	@echo "compilation done -- rpg"

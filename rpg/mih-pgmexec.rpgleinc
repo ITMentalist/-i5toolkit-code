@@ -26,7 +26,7 @@
       /if not defined(i5toolkit_rpg_mih_pgmexec)
       /define i5toolkit_rpg_mih_pgmexec
 
-     /* bound program activation definition template */
+     /* Activation definition template of _ACTBPGM */
      d actbpgm_dfn_t   ds            32    qualified
      d     agp_mark                  10u 0
      d     act_mark                  10u 0
@@ -35,11 +35,52 @@
      d                               16a
 
      /**
+      * Program specification template of _ACTBPGM
+      */
+     d actbpgm_pgm_spec_t...
+     d                 ds                  qualified
+     d   pgm                           *
+     d   tgt_agp                     10u 0
+     d                               12a
+
+     /**
       * @BIF _ACTBPGM (Activate Bound Program (ACTBPGM))
+      *
+      * @remark @var pgm_spec can be either a system pointer to the
+      *         program to activate or a space pointer addressing a
+      *         @var actbpgm_pgm_spec_t structure
       */
      d actbpgm         pr                  extproc('_ACTBPGM')
      d     act_dfn                         likeds(actbpgm_dfn_t)
-     d     pgm                         *
+     d     pgm_spec                    *
+
+     /* Activation definition template of _ACTBPGM2 */
+     d actbpgm_dfn2_t  ds                  qualified
+     d     agp_mark                  20u 0
+     d     act_mark                  20u 0
+     d                                7a
+     d     indicator                  1a
+     d                               24a
+
+     /**
+      * Program specification template of _ACTBPGM2
+      *
+      * @remark @var pgm_spec can be either a system pointer to the
+      *         program to activate or a space pointer addressing a
+      *         @var actbpgm_pgm_spec2_t structure
+      */
+     d actbpgm_pgm_spec2_t...
+     d                 ds                  qualified
+     d   pgm                           *
+     d   tgt_agp                     20u 0
+     d                               24a
+
+     /**
+      * @BIF _ACTBPGM2 (Activate Bound Program (ACTBPGM))
+      */
+     d actbpgm2        pr                  extproc('_ACTBPGM2')
+     d     act_dfn                         likeds(actbpgm_dfn2_t)
+     d     pgm_spec                    *
 
      /**
       * @BIF _MATACTEX (Materialize Activation Export (MATACTEX))
