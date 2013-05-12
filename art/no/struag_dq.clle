@@ -1,0 +1,12 @@
+/**                                                       */
+/** @file struap_dq.clle                                  */
+/**                                                       */
+/** Create keyed *DTAQ QTEMP/USRAGP if it does NOT exit.  */
+/**                                                       */
+             PGM
+             CHKOBJ     OBJ(QTEMP/USRAGP) OBJTYPE(*DTAQ)
+             MONMSG     MSGID(CPF9801) EXEC(DO)
+               CRTDTAQ    DTAQ(QTEMP/USRAGP) +
+                          MAXLEN(8) SEQ(*KEYED) KEYLEN(8)
+             ENDDO
+ BYE:        ENDPGM

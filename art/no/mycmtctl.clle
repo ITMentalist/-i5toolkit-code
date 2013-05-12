@@ -1,0 +1,7 @@
+/** @file mycmtctl.clle                                   */
+/** Compile:                                              */
+/**  - CRTCLMOD ...                                       */
+/**  - CRTPGM ... ACTGRP(*CALLER)                         */
+             PGM        PARM(&DESC)
+             DCL        VAR(&DESC) TYPE(*CHAR) LEN(20)
+             STRCMTCTL  LCKLVL(*CS) CMTSCOPE(*ACTGRP) TEXT(&DESC)
