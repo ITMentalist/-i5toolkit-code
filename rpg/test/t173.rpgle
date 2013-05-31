@@ -38,7 +38,7 @@
      d   sys_clock                    8a
 
       /free
-
+           // [1] system clock --> SAA timestamp
            tmpl = *allx'00';
            tmpl.size = %size(tmpl);
            tmpl.op1_ddat_num = 1;
@@ -56,6 +56,15 @@
                 : sys_clock
                 : tmpl );
            dsply 'SAA timestamp' '' saa_ts;
+
+           // [2] SAA timestamp --> system clock
+           tmpl.op1_ddat_num = 2;
+           tmpl.op2_ddat_num = 1;
+           tmpl.op1_len      = 8;  // system clock
+           tmpl.op2_len      = 26; // SAA timestamp
+           cvtts( sys_clock
+                : saa_ts
+                : tmpl );
 
            *inlr = *on;
       /end-free
