@@ -1,0 +1,14 @@
+/**
+ * @file asa01.emi
+ *
+ * ID: MODASA
+ */
+
+brk     '1'                     ;
+        modasa  p@, 95          ; /* ASF extention */
+brk     '2'                     ;
+        modasa  p@, -95         ; /* ASF truncation */
+brk     'END'                   ;
+        rtx     *               ;
+dcl spcptr p@ auto              ;
+pend                            ;
