@@ -1,0 +1,28 @@
+/**
+ * @file susu.emi
+ *
+ * Suspend an MI object by object type code and object name
+ */
+
+DCL SPCPTR OBJ-T@ PARM          ;
+DCL SPCPTR OBJ-NAME@ PARM       ;
+DCL OL PL-MAIN (
+        OBJ-T@,
+        OBJ-NAME@
+) PARM EXT                      ;
+ENTRY *(PL-MAIN) EXT            ;
+
+DCL DD OBJ-T CHAR(2) BAS(OBJ-T@) ;
+DCL DD OBJ-NAME CHAR(10) BAS(OBJ-NAME@) ;
+DCL SYSPTR OBJ@ AUTO                    ;
+DCL DD RSLV-TMPL CHAR(34) AUTO  ;
+        DCL DD * CHAR(2)  DEF(RSLV-TMPL) POS(33) INIT(X'0000') ;
+
+        CPYBLA  RSLV-TMPL(1:2), OBJ-T ;
+        CPYBLAP RSLV-TMPL(3:30),
+                OBJ-NAME, ' '         ;
+        RSLVSP  OBJ@, RSLV-TMPL, *, * ;
+BRK     'LOOK'                        ;
+        DESS    OBJ@                  ; /* MI INST 4 */
+        RTX     *                     ;
+PEND                                  ;
