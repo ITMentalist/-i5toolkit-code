@@ -1,0 +1,27 @@
+/***********************************************************************/
+/* @file parm05.clle                                                   */
+/*                                                                     */
+/* Article ID: PARMCNT                                                 */
+/***********************************************************************/
+             PGM        PARM(&A &B &C)
+             DCL        VAR(&A) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&B) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&C) TYPE(*CHAR) LEN(1)
+             DCL        VAR(&PRMARA@) TYPE(*PTR)
+             DCL        VAR(&CNT) TYPE(*INT) LEN(4) VALUE(0)
+             DCL        VAR(&PRMCNT) TYPE(*CHAR) STG(*DEFINED) +
+                          LEN(4) DEFVAR(&CNT)
+             DCL        VAR(&ARG@) TYPE(*PTR)
+             DCL        VAR(&PRMARA) TYPE(*CHAR) STG(*BASED) +
+                          LEN(128) BASPTR(&PRMARA@)
+             DCL        VAR(&ARG) TYPE(*CHAR) STG(*BASED) LEN(16) +
+                          BASPTR(&ARG@)
+             CALLPRC    PRC('_NPMPARMLISTADDR') RTNVAL(&PRMARA@)
+             CHGVAR     VAR(&ARG@) VALUE(%ADDR(&PRMARA))
+             CHGVAR     VAR(%OFS(&ARG@)) VALUE(%OFS(&PRMARA@) + 32)
+             DOWHILE    COND(%OFS(&ARG@) *LT (%OFS(&PRMARA@) + 128))
+               SNDPGMMSG  MSGID(ART0102) MSGF(ARTMSG) MSGDTA(&ARG)
+             CHGVAR     VAR(%OFS(&ARG@)) VALUE(%OFS(&ARG@) + 16)
+             ENDDO
+             SNDPGMMSG  MSGID(ART0101) MSGF(ARTMSG) MSGDTA(&PRMCNT)
+             ENDPGM
