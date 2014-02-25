@@ -1,0 +1,43 @@
+/**
+ * @file ren03.emi
+ *
+ * Rename a temporary space obj
+ */
+
+        b       crt-spc         ;
+rename-spc:
+        mods    spc@, tmpl      ;
+
+dcl dd tmpl char(33) auto       ;
+        dcl dd opt char(1) def(tmpl) pos(1) init(x'40') ;
+        dcl dd opt-2 char(1) def(tmpl) pos(2) init(x'00') ;
+        dcl dd opt-3 char(1) def(tmpl) pos(3) init(x'00') ;
+        dcl dd name char(30) def(tmpl) pos(4) init('Lovely smile') ;
+brk     'LOOK'                  ;
+        rtx     *               ;
+
+crt-spc:        
+dcl sysptr spc@ auto            ;
+/* Space createation template */
+dcl spcptr crt-tmpl@ auto init(tmpl-size) ;
+dcl dd tmpl-size bin(4) auto init(96)     ;
+dcl dd * bin(4) auto                      ;
+dcl dd obj-id char(32) auto               ;
+        dcl dd obj-type char(2) def(obj-id) pos(1) init(x'19FE') ;
+        dcl dd obj-name char(30) def(obj-id) pos(3) init('ABC')   ;
+dcl dd crt-opt char(4) auto                   ; /* crt-opt = x'00000000' -- Temporary */
+dcl dd * char(4) auto                         ;
+dcl dd spc-size bin(4) auto init(x'00001F00') ;
+dcl dd init-val char(1) auto init(x'00')      ;
+dcl dd * char(4) auto                         ;
+dcl dd * char(1) auto                         ;
+dcl dd * char(2) auto                         ;
+dcl dd * bin(4) auto                          ;
+dcl sysptr * auto                             ;
+dcl sysptr * auto                             ;
+
+        crts    spc@, crt-tmpl@ ;
+brk     'CRTS'                  ;
+        b       rename-spc      ;
+
+pend;

@@ -1,0 +1,35 @@
+/**
+ * @file ren01.emi
+ */
+
+dcl spcptr obj-type@ parm       ;
+dcl spcptr obj-name@ parm       ;
+dcl spcptr new-name@ parm       ;
+dcl ol pl-main(obj-type@,
+        obj-name@,
+        new-name@) parm ext     ;
+
+entry *(pl-main) ext            ;
+
+dcl dd rt char(34) auto         ;
+dcl dd obj-type char(2) bas(obj-type@) ;
+dcl dd obj-name char(30) bas(obj-name@) ;
+dcl dd new-name char(30) bas(new-name@) ;
+
+dcl sysptr obj@ auto            ;
+dcl dd tmpl char(33) auto       ;
+        dcl dd opt char(1) def(tmpl) pos(1) init(x'40') ;
+        dcl dd opt-2 char(1) def(tmpl) pos(2) init(x'00') ;
+        dcl dd opt-3 char(1) def(tmpl) pos(3) init(x'00') ;
+        dcl dd name char(30) def(tmpl) pos(4)             ;
+
+        cpybrep rt, x'00'       ;
+        cpybla  rt(1:2), obj-type ;
+        cpybla  rt(3:30), obj-name ;
+        rslvsp  obj@, rt, *, *     ;
+
+        cpybla  name, new-name  ;
+        mods    obj@, tmpl      ;
+brk     'LOOK'                  ;
+        rtx     *               ;
+pend                            ;
