@@ -1,0 +1,17 @@
+/**********************************************************/
+/* @file cmpla03                                          */
+/* Compare 2 SPCPTRs for addressability.                  */
+/* Article ID: CMPLA                                      */
+/**********************************************************/
+             PGM        PARM(&PTRA@ &PTRB@ &RTN)
+             DCL        VAR(&PTRA@) TYPE(*PTR)
+             DCL        VAR(&PTRB@) TYPE(*PTR)
+             DCL        VAR(&RTN) TYPE(*CHAR) LEN(1)
+/* 1000 */   IF         COND(&PTRA@ *GT &PTRB@) THEN(CHGVAR +
+                          VAR(&RTN) VALUE('G'))
+/* 1200 */   ELSE       CMD(IF COND(&PTRA@ *LT &PTRB@) THEN(CHGVAR +
+                          VAR(&RTN) VALUE('L')))
+/* 1400 */   ELSE       CMD(IF COND(&PTRA@ *EQ &PTRB@) THEN(CHGVAR +
+                          VAR(&RTN) VALUE('E')))
+/* 1600 */   ELSE       CMD(CHGVAR VAR(&RTN) VALUE('U'))
+             ENDPGM

@@ -1,0 +1,53 @@
+/**
+ * @file cmpla06.emi
+ *
+ * Example of OMI instruction CMPSPAD
+ * Article ID: CMPLA
+ */
+
+dcl spcptr a@ auto              ;
+dcl spcptr b@ auto              ;
+dcl dd ind-hi char(1) auto      ;
+dcl dd ind-lo char(1) auto      ;
+dcl dd ind-eq char(1) auto      ;
+dcl dd ind-uneq char(1) auto    ;
+
+        cmpspad(i) a@, b@ /
+            hi(ind-hi),
+            lo(ind-lo),
+            eq(ind-eq),
+            uneq(ind-uneq)      ;
+brk     'LOOK'                  ;
+        rtx     *               ;
+pend                            ;
+
+/*
+ppc instructions generated for CMPPSPAD (25 insts):
+ RISC INSTRUCTIONS (CMPLA06)
+      ADDRESS        LOCATION    OBJECT TEXT       SOURCE STATEMENT                  MI INSTRUCTION NUMBERS
+ 292B20D738 0015F8     000078    3880F0F0          ADDI 4,0,-3856                        01
+ 292B20D738 0015FC     00007C    38BFFFD0          ADDI 5,31,-48
+ 292B20D738 001600     000080    380000F0          ADDI 0,0,240
+ 292B20D738 001604     000084    B09FFFF2          STH 4,0XFFF2(31)
+ 292B20D738 001608     000088    981FFFF1          STB 0,0XFFF1(31)
+ 292B20D738 00160C     00008C    389FFFE0          ADDI 4,31,-32
+ 292B20D738 001610     000090    7C252080          CMPLA 0,5,4
+ 292B20D738 001614     000094    78240298          SELII 4,1,0,37
+ 292B20D738 001618     000098    608500F0          ORI 5,4,240
+ 292B20D738 00161C     00009C    98BFFFF0          STB 5,0XFFF0(31)
+ 292B20D738 001620     0000A0    78240218          SELII 4,1,0,36
+ 292B20D738 001624     0000A4    7C840378          OR 4,4,0
+ 292B20D738 001628     0000A8    989FFFF1          STB 4,0XFFF1(31)
+ 292B20D738 00162C     0000AC    38A00001          ADDI 5,0,1
+ 292B20D738 001630     0000B0    41820008          BC 12,2,0X8
+ 292B20D738 001634     0000B4    38A00000          ADDI 5,0,0
+ 292B20D738 001638     0000B8    889FFFF2          LBZ 4,0XFFF2(31)
+ 292B20D738 00163C     0000BC    7CA02378          OR 0,5,4
+ 292B20D738 001640     0000C0    981FFFF2          STB 0,0XFFF2(31)
+ 292B20D738 001644     0000C4    38000001          ADDI 0,0,1
+ 292B20D738 001648     0000C8    41830008          BC 12,3,0X8
+ 292B20D738 00164C     0000CC    38000000          ADDI 0,0,0
+ 292B20D738 001650     0000D0    88BFFFF3          LBZ 5,0XFFF3(31)
+ 292B20D738 001654     0000D4    7C052B78          OR 5,0,5
+ 292B20D738 001658     0000D8    98BFFFF3          STB 5,0XFFF3(31)
+*/

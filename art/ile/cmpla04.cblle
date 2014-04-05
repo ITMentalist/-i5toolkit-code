@@ -1,0 +1,37 @@
+     /**
+      * @file cmpla04.cblle
+      * Compare 2 SPCPTRs for addressability.
+      * Article ID: CMPLA
+      */
+
+      *process
+      *    NOSTDTRUNC
+      *    NOMONOPRC.
+
+       id division.
+       program-id. cmpla04.
+
+       data division.
+       working-storage section.
+
+       linkage section.
+       77 ptra usage pointer.
+       77 ptrb usage pointer.
+       77 rtn pic x(1).
+
+STMT   procedure division using ptra, ptrb, rtn.
+NUM:   main.
+10         evaluate ptra > ptrb also ptra < ptrb also ptra = ptrb
+               when TRUE        also FALSE       also FALSE
+11                 move 'G' to rtn
+               when FALSE       also TRUE        also FALSE
+12                 move 'L' to rtn
+               when FALSE       also FALSE       also TRUE
+13                 move 'E' to rtn
+               when FALSE       also FALSE       also FALSE
+14                 move 'U' to rtn
+           end-evaluate.
+
+       see-you.
+           stop run.
+       end program cmpla04.
