@@ -1,0 +1,38 @@
+/**
+ * @file mvad06.emi
+ *
+ * Modify the addressability of *DTAQ (0A01) TOM:
+ * - Transfer the addressablity to TOM from LIBA to LIBB
+ * - Remove the addressablity to TOM from LIBB
+ * - Insert the addressablity to TOM back to LIBA
+ *
+ * @pre Create *DTAQ LIBA/TOM: CRTDTAQ LIBA/TOM MAXLEN(5)
+ */
+
+dcl sysptr liba@ auto init(
+        "LIBA", type(ctx)
+)                               ;
+dcl sysptr libb@ auto init(
+        "LIBB", type(ctx)
+)                               ;
+dcl sysptr tom@ auto init(
+        "TOM", ctx("LIBA"), type(q)
+)                               ;
+dcl sysptr qcmd@ auto init(
+        "QCMD", type(pgm)
+)                               ;
+
+        b       resolve         ;
+move:   mats    libb@, tom@     ; /* MI inst 2: MODADR libb@, tom@ */
+        callx   qcmd@, *, *     ;
+        mats    tom@, tom@      ; /* MI inst 4: MODADR *, tom@ */
+        callx   qcmd@, *, *     ;
+        mats    liba@, tom@     ; /* MI inst 6: MODADR liba@, tom@ */
+        callx   qcmd@, *, *     ;
+        rtx     *               ;
+resolve:
+        rslvsp  liba@, *, *, *  ;
+        rslvsp  libb@, *, *, *  ;
+        rslvsp  tom@, *, *, *   ;
+        b       move            ;
+pend                            ;
