@@ -45,7 +45,7 @@
      d setsppfp        pr              *   extproc('_SETSPPFP')
      d     src_ptr                     *   value procptr
 
-      * System pointer to hex 1934 space object USRDTAARA
+      * System pointer to hex 1934 space object CTRARA
      d spc@            s               *   procptr
      d counter         s             20i 0 based(spp@)
      d                                     dim(16)
@@ -58,14 +58,14 @@
      d   incctr                      20i 0 dim(16) options(*varsize)
 
       /free
-           // Resolve a SYSPTR the 1934 *LIBL/CTRARA
+           // Resolve a SYSPTR *USRSPC *LIBL/CTRARA
            rslvsp_tmpl.obj_type = x'1934';
            rslvsp_tmpl.obj_name = 'CTRARA';
            rslvsp2(spc@ : rslvsp_tmpl);
            spp@ = setsppfp(spc@);
 
            for n = 1 to numinx;
-               // Increase @var counter_a by 1 atomically
+               // Increase @var counter by 1 atomically
                atmcadd8(counter(ctrinx(n)) : one);
 
                // Enforce ordering of shared storage operations

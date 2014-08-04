@@ -1,0 +1,44 @@
+/**
+ * @file lcklck.emi
+ *
+ * Lock/Unlock an MI object idendified by a system pointer.
+ * @param [in] SYSPTR to the MI object
+ * @param [in] Requested lock state
+ * @param [in] Flag. 'U' = Unlock, anything else = Lock
+ */
+
+dcl spcptr obj@@ parm           ;
+dcl spcptr lck-sts@ parm        ;
+dcl spcptr flag@ parm           ;
+dcl ol pl-main (
+        obj@@,
+        lck-sts@,
+        flag@
+) parm ext                      ;
+entry i-main(pl-main) ext       ;
+
+dcl sysptr p-obj@ bas(obj@@)      ;
+dcl dd p-lck-sts char(1) bas(lck-sts@) ;
+dcl dd flag char(1) bas(flag@)       ;
+
+dcl spcptr tmpl@ auto init(tmpl) ;
+dcl dd tmpl char(64) auto        ;
+        dcl dd num-requests bin(4) def(tmpl) pos(1) init(1) ;
+        dcl dd off-lck-sts bin(2) def(tmpl) pos(5) init(32) ;
+        dcl dd lck-opt char(2) def(tmpl) pos(15) init(x'4200')  ; /* 01000010,00000000b */
+          /* Lock request type = '01', Synchronous request- Wait until all locks can be granted. */
+          /* Time-out option = '1', wait definitely */
+          /* Template extension specified = '0', not template extendsion */
+          /* Lock scope = '0', Lock is scoped to the lock scope object type. */
+          /* Lock scope object type = '0', Process containing the current thread. */
+        dcl sysptr obj@ def(tmpl) pos(17) ;
+        dcl dd lck-sts char(1) def(tmpl) pos(33) ;
+
+        cpybwp  obj@, p-obj@    ;
+        cpybla  lck-sts, p-lck-sts ;
+        cmpbla(b) flag, 'U' / neq(=+3) ;
+        unlock  tmpl@                  ;
+        b       =+2                    ;
+:       lock    tmpl@                  ;
+:       rtx     *                      ;
+pend                                   ;
