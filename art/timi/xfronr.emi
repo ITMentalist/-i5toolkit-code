@@ -1,0 +1,21 @@
+/**
+ * @file xfronr.emi
+ *
+ * XFRO.
+ * @param SYSPTR to the new owner
+ * @param SYSPTR to a system object
+ */
+
+dcl spcptr new-owner@@ parm     ;
+dcl sysptr new-owner@ bas(new-owner@@) ;
+dcl spcptr obj@@ parm           ;
+dcl sysptr obj@ bas(obj@@)      ;
+dcl ol pl-main(
+        new-owner@@,
+        obj@@
+) parm ext                      ;
+entry i-main(pl-main) ext       ;
+        matsobj spp@, obj@      ;
+        rtx     *               ;
+dcl spcptr spp@ auto            ;
+pend                            ;
