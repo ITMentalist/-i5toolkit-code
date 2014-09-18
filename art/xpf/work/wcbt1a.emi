@@ -1,0 +1,33 @@
+/**
+ * @file wcbt1a.emi
+ *
+ * Test of wcbt1.emi
+ */
+
+dcl spcptr job-nam@ parm        ;
+dcl spcptr job-usr@ parm        ;
+dcl spcptr job-num@ parm        ;
+dcl ol pl-main(
+        job-nam@,
+        job-usr@,
+        job-num@
+) parm ext                      ;
+entry i-main(pl-main) ext       ;
+
+dcl sysptr pcs@ auto            ;
+dcl spcptr pcs@@ auto init(pcs@) ;
+dcl ol al-wcbt1 (
+        job-nam@,
+        job-usr@,
+        job-num@,
+        pcs@@
+) arg                           ;
+dcl sysptr wcbt1@ auto init (
+        "WCBT1", type(pgm)
+)                               ;
+
+        rslvsp  wcbt1@, *, *, * ;
+        callx   wcbt1@, al-wcbt1, * ;
+brk     'LOOK'                      ;
+        rtx     *                   ;
+pend                                ;

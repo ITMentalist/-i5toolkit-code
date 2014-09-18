@@ -1,0 +1,75 @@
+/**
+ * @file wcbt1.emi
+ *
+ * Simulate the process of retrieving the system pointer to
+ * the PCS object associated with an MI process.
+ */
+
+dcl spcptr job-nam@ parm        ;
+dcl spcptr job-usr@ parm        ;
+dcl spcptr job-num@ parm        ;
+dcl spcptr pcs@@ parm           ;
+dcl ol pl-main(
+        job-nam@,
+        job-usr@,
+        job-num@,
+        pcs@@
+) parm ext                      ;
+entry i-main(pl-main) ext       ;
+
+        b       cpy-parm        ;
+run:   
+dcl mspptr spp-root-wcbt@                     ;
+dcl spc root-wcbt bas(spp-root-wcbt@)         ;
+        dcl sysptr job-index@ dir pos(h'221') ;
+
+dcl spc pco baspco                            ;
+        dcl sysptr root-wcbt@ dir pos(h'1B1') ;
+
+        setsppfp spp-root-wcbt@, root-wcbt@ ;
+brk     'A'                                 ;
+
+/** FNDINXEN */
+dcl spcptr rcv@ auto init(rcv)   ;
+dcl dd rcv char(h'30') auto bdry(16)               ; /* op-1 */
+        dcl dd rcv-arg char(h'20') def(rcv) pos(1) ;
+        dcl spcptr wcbte@ def(rcv) pos(h'21')      ;
+dcl spcptr opt-lst@ auto init(opt-lst) ; /* op-3 */
+dcl dd opt-lst char(14) auto           ;
+        dcl dd * char(2) def(opt-lst) pos(1) init(x'0001') ; /* Rule option: EQUAL */
+        dcl dd * bin(2) unsgnd def(opt-lst) pos(3) init(x'0020') ; /* Argument (Key) length: hex 20 */
+        dcl dd * bin(2) def(opt-lst) pos(5) init(x'0000') ; /* Argument (Key) offset: ignored for a search for EQUAL operation */
+        dcl dd * bin(2) def(opt-lst) pos(7) init(x'0001') ; /* Occurence count: 1 */
+        dcl dd rtn-cnt bin(2) def(opt-lst) pos(9)         ; /* Return count */
+        dcl dd rtn-ent-len bin(2) unsgnd def(opt-lst) pos(11) ; /* Returned entry length (1) */
+        dcl dd rtn-ent-off bin(2) unsgnd def(opt-lst) pos(13) ; /* Returned entry offset (1) */
+dcl spcptr fnd-arg@ auto init(fnd-arg)                 ; /* op-4 */
+dcl dd fnd-arg char(h'20') auto ;
+        dcl dd * char(1) def(fnd-arg) pos(1) init('1') ; /* Entry format 1 */
+        dcl dd fnd-job-nam char(10) def(fnd-arg) pos(2) ;
+        dcl dd fnd-job-usr char(10) def(fnd-arg) pos(12) ;
+        dcl dd fnd-job-num char(6) def(fnd-arg) pos(22)  ;
+        dcl dd * char(5) def(fnd-arg) pos(28) init(x'0000000000') ;
+
+        fndinxen rcv@, job-index@, opt-lst@, fnd-arg@ ;
+brk     'B'                                           ;
+
+dcl dd wcbte char(h'400') bas(wcbte@) ;
+        dcl dd * char(h'20') def(wcbte) pos(1) ;
+        dcl sysptr pcs@ def(wcbte) pos(h'21')  ;
+dcl sysptr rtn-pcs@ bas(pcs@@)                 ;
+
+        cpybwp  rtn-pcs@, pcs@  ;
+brk     'END'                   ;
+        rtx     *               ;
+
+cpy-parm:
+dcl dd job-nam char(10) bas(job-nam@) ;
+dcl dd job-usr char(10) bas(job-usr@) ;
+dcl dd job-num char(10) bas(job-num@) ;
+        cpybla  fnd-job-nam, job-nam  ;
+        cpybla  fnd-job-usr, job-usr  ;
+        cpybla  fnd-job-num, job-num  ;
+        b       run             ;
+
+pend                            ;

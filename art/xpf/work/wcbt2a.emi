@@ -1,0 +1,33 @@
+/**
+ * @file wcbt2a.emi
+ *
+ * Test of wcbt2.emi
+ */
+
+dcl spcptr job-nam@ parm        ;
+dcl spcptr job-usr@ parm        ;
+dcl spcptr job-num@ parm        ;
+dcl ol pl-main(
+        job-nam@,
+        job-usr@,
+        job-num@
+) parm ext                      ;
+entry i-main(pl-main) ext       ;
+
+dcl sysptr pcs@ auto            ;
+dcl spcptr pcs@@ auto init(pcs@) ;
+dcl ol al-wcbt2 (
+        job-nam@,
+        job-usr@,
+        job-num@,
+        pcs@@
+) arg                           ;
+dcl sysptr wcbt2@ auto init (
+        "WCBT2", type(pgm)
+)                               ;
+
+        rslvsp  wcbt2@, *, *, * ;
+        callx   wcbt2@, al-wcbt2, * ;
+brk     'LOOK'                      ;
+        rtx     *                   ;
+pend                                ;
