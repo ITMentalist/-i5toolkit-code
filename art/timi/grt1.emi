@@ -1,0 +1,63 @@
+/**
+ * @file grt1.emi
+ *
+ * Test of grant.emi
+ * @param [in] CHAR(10) User profile name or *PUBLIC
+ * @param [in] CHAR(2) MI object type
+ * @param [in] CHAR(10) MI object name
+ * @param [in] CHAR(2) authority bits
+ */
+
+dcl spcptr p-usr@ parm          ;
+dcl spcptr p-objtyp@ parm       ;
+dcl spcptr p-objnam@ parm       ;
+dcl spcptr p-aut@ parm          ;
+dcl ol pl-main(
+        p-usr@,
+        p-objtyp@,
+        p-objnam@,
+        p-aut@
+) parm ext                      ;
+entry *(pl-main) ext            ;
+
+dcl dd p-usr char(10) bas(p-usr@) ;
+dcl dd p-objtyp char(2) bas(p-objtyp@) ;
+dcl dd p-objnam char(10) bas(p-objnam@) ;
+dcl dd p-aut char(2) bas(p-aut@)        ;
+
+dcl sysptr obj@ auto            ;
+dcl dd aut char(2) auto         ;
+dcl sysptr usr@ auto            ;
+dcl dd rt char(34) auto         ;
+        dcl dd objtyp char(2) def(rt) pos(1) init(x'0801') ;
+        dcl dd objnam char(30) def(rt) pos(3) init(' ') ;
+        dcl dd * char(2) def(rt) pos(33) init(x'0000')    ;
+
+dcl sysptr grant@ auto init (
+        "GRANT", type(pgm)
+)                               ;
+dcl spcptr obj@@ auto init(obj@) ;
+dcl spcptr aut@ auto init(aut)  ;
+dcl spcptr usr@@ auto init(usr@) ;
+dcl ol al-grant (
+        obj@@,
+        aut@,
+        usr@@
+)                               ;
+dcl ol al-grant-public (
+        obj@@,
+        aut@
+)                               ;
+usrprf: cmpbla(b) p-usr, "*PUBLIC   " / eq(=+3) ;
+        cpybla  objnam, p-usr   ;
+        rslvsp  usr@, rt, *, *  ;
+mi-obj: cpybla  objtyp, p-objtyp ;
+        cpybla  objnam, p-objnam ;
+        rslvsp  obj@, rt, *, *   ;
+auth:   cpybla  aut, p-aut       ;
+grant:  cmpbla(b) p-usr, "*PUBLIC   " / eq(=+3) ;
+        callx   grant@, al-grant, * ;
+        b       =+2                 ;
+pubaut: callx   grant@, al-grant-public, * ;
+:       rtx     *               ;
+pend                            ;

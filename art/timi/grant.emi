@@ -1,0 +1,31 @@
+/**
+ * @file grant.emi
+ *
+ * @parm [in] SYSPTR to system object
+ * @parm [in] CHAR(2) authority bits
+ * @parm [in] SYPPTR to *USRPRF or null
+ */
+
+dcl spcptr obj@@ parm           ;
+dcl spcptr aut@ parm            ;
+dcl spcptr usr@@ parm           ;
+dcl ol pl-main(
+        obj@@,
+        aut@,
+        usr@@
+) parm ext min(2)               ;
+entry *(pl-main) ext            ;
+
+dcl sysptr obj@ bas(obj@@)      ;
+dcl dd aut bas(aut@)            ;
+dcl sysptr usr@ bas(usr@@)      ;
+
+        stpllen num-parms       ; /* 01 */
+	cmpnv(b) num-parms, 3 / eq(=+3) ; /* 02 */
+        matsobj  ya@, obj@       ; /* 03 */
+        b =+2                   ; /* 04 */
+:       b =+1                   ; /* 05 */
+:       rtx     *               ; /* 06 */
+dcl dd num-parms bin(4) auto    ;
+dcl spcptr ya@ auto             ;
+pend                            ;

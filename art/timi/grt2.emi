@@ -1,0 +1,49 @@
+/**
+ * @file grt2.emi
+ *
+ * @pre System state is required.
+ * @param [in] char(2) authority bits
+ * CURSOR v.s. operational authority.
+ * Grants private authorization for *FILE QSYS/QADBXRDBD
+ * to user profile QDFTOWN.
+ */
+
+dcl spcptr aut@ parm            ;
+dcl ol pl-main(aut@) parm ext   ;
+entry i-main(pl-main) ext       ;
+
+dcl sysptr obj@ auto            ;
+dcl sysptr usr@ auto            ;
+dcl dd rt char(34) auto         ;
+        dcl dd objtyp char(2) def(rt) pos(1) init(x'0801')    ;
+        dcl dd objnam char(30) def(rt) pos(3) init('QDFTOWN') ;
+        dcl dd * char(2) def(rt) pos(33) init(x'0000')        ;
+
+dcl sysptr grant@ auto init (
+        "GRANT", type(pgm)
+)                                ;
+dcl spcptr obj@@ auto init(obj@) ;
+dcl spcptr usr@@ auto init(usr@) ;
+dcl ol al-grant (
+        obj@@,
+        aut@,
+        usr@@
+)                               ;
+
+/* RDB Directory physical file */
+dcl sysptr f@ auto init (
+        "QADBXRDBD", type(spc, h'01')
+)                               ;
+dcl spcptr sppf@ auto           ;
+dcl spc ass-spc bas(sppf@)      ;
+        /* The SYP to the cursor object in *FILE obj's associated space. */
+        dcl sysptr cursor@ dir pos(h'E1') ;
+
+        rslvsp  f@, *, *, *         ;
+        setsppfp sppf@, f@          ;
+        cpybwp  obj@, cursor@       ;
+        rslvsp  usr@, rt, *, *      ;
+        callx   grant@, al-grant, * ;
+brk     'END'                       ;
+        rtx     *                   ;
+pend                                ;
